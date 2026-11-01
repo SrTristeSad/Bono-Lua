@@ -358,3 +358,266 @@ function AnimationState:_updateBoneAndSlotTimelines()
     end
   end
 end
+
+function AnimationState:_advanceFadeTime(passedTime)
+  local isFadeOut=self._fadeState>0
+  if self._subFadeState<0 then
+    self._subFadeState=0
+    local active=self._parent==nil and self.actionEnabled
+    if active then
+      local event=isFadeOut and EventObject.FADE_OUT or EventObject.FADE_IN
+      if self._armature.eventDispatcher:hasDBEventListener(event) then
+        local evt=BaseObject.borrowObject(EventObject)
+        evt.type=event
+        evt.armature=self._armature
+        evt.animationState=self
+        self._armature._dragonBones:bufferEvent(evt)
+      end
+    end
+  end
+
+  if passedTime<0 then passedTime=-passedTime end
+  self._fadeTime=self._fadeTime+passedTime
+  if self._fadeTime>=self.fadeTotalTime then
+    self._subFadeState=1
+    self._fadeProgress=isFadeOut and 0.0 or 1.0
+  elseif self._fadeTime>0 then
+    self._fadeProgress=isFadeOut
+      and (1.0-self._fadeTime/self.fadeTotalTime)
+      or (self._fadeTime/self.fadeTotalTime)
+  else
+    self._fadeProgress=isFadeOut and 1.0 or 0.0
+  end
+
+  if self._subFadeState>0 then
+    if not isFadeOut then
+      self._playheadState=bitOr1(self._playheadState)
+      self._fadeState=0
+    end
+    local active=self._parent==nil and self.actionEnabled
+    if active then
+      local event=isFadeOut and EventObject.FADE_OUT_COMPLETE
+        or EventObject.FADE_IN_COMPLETE
+      if self._armature.eventDispatcher:hasDBEventListener(event) then
+        local evt=BaseObject.borrowObject(EventObject)
+        evt.type=event
+        evt.armature=self._armature
+        evt.animationState=self
+        self._armature._dragonBones:bufferEvent(evt)
+      end
+    end
+  end
+end
+
+function AnimationState:init(armature,animationData,config)
+  if self._armature~=nil then return end
+  self._armature=armature
+  self._animationData=animationData
+
+  self.resetToPose=config.resetToPose
+  self.additive=config.additive
+  self.displayControl=config.displayControl
+  self.actionEnabled=config.actionEnabled
+  self.blendType=animationData.blendType
+  self.layer=config.layer
+  self.playTimes=config.playTimes
+  self.timeScale=config.timeScale
+  self.fadeTotalTime=config.fadeInTime
+  self.autoFadeOutTime=config.autoFadeOutTime
+  self.name=#config.name>0 and config.name or config.animation
+  self.group=config.group
+  self._weight=config.weight
+
+  self._playheadState=config.pauseFadeIn and 2 or 3
+  if config.duration<0.0 then
+    self._position=0.0
+    self._duration=animationData.duration
+    if config.position~=0.0 then
+      if self.timeScale>=0.0 then self._time=config.position
+      else self._time=config.position-self._duration end
+    else
+      self._time=0.0
+    end
+  else
+    self._position=config.position
+    self._duration=config.duration
+    self._time=0.0
+  end
+
+  if self.timeScale<0.0 and self._time==0.0 then
+    self._time=-0.000001
+  end
+  if self.fadeTotalTime<=0.0 then self._fadeProgress=0.999999 end
+
+  if #config.boneMask>0 then
+    for i,name in ipairs(config.boneMask) do self._boneMask[i]=name end
+  end
+
+  self._actionTimeline=borrowTimeline("ActionTimelineState",nil,
+    armature,self,animationData.actionTimeline,self._poseTimelines)
+  -- In the source ActionTimelineState is not a pose timeline: remove from
+  -- the temporary destination without recycling, preserving ownership.
+  self._poseTimelines[#self._poseTimelines]=nil
+  self._actionTimeline.currentTime=self._time
+  if self._actionTimeline.currentTime<0.0 then
+    self._actionTimeline.currentTime=
+      self._duration-self._actionTimeline.currentTime
+  end
+  if animationData.zOrderTimeline~=nil then
+    local holder={}
+    self._zOrderTimeline=borrowTimeline("ZOrderTimelineState",nil,
+      armature,self,animationData.zOrderTimeline,holder)
+  end
+end
+
+function AnimationState:advanceTime(passedTime,cacheFrameRate)
+  if self._fadeState~=0 or self._subFadeState~=0 then
+    self:_advanceFadeTime(passedTime)
+  end
+  if self._playheadState==3 then
+    if self.timeScale~=1.0 then passedTime=passedTime*self.timeScale end
+    self._time=self._time+passedTime
+  end
+
+  if self._timelineDirty~=0 then
+    if self._timelineDirty==2 then self:_updateTimelines() end
+    self._timelineDirty=0
+    self:_updateBoneAndSlotTimelines()
+  end
+
+  local isBlendDirty=self._fadeState~=0 or self._subFadeState==0
+  local isCacheEnabled=self._fadeState==0 and cacheFrameRate>0.0
+  local isUpdateTimeline=true
+  local isUpdateBoneTimeline=true
+  local time=self._time
+  self._weightResult=self._weight*self._fadeProgress
+  if self._parent~=nil then
+    self._weightResult=self._weightResult*self._parent._weightResult
+  end
+
+  if self._actionTimeline.playState<=0 then
+    self._actionTimeline:update(time)
+  end
+  if self._weight==0.0 then return end
+
+  if isCacheEnabled then
+    local interval=cacheFrameRate*2.0
+    self._actionTimeline.currentTime=
+      math.floor(self._actionTimeline.currentTime*interval)/interval
+  end
+  if self._zOrderTimeline~=nil and self._zOrderTimeline.playState<=0 then
+    self._zOrderTimeline:update(time)
+  end
+
+  if isCacheEnabled then
+    local cacheIndex=math.floor(self._actionTimeline.currentTime*cacheFrameRate)
+    if self._armature._cacheFrameIndex==cacheIndex then
+      isUpdateTimeline=false
+      isUpdateBoneTimeline=false
+    else
+      self._armature._cacheFrameIndex=cacheIndex
+      if self._animationData.cachedFrames[cacheIndex+1] then
+        isUpdateBoneTimeline=false
+      else
+        self._animationData.cachedFrames[cacheIndex+1]=true
+      end
+    end
+  end
+
+  if isUpdateTimeline then
+    local blended=false
+    local previous=nil
+    if isUpdateBoneTimeline then
+      for _,timeline in ipairs(self._boneTimelines) do
+        if timeline.playState<=0 then timeline:update(time) end
+        if timeline.target~=previous then
+          local blend=timeline.target
+          blended=blend:update(self)
+          previous=blend
+          if blend.dirty==1 then
+            local pose=blend.target.animationPose
+            pose.x=0.0;pose.y=0.0
+            pose.rotation=0.0;pose.skew=0.0
+            pose.scaleX=1.0;pose.scaleY=1.0
+          end
+        end
+        if blended then timeline:blend(isBlendDirty) end
+      end
+    end
+    for _,timeline in ipairs(self._boneBlendTimelines) do
+      if timeline.playState<=0 then timeline:update(time) end
+      if timeline.target:update(self) then timeline:blend(isBlendDirty) end
+    end
+    if self.displayControl then
+      for _,timeline in ipairs(self._slotTimelines) do
+        if timeline.playState<=0 then
+          local slot=timeline.target
+          local controller=slot.displayController
+          if controller==nil or controller==self.name or controller==self.group then
+            timeline:update(time)
+          end
+        end
+      end
+    end
+    for _,timeline in ipairs(self._slotBlendTimelines) do
+      if timeline.playState<=0 then
+        timeline:update(time)
+        if timeline.target:update(self) then timeline:blend(isBlendDirty) end
+      end
+    end
+    for _,timeline in ipairs(self._constraintTimelines) do
+      if timeline.playState<=0 then timeline:update(time) end
+    end
+
+    if #self._animationTimelines>0 then
+      local dL,dR=100.0,100.0
+      local left,right=nil,nil
+      for _,timeline in ipairs(self._animationTimelines) do
+        if timeline.playState<=0 then timeline:update(time) end
+        if self.blendType==Core.AnimationBlendType.E1D then
+          local child=timeline.target
+          local d=self.parameterX-child.positionX
+          if d>=0 then
+            if d<dL then dL=d;left=child end
+          else
+            if -d<dR then dR=-d;right=child end
+          end
+        end
+      end
+      if left~=nil then
+        if self._activeChildA~=left then
+          if self._activeChildA~=nil then self._activeChildA.weight=0.0 end
+          self._activeChildA=left
+          self._activeChildA:activeTimeline()
+        end
+        if self._activeChildB~=right then
+          if self._activeChildB~=nil then self._activeChildB.weight=0.0 end
+          self._activeChildB=right
+        end
+        left.weight=dR/(dL+dR)
+        if right~=nil then right.weight=1.0-left.weight end
+      end
+    end
+  end
+
+  if self._fadeState==0 then
+    if self._subFadeState>0 then
+      self._subFadeState=0
+      if #self._poseTimelines>0 then
+        for _,timeline in ipairs(self._poseTimelines) do
+          if erase(self._boneTimelines,timeline)
+             or erase(self._boneBlendTimelines,timeline)
+             or erase(self._slotTimelines,timeline)
+             or erase(self._slotBlendTimelines,timeline)
+             or erase(self._constraintTimelines,timeline) then
+            timeline:returnToPool()
+          end
+        end
+        clear(self._poseTimelines)
+      end
+    end
+    if self._actionTimeline.playState>0 and self.autoFadeOutTime>=0.0 then
+      self:fadeOut(self.autoFadeOutTime)
+    end
+  end
+end
