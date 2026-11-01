@@ -40,7 +40,7 @@ function Atlas.parse(value)
   return result
 end
 
-function Atlas.attachments(armature, atlas, skinName)
+function Atlas.attachments(armature, atlas, skinName, displayIndices)
   assert(type(armature) == "table" and type(atlas) == "table", "armature and atlas are required")
   local skins = armature.skins or {}
   local skin
@@ -54,7 +54,10 @@ function Atlas.attachments(armature, atlas, skinName)
   local attachments, skipped = {}, {}
   for order,slot in ipairs(armature.slots) do
     local index = slot.displayIndex == nil and 0 or slot.displayIndex
-    assert(type(index) == "number" and index % 1 == 0, "invalid slot displayIndex")
+    if displayIndices and displayIndices[slot.name] ~= nil then
+      index = displayIndices[slot.name]
+    end
+    assert(type(index) == "number" and index % 1 == 0 and index >= -1, "invalid slot displayIndex")
     local entry = entries[slot.name]
     local display = index >= 0 and entry and (entry.display or {})[index+1] or nil
     if display then
@@ -83,7 +86,11 @@ end
 
 function Atlas.commands(animation, atlas, skinName)
   local armature = animation.armature
-  local attachments, warnings = Atlas.attachments(armature, atlas, skinName)
+  local indices = {}
+  for _,slot in ipairs(armature.slots) do
+    indices[slot.name] = animation:display_index(slot.name)
+  end
+  local attachments, warnings = Atlas.attachments(armature, atlas, skinName, indices)
   local world = animation:world_matrices()
   local commands = {}
   for _,entry in ipairs(attachments) do
