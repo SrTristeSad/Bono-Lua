@@ -38,6 +38,10 @@ jobs:
         run: |
           LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_SCREENSHOT=1 \
             timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Verify rotated atlas pixels using LÖVE GPU
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ROTATED_TEST=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
       - name: Verify screenshot output
         run: |
           mkdir -p artifacts
