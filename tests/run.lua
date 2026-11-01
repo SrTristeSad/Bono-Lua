@@ -168,15 +168,16 @@ test("LÖVE: clockwise-packed sprite is unrotated by 4x4 matrix",function()
   close(draws[1].y,0)
   assert(draws[1].quad.w==32 and draws[1].quad.h==16)
   -- Applying inverse clockwise mapping: source bottom-left -> original bottom-right
-  -- Original logical dimensions are 16x32, pivot (-8,-16), and bone at (5,0).
+  -- Logical dimensions are 16x32; the armature + display transform puts
+  -- the image origin at x=33, so the corrected translation is 33-8=25.
   local m=matrices[1]
   close(m[1],0)
   close(m[2],1)
   close(m[5],-1)
   close(m[6],0)
-  close(m[4],-3)
+  close(m[4],25)
   close(m[8],16)
-  close(m[4]+m[2]*16,13)
+  close(m[4]+m[2]*16,41)
   close(m[8]+m[5]*32,-16)
 end)
 test("LÖVE adapter: draw textured atlas quads with graphics state restored",function()
