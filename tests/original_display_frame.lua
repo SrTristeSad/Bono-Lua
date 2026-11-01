@@ -21,6 +21,13 @@ end
 local function make(classType)
   return Base.borrowObject(classType)
 end
+-- TextureData is abstract in the original; instantiate its data-model base
+-- with an explicit classType. No fake runtime texture implementation is added.
+local function texture()
+  local t=TextureData.new(TextureData)
+  t:_onClear()
+  return t
+end
 local function mesh(n, weighted)
   local d=make(Display.MeshDisplayData)
   d.geometry.data={intArray={n or 4}}
@@ -183,7 +190,7 @@ test("getBoundingBox: nil for mesh, path, image",function()
 end)
 test("getTextureData: override image dominates explicit texture",function()
   local f=make(Frame)
-  local a=make(TextureData);local b=make(TextureData)
+  local a=texture();local b=texture()
   local override=make(Display.ImageDisplayData)
   override.texture=a
   f.displayData=override;f.textureData=b
@@ -192,7 +199,7 @@ test("getTextureData: override image dominates explicit texture",function()
 end)
 test("getTextureData: override mesh dominates explicit texture",function()
   local f=make(Frame)
-  local a=make(TextureData);local b=make(TextureData)
+  local a=texture();local b=texture()
   local override=mesh(4);override.texture=a
   f.displayData=override;f.textureData=b
   eq(f:getTextureData(),a)
@@ -200,7 +207,7 @@ test("getTextureData: override mesh dominates explicit texture",function()
 end)
 test("getTextureData: explicit texture beats raw mesh and raw image",function()
   local f=make(Frame)
-  local explicit=make(TextureData);local inherited=make(TextureData)
+  local explicit=texture();local inherited=texture()
   local raw=mesh(2);raw.texture=inherited
   f.rawDisplayData=raw;f.textureData=explicit
   eq(f:getTextureData(),explicit)
@@ -212,7 +219,7 @@ test("getTextureData: explicit texture beats raw mesh and raw image",function()
 end)
 test("getTextureData: raw image and mesh fallback",function()
   local f=make(Frame)
-  local tx=make(TextureData)
+  local tx=texture()
   local d=make(Display.ImageDisplayData);d.texture=tx
   f.rawDisplayData=d
   eq(f:getTextureData(),tx)
@@ -230,7 +237,7 @@ end)
 test("getTextureData: nil override still follows original early return",function()
   local f=make(Frame)
   local override=make(Display.ImageDisplayData)
-  local tx=make(TextureData)
+  local tx=texture()
   f.displayData=override
   f.textureData=tx
   eq(f:getTextureData(),nil)
@@ -241,7 +248,7 @@ test("returnToPool clears references and preserves the array instance",function(
   local arr=f.deformVertices
   f.rawDisplayData=mesh(2)
   f.displayData=make(Display.ImageDisplayData)
-  f.textureData=make(TextureData)
+  f.textureData=texture()
   f.display={custom=true}
   f:updateDeformVertices()
   eq(#arr,4)
