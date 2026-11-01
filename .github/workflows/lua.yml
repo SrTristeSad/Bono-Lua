@@ -1,0 +1,19 @@
+name: Lua - core and animation
+on:
+  push:
+    branches: [lua-rebuild]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lua-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.4
+        run: sudo apt-get update && sudo apt-get install -y lua5.4
+      - name: Run Lua core tests
+        run: lua5.4 tests/run.lua

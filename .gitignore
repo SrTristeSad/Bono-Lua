@@ -1,10 +1,4 @@
-node_modules/
-vendor/
-dist/
-.tmp/
+*.love
+*.zip
 .DS_Store
-
-# Recursos gerados a partir do upstream fixado
-web/demo/vendor/
-web/demo/assets/
-artifacts/
+logs/
