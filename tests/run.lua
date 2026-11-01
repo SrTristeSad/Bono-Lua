@@ -124,6 +124,16 @@ test("Atlas: reject duplicate, outside and invalid frame coordinates",function()
   assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=-1,height=5}}}))
   assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=1,height=5},{name="a",x=1,y=0,width=1,height=5}}}))
 end)
+test("Atlas: detect rotated sprites without silently drawing them",function()
+  local a=DB.atlas.parse({width=64,height=32,SubTexture={
+    {name="upperArm",x=0,y=0,width=32,height=32,rotated=true},
+    {name="forearm",x=32,y=0,width=32,height=32}
+  }})
+  local player=DB.animation.new(project,"PersonagemA")
+  local attachments,warnings=DB.atlas.attachments(player.armature,a)
+  assert(#attachments==1 and attachments[1].slot=="forearm")
+  assert(#warnings==1 and warnings[1].reason:match("rotated"))
+end)
 test("LÖVE adapter: draw textured atlas quads with graphics state restored",function()
   local f=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
   local atlas=DB.atlas.parse(f:read("*a"));f:close()
