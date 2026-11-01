@@ -28,11 +28,14 @@
     boneCount: $('bone-count'), slotCount: $('slot-count'),
     skeletonFile: $('skeleton-file'), atlasFile: $('atlas-file'),
     textureFile: $('texture-file'), importCharacter: $('import-character'),
-    importStatus: $('import-status'), modelOrigin: $('model-origin')
+    importStatus: $('import-status'), modelOrigin: $('model-origin'),
+    boneTree: $('bone-tree'), boneSelected: $('selected-bone'),
+    boneX: $('bone-x'), boneY: $('bone-y'), boneRotation: $('bone-rotation'),
+    boneRestore: $('bone-restore'), boneExport: $('bone-export'), boneStatus: $('bone-status')
   };
   const state = {
     ready: false, paused: false, speed: 1, display: null, app: null,
-    models: new Map(), factory: null, center: null, importSequence: 0
+    models: new Map(), factory: null, center: null, importSequence: 0, selectedBone: null
   };
   window.__bonoDemo = state;
 
@@ -58,6 +61,104 @@
     el.timelineOutput.value = '0,00 / ' + duration.toFixed(2).replace('.', ',') + ' s';
     status('Reproduzindo: ' + name, 'ready');
   }
+
+  function activeModel() {
+    return state.models.get(el.character.value) ?? null;
+  }
+  function updateBoneForm() {
+    const model = activeModel();
+    const name = state.selectedBone;
+    const enabled = Boolean(model && name);
+    for (const field of [el.boneX, el.boneY, el.boneRotation, el.boneRestore]) {
+      field.disabled = !enabled;
+    }
+    el.boneExport.disabled = !model;
+    if (!enabled) {
+      el.boneSelected.textContent = 'Selecione um osso';
+      for (const field of [el.boneX, el.boneY, el.boneRotation]) field.value = '';
+      return;
+    }
+    const p = BonoRigEditor.pose(model.document, model.spec.armature, name);
+    el.boneSelected.textContent = 'Osso selecionado: ' + name;
+    el.boneX.value = String(p.x);
+    el.boneY.value = String(p.y);
+    el.boneRotation.value = String(p.rotation);
+  }
+  function selectBone(name) {
+    state.selectedBone = name;
+    for (const button of el.boneTree.querySelectorAll('button')) {
+      button.setAttribute('aria-selected', String(button.dataset.bone === name));
+    }
+    updateBoneForm();
+  }
+  function renderBoneTree(model) {
+    state.selectedBone = null;
+    el.boneTree.replaceChildren();
+    const nodes = BonoRigEditor.hierarchy(model.document, model.spec.armature);
+    for (const bone of nodes) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.bone = bone.name;
+      button.setAttribute('role', 'treeitem');
+      button.setAttribute('aria-selected', 'false');
+      button.style.paddingLeft = (10 + bone.depth * 13) + 'px';
+      button.textContent = bone.name;
+      button.title = bone.parent ? bone.name + ' (pai: ' + bone.parent + ')' : bone.name + ' (raiz)';
+      button.addEventListener('click', () => selectBone(bone.name));
+      el.boneTree.appendChild(button);
+    }
+    updateBoneForm();
+    el.boneStatus.textContent = nodes.length + ' ossos disponíveis. Edições alteram a pose-base.';
+  }
+  function applyBoneEdit(next) {
+    const model = activeModel();
+    if (!model || !state.selectedBone) return;
+    const name = state.selectedBone;
+    const original = BonoRigEditor.pose(model.baseDocument, model.spec.armature, name);
+    const edited = BonoRigEditor.setPose(model.document, model.spec.armature, name, next);
+    const runtimeBone = model.display.armature.getBone(name);
+    BonoRigEditor.applyRuntimeOffset(runtimeBone, original, edited, model.armature.scale);
+    model.display.armature.invalidUpdate(null, true);
+    model.display.armature.advanceTime(0);
+    state.paused = true;
+    el.boneStatus.textContent = 'Pose-base modificada: ' + name + '. Salve o JSON para reutilizá-la.';
+    updateBoneForm();
+  }
+  function editFromFields() {
+    if (!state.selectedBone) return;
+    try {
+      applyBoneEdit({
+        x: Number(el.boneX.value), y: Number(el.boneY.value),
+        rotation: Number(el.boneRotation.value)
+      });
+    } catch (error) {
+      el.boneStatus.textContent = 'Erro: ' + error.message;
+      updateBoneForm();
+    }
+  }
+  function restoreBone() {
+    const model = activeModel();
+    if (!model || !state.selectedBone) return;
+    const base = BonoRigEditor.pose(model.baseDocument, model.spec.armature, state.selectedBone);
+    applyBoneEdit(base);
+    el.boneStatus.textContent = 'Pose-base restaurada: ' + state.selectedBone;
+  }
+  function exportSkeleton() {
+    const model = activeModel();
+    if (!model) return;
+    const blob = new Blob([BonoRigEditor.serialize(model.document)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const safeName = (model.spec.armature || 'personagem').replace(/[^a-z0-9_-]+/gi, '_');
+    link.href = url;
+    link.download = safeName + '_ske.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    el.boneStatus.textContent = 'Esqueleto JSON preparado para salvar. Guarde também atlas e PNG originais.';
+  }
+
   function selectCharacter(id) {
     const model = state.models.get(id);
     if (!model) throw new Error('Personagem inexistente: ' + id);
@@ -80,6 +181,7 @@
     }
     el.animation.value = names.includes('idle') ? 'idle' : names[0];
     model.display.debugDraw = el.bones.checked;
+    renderBoneTree(model);
     selectAnimation(el.animation.value);
   }
   async function loadJson(path) {
@@ -164,7 +266,8 @@
         display.visible = false;
         display.scale.set(0.70);
         display.position.set(0, 40);
-        imported.push({ spec, armature, display });
+        imported.push({ spec, armature, display,
+          document: BonoRigEditor.clone(skeleton), baseDocument: BonoRigEditor.clone(skeleton) });
       }
       if (!imported.length) throw new Error('Nenhuma armadura montada.');
       for (const model of imported) {
@@ -189,7 +292,7 @@
   }
 
   async function main() {
-    if (!window.PIXI || !window.dragonBones?.PixiFactory) {
+    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor) {
       throw new Error('Bibliotecas não encontradas. Rode npm run demo:prepare.');
     }
     const app = new PIXI.Application();
@@ -225,7 +328,8 @@
       display.position.set(0, 40);
       center.addChild(display);
       const armature = data.getArmature(spec.armature);
-      state.models.set(spec.id, { spec, armature, display });
+      state.models.set(spec.id, { spec, armature, display,
+        document: BonoRigEditor.clone(skeleton), baseDocument: BonoRigEditor.clone(skeleton) });
     }
 
     app.ticker.add(ticker => {
@@ -255,6 +359,9 @@
     selectCharacter(el.character.value);
     el.character.addEventListener('change', () => selectCharacter(el.character.value));
     el.importCharacter.addEventListener('click', importCharacter);
+    for (const field of [el.boneX, el.boneY, el.boneRotation]) field.addEventListener('change', editFromFields);
+    el.boneRestore.addEventListener('click', restoreBone);
+    el.boneExport.addEventListener('click', exportSkeleton);
     el.timeline.addEventListener('input', () => {
       const clip = state.display?.animation?.lastAnimationState;
       if (!clip || clip.totalTime <= 0) return;
