@@ -219,5 +219,86 @@ test("LÖVE adapter: draw textured atlas quads with graphics state restored",fun
   close(matrices[1][1],1)
   close(matrices[1][6],1)
 end)
+
+test("Slot displayFrame: swap, hide, restore, pause, and loop",function()
+  local player=DB.animation.new(project,"PersonagemA")
+  assert(player:display_index("upperArm")==0)
+  player:play("swap")
+  assert(player:display_index("upperArm")==0)
+  player:advance(.25)
+  assert(player:display_index("upperArm")==1)
+  player:pause()
+  player:advance(.25)
+  assert(player:display_index("upperArm")==1)
+  player:resume()
+  player:advance(.25)
+  assert(player:display_index("upperArm")==-1)
+  player:advance(.25)
+  assert(player:display_index("upperArm")==0)
+  player:advance(.25)
+  assert(player:display_index("upperArm")==0)
+  player:play("idle")
+  assert(player:display_index("upperArm")==0)
+  assert(player:display_index("forearm")==0)
+end)
+test("Slot displayFrame: atlas changes the sprite and hides slots on schedule",function()
+  local input=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
+  local atlas=DB.atlas.parse(input:read("*a"));input:close()
+  local player=DB.animation.new(project,"PersonagemA")
+  player:play("swap")
+  local commands,warnings=DB.atlas.commands(player,atlas)
+  assert(#commands==2 and #warnings==0)
+  assert(commands[1].name=="upperArm")
+  player:advance(.25)
+  commands,warnings=DB.atlas.commands(player,atlas)
+  assert(#commands==2 and #warnings==0)
+  assert(commands[1].slot=="upperArm" and commands[1].name=="forearm")
+  player:advance(.25)
+  commands,warnings=DB.atlas.commands(player,atlas)
+  assert(#commands==1 and #warnings==0)
+  assert(commands[1].slot=="forearm")
+  player:advance(.25)
+  commands,warnings=DB.atlas.commands(player,atlas)
+  assert(#commands==2 and commands[1].name=="upperArm")
+end)
+test("Slot legacy frame: honors displayIndex and value and ignores terminal marker",function()
+  local document={version="5.5",frameRate=12,armature={{
+    name="legacy",bone={{name="root"}},
+    slot={{name="face",parent="root",displayIndex=1}},
+    animation={{
+      name="blink",duration=12,slot={{name="face",frame={
+        {duration=6,displayIndex=0},
+        {duration=6,value=-1},
+        {duration=0,displayIndex=1}
+      }}}
+    }}
+  }}}
+  local player=DB.animation.new(DB.parser.parse(document),"legacy")
+  assert(player:display_index("face")==1)
+  player:play("blink")
+  assert(player:display_index("face")==0)
+  player:advance(.5)
+  assert(player:display_index("face")==-1)
+  player:advance(.49)
+  assert(player:display_index("face")==-1)
+  player:advance(.01)
+  assert(player:display_index("face")==0)
+end)
+test("Slot index validation rejects invalid and duplicate slots",function()
+  local function build(value)
+    return DB.parser.parse({version="5.5",armature={{
+      name="test",bone={{name="root"}},slot={{name="face",parent="root"}},
+      animation={{name="blink",duration=12,slot={{name="face",displayFrame={
+        {duration=6,value=value},{duration=6,value=0}
+      }}}}}
+    }}})
+  end
+  for _,value in ipairs({-2,.5,math.huge}) do
+    assert(not pcall(build,value))
+  end
+  assert(not pcall(DB.parser.parse,{armature={{
+    name="bad",slot={{name="eyes"},{name="eyes"}}
+  }}}))
+end)
 print(string.format("%d/%d Lua tests passed",ok,tests))
 if ok~=tests then os.exit(1) end
