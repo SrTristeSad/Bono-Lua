@@ -665,6 +665,12 @@ function PathConstraint:update()
     matrix.tx = matrix.tx + (boneX - matrix.tx) * translateMix
     matrix.ty = matrix.ty + (boneY - matrix.ty) * translateMix
     local x, y = get(positions, p), get(positions, p + 1)
+    -- Missing JS Array entries convert to NaN in numeric expressions.
+    -- Lua nil would throw instead; preserve JS propagation, not a zero fallback.
+    if x == nil then x = 0.0 / 0.0 end
+    if y == nil then y = 0.0 / 0.0 end
+    if boneX == nil then boneX = 0.0 / 0.0 end
+    if boneY == nil then boneY = 0.0 / 0.0 end
     local dx, dy = x - boneX, y - boneY
     if isChainScaleMode then
       local lenght = get(self._boneLengths, i)
