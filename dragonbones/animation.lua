@@ -70,6 +70,22 @@ function Animation:advance(dt)
   end
 end
 
+-- Slot visibility and replacement are discrete DragonBones display timelines.
+-- They are evaluated at the same frame as bone animations.
+function Animation:display_index(slotName)
+  local slot = assert(self.armature.slotByName[slotName], "unknown slot: "..tostring(slotName))
+  local index = slot.displayIndex == nil and 0 or slot.displayIndex
+  if not self.clip then return index end
+  local track = self.clip.slots[slotName]
+  if not track or not track.display then return index end
+  local at = self.time * self.armature.frameRate
+  for _,key in ipairs(track.display) do
+    if key.start > at then break end
+    if key.start < self.clip.duration then index = key.displayIndex end
+  end
+  return index
+end
+
 function Animation:pose(name)
   local bone=assert(self.armature.bones[name],"unknown bone")
   local rest=bone.rest
