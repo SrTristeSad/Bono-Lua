@@ -62,6 +62,14 @@ A área **Ossos · pose-base** apresenta a árvore hierárquica com os nomes e p
 
 Os scripts originais e suas licenças continuam preservados; as alterações pertencem somente à cópia local do personagem.
 
+## Seleção de ossos na prévia e inspeção de slots — fase 7
+
+A opção **Selecionar ossos na prévia** mostra marcadores sobre as articulações do personagem. Eles acompanham os ossos durante a reprodução usando as matrizes globais calculadas pelo DragonBonesJS original, convertidas para a posição do PixiJS no canvas. Clique ou selecione um marcador com teclado (Tab, Enter ou Espaço) para escolher o osso e pausar a animação. A árvore e os campos de pose-base são sincronizados. A opção **Mostrar esqueleto (DragonBones)** continua disponível de forma independente, para usar o debug visual original.
+
+No painel **Slots e desenhos**, a seleção exibe nome do slot, osso pai, índice de display, ordem inicial e desenhos registrados por skin. Ao selecionar um slot, o editor também seleciona seu osso pai, quando existir.
+
+Essas duas ferramentas são **inspeção e seleção**, não deformação automática de malhas nem edição dos dados de slots. Alterar o osso na pose-base ainda ocorre pelos campos X/Y/Rotação e pode ser exportado como JSON; os slots são apenas leitura nesta etapa.
+
 ## Testes
 
 ```bash
