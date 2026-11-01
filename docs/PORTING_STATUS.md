@@ -37,7 +37,8 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/AnimationData.ts | dragonbones/original/model/AnimationData.lua | `AnimationData`, `TimelineData` e `AnimationTimelineData` com mapas de timelines, caches, índices e devolução ao pool |
 | model/AnimationConfig.ts | dragonbones/original/model/AnimationConfig.lua | Campos de reprodução, máscaras de ossos, `clear`, `copyFrom` e pool portados |
 | model/BoundingBoxData.ts | dragonbones/original/model/BoundingBoxData.lua | Quatro classes; retângulo Cohen–Sutherland, elipse e polígono com `containsPoint` e `intersectsSegment` originais |
-| armature/Armature.ts | dragonbones/original/armature/Armature.lua | Todos os métodos concretos, propriedades e orquestração portados; integração real depende de Animation.ts ainda ausente |
+| armature/Armature.ts | dragonbones/original/armature/Armature.lua | Métodos concretos e orquestração portados; inicialização com Animation real testada, reprodução depende de AnimationState/BlendState |
+| animation/Animation.ts | dragonbones/original/animation/Animation.lua | Métodos de controle de reprodução, estados, cache, transições e getters/setters portados; estados concretos ainda pendentes |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -227,7 +228,7 @@ Branch `port-original-armature-runtime` integrada pelo [PR #20](https://github.c
 
 Referência fixa: `DragonBones/src/dragonBones/animation/Animation.ts` (960 linhas), revisão `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. Destino: `dragonbones/original/animation/Animation.lua`. Branch de trabalho: `port-original-animation-runtime`.
 
-Portados os métodos concretos `toString`, `_onClear`, `_fadeOut`, `init`, `advanceTime`, `reset`, `stop`, `playConfig`, `play`, `fadeIn`, `gotoAndPlayByTime`, `gotoAndPlayByFrame`, `gotoAndPlayByProgress`, `gotoAndStopByTime`, `gotoAndStopByFrame`, `gotoAndStopByProgress`, `getBlendState`, `getState`, `hasAnimation`, `getStates`. Getters/setters: `isPlaying`, `isCompleted`, `lastAnimationName`, `animationNames`, `animations`, `animationConfig`, `lastAnimationState`. Preservada a herança de velocidade das armaduras filhas, sincronização de caches, expiração de estados, seleção de estados por layer, fadeOutMode, propagação de ações, combinação de animações filhas, reuso do pool e as decisões de `playConfig` (incluindo `%\` do JS, limites de duração e `Single`).
+Portados os métodos concretos `toString`, `_onClear`, `_fadeOut`, `init`, `advanceTime`, `reset`, `stop`, `playConfig`, `play`, `fadeIn`, `gotoAndPlayByTime`, `gotoAndPlayByFrame`, `gotoAndPlayByProgress`, `gotoAndStopByTime`, `gotoAndStopByFrame`, `gotoAndStopByProgress`, `getBlendState`, `getState`, `hasAnimation`, `getStates`. Getters/setters: `isPlaying`, `isCompleted`, `lastAnimationName`, `animationNames`, `animations`, `animationConfig`, `lastAnimationState`. Preservada a herança de velocidade das armaduras filhas, sincronização de caches, expiração de estados, seleção de estados por layer, fadeOutMode, propagação de ações, combinação de animações filhas, reuso do pool e as decisões de `playConfig` (incluindo o operador de resto assinado do JS, limites de duração e `Single`).
 
 A classe `Animation` já pode ser obtida pelo `Armature.init()` original, criando `AnimationConfig` real; **ainda não é um player de animação plenamente funcional**. Falta portar as dependências originais `animation/AnimationState.ts` e `animation/BlendState.ts`, carregadas por `require` quando realmente utilizadas, sem stubs de produto. As subclasses de teste `State` e `Blend` existem exclusivamente em `tests/original_animation.lua`, onde são instaladas apenas temporariamente em `package.loaded`. Nenhuma melhoria de produto e nenhum algoritmo aproximado foi introduzido.
 
@@ -235,7 +236,7 @@ Adaptações: arrays JavaScript indexados de zero para Lua +1, mapas TS para tab
 
 Testes: `tests/original_animation.lua` cobrindo construção, integração com `Armature.init`, estados, fadeOut, cache, blend, loops, ponteiros, pools, posições limite e reprodução. CI executa em Lua 5.4 e LuaJIT, preservando testes LÖVE já existentes.
 
-PR, commit de integração e evidência da CI serão adicionados somente após aprovação.
+Integrado na `main` pelo [PR #21](https://github.com/SrTristeSad/Bono-Lua/pull/21), commit [`ea92ff7`](https://github.com/SrTristeSad/Bono-Lua/commit/ea92ff77bcf7449bf396ac4a8cbabbc1d247f9d0). GitHub Actions do PR: **37/37 cenários Animation.ts, 141 asserções**, aprovados em Lua 5.4 e LuaJIT, com regressão gráfica LÖVE aprovada. Total acumulado: **440 testes do porte original** (403 anteriores + 37), mais 22 testes de protótipos. O teste de `Armature.init` usa agora a classe Animation real; `AnimationState` e `BlendState` permanecem pendentes.
 
 ## Código que já existia antes deste porte
 
@@ -244,7 +245,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `BoundingBoxData.ts`, `Bone.ts`, `Surface.ts`, `Constraint.ts`, ambas as classes de `Slot.ts` (DisplayFrame e Slot abstrato) e `Armature.ts` já têm portes individuais registrados. Próxima dependência para inicialização real: `animation/Animation.ts`, seguida dos estados e timelines originais; continuar sem stubs nem simplificações. Os testes individuais ainda não comprovam integração integral 1:1.
+2. `BoundingBoxData.ts`, `Bone.ts`, `Surface.ts`, `Constraint.ts`, ambas as classes de `Slot.ts` (DisplayFrame e Slot abstrato), `Armature.ts` e `animation/Animation.ts` têm portes individuais registrados. Próximas dependências reais para reprodução: `animation/BlendState.ts` e `animation/AnimationState.ts`, além dos estados de timeline. Continuar sem stubs nem simplificações. Os testes individuais ainda não comprovam integração integral 1:1.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
@@ -252,7 +253,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 
 ### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
 
-Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 17 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 18 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
 Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 
