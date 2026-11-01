@@ -45,6 +45,8 @@ jobs:
         run: lua5.4 tests/original_bone.lua
       - name: Verify original Surface.ts mesh deformation and affine cache
         run: lua5.4 tests/original_surface.lua
+      - name: Verify original Constraint.ts inverse kinematics and Bézier paths
+        run: lua5.4 tests/original_constraint.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
