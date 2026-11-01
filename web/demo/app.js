@@ -26,6 +26,8 @@
     keyChannel: $('key-channel'), keyList: $('key-list'), keySelected: $('key-selected'),
     keyX: $('key-x'), keyY: $('key-y'), keyRotate: $('key-rotate'),
     keyApply: $('key-apply'), keyStatus: $('key-status'),
+    keyAt: $('key-at'), keyInsert: $('key-insert'), keyDelete: $('key-delete'),
+    keyDuration: $('key-duration'), keyResize: $('key-resize'),
     status: $('status'), fps: $('fps'),
     character: $('character'), characterName: $('character-name'),
     armatureName: $('armature-name'), animation: $('animation'),
@@ -344,7 +346,8 @@
     const channel = el.keyChannel.value;
     state.selectedFrame = null;
     el.keyList.replaceChildren();
-    for (const input of [el.keyX, el.keyY, el.keyRotate, el.keyApply]) input.disabled = true;
+    for (const input of [el.keyX, el.keyY, el.keyRotate, el.keyApply,
+      el.keyAt,el.keyInsert,el.keyDelete,el.keyDuration,el.keyResize]) input.disabled = true;
     el.keySelected.textContent = 'Nenhum keyframe selecionado.';
     el.keyX.value = el.keyY.value = el.keyRotate.value = '';
     const clip = el.animation.value;
@@ -364,6 +367,10 @@
       el.keyStatus.textContent = 'Este osso não tem keyframes existentes neste canal.';
       return;
     }
+    el.keyAt.disabled = el.keyInsert.disabled = duration <= 1;
+    el.keyAt.min = '1';
+    el.keyAt.max = String(duration - 1);
+    el.keyAt.value = String(Math.min(duration - 1, Math.max(1, keys[0].start + Math.floor(keys[0].duration/2))));
     for (const key of keys) {
       const button = document.createElement('button');
       button.type = 'button';
@@ -398,6 +405,11 @@
     el.keyX.disabled = el.keyY.disabled = !moving;
     el.keyRotate.disabled = moving;
     el.keyApply.disabled = false;
+    el.keyDelete.disabled = index === 0;
+    const nextActive = keys[index + 1]?.start < duration;
+    el.keyResize.disabled = el.keyDuration.disabled = !nextActive;
+    el.keyDuration.value = String(key.duration);
+    if (key.duration >= 2) el.keyAt.value = String(key.start + Math.floor(key.duration/2));
     el.keyX.value = moving ? String(key.x) : '';
     el.keyY.value = moving ? String(key.y) : '';
     el.keyRotate.value = moving ? '' : String(key.rotate);
@@ -448,18 +460,15 @@
       factory.removeTextureAtlasData(oldKey);
     }
   }
-  function applyKeyframeEdit() {
+  function commitTimelineMutation(mutate, message) {
     const model = activeModel();
-    if (!model || !state.selectedBone || state.selectedFrame === null) return;
+    if (!model || !state.selectedBone) return;
     const bone = state.selectedBone;
     const clipName = el.animation.value;
-    const index = state.selectedFrame;
     const channel = el.keyChannel.value;
     try {
       const data = BonoRigEditor.clone(model.document);
-      const values = channel === 'translate' ? {x:Number(el.keyX.value),y:Number(el.keyY.value)}
-        : {rotate:Number(el.keyRotate.value)};
-      BonoTimelineEditor.editExistingFrame(data,model.spec.armature,clipName,bone,channel,index,values);
+      const result = mutate(data, model.spec.armature, clipName, bone, channel);
       const position = state.display.animation.lastAnimationState?.currentTime ?? 0;
       rebuildModelPreview(model,data);
       el.character.value = model.spec.id;
@@ -472,12 +481,44 @@
       }
       state.paused = true;
       selectBone(bone);
-      selectKeyframe(index);
-      el.keyStatus.textContent = 'Keyframe original atualizado. Use Salvar esqueleto JSON para exportar.';
+      if (result?.index !== undefined) selectKeyframe(result.index);
+      el.keyStatus.textContent = message + ' Use Salvar esqueleto JSON para exportar.';
     } catch (error) {
       el.keyStatus.textContent = 'Erro: ' + error.message;
     }
   }
+  function applyKeyframeEdit() {
+    if (state.selectedFrame === null) return;
+    const index = state.selectedFrame;
+    const values = el.keyChannel.value === 'translate'
+      ? { x:Number(el.keyX.value),y:Number(el.keyY.value) }
+      : { rotate:Number(el.keyRotate.value) };
+    commitTimelineMutation((data,arm,clip,bone,channel) =>
+      BonoTimelineEditor.editExistingFrame(data,arm,clip,bone,channel,index,values),
+      'Keyframe original atualizado.');
+  }
+  function insertKeyframe() {
+    const at = Number(el.keyAt.value);
+    commitTimelineMutation((data,arm,clip,bone,channel) =>
+      BonoTimelineEditor.insertFrame(data,arm,clip,bone,channel,at),
+      'Keyframe inserido no quadro ' + at + '.');
+  }
+  function removeKeyframe() {
+    if (state.selectedFrame === null) return;
+    const index = state.selectedFrame;
+    commitTimelineMutation((data,arm,clip,bone,channel) =>
+      BonoTimelineEditor.removeFrame(data,arm,clip,bone,channel,index),
+      'Keyframe removido; a duração do clipe foi preservada.');
+  }
+  function resizeKeyframe() {
+    if (state.selectedFrame === null) return;
+    const index = state.selectedFrame;
+    const duration = Number(el.keyDuration.value);
+    commitTimelineMutation((data,arm,clip,bone,channel) =>
+      BonoTimelineEditor.setFrameDuration(data,arm,clip,bone,channel,index,duration),
+      'Duração ajustada sem alterar o comprimento do clipe.');
+  }
+
 
   function selectCharacter(id) {
     const model = state.models.get(id);
@@ -693,6 +734,9 @@
     el.slotRestore.addEventListener('click', restoreSelectedSlot);
     el.keyChannel.addEventListener('change', renderKeyframes);
     el.keyApply.addEventListener('click', applyKeyframeEdit);
+    el.keyInsert.addEventListener('click',insertKeyframe);
+    el.keyDelete.addEventListener('click',removeKeyframe);
+    el.keyResize.addEventListener('click',resizeKeyframe);
     el.pickBones.addEventListener('change', updateMarkerVisibility);
     el.timeline.addEventListener('input', () => {
       const clip = state.display?.animation?.lastAnimationState;
