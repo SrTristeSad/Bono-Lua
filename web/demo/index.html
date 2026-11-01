@@ -10,6 +10,7 @@
   <script src="./rig-editor.js" defer></script>
   <script src="./visual-inspector.js" defer></script>
   <script src="./slot-editor.js" defer></script>
+  <script src="./timeline-editor.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -19,7 +20,7 @@
         <span class="mark">B</span>
         <div><strong>Bono-Lua</strong><small>DragonBonesJS · reprodução original</small></div>
       </div>
-      <span class="phase">Fase 8 · Slots</span>
+      <span class="phase">Fase 9 · Keyframes</span>
     </header>
 
     <main class="studio">
@@ -78,6 +79,24 @@
             <button id="bone-export" type="button" disabled>Salvar esqueleto JSON</button>
           </div>
           <div id="bone-status" role="status" aria-live="polite">Nenhuma edição realizada.</div>
+        </section>
+        <section class="keyframe-panel" aria-label="Editor de keyframes originais">
+          <h2>Timeline · keyframes</h2>
+          <p>Selecione um osso, uma animação e um canal. Altere os keyframes existentes no formato original.</p>
+          <label for="key-channel">Canal do osso</label>
+          <select id="key-channel">
+            <option value="translate">Posição (X/Y)</option>
+            <option value="rotate">Rotação (graus)</option>
+          </select>
+          <div id="key-list" class="key-list" aria-label="Keyframes do canal"></div>
+          <div id="key-selected">Nenhum keyframe selecionado.</div>
+          <div class="key-fields">
+            <label for="key-x">X <input id="key-x" type="number" step="0.01" disabled></label>
+            <label for="key-y">Y <input id="key-y" type="number" step="0.01" disabled></label>
+            <label for="key-rotate">Rotação (°) <input id="key-rotate" type="number" step="0.01" disabled></label>
+          </div>
+          <button id="key-apply" type="button" disabled>Aplicar keyframe e atualizar prévia</button>
+          <div id="key-status" role="status" aria-live="polite">A edição não altera durações nem cria novos keyframes.</div>
         </section>
         <section class="slot-panel" aria-label="Slots do personagem">
           <h2>Slots e desenhos</h2>
