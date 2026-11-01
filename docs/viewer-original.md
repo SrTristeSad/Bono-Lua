@@ -37,7 +37,7 @@ O script `demo:prepare` copia esses arquivos para `web/demo/vendor` e `web/demo/
 - Exibir ossos/articulações para depuração.
 - Visualização do número de ossos e slots.
 
-**Não há** criação de ossos, edição de keyframes, rigging por silhueta, controle de câmera ou exportação de vídeo nesta fase. A biblioteca original de execução não inclui a interface antiga do DragonBones.
+**Ainda não há** criação de ossos, rigging por silhueta, controle de câmera nem exportação de vídeo. As primeiras ferramentas de edição de keyframes são descritas abaixo. A biblioteca original de execução não inclui a interface antiga do DragonBones.
 
 ## Importar projetos DragonBones (Fase 5)
 
@@ -58,7 +58,7 @@ A área **Ossos · pose-base** apresenta a árvore hierárquica com os nomes e p
 3. Use **Restaurar osso** para voltar à pose-base original daquele projeto carregado.
 4. Use **Salvar esqueleto JSON** para baixar o `_ske.json` preservando animações, skins e demais campos. Para reimportar, utilize também o atlas JSON e a textura PNG correspondentes.
 
-**Limites atuais:** este editor altera a pose-base (rest pose) existente; ainda não cria/apaga ossos, não edita keyframes, não muda hierarquia, não reconstroi malhas e não gera novas imagens. A visualização é feita via `Bone.offset`, enquanto a exportação atualiza as transformações do JSON original. Projetos com malhas ponderadas, IK ou constraints complexas podem exigir adaptação de pesos e binds para reproduzir fielmente mudanças de pose-base: ainda não há validação de equivalência nesses casos.
+**Limites desta etapa (fase 6):** a pose-base é editável, mas não se criam/apagam ossos, não se muda a hierarquia, não se reconstroem malhas e não se geram novas imagens. A edição de keyframes foi acrescentada nas fases 9–10. A visualização é feita via `Bone.offset`, enquanto a exportação atualiza as transformações do JSON original. Projetos com malhas ponderadas, IK ou constraints complexas podem exigir adaptação de pesos e binds para reproduzir fielmente mudanças de pose-base: ainda não há validação de equivalência nesses casos.
 
 Os scripts originais e suas licenças continuam preservados; as alterações pertencem somente à cópia local do personagem.
 
@@ -78,7 +78,7 @@ Os botões **Subir camada** e **Descer camada** mudam a ordem-base de sobreposi�
 
 O botão **Salvar esqueleto JSON**, na seção Ossos, salva **também as modificações dos slots**. Reimporte o JSON exportado com o mesmo atlas JSON e PNG para continuar o trabalho. A reordenação de slots não altera imagens, atlas, ossos, pesos nem o restante do arquivo.
 
-**Limitações:** por enquanto não são editáveis as opções de skins alternativas, pesos, malhas, constraints e keyframes. A troca de desenho opera sobre opções já presentes na exportação DragonBones: ainda não se importa uma imagem nova para o atlas.
+**Limitações desta etapa (fase 8):** por enquanto não são editáveis as opções de skins alternativas, pesos, malhas, constraints nem keyframes dos slots. A troca de desenho opera sobre opções já presentes na exportação DragonBones: ainda não se importa uma imagem nova para o atlas.
 
 ## Edição de keyframes — fase 9
 
@@ -92,7 +92,19 @@ O painel **Timeline · keyframes** foi acrescentado à reconstrução do editor.
 
 Ao selecionar um keyframe, a reprodução é pausada e a timeline posicionada no quadro escolhido. As durações, os campos `tweenEasing`, os outros canais e as animações não selecionadas são preservados. O arquivo original importado não é sobrescrito. Caso a atualização não seja aceita pelo parser, a prévia anterior é mantida.
 
-**Limites desta fase:** somente valores de keyframes já existentes em `bone[].translateFrame` e `bone[].rotateFrame` são editáveis. Não é possível criar/remover quadros, editar escalas, tween, eventos ou timelines binárias, nem reconstruir as outras ferramentas do editor original. A interface do editor clássico completo ainda está em desenvolvimento.
+**Limites da fase 9:** somente valores de keyframes já existentes em `bone[].translateFrame` e `bone[].rotateFrame` eram editáveis. A fase 10 acrescentou divisão, remoção e ajuste de intervalos. Ainda não são editáveis escalas, curvas tween, eventos ou timelines binárias. A interface do editor clássico completo ainda está em desenvolvimento.
+
+## Divisão, remoção e ajuste de intervalos — fase 10
+
+Na mesma área **Timeline · keyframes**:
+
+- **Novo keyframe (quadro):** escolha uma posição inteira dentro do clipe, sem coincidir com um quadro existente. **Inserir quadro** divide o intervalo atual, atribuindo ao novo keyframe os valores e a interpolação básica do quadro anterior. Depois, pode editar X/Y ou rotação.
+- **Duração do quadro selecionado:** informe uma duração em quadros e escolha **Ajustar duração**. O editor move a fronteira entre dois quadros consecutivos, sem mudar o comprimento total da animação nem os demais canais. Não é permitido retirar todo o tempo do quadro vizinho.
+- **Remover keyframe:** remove um quadro intermediário e une sua duração ao anterior. O quadro inicial e os marcadores terminais permanecem protegidos.
+
+A reavaliação da prévia continua sendo realizada pelo parser e runtime DragonBonesJS oficial fixado. Use **Salvar esqueleto JSON** e reimporte com atlas e PNG originais para continuar a edição. Os testes verificam o JSON, a reimportação e a reprodução da animação original.
+
+**Limites:** a operação exige que já exista um canal `translateFrame` ou `rotateFrame` naquele osso; não cria canais inteiros. A duração total do clipe é mantida. Durações inválidas e edições do marcador de encerramento são rejeitadas. Ainda não existem operações de arrastar quadros na timeline, edição de curvas avançadas, undo/redo, IK ou manipulação de eventos da animação.
 
 ## Testes
 
