@@ -130,7 +130,12 @@
       ]);
       validateStructure(skeleton, atlas);
       url = URL.createObjectURL(textureFile);
-      const texture = await PIXI.Assets.load({ src: url, parser: 'texture' });
+      // PixiJS 8 Texture.from accepts an already-decoded HTMLImageElement.
+      // Do not rely on Assets loader URL-extension detection for blob: URLs.
+      const image = new Image();
+      image.src = url;
+      await image.decode();
+      const texture = PIXI.Texture.from(image);
       if (!texture?.source) throw new Error('O PNG não foi carregado pelo PixiJS.');
       const importIndex = ++state.importSequence;
       const cacheKey = 'bono-local-' + importIndex;
