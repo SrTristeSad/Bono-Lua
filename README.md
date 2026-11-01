@@ -79,3 +79,5 @@ A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bi
 O projeto original DragonBonesJS utiliza licença MIT. Este porte é trabalho independente e deve preservar avisos de atribuição quando incorporar código original substancial. Não copia assets nem redistribui o runtime JavaScript.
 
 O nome do repositório permanece Bono-Lua por decisão prévia, mas agora corresponde à tecnologia usada. A execução gráfica real é verificada separadamente no GitHub Actions usando uma tela virtual; isso valida a prévia básica, mas não prova equivalência 1:1 com todas as animações e funcionalidades originais.
+
+A classe executável original de ossos está em `dragonbones/original/armature/Bone.lua`, com testes em `tests/original_bone.lua`. Classes relacionadas ainda não foram integradas.
