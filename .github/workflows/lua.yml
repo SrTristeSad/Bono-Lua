@@ -21,6 +21,8 @@ jobs:
         run: lua5.4 tests/run.lua
       - name: Verify original DragonBones geometry modules
         run: lua5.4 tests/original_geom.lua
+      - name: Verify original DragonBones ColorTransform and BaseObject
+        run: lua5.4 tests/original_core.lua
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream
