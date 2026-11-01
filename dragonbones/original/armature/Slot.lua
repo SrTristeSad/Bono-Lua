@@ -17,6 +17,7 @@ local SkinData = require("dragonbones.original.model.SkinData")
 
 local Slot = {}
 setmetatable(Slot, { __index = TransformObject })
+local NULL_DISPLAY = {} -- JS Array can contain null; Lua ipairs cannot.
 local function clearArray(a)
   for i = #a, 1, -1 do a[i] = nil end
 end
@@ -52,11 +53,15 @@ local function setDisplayFrameCount(self, count)
       self._displayFrames[i + 1] = BaseObject.borrowObject(DisplayFrame)
     end
   elseif prevCount > count then
-    -- Source loops from prevCount - 1 down to count; individual frames
-    -- stay addressable until after their replaceDisplay() callback.
+    -- Preserve the pinned source's unusual condition:
+    -- for (let i = prevCount - 1; i < value; --i)
+    -- This loop never executes for an integer reduction; frame references
+    -- are truncated without returning those objects to the pool.
     for i = prevCount - 1, count, -1 do
-      self:replaceDisplay(nil, i)
-      self._displayFrames[i + 1]:returnToPool()
+      if i < count then
+        self:replaceDisplay(nil, i)
+        self._displayFrames[i + 1]:returnToPool()
+      end
     end
     for i = prevCount, count + 1, -1 do self._displayFrames[i] = nil end
   end
@@ -135,13 +140,16 @@ function Slot:_onClear()
   local disposeDisplayList = {}
   for _, displayFrame in ipairs(self._displayFrames) do
     local display = displayFrame.display
-    if display ~= self._rawDisplay and display ~= self._meshDisplay
-        and not arrayHas(disposeDisplayList, display) then
-      disposeDisplayList[#disposeDisplayList + 1] = display
+    if display ~= self._rawDisplay and display ~= self._meshDisplay then
+      local stored = display == nil and NULL_DISPLAY or display
+      if not arrayHas(disposeDisplayList, stored) then
+        disposeDisplayList[#disposeDisplayList + 1] = stored
+      end
     end
     displayFrame:returnToPool()
   end
-  for _, display in ipairs(disposeDisplayList) do
+  for _, stored in ipairs(disposeDisplayList) do
+    local display = stored == NULL_DISPLAY and nil or stored
     if isArmature(display) then
       display:dispose()
     else
