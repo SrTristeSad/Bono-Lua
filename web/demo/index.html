@@ -20,7 +20,7 @@
         <span class="mark">B</span>
         <div><strong>Bono-Lua</strong><small>DragonBonesJS · reprodução original</small></div>
       </div>
-      <span class="phase">Fase 9 · Keyframes</span>
+      <span class="phase">Fase 10 · Timeline</span>
     </header>
 
     <main class="studio">
@@ -82,7 +82,7 @@
         </section>
         <section class="keyframe-panel" aria-label="Editor de keyframes originais">
           <h2>Timeline · keyframes</h2>
-          <p>Selecione um osso, uma animação e um canal. Altere os keyframes existentes no formato original.</p>
+          <p>Selecione um osso, uma animação e um canal. Edite, divida e remova keyframes dos canais originais.</p>
           <label for="key-channel">Canal do osso</label>
           <select id="key-channel">
             <option value="translate">Posição (X/Y)</option>
@@ -90,13 +90,24 @@
           </select>
           <div id="key-list" class="key-list" aria-label="Keyframes do canal"></div>
           <div id="key-selected">Nenhum keyframe selecionado.</div>
+          <div class="key-timing">
+            <label for="key-at">Novo keyframe (quadro)
+              <input id="key-at" type="number" step="1" min="1" disabled>
+            </label>
+            <button id="key-insert" type="button" disabled>Inserir quadro</button>
+            <label for="key-duration">Duração do quadro selecionado
+              <input id="key-duration" type="number" step="1" min="1" disabled>
+            </label>
+            <button id="key-resize" type="button" disabled>Ajustar duração</button>
+            <button id="key-delete" type="button" disabled>Remover keyframe</button>
+          </div>
           <div class="key-fields">
             <label for="key-x">X <input id="key-x" type="number" step="0.01" disabled></label>
             <label for="key-y">Y <input id="key-y" type="number" step="0.01" disabled></label>
             <label for="key-rotate">Rotação (°) <input id="key-rotate" type="number" step="0.01" disabled></label>
           </div>
           <button id="key-apply" type="button" disabled>Aplicar keyframe e atualizar prévia</button>
-          <div id="key-status" role="status" aria-live="polite">A edição não altera durações nem cria novos keyframes.</div>
+          <div id="key-status" role="status" aria-live="polite">Durações são ajustadas sem modificar o comprimento da animação.</div>
         </section>
         <section class="slot-panel" aria-label="Slots do personagem">
           <h2>Slots e desenhos</h2>
