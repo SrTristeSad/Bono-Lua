@@ -35,6 +35,8 @@ jobs:
         run: lua5.4 tests/original_armature_data.lua
       - name: Verify original AnimationData timelines and cache
         run: lua5.4 tests/original_animation_data.lua
+      - name: Verify original AnimationConfig and bone masks
+        run: lua5.4 tests/original_animation_config.lua
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream
