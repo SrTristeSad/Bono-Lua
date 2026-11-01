@@ -18,7 +18,7 @@ Para abrir a visualização 2D com sprites de atlas, instale [LÖVE 11.x](https:
 love .
 ```
 
-Controles: **espaço** pausa/continua; **esquerda/direita** troca animação; **B** mostra/oculta ossos; **R** recarrega; clique seleciona o osso mais próximo.
+Controles: **espaço** pausa/continua; **esquerda/direita** troca animação; **B** mostra/oculta ossos; **R** recarrega; clique seleciona o osso mais próximo. No exemplo integrado, escolha a animação **`swap`** para ver a troca e a ocultação dos desenhos do braço.
 
 ## Personagens externos — JSON + PNG
 
@@ -37,21 +37,33 @@ Depois execute `love .`. O programa lê os três arquivos locais automaticamente
 
 O atlas atual renderiza **displays de imagem normais e rotacionados em 90°**, com recorte, pivô e transformação pelos ossos. Malhas, múltiplos atlas, eventos, máscaras e outros tipos avançados de display ainda não estão implementados. A renderização de PNG externos exige o LÖVE, mas todo o código do projeto está em Lua.
 
+## Troca de desenhos durante a animação
+
+O motor Lua já interpreta as timelines **`animation[].slot[].displayFrame`** e o formato legado **`animation[].slot[].frame`**, reconhecendo o campo `value` ou `displayIndex`.
+
+- Índice `0`: primeiro desenho cadastrado no slot; `1`: segundo desenho, e assim por diante.
+- Índice `-1`: oculta a peça sem apagar o osso.
+- As mudanças são discretas, exatamente no quadro definido, sem interpolar índices de imagem.
+- Ao pausar, a peça mantém o desenho selecionado; ao repetir o clipe ou mudar de animação, o estado é recalculado.
+- A ordem dos slots continua vindo do esqueleto; ainda não há suporte à **animação de ordem Z**, nem à troca de skins completas.
+
+Na demonstração `swap`, a peça do braço muda entre os dois sprites de exemplo, desaparece e retorna. O CI verifica os quadros por testes de Lua e compara pixels renderizados pelo LÖVE, inclusive ocultação e looping.
+
 ## Núcleo Lua incluído
 
 - Leitor JSON estrito e independente de JavaScript.
 - Parser dos dados DragonBones JSON 5.x: armaduras, ossos, hierarquia, slots, skins e timelines básicas.
 - Matrizes 2D e transformações baseadas na matemática original do DragonBones.
 - Reprodução em Lua de timelines de translação e rotação, com keyframes, looping, easing e curva cúbica Bézier.
-- Cálculo de transformações hierárquicas, associação de imagens de atlas aos slots e quadros de renderização LÖVE.
+- Cálculo de transformações hierárquicas, associação de imagens de atlas aos slots, troca/ocultação animada de desenhos e quadros de renderização LÖVE.
 - Renderização inicial de sprites recortados do PNG e sobreposição opcional de ossos.
-- Testes de importação, matrizes, hierarquia, pausas, keyframes, curvas e geração de comandos de sprites.
+- Testes de importação, matrizes, hierarquia, pausas, keyframes, curvas, displays animados e geração de comandos de sprites.
 - Teste de integração com o **Mecha 1406** oficial: 17 ossos, 13 slots e 13 sprites resolvidos pelo runtime Lua (o exemplo é obtido durante a CI, sem distribuir seus assets).
 - Teste gráfico com o LÖVE em tela virtual, com captura de imagem disponível como artefato no GitHub Actions. O CI também valida os pixels de uma textura propositalmente rotacionada em 90°, além de conferir a matriz e o pivô.
 
 ## Limites atuais
 
-Faltam os recursos do motor original: trocas animadas de displays, malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
+Faltam os recursos do motor original: malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, animação de cor/ordem Z dos slots, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
 
 A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bibliotecas nativas para obter janela, GPU e áudio; o código da aplicação e da lógica de animação continua em Lua.
 
