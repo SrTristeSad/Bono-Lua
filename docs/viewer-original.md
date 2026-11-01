@@ -38,6 +38,16 @@ O script `demo:prepare` copia esses arquivos para `web/demo/vendor` e `web/demo/
 
 **Não há** criação de ossos, edição de keyframes, rigging por silhueta, controle de câmera ou exportação de vídeo nesta fase. A biblioteca original de execução não inclui a interface antiga do DragonBones.
 
+## Importar projetos DragonBones (Fase 5)
+
+No visualizador, selecione **Esqueleto JSON**, **Atlas JSON** e **Textura PNG**. Clique em **Importar projeto**. O personagem é adicionado à lista e suas animações podem ser selecionadas, usando o **runtime original** do DragonBonesJS.
+
+Formatos esperados: exportações JSON do DragonBones que incluam `armature` e atlas com `SubTexture`; textura em PNG. O arquivo `.dbbin`, múltiplos atlases e exportações incompatíveis ainda **não são suportados** pelo importador atual. Os JSONs estão limitados a 8 MB cada; PNG a 20 MB.
+
+Os arquivos são carregados apenas no navegador, sem envio para o servidor e sem salvamento permanente: ao atualizar a página é preciso importar novamente. Cada novo projeto usa um identificador interno próprio, evitando colisões entre personagens de nomes iguais.
+
+Este recurso **não modifica** a obra original; é a primeira etapa para permitir que o futuro editor trabalhe com projetos externos.
+
 ## Testes
 
 ```bash
