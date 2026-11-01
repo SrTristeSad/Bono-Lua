@@ -25,6 +25,8 @@ jobs:
         run: lua5.4 tests/original_core.lua
       - name: Verify original DragonBones WorldClock
         run: lua5.4 tests/original_worldclock.lua
+      - name: Verify original DragonBones event objects and core
+        run: lua5.4 tests/original_events.lua
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream

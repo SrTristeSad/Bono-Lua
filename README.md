@@ -9,7 +9,7 @@ A branch principal (`main`) contém agora uma base escrita inteiramente em Lua, 
 
 **O objetivo é portar o DragonBones original, não criar um novo motor inspirado nele.** Os módulos anteriores eram protótipos simplificados. Eles continuam para preservar a prévia existente, mas não representam fidelidade 1:1.
 
-O trabalho verificável de porte original está em `dragonbones/original/`, incluindo os cinco módulos `geom/`, `core/BaseObject.lua` e `animation/WorldClock.lua`. Os protótipos antigos continuam isolados. Os testes específicos estão em `tests/original_geom.lua`, `tests/original_core.lua` e `tests/original_worldclock.lua`; os detalhes por arquivo estão em `docs/PORTING_STATUS.md`. As regras permanentes estão em PORTING_RULES.md. O código original pertence ao DragonBones team, sob licença MIT (LICENSE-DRAGONBONES).
+O trabalho verificável de porte original está em `dragonbones/original/`, incluindo os cinco módulos `geom/`, `core/BaseObject.lua`, `animation/WorldClock.lua`, `model/UserData.lua`, `event/EventObject.lua` e `core/DragonBones.lua`. Os protótipos antigos continuam isolados. Os testes específicos estão em `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua` e `tests/original_events.lua`; os detalhes por arquivo estão em `docs/PORTING_STATUS.md`. As regras permanentes estão em PORTING_RULES.md. O código original pertence ao DragonBones team, sob licença MIT (LICENSE-DRAGONBONES).
 
 ## Como executar
 
