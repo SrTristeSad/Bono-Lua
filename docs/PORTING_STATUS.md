@@ -130,6 +130,16 @@ Suíte: `tests/original_boundingbox.lua`, 26 cenários de defaults, retângulos,
 
 Branch `port-original-boundingbox` integrada pelo [PR #11](https://github.com/SrTristeSad/Bono-Lua/pull/11), commit [260e59e](https://github.com/SrTristeSad/Bono-Lua/commit/260e59e89037765c8f764d6799716a1c46a1f981). A CI do PR aprovou **206 testes Lua** (180 anteriores + 26 novos), além da verificação de sintaxe e dos testes de renderização LÖVE. A equivalência diferencial completa contra o TypeScript executado permanece pendente.
 
+### Lote: DataParser.ts — base abstrata do parser original
+
+Fonte integral inspecionada: `DragonBones/src/dragonBones/parser/DataParser.ts`, commit fixado `64b6c69ae35777c2404be68c9192e2c56906079e` (376 linhas, MIT). Destino: `dragonbones/original/parser/DataParser.lua`. A fonte contém **131 constantes estáticas de string**, a lista `DATA_VERSIONS`, **10 métodos estáticos** de conversão para enums e **2 assinaturas abstratas** (sem implementação) `parseDragonBonesData` e `parseTextureAtlasData`.
+
+As constantes, nomes (inclusive `DRADON_BONES`, assim grafado no original), valores, versões e ordem foram preservados. Os 10 `switch` de conversão preservam entradas, valores de retorno numéricos dos enums já portados e caminhos `default`; letras maiúsculas são normalizadas antes da comparação. Os métodos abstratos não ganharam parsers falsos: serão implementados apenas pelos portes concretos `ObjectDataParser.ts` e `BinaryDataParser.ts`. O runtime simplificado anterior não foi alterado.
+
+Teste dedicado: `tests/original_data_parser.lua`, **14 cenários**, com 131 verificações de constantes, versões ordenadas, todas as entradas dos 10 mapeamentos, variantes ASCII em caixa alta, defaults e entradas inválidas. A CI executa esse teste separadamente. **Pendente:** comparar diferencialmente com TypeScript executado; `string.lower` de Lua cobre as entradas ASCII previstas, mas não é uma implementação geral das regras Unicode de `String.toLowerCase`/`toLocaleLowerCase` do JavaScript. A classe `DataParser` é abstrata; nenhum parser de dados real é declarado concluído neste lote.
+
+Branch: `port-original-data-parser`. Integração e SHA serão atualizados após aprovação dos testes GitHub Actions.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
