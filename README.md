@@ -36,6 +36,19 @@ Para rodar apenas os testes, use `npm test`. Testes dependentes do código origi
 
 Veja [docs/compatibilidade.md](docs/compatibilidade.md).
 
+## Viewer original — Fase 4 (integração gráfica)
+
+A versão de compatibilidade inclui agora um viewer de navegador baseado no **adapter PixiJS 8 oficial do DragonBonesJS**, sem substituir seu motor de animação.
+
+```bash
+npm run upstream:clone
+npm run original:build
+npm run demo:prepare
+npm run demo:serve
+```
+
+Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+
 ## Próximas etapas
 
 1. Renderizar um personagem real usando um adaptador gráfico oficial do DragonBonesJS.
