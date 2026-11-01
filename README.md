@@ -1,39 +1,51 @@
-# Bono-Lua — reconstrução do DragonBones em JavaScript/TypeScript
+# Bono-Lua — reconstrução compatível com DragonBonesJS
 
-> **Fase 0 — preparação do código original (não é ainda um editor funcional).**
+Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
 
-Este repositório será usado para estudar, executar e reconstruir a experiência original do DragonBones antes de desenvolver modificações.
+## Estado atual: fase 3 — runtime original compilado e testado
 
-## Referência original
+- Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
+- Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
+- Runtime original: TypeScript compilado para JavaScript sem modificar o upstream.
+- Testes automatizados: matrizes, classes, hierarquia de ossos, animações, relógio e importação de um exemplo real.
+- Integração: [GitHub Actions](.github/workflows/dragonbones-original.yml), com build e testes em Node.js 20.
 
-- Projeto: https://github.com/DragonBones/DragonBonesJS
-- Runtime comum: `DragonBones/src`
-- Linguagens: JavaScript / TypeScript
-- Licença do runtime: MIT (preservar os avisos de copyright)
-- A integração de editor visual não está incluída nesse runtime; sua reconstrução é uma etapa própria.
+**Importante:** o runtime validado ainda não é o **editor visual**. O DragronBonesJS é a biblioteca de execução; a interface do editor será reconstruída separadamente. A reprodução visual de um personagem também não está concluída.
 
-## Obter o runtime original
+## Reproduzir
 
-Requisitos: Git e Node.js.
+Pré-requisitos: Node.js >= 18, npm, Git e conexão de rede (para baixar as dependências originais).
 
 ```bash
 npm run upstream:clone
+npm run original:build
+npm run original:verify
 ```
 
-O script baixa o repositório oficial para `vendor/DragonBonesJS`, sem modificar o código original. A pasta é ignorada no Git para evitar importação não auditada de exemplos e recursos de terceiros.
+O script de download **não altera o original** e verifica o commit fixado em `upstream.lock.mjs`. O JavaScript compilado aparece em `dist/original/dragonBones.js`.
 
-Depois de baixar, explore `vendor/DragonBonesJS/DragonBones/src` e consulte as instruções do projeto original. **Ainda não há comando de build do editor.**
+Para rodar apenas os testes, use `npm test`. Testes dependentes do código original são marcados como ignorados caso você ainda não tenha realizado o build; a CI executa os testes **após** compilar e verifica que todos foram executados.
 
-## Etapas
+## O que foi comprovado
 
-1. Arquivar e identificar uma revisão de referência do upstream.
-2. Executar e testar o runtime original.
-3. Reconstruir a interface e o fluxo do editor clássico com testes comparativos.
-4. Somente após a equivalência funcional: rig automático por silhueta, biblioteca de animações e Studio por comandos.
-5. Exportar vídeo e sequência de imagens.
+- `ObjectDataParser` lê o personagem de teste do projeto e um exemplo autêntico do DragonBonesJS (20 ossos, 19 slots, animação `idle`).
+- `Matrix` transforma coordenadas e executa a transformação inversa.
+- `WorldClock` avança objetos animáveis registrados.
+- Classes principais da API pública são carregadas.
+- A CI compila o runtime original sem modificar os arquivos upstream.
 
-## Licenças
+Veja [docs/compatibilidade.md](docs/compatibilidade.md).
 
-O código DragonBonesJS pertence aos autores originais e tem licença MIT no repositório upstream. Cópias substanciais devem preservar seus avisos. Avaliar separadamente a licença de cada recurso do editor, exemplo e asset antes de incorporá-lo.
+## Próximas etapas
 
-Este repositório não se apresenta como versão oficial do DragonBones.
+1. Renderizar um personagem real usando um adaptador gráfico oficial do DragonBonesJS.
+2. Reproduzir animações reais, com pausa, troca de animação e duração.
+3. Validar skins, malhas, deformações, timelines e exportação.
+4. Reconstruir interface equivalente ao editor clássico, com importação e edição.
+5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
+
+## Licença e autoria
+
+O runtime original DragonBonesJS é licenciado sob MIT, copyright DragonBones team e contribuidores (2012–2025). Reutilizações e distribuições devem preservar esses avisos. Outros recursos (demos, imagens e editores) têm de ser auditados separadamente antes de distribuição.
+
+**Bono-Lua não é um projeto oficial DragonBones.**
