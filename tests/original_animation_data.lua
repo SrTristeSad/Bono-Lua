@@ -246,7 +246,7 @@ test("AnimationData._onClear retains all collections and clears frame indices",f
   assert(d.parent==nil)
   -- Remove recycled AnimationData reference from the armature before cleaning it:
   -- the test deliberately calls returnToPool directly here.
-  arm.animations[d.name]=nil
+  arm.animations.walk=nil
   arm:returnToPool()
 end)
 
