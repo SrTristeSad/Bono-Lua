@@ -16,7 +16,7 @@
         <span class="mark">B</span>
         <div><strong>Bono-Lua</strong><small>DragonBonesJS · reprodução original</small></div>
       </div>
-      <span class="phase">Fase 4 · Viewer</span>
+      <span class="phase">Fase 5 · Importador</span>
     </header>
 
     <main class="studio">
@@ -30,6 +30,18 @@
         <p>Este visualizador usa a biblioteca de execução original do DragonBonesJS, integrada ao PixiJS 8. Não é ainda o editor visual.</p>
         <label for="character">Personagem</label>
         <select id="character" disabled><option>Carregando...</option></select>
+        <section class="importer" aria-label="Importar projeto DragonBones">
+          <h2>Importar personagem</h2>
+          <p>Carregue os três arquivos de uma exportação DragonBones. Tudo permanece no navegador.</p>
+          <label for="skeleton-file">Esqueleto JSON</label>
+          <input id="skeleton-file" type="file" accept=".json,application/json">
+          <label for="atlas-file">Atlas JSON</label>
+          <input id="atlas-file" type="file" accept=".json,application/json">
+          <label for="texture-file">Textura PNG</label>
+          <input id="texture-file" type="file" accept=".png,image/png">
+          <button id="import-character" type="button" disabled>Importar projeto</button>
+          <div id="import-status" role="status" aria-live="polite">Nenhum arquivo importado.</div>
+        </section>
         <label for="animation">Animação</label>
         <select id="animation" disabled><option>Carregando...</option></select>
 
