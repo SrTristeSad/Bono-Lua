@@ -37,6 +37,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/AnimationData.ts | dragonbones/original/model/AnimationData.lua | `AnimationData`, `TimelineData` e `AnimationTimelineData` com mapas de timelines, caches, índices e devolução ao pool |
 | model/AnimationConfig.ts | dragonbones/original/model/AnimationConfig.lua | Campos de reprodução, máscaras de ossos, `clear`, `copyFrom` e pool portados |
 | model/BoundingBoxData.ts | dragonbones/original/model/BoundingBoxData.lua | Quatro classes; retângulo Cohen–Sutherland, elipse e polígono com `containsPoint` e `intersectsSegment` originais |
+| armature/Armature.ts | dragonbones/original/armature/Armature.lua | Todos os métodos concretos, propriedades e orquestração portados; integração real depende de Animation.ts ainda ausente |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -220,7 +221,7 @@ Caminhos efetivamente implementados: adição e ordenação de ossos/slots/const
 
 Testes: `tests/original_armature.lua` em Lua 5.4 e LuaJIT, mais suíte regressiva e LÖVE. **Pendente**: comparação diferencial com o DragonBonesJS executado, porte de `Animation.ts` e timelines correspondentes, integração `Armature` + `Slot` + `Bone` com gráficos reais, empates Z e dados de animação.
 
-Branch `port-original-armature-runtime`; PR, resultados da CI e SHA da integração serão registrados após os testes.
+Branch `port-original-armature-runtime` integrada pelo [PR #20](https://github.com/SrTristeSad/Bono-Lua/pull/20), commit de integração [`c10ef93`](https://github.com/SrTristeSad/Bono-Lua/commit/c10ef9364d666b6fa833731e47aad2c35c49fb18). CI do PR #20: **44/44 cenários Armature.ts, 167 verificações, em Lua 5.4 e LuaJIT**, suites regressivas e os dois testes gráficos LÖVE aprovados. Total acumulado **403 testes de porte original** (359 anteriores + 44), além dos 22 do protótipo. `Armature.init()` foi verificado por contrato com uma classe Animation criada exclusivamente no teste; a classe Animation real continua pendente.
 
 ## Código que já existia antes deste porte
 
@@ -229,7 +230,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `BoundingBoxData.ts`, `Bone.ts`, `Surface.ts`, `Constraint.ts` e ambas as classes de `Slot.ts` (DisplayFrame e Slot abstrato) já têm portes individuais registrados. Prosseguir com `Armature.ts` e dependências do runtime ainda ausentes, sem stubs nem simplificações. Os testes individuais ainda não comprovam integração integral 1:1.
+2. `BoundingBoxData.ts`, `Bone.ts`, `Surface.ts`, `Constraint.ts`, ambas as classes de `Slot.ts` (DisplayFrame e Slot abstrato) e `Armature.ts` já têm portes individuais registrados. Próxima dependência para inicialização real: `animation/Animation.ts`, seguida dos estados e timelines originais; continuar sem stubs nem simplificações. Os testes individuais ainda não comprovam integração integral 1:1.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
@@ -237,7 +238,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 
 ### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
 
-Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 16 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 17 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
 Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 
