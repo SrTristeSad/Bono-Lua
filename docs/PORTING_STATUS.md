@@ -128,7 +128,7 @@ Adaptações linguísticas: flags de bit 1, 2, 4, 8 verificadas por aritmética 
 
 Suíte: `tests/original_boundingbox.lua`, 26 cenários de defaults, retângulos, elipses, polígonos, normais, pontos de interseção e devolução ao pool. **Ainda falta comparação diferencial automatizada contra o TypeScript executado, cobrindo casos degenerados e precisão dos retornos.** O código do protótipo anterior não foi alterado.
 
-Branch do lote: `port-original-boundingbox`; integração e SHA deverão ser registrados após a CI.
+Branch `port-original-boundingbox` integrada pelo [PR #11](https://github.com/SrTristeSad/Bono-Lua/pull/11), commit [260e59e](https://github.com/SrTristeSad/Bono-Lua/commit/260e59e89037765c8f764d6799716a1c46a1f981). A CI do PR aprovou **206 testes Lua** (180 anteriores + 26 novos), além da verificação de sintaxe e dos testes de renderização LÖVE. A equivalência diferencial completa contra o TypeScript executado permanece pendente.
 
 ## Código que já existia antes deste porte
 
