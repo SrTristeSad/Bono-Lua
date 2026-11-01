@@ -80,6 +80,20 @@ O botão **Salvar esqueleto JSON**, na seção Ossos, salva **também as modific
 
 **Limitações:** por enquanto não são editáveis as opções de skins alternativas, pesos, malhas, constraints e keyframes. A troca de desenho opera sobre opções já presentes na exportação DragonBones: ainda não se importa uma imagem nova para o atlas.
 
+## Edição de keyframes — fase 9
+
+O painel **Timeline · keyframes** foi acrescentado à reconstrução do editor. Ele usa diretamente os dados de animação das exportações JSON originais DragonBones 5.x, sem introduzir um formato próprio:
+
+1. Escolha uma animação e selecione um osso pela árvore ou na prévia.
+2. No canal **Posição (X/Y)** ou **Rotação (graus)**, selecione um dos keyframes existentes.
+3. Ajuste os valores e clique em **Aplicar keyframe e atualizar prévia**.
+4. O personagem é reconstruído usando `ObjectDataParser` e o runtime original, para que a prévia use a nova timeline compilada.
+5. Use **Salvar esqueleto JSON** para exportar e reimportar com o atlas e PNG originais.
+
+Ao selecionar um keyframe, a reprodução é pausada e a timeline posicionada no quadro escolhido. As durações, os campos `tweenEasing`, os outros canais e as animações não selecionadas são preservados. O arquivo original importado não é sobrescrito. Caso a atualização não seja aceita pelo parser, a prévia anterior é mantida.
+
+**Limites desta fase:** somente valores de keyframes já existentes em `bone[].translateFrame` e `bone[].rotateFrame` são editáveis. Não é possível criar/remover quadros, editar escalas, tween, eventos ou timelines binárias, nem reconstruir as outras ferramentas do editor original. A interface do editor clássico completo ainda está em desenvolvimento.
+
 ## Testes
 
 ```bash
