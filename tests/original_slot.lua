@@ -419,6 +419,7 @@ end)
 test("update dirty skinned mesh calls _updateMesh and returns before transforms",function()
   local s,a,b,raw,mesh=fixture()
   s.display=mesh;s:invalidUpdate();s:update(-1)
+  s.calls={}
   s._geometryData={weight={}}
   s._verticesDirty=true
   s._transformDirty=true
@@ -429,6 +430,7 @@ end)
 test("update rigid mesh propagates to parent transform",function()
   local s,a,b,raw,mesh=fixture()
   s.display=mesh;s:invalidUpdate();s:update(-1)
+  s.calls={}
   s._geometryData={weight=nil}
   s._verticesDirty=true;s._transformDirty=true
   b.globalTransformMatrix.tx=25
