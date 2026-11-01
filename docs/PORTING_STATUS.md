@@ -77,7 +77,7 @@ Fonte examinada: `model/DisplayData.ts`, `model/SkinData.ts` e `model/DragonBone
 
 Testes: `tests/original_display_skin_data.lua`, **27 cenários** de construtores, subclasses, enum de display, geometria binária, pesos compartilhados, arrays nulos, troca de parent, cópias, mapas e descarte. Verificam comportamentos estáticos; **ainda não comprovam uma comparação diferencial 1:1 executando TypeScript e Lua**.
 
-Branch: `port-original-display-skin-data`. Integração/commit serão registrados após aprovação da CI.
+Branch: `port-original-display-skin-data`. Integrado pelo [PR #7](https://github.com/SrTristeSad/Bono-Lua/pull/7), commit [4d334b3](https://github.com/SrTristeSad/Bono-Lua/commit/4d334b3fe655d7232c5d367eddb4bae99621185c). A CI do PR aprovou **129 testes Lua** (102 anteriores + 27 novos), a verificação de sintaxe e o teste gráfico LÖVE. Comparação diferencial completa com o TypeScript original ainda pendente.
 
 ## Código que já existia antes deste porte
 
