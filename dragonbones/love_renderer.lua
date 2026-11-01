@@ -20,7 +20,13 @@ function Render.draw(prepared, commands)
     local quad=prepared.quads[item.name]
     if quad then
       local m=item.matrix
-      transform:setMatrix(m.a,m.b,m.c,m.d,m.tx,m.ty)
+      -- LÖVE 11 Transform:setMatrix accepts a 4x4 matrix in row-major layout.
+      -- Convert the six DragonBones affine coefficients explicitly.
+      transform:setMatrix("row",
+        m.a, m.c, 0, m.tx,
+        m.b, m.d, 0, m.ty,
+        0, 0, 1, 0,
+        0, 0, 0, 1)
       love.graphics.push()
       love.graphics.applyTransform(transform)
       love.graphics.draw(prepared.image,quad,item.offsetX,item.offsetY)
