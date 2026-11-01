@@ -6,7 +6,9 @@
   "scripts": {
     "upstream:clone": "node scripts/fetch-upstream.mjs",
     "upstream:status": "node scripts/upstream-status.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "original:build": "node scripts/build-original.mjs",
+    "original:verify": "npm run upstream:status && npm test"
   },
   "engines": {
     "node": ">=18"
