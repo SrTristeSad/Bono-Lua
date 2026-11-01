@@ -72,6 +72,6 @@ Branch: `port-original-worldclock`. Origem fixa: `animation/WorldClock.ts` e con
 
 ### Lote eventos e núcleo
 
-Branch de trabalho: `port-original-events-core`; código: `dragonbones/original/{model/UserData,event/EventObject,core/DragonBones}.lua`; testes: `tests/original_events.lua`. O registro de integração e SHA deve ser atualizado após a CI e o merge.
+Branch de trabalho: `port-original-events-core`; código: `dragonbones/original/{model/UserData,event/EventObject,core/DragonBones}.lua`; testes: `tests/original_events.lua`. Integrado pelo [PR #5](https://github.com/SrTristeSad/Bono-Lua/pull/5), commit [8728a05](https://github.com/SrTristeSad/Bono-Lua/commit/8728a057202c902816c32b9aca4b3fc0dde8ef60). A CI do PR aprovou 22 testes do protótipo, 11 geométricos, 14 do core anterior, 15 do WorldClock e 19 dos eventos (81 no total), além da captura e do teste de pixels LÖVE. Não há teste diferencial completo executando o original.
 
 Toda próxima fase deve registrar a comparação, os testes, pendências e o commit sem alterar os objetivos.
