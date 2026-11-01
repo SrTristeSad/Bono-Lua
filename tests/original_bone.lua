@@ -186,6 +186,7 @@ test("yDown false reverses origin offset y/angles, but not pose", function()
   local ok, err = pcall(function()
     Core.yDown = false
     local a = armature()
+    a.flipY = true -- with yDown=false this means no effective vertical reflection
     local d = data("r")
     local b = newBone(a, d)
     d.transform.y, d.transform.rotation, d.transform.skew = 100, 0.5, 0.4
