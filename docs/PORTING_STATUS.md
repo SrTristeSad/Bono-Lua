@@ -192,6 +192,20 @@ Testes específicos: `tests/original_display_frame.lua`, **27 cenários** de ori
 
 Branch `port-original-slot-display-frame` integrada pelo [PR #18](https://github.com/SrTristeSad/Bono-Lua/pull/18), commit de integração [`37d9bce`](https://github.com/SrTristeSad/Bono-Lua/commit/37d9bce408d7f322f1a0e473e3d3143a264fb833). GitHub Actions do PR: **27/27 testes DisplayFrame aprovados em Lua 5.4 e LuaJIT**, 63 verificações; **311 testes de porte original** (284 anteriores + 27), além dos **22 testes do protótipo** e dos jobs gráficos LÖVE. Falta a classe `Slot` e a comparação diferencial com JS executado.
 
+### Lote: Slot.ts — classe abstrata Slot (runtime original)
+
+Fonte integral examinada: `DragonBones/src/dragonBones/armature/Slot.ts`, commit `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. A classe `DisplayFrame` (do mesmo arquivo) já foi portada no PR #18. Este lote porta a **classe abstrata `Slot`**, original das linhas 164–1315, para `dragonbones/original/armature/Slot.lua`. Branch: `port-original-slot-runtime`.
+
+Implementados os métodos concretos do original: `_onClear`, `_hasDisplay`, `_isBonesUpdate`, `_updateAlpha`, `_updateDisplayData`, `_updateDisplay`, `_updateGlobalTransformMatrix`, `_setDisplayIndex`, `_setZOrder`, `_setColor`, `init`, `update`, `invalidUpdate`, `updateTransformAndMatrix`, `replaceRawDisplayData`, `replaceDisplayData`, `replaceTextureData`, `replaceDisplay`, `containsPoint`, `intersectsSegment`, `getDisplayFrameAt`, `getDisplay`, `setDisplay`; getters e setters públicos `visible`, `displayFrameCount`, `displayIndex`, `name`, `displayList`, `slotData`, `boundingBoxData`, `rawDisplay`, `meshDisplay`, `display`, `childArmature`, `parent` foram mapeados para metatables. As declarações abstratas dos 14 hooks de backend (por exemplo `_updateMesh`, `_updateFrame` e `_initDisplay`) **não ganham implementações falsas**; serão fornecidas pelo backend quando portar os adaptadores originais, isolado do runtime.
+
+Reproduzidos seleção e substituição de displays, defaultSkin, cálculo de pivô, atlas rotacionado e frame, herança de matrizes, geometria com pesos, malhas, cache de transformação e offsets, transições de visibilidade e cor, propagação de alpha, atualização de armaduras filhas, eventos e interseções com bounding boxes. Estruturas prévias reutilizadas: `BaseObject`, `TransformObject`, `DisplayFrame`, `Bone`, `Surface`, `EventObject` e `ArmatureData`.
+
+Adaptações e limitações: índices dos frames TS zero-based correspondem à posição Lua +1; entradas `null` em arrays de displays exigem conversão, e o acesso `displayList` com entradas `nil` não consegue conservar lacunas/dimensão do array JavaScript via `#`. O próprio código TS possui uma comparação `i < value` no laço decrescente de `displayFrameCount`: a implementação preserva esse comportamento mesmo sendo incomum. `instanceof Armature` só pode funcionar quando a classe original `Armature` estiver implementada/carregada, sem detecção especulativa de objetos; até lá a validação de child armature fica pendente. `Slot` permanece **abstrato**, não instanciável diretamente como slot renderizado, e os testes utilizam uma subclasse concreta exclusivamente no arquivo de testes, sem modificar o produto.
+
+Teste novo `tests/original_slot.lua`, cobrindo getters/setters, callbacks abstratos, dados, descarte, geometria, pivô, hierarquia, cache, transformações, colisão, frame switching e particularidades da fonte. CI Lua 5.4 e LuaJIT, mais render LÖVE de regressão. **Pendente para declarar 1:1:** testar com `Armature.ts` e implementação gráfica concreta originais, além de comparação diferencial executando o TypeScript. Nenhuma melhoria fora do porte.
+
+PR/CI e SHA serão preenchidos após validação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
