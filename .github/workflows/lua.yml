@@ -43,6 +43,15 @@ jobs:
         run: lua5.4 tests/original_data_parser.lua
       - name: Verify original Bone.ts runtime transforms and cache
         run: lua5.4 tests/original_bone.lua
+      - name: Install LuaJIT (LÖVE runtime)
+        run: sudo apt-get install -y luajit
+      - name: Verify original DragonBones Lua ports on LuaJIT
+        run: |
+          set -eu
+          for suite in tests/original_*.lua; do
+            echo "LuaJIT conformance: $suite"
+            luajit "$suite"
+          done
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream
