@@ -1,6 +1,6 @@
 # Viewer original DragonBonesJS + PixiJS 8
 
-**Objetivo:** reproduzir graficamente um exemplo real do DragonBones original, antes de desenvolver o editor novo.
+**Objetivo:** reproduzir graficamente exemplos reais do DragonBones original, antes de desenvolver o editor novo.
 
 ## Como executar
 
@@ -21,14 +21,16 @@ Não abra `web/demo/index.html` diretamente com `file://`: o carregamento dos ar
 
 - `Pixi/8.x/out/dragonBones.js`: adapter original que traz o runtime DragonBones e a fábrica PixiJS 8.
 - `Pixi/Demos/8.x/libs/pixi/8.9.2/pixi.js`: cópia local da biblioteca PixiJS do upstream fixado.
-- `Cocos/Demos/assets/resources/mecha_1002_101d_show/`: exemplo oficial, esqueleto, textura e atlas.
+- `Cocos/Demos/assets/resources/mecha_1002_101d_show/`: exemplo original, 20 ossos e animação `idle`.
+- `Cocos/Demos/assets/resources/mecha_1406/`: segundo exemplo original, 17 ossos e 8 animações, incluindo `idle`, `walk`, `jump` e `attack_01`.
 - `web/demo/app.js`: interface independente para controlar **somente** a reprodução, sem modificar os algoritmos de animação originais.
 
 O script `demo:prepare` copia esses arquivos para `web/demo/vendor` e `web/demo/assets`, preservando os bytes. As pastas de saída estão ignoradas no Git.
 
 ## Controles
 
-- Seleção de animação (o exemplo atualmente contém `idle`).
+- Seleção entre dois personagens oficiais do DragonBonesJS.
+- Seleção da animação disponível para cada personagem (incluindo caminhada no Mecha 1406).
 - Pausa, retomada e reinício.
 - Alteração da velocidade da reprodução.
 - Exibir ossos/articulações para depuração.
@@ -50,7 +52,7 @@ npx playwright install chromium
 npm run demo:test-browser
 ```
 
-Esse teste usa a mesma página do usuário, espera a armadura aparecer, compara a contagem de ossos/slots, verifica a evolução temporal da animação e testa os controles. A CI executa esse teste automaticamente.
+Esse teste usa a mesma página do usuário, espera a armadura aparecer, compara a contagem de ossos/slots, verifica a evolução temporal das animações, a troca de personagem e a pausa efetiva do relógio, além de testar os controles. A CI executa esse teste automaticamente.
 
 ## Licença
 
