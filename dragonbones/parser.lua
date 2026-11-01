@@ -12,7 +12,7 @@ local function transform(raw)
   }
 end
 
-local function timeline(raw)
+local function timeline(raw, defaultValue)
   if type(raw)~="table" then return nil end
   local frames,at={},0
   for index,frame in ipairs(raw) do
@@ -21,7 +21,8 @@ local function timeline(raw)
     assert(type(duration)=="number" and duration>=0 and duration%1==0,"invalid keyframe duration")
     frames[#frames+1]={
       index=index,start=at,duration=duration,
-      x=frame.x or 0,y=frame.y or 0,
+      x=frame.x == nil and (defaultValue or 0) or frame.x,
+      y=frame.y == nil and (defaultValue or 0) or frame.y,
       rotate=frame.rotate or 0,
       skew=frame.skew or 0,
       tweenEasing=frame.tweenEasing,
@@ -65,7 +66,7 @@ function Parser.parse(input)
       assert(type(clip.name)=="string" and clip.duration>0,"invalid animation")
       for _,b in ipairs(rawClip.bone or {}) do
         clip.bones[b.name]={translate=timeline(b.translateFrame),
-          rotate=timeline(b.rotateFrame),scale=timeline(b.scaleFrame)}
+          rotate=timeline(b.rotateFrame),scale=timeline(b.scaleFrame, 1)}
       end
       arm.animations[clip.name]=clip
     end
