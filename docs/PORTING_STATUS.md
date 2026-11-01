@@ -152,6 +152,18 @@ Teste: `tests/original_bone.lua`, **27 cenários** cobrindo inicialização e re
 
 Branch `port-original-bone-runtime` integrada pelo [PR #13](https://github.com/SrTristeSad/Bono-Lua/pull/13), commit de integração [`3a1ea22`](https://github.com/SrTristeSad/Bono-Lua/commit/3a1ea226a61dcfd00d473715adcfb6b0c8f61a87). GitHub Actions do PR: **27/27 testes Bone aprovados**, total **247 testes Lua aprovados** (220 anteriores + 27), verificação de sintaxe, execução do exemplo original Mecha 1406 e jobs gráficos LÖVE concluídos com sucesso. A validação diferencial TS/Lua e a integração em Armature/Slot reais continuam pendentes.
 
+### Lote: armature/Surface.ts — superfície deformável original
+
+Fonte examinada integralmente: `DragonBones/src/dragonBones/armature/Surface.ts` (588 linhas), revisão fixada `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. Destino: `dragonbones/original/armature/Surface.lua` (porta uma classe: `Surface`, herdeira de `Bone`).
+
+Portados os métodos `toString`, `_onClear`, `_getAffineTransform`, `_updateVertices`, `_updateGlobalTransformMatrix`, `_getGlobalTransformMatrix`, `init` e `update`. Preservados os triângulos internos e as quatro regiões externas (Left, Right, Up, Down), os dois sentidos em cada célula, os índices, fórmulas de transformação afim, deformação de vértices, hierarquia `Bone`/`Surface`, cache de matrizes, cache de frames, flags de atualização, convex hull e os limiares originais 200 e 1000. Não foram implementadas melhorias ou correções de lógica. A grafia original `_matrixCahce` é mantida. O comentário `TODO interpolation` continua pendente como na fonte, não foi substituído por interpolação inventada.
+
+Adaptações documentadas: classes/herança por metatables Lua; acesso JS zero-based aos arrays binários por índices Lua +1; arrays esparsos `_vertices`, `_deformVertices`, `_hullCache` e `_matrixCahce` preservam campo `.length` por causa das diferenças entre arrays JavaScript e tabelas Lua, incluindo a inicialização peculiar `_hullCache.length = 10` seguida da escrita de 12 entradas; `Math.atan2(y, x)` usa `math.atan2` do LuaJIT ou `math.atan(y, x)` de Lua 5.4. Contratos da classe real `Armature` ainda não portada são representados exclusivamente em testes; nenhum stub é incluído no produto.
+
+Testes: `tests/original_surface.lua`, **28 cenários**, cobrindo inicialização/pool, malha e deformação, cálculos de superfície, 5 regiões e seus triângulos, cache e invalidação, vínculo pai `Bone` e `Surface`, limites, constraints e acesso ao `ArmatureData` original. GitHub Actions executa o teste em Lua 5.4 e automaticamente no loop de conformidade LuaJIT. **Pendente:** comparador diferencial executando o código TS original, casos degenerados e integração real com `Armature.ts`, `Constraint.ts` e `Slot.ts`.
+
+Branch `port-original-surface-runtime`; PR, validação e SHA de integração serão adicionados após a CI.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
