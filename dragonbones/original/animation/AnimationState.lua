@@ -621,3 +621,121 @@ function AnimationState:advanceTime(passedTime,cacheFrameRate)
     end
   end
 end
+
+function AnimationState:play()
+  self._playheadState=3
+end
+
+function AnimationState:stop()
+  self._playheadState=bitAnd1(self._playheadState)
+end
+
+function AnimationState:fadeOut(fadeOutTime,pausePlayhead)
+  if pausePlayhead==nil then pausePlayhead=true end
+  if fadeOutTime<0.0 then fadeOutTime=0.0 end
+  if pausePlayhead then self._playheadState=bitAnd2(self._playheadState) end
+  if self._fadeState>0 then
+    if fadeOutTime>self.fadeTotalTime-self._fadeTime then return end
+  else
+    self._fadeState=1
+    self._subFadeState=-1
+    if fadeOutTime<=0.0 or self._fadeProgress<=0.0 then
+      self._fadeProgress=0.000001
+    end
+    for _,timeline in ipairs(self._boneTimelines) do timeline:fadeOut() end
+    for _,timeline in ipairs(self._boneBlendTimelines) do timeline:fadeOut() end
+    for _,timeline in ipairs(self._slotTimelines) do timeline:fadeOut() end
+    for _,timeline in ipairs(self._slotBlendTimelines) do timeline:fadeOut() end
+    for _,timeline in ipairs(self._constraintTimelines) do timeline:fadeOut() end
+    for _,timeline in ipairs(self._animationTimelines) do
+      timeline:fadeOut()
+      timeline.target:fadeOut(999999.0,true)
+    end
+  end
+  self.displayControl=false
+  self.fadeTotalTime=self._fadeProgress>0.000001
+    and fadeOutTime/self._fadeProgress or 0.0
+  self._fadeTime=self.fadeTotalTime*(1.0-self._fadeProgress)
+end
+
+function AnimationState:containsBoneMask(name)
+  return #self._boneMask==0 or has(self._boneMask,name)
+end
+
+function AnimationState:addBoneMask(name,recursive)
+  if recursive==nil then recursive=true end
+  local currentBone=self._armature:getBone(name)
+  if currentBone==nil then return end
+  if not has(self._boneMask,name) then
+    self._boneMask[#self._boneMask+1]=name
+  end
+  if recursive then
+    for _,bone in ipairs(self._armature:getBones()) do
+      if not has(self._boneMask,bone.name) and currentBone:contains(bone) then
+        self._boneMask[#self._boneMask+1]=bone.name
+      end
+    end
+  end
+  self._timelineDirty=1
+end
+
+function AnimationState:removeBoneMask(name,recursive)
+  if recursive==nil then recursive=true end
+  erase(self._boneMask,name)
+  if recursive then
+    local currentBone=self._armature:getBone(name)
+    if currentBone~=nil then
+      local bones=self._armature:getBones()
+      if #self._boneMask>0 then
+        for _,bone in ipairs(bones) do
+          if has(self._boneMask,bone.name) and currentBone:contains(bone) then
+            erase(self._boneMask,bone.name)
+          end
+        end
+      else
+        for _,bone in ipairs(bones) do
+          if bone~=currentBone and not currentBone:contains(bone) then
+            self._boneMask[#self._boneMask+1]=bone.name
+          end
+        end
+      end
+    end
+  end
+  self._timelineDirty=1
+end
+
+function AnimationState:removeAllBoneMask()
+  clear(self._boneMask)
+  self._timelineDirty=1
+end
+
+function AnimationState:addState(child,timelineDatas)
+  if timelineDatas~=nil then
+    for _,data in ipairs(timelineDatas) do
+      if data.type==Type.AnimationProgress then
+        borrowTimeline("AnimationProgressTimelineState",child,self._armature,self,data,self._animationTimelines)
+        if self.blendType~=Core.AnimationBlendType.None then
+          child.positionX=data.x
+          child.positionY=data.y
+          child.weight=0.0
+        end
+        child._parent=self
+        self.resetToPose=false
+      elseif data.type==Type.AnimationWeight then
+        borrowTimeline("AnimationWeightTimelineState",child,self._armature,self,data,self._animationTimelines)
+      elseif data.type==Type.AnimationParameter then
+        borrowTimeline("AnimationParametersTimelineState",child,self._armature,self,data,self._animationTimelines)
+      end
+    end
+  end
+  if child._parent==nil then child._parent=self end
+end
+
+function AnimationState:activeTimeline()
+  for _,timeline in ipairs(self._slotTimelines) do
+    timeline.dirty=true
+    timeline.currentTime=-1.0
+  end
+end
+
+return AnimationState
