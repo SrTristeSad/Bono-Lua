@@ -1,0 +1,13 @@
+{
+  "name": "bono-lua",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Workspace de compatibilidade e reconstrução do DragonBonesJS",
+  "scripts": {
+    "upstream:clone": "node scripts/fetch-upstream.mjs",
+    "upstream:status": "node scripts/upstream-status.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
