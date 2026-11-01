@@ -60,6 +60,8 @@ jobs:
           curl --fail --location --retry 3 "$base/mecha_1406_tex.json" -o artifacts/upstream/mecha_1406_tex.json
       - name: Verify DragonBones original character in Lua
         run: lua5.4 tests/upstream_real.lua
+      - name: Verify original DragonBones character on LuaJIT
+        run: luajit tests/upstream_real.lua
   love-render:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
