@@ -19,10 +19,12 @@ Referência: `DragonBones/DragonBonesJS` no commit `64b6c69ae35777c2404be68c9192
 | Editor de pose-base | Hierarquia, seleção, X/Y/rotação, preview e exportação do _ske.json | Passou no Chromium |
 | Seleção visual de ossos | Marcadores atualizados por matriz global do DragonBones e clique na prévia | Passou no Chromium |
 | Inspeção de slots | Osso pai, ordem, índice de display e imagens por skin | Passou no Chromium |
+| Edição de slots | Troca/ocultação de desenho, restauração, ordem-base, exportação e reimportação | Passou no Chromium |
+| Proteção de Z-order animado | Bloquear mudança da ordem-base com timelines de sobreposição existentes | Passou em teste unitário |
 | Persistência | Salvar e reimportar esqueleto editado mantendo animações originais | Passou no Chromium |
 | Editor completo | Criação/remoção de ossos, IK, skins, keyframes e timeline | Não implementado |
 | Exportação de vídeo e PNG | Render/encoder | Não implementado |
 
-Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41336731566).
+Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41338178659).
 
-**Nota:** o Chromium confirma renderização, seleção visual, inspeção dos slots, edição inicial da pose-base, download do JSON e reimportação de um exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: alterações de slots, pesos de malhas, IK, deformações e edição avançada de keyframes ainda precisam ser desenvolvidos e validados. Skins, IK, deformações e a edição visual completa exigem testes próprios.
+**Nota:** o Chromium confirma renderização, seleção visual, inspeção dos slots, edição inicial da pose-base, download do JSON e reimportação de um exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: skins alternativas, pesos de malhas, IK, deformações, Z-order animado e edição de keyframes ainda precisam ser desenvolvidos e validados.
