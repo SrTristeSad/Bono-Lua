@@ -140,8 +140,56 @@
     raw[index+1].duration=available-duration;
     return frames(document,armatureName,animationName,boneName,channel)[index];
   }
+
+  // DragonBones 5.x parser semantics (ObjectDataParser._parseTweenFrame):
+  // -2 = hold; 0 = linear; -1 = quadratic-in; +1 = quadratic-out;
+  // +2 = quadratic-in-out. A 4-number curve is one cubic Bezier segment.
+  const EASING_PRESETS = Object.freeze({
+    hold: -2, linear: 0, easeIn: -1, easeOut: 1, easeInOut: 2
+  });
+  function easing(document, armatureName, animationName, boneName, channel, index) {
+    const {raw, editable}=validatedTimeline(document,armatureName,animationName,boneName,channel);
+    const selected=editable.find(f=>f.index===index);
+    if(!selected) throw new Error('Quadro terminal ou keyframe inexistente.');
+    const source=raw[index];
+    if(Array.isArray(source.curve)) {
+      if(source.curve.length===4 && source.curve.every(Number.isFinite)) {
+        return { mode:'bezier', control:source.curve.slice() };
+      }
+      return { mode:'original', control:null };
+    }
+    const amount=typeof source.tweenEasing==='number'?source.tweenEasing:-2;
+    const mode=Object.keys(EASING_PRESETS).find(k=>EASING_PRESETS[k]===amount) ?? 'original';
+    return { mode, control:null };
+  }
+  function editEasing(document, armatureName, animationName, boneName, channel, index, next) {
+    if(!next || !Object.hasOwn(EASING_PRESETS,next.mode) && next.mode!=='bezier')
+      throw new Error('Modo de interpolação inválido.');
+    const {raw,editable}=validatedTimeline(document,armatureName,animationName,boneName,channel);
+    if(!editable.some(frame=>frame.index===index)) throw new Error('Keyframe terminal não editável.');
+    let curve=null;
+    if(next.mode==='bezier') {
+      curve=next.control;
+      if(!Array.isArray(curve) || curve.length!==4 ||
+         curve.some(v=>typeof v!=='number' || !Number.isFinite(v) || v<0 || v>1))
+        throw new Error('Curva Bézier precisa de quatro coordenadas de 0 a 1.');
+      if(curve[0]>curve[2]) throw new Error('Os controles X da curva precisam estar em ordem.');
+      curve=curve.slice();
+    }
+    const source=raw[index];
+    // Remove the mutually exclusive field. The original parser gives curve priority.
+    if(curve) {
+      source.curve=curve;
+      delete source.tweenEasing;
+    } else {
+      delete source.curve;
+      source.tweenEasing=EASING_PRESETS[next.mode];
+    }
+    return easing(document,armatureName,animationName,boneName,channel,index);
+  }
   root.BonoTimelineEditor = Object.freeze({
     CHANNELS, animation, frames, editExistingFrame,
-    insertFrame, removeFrame, setFrameDuration
+    insertFrame, removeFrame, setFrameDuration,
+    EASING_PRESETS, easing, editEasing
   });
 })(typeof window !== 'undefined' ? window : globalThis);
