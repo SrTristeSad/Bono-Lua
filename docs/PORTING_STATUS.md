@@ -150,7 +150,7 @@ Portados todos os métodos do arquivo: `toString`, `_onClear`, `_updateGlobalTra
 
 Teste: `tests/original_bone.lua`, **27 cenários** cobrindo inicialização e reaproveitamento, acesso, visibilidade, cadeia ancestral, alpha, offset/yDown, flips, superfícies, heranças, reflexão, atualização de constraints, cache e invalidações. O teste usa apenas dublês de contrato para o `Armature`/`Surface`/`Slot`/`Constraint` ainda não portados, não componentes substitutos no produto. **Não se declara 1:1 integral:** ainda faltam `Surface.ts`, `Slot.ts`, `Armature.ts`, `Constraint.ts` e validação diferencial executando o código JS original.
 
-Branch `port-original-bone-runtime`. PR/CI e SHA de integração serão preenchidos após validação.
+Branch `port-original-bone-runtime` integrada pelo [PR #13](https://github.com/SrTristeSad/Bono-Lua/pull/13), commit de integração [`3a1ea22`](https://github.com/SrTristeSad/Bono-Lua/commit/3a1ea226a61dcfd00d473715adcfb6b0c8f61a87). GitHub Actions do PR: **27/27 testes Bone aprovados**, total **247 testes Lua aprovados** (220 anteriores + 27), verificação de sintaxe, execução do exemplo original Mecha 1406 e jobs gráficos LÖVE concluídos com sucesso. A validação diferencial TS/Lua e a integração em Armature/Slot reais continuam pendentes.
 
 ## Código que já existia antes deste porte
 
