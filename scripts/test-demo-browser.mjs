@@ -293,6 +293,81 @@ try {
   });
   assert.equal(reimportedKey,beforeTimeline.x+30,'roundtrip keyframe value');
 
+  // Phase 10: split an original interval, resize it, and remove the frame.
+  await page.locator('#animation').selectOption('walk');
+  await page.locator('#bone-tree button[data-bone="pelvis"]').click();
+  await page.locator('#key-channel').selectOption('translate');
+  const frameCountBefore = await page.locator('#key-list button').count();
+  await page.locator('#key-at').fill('2');
+  await page.locator('#key-insert').click();
+  assert.match(await page.locator('#key-status').innerText(),/Keyframe inserido/);
+  assert.equal(await page.locator('#key-list button').count(),frameCountBefore+1);
+  let editIntervals = await page.evaluate(() => {
+    const state=window.__bonoDemo;
+    const model=state.models.get(document.getElementById('character').value);
+    return Array.from(window.BonoTimelineEditor.frames(
+      model.document,model.spec.armature,'walk','pelvis','translate'
+    ),f=>({start:f.start,duration:f.duration}));
+  });
+  assert.deepEqual(editIntervals.slice(0,3),[
+    {start:0,duration:2},{start:2,duration:2},{start:4,duration:3}
+  ],'inserting keyframe splits its predecessor and keeps following frames');
+  assert.equal(await page.locator('#key-delete').isEnabled(),true);
+  await page.locator('#key-duration').fill('3');
+  await page.locator('#key-resize').click();
+  assert.match(await page.locator('#key-status').innerText(),/Duração ajustada/);
+  editIntervals = await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    return Array.from(window.BonoTimelineEditor.frames(
+      model.document,model.spec.armature,'walk','pelvis','translate'
+    ),f=>({start:f.start,duration:f.duration}));
+  });
+  assert.deepEqual(editIntervals.slice(0,3),[
+    {start:0,duration:2},{start:2,duration:3},{start:5,duration:2}
+  ],'resizing preserves total time of adjacent spans');
+  await page.locator('#key-delete').click();
+  assert.match(await page.locator('#key-status').innerText(),/Keyframe removido/);
+  assert.equal(await page.locator('#key-list button').count(),frameCountBefore);
+  const preserved = await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    const clip=window.BonoTimelineEditor.animation(model.document,model.spec.armature,'walk');
+    return {
+      frameCount:clip.duration,
+      list:window.BonoTimelineEditor.frames(model.document,model.spec.armature,'walk','pelvis','translate')
+        .slice(0,2).map(f=>({start:f.start,duration:f.duration}))
+    };
+  });
+  assert.equal(preserved.frameCount,30);
+  assert.deepEqual(preserved.list,[{start:0,duration:5},{start:5,duration:2}]);
+
+  const phase10Download=page.waitForEvent('download');
+  await page.locator('#bone-export').click();
+  const phase10Saved=JSON.parse(await readFile(await (await phase10Download).path(),'utf8'));
+  const finalWalk=phase10Saved.armature.find(a=>a.name==='mecha_1406').animation.find(a=>a.name==='walk');
+  assert.equal(finalWalk.duration,30,'clip duration preserved in export');
+  assert.equal(finalWalk.bone.find(b=>b.name==='pelvis').translateFrame[0].duration,5);
+  await page.locator('#skeleton-file').setInputFiles({
+    name:'edited_intervals_ske.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify(phase10Saved))
+  });
+  await page.locator('#import-character').click();
+  await page.waitForFunction(() => {
+    const msg=document.getElementById('import-status')?.textContent||'';
+    return msg.includes('importada(s)') || msg.startsWith('Erro:');
+  },{timeout:30000});
+  assert.match(await page.locator('#import-status').innerText(),/importada\(s\)/);
+  await page.locator('#animation').selectOption('walk');
+  const roundtrip=await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    return window.BonoTimelineEditor.frames(model.document,model.spec.armature,'walk','pelvis','translate')
+      .slice(0,2).map(f=>f.start);
+  });
+  assert.deepEqual(roundtrip,[0,5],'modified timeline survives official parser reimport');
+  const animStart=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  await page.waitForTimeout(220);
+  const animEnd=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.notEqual(animEnd,animStart,'new timeline still plays in original DragonBones');
+
   await mkdir('artifacts',{recursive:true});
   await page.screenshot({path:'artifacts/bono-lua-viewer.png',fullPage:true});
   assert.deepEqual(errors,[],'JavaScript errors');
