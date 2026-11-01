@@ -43,3 +43,12 @@
 .slot-list button:hover{background:#334362}
 .slot-list button[aria-pressed=true]{background:#3c4c8d;color:white}
 .slot-details{font-size:12px;line-height:1.6;overflow-wrap:anywhere;color:#a4b6d0;margin-top:10px;white-space:pre-line}
+
+/* Phase 8 — default DragonBones slot display and stacking order */
+.slot-panel>label{font-size:12px;margin:13px 0 6px}
+.slot-panel select{width:100%;background:#172338;color:#e8effb;border:1px solid #526482;border-radius:7px;padding:9px;font-size:12px}
+.slot-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:11px 0}
+.slot-actions button{background:#283b58;color:#fff;border:1px solid #526482;border-radius:7px;padding:9px 5px;font-size:11px;cursor:pointer}
+.slot-actions button:last-child{grid-column:1/-1;background:#404e87}
+.slot-actions button:disabled{opacity:.45;cursor:not-allowed}
+#slot-status{font-size:11px;color:#a4b6d0;line-height:1.5;overflow-wrap:anywhere}
