@@ -372,18 +372,17 @@ function PathConstraint:_computeBezierCurve(pathDisplayDta, spaceCount,
     for i = 0, spaceCount - 1 do
       local space = get(spaces, i)
       position = position + space
+      local skip = false
       if isClosed then
         position = jsRemainder(position, pathLength)
         if position < 0 then position = position + pathLength end
         curve = 0
-      elseif position < 0 then
-        -- Source TODO: skip without writing a position.
-        goto continue_nonconstant
-      elseif position > pathLength then
-        -- Source TODO: skip without writing a position.
-        goto continue_nonconstant
+      elseif position < 0 or position > pathLength then
+        -- Both source TODO branches skip without writing a position.
+        skip = true
       end
 
+      if not skip then
       local percent = 0.0
       while true do
         local len = get(lenghts, curve)
@@ -415,7 +414,7 @@ function PathConstraint:_computeBezierCurve(pathDisplayDta, spaceCount,
         get(curveVertices, 4), get(curveVertices, 5),
         get(curveVertices, 6), get(curveVertices, 7),
         positions, o, tangents)
-      ::continue_nonconstant::
+      end
       o = o + 3
     end
     return
