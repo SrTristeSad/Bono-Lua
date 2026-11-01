@@ -60,5 +60,58 @@ function Test.run()
   expect(rendered,10,8,0,0,1)
   expect(rendered,10,9,1,1,0)
   print("LÖVE GPU pixel test passed: rotated atlas de-rotation is correct.")
+  -- Test animated slot switching on the actual GPU, including hiding.
+  local colorData=love.image.newImageData(4,2)
+  for py=0,1 do
+    for px=0,3 do
+      if px<2 then colorData:setPixel(px,py,1,0,0,1)
+      else colorData:setPixel(px,py,0,1,0,1) end
+    end
+  end
+  local imageSwap=love.graphics.newImage(colorData)
+  imageSwap:setFilter("nearest","nearest")
+  local raw={
+    version="5.5",frameRate=12,armature={{
+      name="swap_test",bone={{name="root"}},slot={{name="sprite",parent="root"}},
+      skin={{name="default",slot={{name="sprite",display={
+        {name="red",pivot={x=0,y=0}},{name="green",pivot={x=0,y=0}}
+      }}}}},
+      animation={{name="swap",duration=12,playTimes=0,slot={{
+        name="sprite",displayFrame={
+          {duration=4,value=0},{duration=4,value=1},{duration=4,value=-1}
+        }
+      }}}}
+    }}
+  }
+  local runtime=DB.animation.new(DB.parser.parse(raw),"swap_test")
+  local swapAtlas=DB.atlas.parse({width=4,height=2,SubTexture={
+    {name="red",x=0,y=0,width=2,height=2},
+    {name="green",x=2,y=0,width=2,height=2}
+  }})
+  local preparedSwap=DB.love_renderer.prepare(imageSwap,swapAtlas)
+  local target=love.graphics.newCanvas(16,16)
+  local function sampleFrame()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    local cmds=DB.atlas.commands(runtime,swapAtlas)
+    DB.love_renderer.draw(preparedSwap,cmds)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  runtime:play("swap")
+  expect(sampleFrame(),8,8,1,0,0)
+  runtime:advance(4/12)
+  expect(sampleFrame(),8,8,0,1,0)
+  runtime:advance(4/12)
+  local invisible=sampleFrame()
+  local _,_,_,a=invisible:getPixel(8,8)
+  assert(a<.01,"hidden slot must not render")
+  runtime:advance(4/12)
+  expect(sampleFrame(),8,8,1,0,0)
+  print("LÖVE GPU pixel test passed: animated displayFrame switches red/green/hidden/loop.")
+
 end
 return Test
