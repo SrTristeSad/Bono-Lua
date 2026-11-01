@@ -23,6 +23,7 @@
     character: $('character'), characterName: $('character-name'),
     armatureName: $('armature-name'), animation: $('animation'),
     play: $('play'), pause: $('pause'), reset: $('reset'),
+    timeline: $('timeline'), timelineOutput: $('timeline-output'),
     speed: $('speed'), speedOutput: $('speed-output'), bones: $('bones'),
     boneCount: $('bone-count'), slotCount: $('slot-count'),
     skeletonFile: $('skeleton-file'), atlasFile: $('atlas-file'),
@@ -49,6 +50,12 @@
     if (!animation.hasAnimation(name)) throw new Error('Animação inexistente: ' + name);
     animation.play(name, 0);
     state.paused = false;
+    const clip = animation.lastAnimationState;
+    const duration = Number(clip?.totalTime || 0);
+    el.timeline.max = String(Math.max(0.001, duration));
+    el.timeline.value = '0';
+    el.timeline.disabled = duration <= 0;
+    el.timelineOutput.value = '0,00 / ' + duration.toFixed(2).replace('.', ',') + ' s';
     status('Reproduzindo: ' + name, 'ready');
   }
   function selectCharacter(id) {
@@ -226,6 +233,13 @@
         dragonBones.PixiFactory.advanceTime(Math.min(ticker.deltaMS, 50) * 0.001 * state.speed);
       }
       el.fps.textContent = Math.round(ticker.FPS) + ' FPS';
+      const clip = state.display?.animation?.lastAnimationState;
+      if (clip && clip.totalTime > 0) {
+        const now = Math.min(clip.totalTime, Math.max(0, clip.currentTime));
+        el.timeline.value = String(now);
+        el.timelineOutput.value = now.toFixed(2).replace('.', ',') + ' / '
+          + clip.totalTime.toFixed(2).replace('.', ',') + ' s';
+      }
     });
 
     el.character.replaceChildren();
@@ -241,6 +255,14 @@
     selectCharacter(el.character.value);
     el.character.addEventListener('change', () => selectCharacter(el.character.value));
     el.importCharacter.addEventListener('click', importCharacter);
+    el.timeline.addEventListener('input', () => {
+      const clip = state.display?.animation?.lastAnimationState;
+      if (!clip || clip.totalTime <= 0) return;
+      state.paused = true;
+      clip.currentTime = Math.max(0, Math.min(clip.totalTime - 0.00001, Number(el.timeline.value)));
+      state.display.armature.advanceTime(0);
+      status('Posição: ' + clip.currentTime.toFixed(2) + ' s', 'ready');
+    });
     el.animation.addEventListener('change', () => selectAnimation(el.animation.value));
     el.pause.addEventListener('click', () => {
       state.paused = true;
