@@ -49,6 +49,19 @@ Os arquivos são carregados apenas no navegador, sem envio para o servidor e sem
 
 Este recurso **não modifica** a obra original; é a primeira etapa para permitir que o futuro editor trabalhe com projetos externos.
 
+## Edição de ossos — fase 6
+
+A área **Ossos · pose-base** apresenta a árvore hierárquica com os nomes e pais dos ossos carregados, usando a estrutura original do DragonBones.
+
+1. Escolha um personagem e selecione um osso na árvore.
+2. Ajuste **X**, **Y** ou **Rotação (graus)**. A prévia é atualizada com os offsets do runtime DragonBones e a reprodução é pausada para inspeção.
+3. Use **Restaurar osso** para voltar à pose-base original daquele projeto carregado.
+4. Use **Salvar esqueleto JSON** para baixar o `_ske.json` preservando animações, skins e demais campos. Para reimportar, utilize também o atlas JSON e a textura PNG correspondentes.
+
+**Limites atuais:** este editor altera a pose-base (rest pose) existente; ainda não cria/apaga ossos, não edita keyframes, não muda hierarquia, não reconstroi malhas e não gera novas imagens. A visualização é feita via `Bone.offset`, enquanto a exportação atualiza as transformações do JSON original. Projetos com malhas ponderadas, IK ou constraints complexas podem exigir adaptação de pesos e binds para reproduzir fielmente mudanças de pose-base: ainda não há validação de equivalência nesses casos.
+
+Os scripts originais e suas licenças continuam preservados; as alterações pertencem somente à cópia local do personagem.
+
 ## Testes
 
 ```bash
