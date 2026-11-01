@@ -266,6 +266,20 @@ Testes específicos: `tests/original_animation_state.lua`, cobrindo flags/bitmas
 
 Branch `port-original-animation-state` integrada pelo [PR #23](https://github.com/SrTristeSad/Bono-Lua/pull/23), commit [`39656d5`](https://github.com/SrTristeSad/Bono-Lua/commit/39656d511c54e2d972dc1669d75f7d3eba83a755). A CI do PR aprovou **54/54 cenários AnimationState e 197 asserções em Lua 5.4 e LuaJIT**; testes anteriores e os dois jobs de renderização LÖVE também passaram. Total acumulado: **527 cenários dos portes originais** (473 anteriores + 54), além dos 22 testes do protótipo. Testes de integração usando as classes reais Armature, Animation e BlendState foram executados, mas as timelines originais ainda precisam ser portadas e comparadas diferencialmente.
 
+### Lote: BaseTimelineState.ts — cinco classes abstratas originais
+
+Referência fixa: `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` (571 linhas), DragonBonesJS commit `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. Branch `port-original-base-timeline-state`. Destino: `dragonbones/original/animation/BaseTimelineState.lua`.
+
+Portadas **todas as cinco classes** do arquivo original: `TimelineState`, `TweenTimelineState`, `SingleValueTimelineState`, `DoubleValueTimelineState` e `MutilpleValueTimelineState` (grafia original mantida). Métodos concretos: `TimelineState._onClear`, `_setCurrentTime`, `init`, `fadeOut`, `update`, `blend`; `TweenTimelineState._getEasingValue`, `_getEasingCurveValue`, `_onClear`, `_onArriveAtFrame`, `_onUpdateFrame`; e os respectivos métodos `_onClear`, `_onArriveAtFrame`, `_onUpdateFrame` das três subclasses de valores.
+
+Preservados os ramos de encerramento/repetição de reprodução (inclusive `+0.000001` no último frame), sincronização com ActionTimeline, escala e offset temporais, leitura das matrizes binárias de frame com índices zero-based convertidos em `+1` para tabelas Lua, amostras de easing, interpolação quadrática/curva, interpolações escalares/duplas/múltiplas, valores de pose, alterações de `dirty` e reuso de arrays `_rd` pelo pool. As classes continuam **abstratas**, e os callbacks `TimelineState._onArriveAtFrame` e `_onUpdateFrame` não foram implementados falsamente; as subclasses concretas correspondentes continuam em `TimelineState.ts`.
+
+Diferenças de linguagem: `null` → `nil`, tabelas Lua no lugar de `Array` e `TypedArray`, construtores com parâmetro explícito de classe concreta para preservar o tipo usado por `BaseObject.borrowObject`, `math.fmod` para semântica de resto do JS e array `_rd` 1-based. Diferenças de aritmética IEEE-754 em casos extremos e equivalência com execução JS original permanecem para testes diferenciais; os testes de conformidade verificam cenários definidos, **não atestam 1:1 integral**.
+
+Teste dedicado: `tests/original_base_timeline.lua`, com subclasses concretas exclusivamente no teste para exercitar os dois métodos abstratos, construções de frame binário, modo pose, índices, easing, looping, controle do relógio, escala e tipos de valor. GitHub Actions executa a suíte em Lua 5.4 e LuaJIT e mantém todos os testes gráficos LÖVE. **Próxima etapa obrigatória:** portar todas as classes concretas de `animation/TimelineState.ts` (1075 linhas), integrando-as a `AnimationState` e removendo a dependência temporal das classes de teste. Editor GUI original e comparação diferencial com TS seguem pendentes.
+
+PR, resultados da CI e SHA da integração serão preenchidos após aprovação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
