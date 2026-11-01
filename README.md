@@ -2,7 +2,7 @@
 
 Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
 
-## Estado atual: fase 5 — visualizador original e importação de projetos
+## Estado atual: fase 6 — visualizador e edição inicial da pose-base
 
 - Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
 - Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
@@ -47,12 +47,12 @@ npm run demo:prepare
 npm run demo:serve
 ```
 
-Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar de personagem e animação, importar localmente arquivos de esqueleto JSON, atlas JSON e PNG, além de navegar pelo tempo da animação. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia, editar X/Y/rotação da pose-base e salvar o esqueleto JSON**. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
 
 ## Próximas etapas
 
 1. Testar projetos DragonBones mais complexos: skins, malhas, deformações, constraints e IK.
-2. Começar a reconstrução da interface original de edição: árvore de ossos, seleção de slots e transformações.
+2. Ampliar o editor de hierarquia de ossos para seleção visual, criação/remoção e operações sobre slots, mantendo compatibilidade.
 3. Recuperar ferramentas de edição de keyframes e timeline, com testes de projeto salvo/reaberto.
 4. Testar equivalência de exportação original.
 5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
