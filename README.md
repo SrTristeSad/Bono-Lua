@@ -2,7 +2,7 @@
 
 **Linguagem do projeto: Lua.** O [DragonBonesJS](https://github.com/DragonBones/DragonBonesJS) é apenas a **referência técnica** para o porte, não uma dependência de execução.
 
-Esta branch substitui o protótipo JavaScript anterior por uma base inteiramente escrita em Lua. O histórico da implementação anterior permanece acessível na branch main e nos commits antigos. **Não é ainda uma cópia funcional completa do DragonBones**: este é o primeiro núcleo executável do porte.
+A branch principal (`main`) contém agora uma base escrita inteiramente em Lua, no lugar do protótipo JavaScript anterior. O histórico do protótipo continua acessível nos commits antigos do Git. **Não é ainda uma cópia funcional completa do DragonBones**: este é o primeiro núcleo executável do porte.
 
 ## Como executar
 
