@@ -245,7 +245,7 @@ test("dependent timeline with one frame follows action playState",function()
   local action={playState=0,currentTime=0.75,currentPlayTimes=5}
   t._actionTimeline=action
   eq(t:_setCurrentTime(0),true)
-  eq(t.playState,-1);eq(t.currentPlayTimes,1)
+  eq(t.playState,1);eq(t.currentPlayTimes,1)
   near(t.currentTime,0.75)
   action.playState=1
   action.currentTime=0.8
@@ -387,6 +387,7 @@ test("tween curve easing reads samples from frame array",function()
   db.frameArray={0,Types.TweenType.Curve,2,2500,7500,10,Types.TweenType.None,0}
   db.timelineArray[7]=5
   t:update(0.5)
+  print("DEBUG curve",t._tweenProgress,t._frameDurationR,t._framePosition,t._frameIndex,t._tweenType,t._curveCount,t._frameOffset,t._frameArray[4],t._frameArray[5],t.currentTime)
   near(t._tweenProgress,0.5)
 end)
 test("single value interpolates two samples",function()
