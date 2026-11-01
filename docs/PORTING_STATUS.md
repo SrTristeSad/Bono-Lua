@@ -63,7 +63,7 @@ Diferenças de linguagem: propriedades `readonly` e getters TypeScript são repr
 
 Testes: `tests/original_transform_models.lua`, **21 cenários** cobrindo identidades, mutabilidade, casos de limpeza, IK/Path, frames recortados, duplicatas de textura e pool. Não é uma demonstração de equivalência binária com os runtimes Cocos/Pixi; ainda faltam testes diferenciais contra a execução TypeScript do commit fixado, além de Bone/Slot/Armature completos.
 
-Branch do lote: `port-original-transform-models`. Integração e SHA registrados após aprovação da CI.
+Branch do lote: `port-original-transform-models`. Integrado pelo [PR #6](https://github.com/SrTristeSad/Bono-Lua/pull/6), commit [d026762](https://github.com/SrTristeSad/Bono-Lua/commit/d026762ca8faf5fbb558760b8520d6a191162f26). A CI do PR aprovou **102 testes Lua** (81 existentes + 21 novos) e a verificação gráfica do LÖVE; ainda não há comparação diferencial exaustiva com o TypeScript executado.
 
 ## Código que já existia antes deste porte
 
