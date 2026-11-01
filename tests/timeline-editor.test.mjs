@@ -98,7 +98,7 @@ test('preservar marcador final (duration 0) e nao o editar',()=>{
   const inserted=editor.insertFrame(d,'PersonagemA','walk','upperArm','translate',30);
   assert.equal(inserted.start,30);
   const entries=editor.frames(d,'PersonagemA','walk','upperArm','translate');
-  assert.deepEqual(entries.map(k=>[k.start,k.duration]),[[0,24],[24,6],[30,18],[48,0]]);
+  assert.deepEqual(Array.from(entries,k=>[k.start,k.duration]),[[0,24],[24,6],[30,18],[48,0]]);
   assert.equal(editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',2).index,1);
   assert.deepEqual(JSON.parse(JSON.stringify(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]))),[[0,24],[24,24],[48,0]]);
   assert.throws(()=>editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',2),/primeiro quadro/);
