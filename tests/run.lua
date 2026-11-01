@@ -124,15 +124,60 @@ test("Atlas: reject duplicate, outside and invalid frame coordinates",function()
   assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=-1,height=5}}}))
   assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=1,height=5},{name="a",x=1,y=0,width=1,height=5}}}))
 end)
-test("Atlas: detect rotated sprites without silently drawing them",function()
+test("Atlas: rotated frames use logical width and height for pivot",function()
   local a=DB.atlas.parse({width=64,height=32,SubTexture={
-    {name="upperArm",x=0,y=0,width=32,height=32,rotated=true},
-    {name="forearm",x=32,y=0,width=32,height=32}
+    {name="upperArm",x=0,y=0,width=32,height=16,rotated=true},
+    {name="forearm",x=32,y=0,width=32,height=16}
   }})
-  local player=DB.animation.new(project,"PersonagemA")
-  local attachments,warnings=DB.atlas.attachments(player.armature,a)
-  assert(#attachments==1 and attachments[1].slot=="forearm")
-  assert(#warnings==1 and warnings[1].reason:match("rotated"))
+  local commands,warnings=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),a)
+  assert(#commands==2 and #warnings==0)
+  assert(commands[1].rotated and not commands[2].rotated)
+  close(commands[1].offsetX,-8)   -- logical width = 16, not packed width = 32
+  close(commands[1].offsetY,-16)  -- logical height = 32
+  close(commands[2].offsetX,-16)
+  close(commands[2].offsetY,-8)
+end)
+test("LÖVE: clockwise-packed sprite is unrotated by 4x4 matrix",function()
+  local a=DB.atlas.parse({width=64,height=32,SubTexture={
+    {name="upperArm",x=0,y=0,width=32,height=16,rotated=true},
+    {name="forearm",x=32,y=0,width=32,height=16}
+  }})
+  local commands=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),a)
+  local oldLove=_G.love
+  local matrices,draws={},{}
+  _G.love={math={newTransform=function()
+    return {setMatrix=function(_,layout,...)
+      assert(layout=="row")
+      matrices[#matrices+1]={...}
+    end}
+  end},graphics={
+    newQuad=function(x,y,w,h) return {x=x,y=y,w=w,h=h} end,
+    setColor=function() end,push=function() end,pop=function() end,
+    applyTransform=function() end,
+    draw=function(_,quad,x,y) draws[#draws+1]={quad=quad,x=x,y=y} end
+  }}
+  local success,err=pcall(function()
+    local image={getWidth=function()return 64 end,getHeight=function()return 32 end}
+    local prepared=DB.love_renderer.prepare(image,a)
+    DB.love_renderer.draw(prepared,commands)
+  end)
+  _G.love=oldLove
+  assert(success,err)
+  assert(#draws==2 and #matrices==2)
+  close(draws[1].x,0)
+  close(draws[1].y,0)
+  assert(draws[1].quad.w==32 and draws[1].quad.h==16)
+  -- Applying inverse clockwise mapping: source bottom-left -> original bottom-right
+  -- Original logical dimensions are 16x32, pivot (-8,-16), and bone at (5,0).
+  local m=matrices[1]
+  close(m[1],0)
+  close(m[2],1)
+  close(m[5],-1)
+  close(m[6],0)
+  close(m[4],-3)
+  close(m[8],16)
+  close(m[4]+m[2]*16,13)
+  close(m[8]+m[5]*32,-16)
 end)
 test("LÖVE adapter: draw textured atlas quads with graphics state restored",function()
   local f=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
