@@ -1,0 +1,267 @@
+-- Conformance for the DisplayFrame class in Slot.ts, pinned source
+-- DragonBonesJS 64b6c69ae35777c2404be68c9192e2c56906079e.
+package.path = "./?.lua;./?/init.lua;" .. package.path
+local Base = require("dragonbones.original.core.BaseObject")
+local Core = require("dragonbones.original.core.DragonBones")
+local Display = require("dragonbones.original.model.DisplayData")
+local Frame = require("dragonbones.original.armature.DisplayFrame")
+local TextureData = require("dragonbones.original.model.TextureAtlasData").TextureData
+local Bounding = require("dragonbones.original.model.BoundingBoxData")
+local passed, failed, assertions = 0, 0, 0
+
+local function eq(a,b)
+  assertions = assertions + 1
+  assert(a==b,tostring(a).." ~= "..tostring(b))
+end
+local function test(name, action)
+  local ok, err = pcall(action)
+  if ok then passed=passed+1;print("ok original.display_frame "..name)
+  else failed=failed+1;print("not ok original.display_frame "..name..": "..tostring(err)) end
+end
+local function make(classType)
+  return Base.borrowObject(classType)
+end
+-- TextureData is abstract in the original; instantiate its data-model base
+-- with an explicit classType. No fake runtime texture implementation is added.
+local function texture()
+  local t=TextureData.new(TextureData)
+  t:_onClear()
+  return t
+end
+local function mesh(n, weighted)
+  local d=make(Display.MeshDisplayData)
+  d.geometry.data={intArray={n or 4}}
+  d.geometry.offset=0
+  if weighted then d.geometry.weight={count=weighted} end
+  return d
+end
+local function path(n, weighted)
+  local d=make(Display.PathDisplayData)
+  d.geometry.data={intArray={n or 4}}
+  d.geometry.offset=0
+  if weighted then d.geometry.weight={count=weighted} end
+  return d
+end
+
+test("original class identifier",function()
+  eq(Frame.toString(),"[class dragonBones.DisplayFrame]")
+end)
+test("new pooled instance initializes all four nullable references",function()
+  local f=make(Frame)
+  eq(f.rawDisplayData,nil);eq(f.displayData,nil)
+  eq(f.textureData,nil);eq(f.display,nil)
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("one deform array per frame, not shared across instances",function()
+  local a=make(Frame);local b=make(Frame)
+  assert(a.deformVertices~=b.deformVertices)
+  a:returnToPool();b:returnToPool()
+end)
+test("no raw display yields empty deform vertices",function()
+  local f=make(Frame)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("image does not allocate deform vertices",function()
+  local f=make(Frame)
+  f.rawDisplayData=make(Display.ImageDisplayData)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("bounding box does not allocate deform vertices",function()
+  local f=make(Frame)
+  f.rawDisplayData=make(Display.BoundingBoxDisplayData)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("armature display does not allocate deform vertices",function()
+  local f=make(Frame)
+  f.rawDisplayData=make(Display.ArmatureDisplayData)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("raw mesh allocates two deformation scalars per vertex",function()
+  local f=make(Frame)
+  f.rawDisplayData=mesh(6)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,12)
+  for i=1,12 do eq(f.deformVertices[i],0.0) end
+  f:returnToPool()
+end)
+test("raw path allocates two deformation scalars per vertex",function()
+  local f=make(Frame)
+  f.rawDisplayData=path(5)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,10)
+  for i=1,10 do eq(f.deformVertices[i],0.0) end
+  f:returnToPool()
+end)
+test("weighted mesh uses weight.count, not raw vertex count",function()
+  local f=make(Frame)
+  f.rawDisplayData=mesh(3,7)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,14)
+  f:returnToPool()
+end)
+test("weighted path uses weight.count, not raw vertex count",function()
+  local f=make(Frame)
+  f.rawDisplayData=path(3,8)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,16)
+  f:returnToPool()
+end)
+test("geometry offset uses zero-based BinaryOffset indexing",function()
+  local f=make(Frame)
+  local d=mesh(1)
+  d.geometry.offset=3
+  d.geometry.data.intArray={12,13,14,9}
+  f.rawDisplayData=d
+  f:updateDeformVertices()
+  eq(#f.deformVertices,18)
+  f:returnToPool()
+end)
+test("zero vertex count keeps deform array empty",function()
+  local f=make(Frame)
+  f.rawDisplayData=mesh(0)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,0)
+  f:returnToPool()
+end)
+test("nonempty deform array is not overwritten on subsequent calls",function()
+  local f=make(Frame)
+  f.rawDisplayData=mesh(5)
+  f:updateDeformVertices()
+  f.deformVertices[1]=33
+  f.rawDisplayData=mesh(8)
+  f:updateDeformVertices()
+  eq(#f.deformVertices,10)
+  eq(f.deformVertices[1],33)
+  f:returnToPool()
+end)
+test("getGeometryData: preferred override mesh over raw path",function()
+  local f=make(Frame)
+  local raw=path(6);local override=mesh(7)
+  f.rawDisplayData=raw;f.displayData=override
+  eq(f:getGeometryData(),override.geometry)
+  f:returnToPool()
+end)
+test("getGeometryData: preferred override path over raw mesh",function()
+  local f=make(Frame)
+  local raw=mesh(4);local override=path(3)
+  f.rawDisplayData=raw;f.displayData=override
+  eq(f:getGeometryData(),override.geometry)
+  f:returnToPool()
+end)
+test("getGeometryData: fallback raw mesh when override image",function()
+  local f=make(Frame)
+  local raw=mesh(4)
+  f.rawDisplayData=raw;f.displayData=make(Display.ImageDisplayData)
+  eq(f:getGeometryData(),raw.geometry)
+  f:returnToPool()
+end)
+test("getGeometryData: null when displays have no geometry",function()
+  local f=make(Frame)
+  f.rawDisplayData=make(Display.ImageDisplayData)
+  eq(f:getGeometryData(),nil)
+  f:returnToPool()
+end)
+test("getBoundingBox: override before raw bounding box",function()
+  local f=make(Frame)
+  local raw=make(Display.BoundingBoxDisplayData)
+  local override=make(Display.BoundingBoxDisplayData)
+  local b1={};local b2={}
+  raw.boundingBox=b1;override.boundingBox=b2
+  f.rawDisplayData=raw;f.displayData=override
+  eq(f:getBoundingBox(),b2)
+  f.displayData=make(Display.ImageDisplayData)
+  eq(f:getBoundingBox(),b1)
+  f:returnToPool()
+end)
+test("getBoundingBox: nil for mesh, path, image",function()
+  local f=make(Frame)
+  f.rawDisplayData=path(6);f.displayData=mesh(5)
+  eq(f:getBoundingBox(),nil)
+  f:returnToPool()
+end)
+test("getTextureData: override image dominates explicit texture",function()
+  local f=make(Frame)
+  local a=texture();local b=texture()
+  local override=make(Display.ImageDisplayData)
+  override.texture=a
+  f.displayData=override;f.textureData=b
+  eq(f:getTextureData(),a)
+  f:returnToPool()
+end)
+test("getTextureData: override mesh dominates explicit texture",function()
+  local f=make(Frame)
+  local a=texture();local b=texture()
+  local override=mesh(4);override.texture=a
+  f.displayData=override;f.textureData=b
+  eq(f:getTextureData(),a)
+  f:returnToPool()
+end)
+test("getTextureData: explicit texture beats raw mesh and raw image",function()
+  local f=make(Frame)
+  local explicit=texture();local inherited=texture()
+  local raw=mesh(2);raw.texture=inherited
+  f.rawDisplayData=raw;f.textureData=explicit
+  eq(f:getTextureData(),explicit)
+  local rawImage=make(Display.ImageDisplayData)
+  rawImage.texture=inherited
+  f.rawDisplayData=rawImage
+  eq(f:getTextureData(),explicit)
+  f:returnToPool()
+end)
+test("getTextureData: raw image and mesh fallback",function()
+  local f=make(Frame)
+  local tx=texture()
+  local d=make(Display.ImageDisplayData);d.texture=tx
+  f.rawDisplayData=d
+  eq(f:getTextureData(),tx)
+  local m=mesh(2);m.texture=tx
+  f.rawDisplayData=m
+  eq(f:getTextureData(),tx)
+  f:returnToPool()
+end)
+test("getTextureData: nil when none of image, mesh or explicit texture",function()
+  local f=make(Frame)
+  f.rawDisplayData=path(1)
+  eq(f:getTextureData(),nil)
+  f:returnToPool()
+end)
+test("getTextureData: nil override still follows original early return",function()
+  local f=make(Frame)
+  local override=make(Display.ImageDisplayData)
+  local tx=texture()
+  f.displayData=override
+  f.textureData=tx
+  eq(f:getTextureData(),nil)
+  f:returnToPool()
+end)
+test("returnToPool clears references and preserves the array instance",function()
+  local f=make(Frame)
+  local arr=f.deformVertices
+  f.rawDisplayData=mesh(2)
+  f.displayData=make(Display.ImageDisplayData)
+  f.textureData=texture()
+  f.display={custom=true}
+  f:updateDeformVertices()
+  eq(#arr,4)
+  f:returnToPool()
+  local reused=make(Frame)
+  eq(f,reused)
+  eq(reused.deformVertices,arr)
+  eq(#arr,0)
+  eq(reused.rawDisplayData,nil)
+  eq(reused.displayData,nil)
+  eq(reused.textureData,nil)
+  eq(reused.display,nil)
+  reused:returnToPool()
+end)
+print(("Original Slot.ts DisplayFrame: %d passed, %d failed, %d assertions"):format(passed, failed, assertions))
+if failed > 0 then os.exit(1) end

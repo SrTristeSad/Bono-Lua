@@ -180,6 +180,18 @@ Testes de conformidade em `tests/original_constraint.lua`, cobrindo herança, po
 
 Branch `port-original-constraint-runtime` integrada pelo [PR #17](https://github.com/SrTristeSad/Bono-Lua/pull/17), commit de integração [`e0411a4`](https://github.com/SrTristeSad/Bono-Lua/commit/e0411a47f76b95b208cfd1e1baeb8c0b0a1ec9a5). GitHub Actions do PR: **31/31 cenários Constraint aprovados em Lua 5.4 e LuaJIT**, total de **284 testes dos portes originais** (253 anteriores + 31), além de **22 testes do protótipo** em Lua 5.4 e verificação dos exemplos/rotas gráficas LÖVE. O comparador diferencial com TypeScript executado segue pendente.
 
+### Lote: Slot.ts — classe DisplayFrame (dependência do Slot original)
+
+Fonte examinada: `DragonBones/src/dragonBones/armature/Slot.ts`, **1.316 linhas**, revisão fixa `64b6c69ae35777c2404be68c9192e2c56906079e` (MIT). Contém duas classes: `DisplayFrame` (linhas 27–139) e `Slot` (linhas 164–1315). **Este lote contém somente a classe `DisplayFrame`, concluída por método, e NÃO declara `Slot.ts` inteiro portado.** Próximo alvo obrigatório é a classe abstrata `Slot` do mesmo arquivo, incluindo todos os hooks, regras de atualização e propriedades, antes de prosseguir para `Armature.ts`.
+
+Destino novo: `dragonbones/original/armature/DisplayFrame.lua`. Métodos portados: `toString`, `new` (equivalente ao inicializador de campo TS), `_onClear`, `updateDeformVertices`, `getGeometryData`, `getBoundingBox` e `getTextureData`. Mantidas a prioridade entre `displayData`/`rawDisplayData`/`textureData`, distinção entre Mesh e Path, dados de geometria, array zerado de deformação e guarda contra realocação após a primeira chamada. O objeto `DisplayFrame` é independente de um backend de renderização e utiliza os módulos originais `BaseObject`, `DragonBones` e os modelos de exibição portados previamente.
+
+Diferenças inevitáveis de linguagem: `null` do TypeScript é `nil`; `deformVertices` é uma sequência Lua com índices 1-based, mantendo as mesmas quantidades e valores; a leitura de `GeometryVertexCount` em `intArray` usa deslocamento `+1` no armazenamento Lua; o array é conservado por identidade após `returnToPool`. Não foi criado nenhum editor, backend ou substituto de `Slot`.
+
+Testes específicos: `tests/original_display_frame.lua`, **27 cenários** de origem e retorno ao pool, independência de arrays, mesh/path com e sem pesos, índices binários, tipos não deformáveis, ausência de geometria, precedências de dados e retornos nulos. Executados em Lua 5.4 e pelo laço de conformidade LuaJIT na CI. **Pendente:** comparação executável diferencial contra a versão JS e toda a classe `Slot` (1.150+ linhas originais), inclusive `Armature` e os hooks de renderização.
+
+Branch `port-original-slot-display-frame`. PR, execução da CI e SHA da integração serão registrados após os testes.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
