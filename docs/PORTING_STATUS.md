@@ -251,6 +251,20 @@ Teste dedicado: `tests/original_blend_state.lua` com cenários de saturação, e
 
 Branch `port-original-blend-state` integrada pelo [PR #22](https://github.com/SrTristeSad/Bono-Lua/pull/22), commit de integração [`f7d00a6`](https://github.com/SrTristeSad/Bono-Lua/commit/f7d00a6d2a1739aefd30518617fd5663ef0bfb7a). CI do PR: **33/33 cenários BlendState e 136 verificações** aprovados em Lua 5.4 e LuaJIT, além de ambos os jobs LÖVE e das regressões anteriores. Total acumulado: **473 testes dos portes originais** (440 + 33), mais os 22 testes do protótipo. Ainda não há validação diferencial sistemática entre TS e Lua; a classe AnimationState completa segue pendente.
 
+### Lote: AnimationState — primeira classe de animation/AnimationState.ts
+
+Referência: DragonBonesJS fixado em `64b6c69ae35777c2404be68c9192e2c56906079e`, arquivo `DragonBones/src/dragonBones/animation/AnimationState.ts` (1603 linhas); primeira classe `AnimationState` nas linhas 38–1524. A classe auxiliar `BlendState` no mesmo arquivo já foi portada pelo PR #22. Licença MIT preservada. Destino deste lote: `dragonbones/original/animation/AnimationState.lua`, branch `port-original-animation-state`.
+
+Métodos concretos implementados: `toString`, `_onClear`, `_updateTimelines`, `_updateBoneAndSlotTimelines`, `_advanceFadeTime`, `init`, `advanceTime`, `play`, `stop`, `fadeOut`, `containsBoneMask`, `addBoneMask`, `removeBoneMask`, `removeAllBoneMask`, `addState`, `activeTimeline`; getters `isFadeIn`, `isFadeOut`, `isFadeComplete`, `isPlaying`, `isCompleted`, `currentPlayTimes`, `totalTime`, `currentTime`, `weight`, `animationData`; setters `currentTime`, `weight`. Portados os arrays de timeline, lifecycle de pooled instances, configuração de playback, fadein/fadeout e eventos, tempo de animação e cache, máscara recursiva de bones, dispatch e mistura de timelines, construção de alvos via BlendState, pose e atualização de slots/constraints/estados filhos.
+
+**Bloqueio real de execução completa:** as classes de timeline pertencem aos arquivos originais `animation/BaseTimelineState.ts` e `animation/TimelineState.ts`, ainda não portados. `AnimationState.lua` usa `require("dragonbones.original.animation.TimelineState")` somente quando efetivamente instancia as classes originais, sem incluir implementações falsas no produto. O teste isolado `tests/original_animation_state.lua` registra contratos de timeline **exclusivamente no ambiente de testes** e os remove de `package.loaded` ao final. O porte desta classe não prova animações completas nem equivalência 1:1 do runtime.
+
+Adaptações explícitas: arrays TS indexados a partir de zero → armazenamento Lua indexado a partir de um; `currentTime` e `weight` via metatable `__index`/`__newindex`; bitmasks de playhead de dois bits usando aritmética para compatibilidade Lua 5.4/LuaJIT; `math.fmod` para resto com sinal de JavaScript; agrupamento de timelines por nomes em mapas Lua. A ordem de iteração `pairs` não comprova equivalência de ordenação com `for..in` de objetos JavaScript; comparação diferencial permanece pendente.
+
+Testes específicos: `tests/original_animation_state.lua`, cobrindo flags/bitmasks, configuração/tempo reverso, fade e eventos, masks, pesos e cache, timelines de bone/slot, limpeza de pose, estados filhos e fluxo completo da camada `AnimationState` sob contratos das timelines. Executa em Lua 5.4 e LuaJIT via CI, mantendo regressões LÖVE.
+
+PR, CI e commit de integração serão registrados após conclusão da validação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
