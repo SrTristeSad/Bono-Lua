@@ -90,7 +90,7 @@ Testes: `tests/original_armature_data.lua` cobre **19 cenários** de valores pad
 
 **Pendências:** port de `AnimationData.ts`, além de `Bone.ts`, `Slot.ts` e `Armature.ts` (classes do runtime, distintas dos dados); comparação diferencial executando TypeScript original ainda não existe. Adaptações de Lua: metatables como classes, `nil` para `null`, `io.stderr` para `console.warn`, índices Lua base 1. Fonte, licenciamento MIT e comportamento de dependências permanecem registrados.
 
-Branch de trabalho: `port-original-armature-data`. Resultado de CI/PR e SHA serão atualizados após a integração.
+Branch `port-original-armature-data` integrada pelo [PR #8](https://github.com/SrTristeSad/Bono-Lua/pull/8), commit de integração [`648856d`](https://github.com/SrTristeSad/Bono-Lua/commit/648856d8dfde3eadf16a85ff71259cc9b3949a46). A CI do PR aprovou **148 testes Lua** (129 anteriores + 19 novos) e a verificação gráfica LÖVE. Ainda não há teste diferencial completo contra o TypeScript original.
 
 ## Código que já existia antes deste porte
 
