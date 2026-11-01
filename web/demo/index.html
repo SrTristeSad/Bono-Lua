@@ -8,6 +8,7 @@
   <script src="./vendor/pixi.js" defer></script>
   <script src="./vendor/dragonBones-pixi8.js" defer></script>
   <script src="./rig-editor.js" defer></script>
+  <script src="./visual-inspector.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -17,13 +18,17 @@
         <span class="mark">B</span>
         <div><strong>Bono-Lua</strong><small>DragonBonesJS · reprodução original</small></div>
       </div>
-      <span class="phase">Fase 6 · Ossos</span>
+      <span class="phase">Fase 7 · Visual</span>
     </header>
 
     <main class="studio">
       <section class="viewport" aria-label="Prévia do personagem animado">
         <div class="viewport-top"><span>PRÉVIA</span><span id="fps">— FPS</span></div>
-        <div id="canvas-host" class="canvas-host"></div>
+        <div id="canvas-host" class="canvas-host">
+          <div id="stage-layer" class="stage-layer">
+            <svg id="bone-overlay" class="bone-overlay" viewBox="0 0 960 540" preserveAspectRatio="none" aria-label="Selecionar ossos na prévia" style="display:none"></svg>
+          </div>
+        </div>
         <div class="viewport-bottom"><span id="character-name">Personagem original DragonBones</span><span id="status" role="status" data-state="loading">Carregando...</span></div>
       </section>
       <aside class="panel">
@@ -55,7 +60,8 @@
         </div>
         <label for="speed">Velocidade <output id="speed-output">1,0×</output></label>
         <input id="speed" type="range" min="0.25" max="2" value="1" step="0.25" disabled>
-        <label class="check"><input id="bones" type="checkbox" disabled> Exibir ossos e articulações</label>
+        <label class="check"><input id="bones" type="checkbox" disabled> Mostrar esqueleto (DragonBones)</label>
+        <label class="check"><input id="pick-bones" type="checkbox" disabled> Selecionar ossos na prévia</label>
         <section class="rig-panel" aria-label="Edição da pose-base dos ossos">
           <h2>Ossos · pose-base</h2>
           <p>Selecione um osso e ajuste sua posição de repouso. A prévia muda sem modificar os keyframes existentes.</p>
@@ -71,6 +77,12 @@
             <button id="bone-export" type="button" disabled>Salvar esqueleto JSON</button>
           </div>
           <div id="bone-status" role="status" aria-live="polite">Nenhuma edição realizada.</div>
+        </section>
+        <section class="slot-panel" aria-label="Slots do personagem">
+          <h2>Slots e desenhos</h2>
+          <p>Veja os slots, o osso ao qual pertencem e as imagens registradas. Inspeção somente leitura nesta fase.</p>
+          <div id="slot-list" class="slot-list" aria-label="Lista de slots"></div>
+          <div id="slot-details" class="slot-details" role="status">Selecione um slot para inspecionar.</div>
         </section>
         <div class="info">
           <div><span>Armadura</span><strong id="armature-name">—</strong></div>
