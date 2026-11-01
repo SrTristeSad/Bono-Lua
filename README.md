@@ -45,7 +45,9 @@ O atlas atual renderiza **displays de imagem não rotacionados** com os pivôs e
 - Reprodução em Lua de timelines de translação e rotação, com keyframes, looping, easing e curva cúbica Bézier.
 - Cálculo de transformações hierárquicas, associação de imagens de atlas aos slots e quadros de renderização LÖVE.
 - Renderização inicial de sprites recortados do PNG e sobreposição opcional de ossos.
-- Testes de importação, matrizes, hierarquia, pausas, keyframes e curvas.
+- Testes de importação, matrizes, hierarquia, pausas, keyframes, curvas e geração de comandos de sprites.
+- Teste de integração com o **Mecha 1406** oficial: 17 ossos, 13 slots e 13 sprites resolvidos pelo runtime Lua (o exemplo é obtido durante a CI, sem distribuir seus assets).
+- Teste gráfico com o LÖVE em tela virtual, com captura de imagem disponível como artefato no GitHub Actions.
 
 ## Limites atuais
 
@@ -57,4 +59,4 @@ A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bi
 
 O projeto original DragonBonesJS utiliza licença MIT. Este porte é trabalho independente e deve preservar avisos de atribuição quando incorporar código original substancial. Não copia assets nem redistribui o runtime JavaScript.
 
-O nome do repositório permanece Bono-Lua por decisão prévia, mas agora corresponde à tecnologia usada. A execução gráfica real é verificada separadamente no GitHub Actions usando uma tela virtual.
+O nome do repositório permanece Bono-Lua por decisão prévia, mas agora corresponde à tecnologia usada. A execução gráfica real é verificada separadamente no GitHub Actions usando uma tela virtual; isso valida a prévia básica, mas não prova equivalência 1:1 com todas as animações e funcionalidades originais.
