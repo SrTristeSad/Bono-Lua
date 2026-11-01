@@ -1,7 +1,7 @@
 name: Lua - core and animation
 on:
   push:
-    branches: [lua-rebuild]
+    branches: [main, lua-rebuild]
   pull_request:
     branches: [main]
   workflow_dispatch:
