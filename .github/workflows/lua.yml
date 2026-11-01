@@ -55,6 +55,8 @@ jobs:
         run: lua5.4 tests/original_armature.lua
       - name: Verify original Animation.ts states, fades and cache
         run: lua5.4 tests/original_animation.lua
+      - name: Verify BlendState in original AnimationState.ts
+        run: lua5.4 tests/original_blend_state.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
