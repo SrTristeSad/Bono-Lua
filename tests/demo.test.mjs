@@ -25,10 +25,19 @@ test('demo built from pinned upstream has original assets', t => {
   assert.equal(source.commit,UPSTREAM.commit);
   for(const path of [
     'vendor/pixi.js','vendor/dragonBones-pixi8.js','vendor/DRAGONBONES-LICENSE',
-    'assets/mecha_ske.json','assets/mecha_tex.json','assets/mecha_tex.png'
+    'assets/mecha_ske.json','assets/mecha_tex.json','assets/mecha_tex.png',
+    'assets/mecha1406_ske.json','assets/mecha1406_tex.json','assets/mecha1406_tex.png'
   ]) assert.ok(statSync(resolve(root,path)).size>100,'Missing: '+path);
   const skeleton=JSON.parse(readFileSync(resolve(root,'assets/mecha_ske.json'),'utf8'));
   assert.equal(skeleton.armature[0].bone.length,20);
   assert.equal(skeleton.armature[0].slot.length,19);
   assert.ok(skeleton.armature[0].animation.some(a=>a.name==='idle'));
+  const second=JSON.parse(readFileSync(resolve(root,'assets/mecha1406_ske.json'),'utf8'));
+  const model=second.armature.find(armature=>armature.name==='mecha_1406');
+  assert.ok(model,'second example armature');
+  assert.equal(model.bone.length,17);
+  assert.equal(model.slot.length,13);
+  for(const name of ['idle','walk','jump','attack_01']) {
+    assert.ok(model.animation.some(a=>a.name===name),'missing clip: '+name);
+  }
 });
