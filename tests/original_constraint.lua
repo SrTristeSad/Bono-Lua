@@ -370,7 +370,7 @@ test("Path weightless vertices preserve original i+=2 behavior",function()
 end)
 test("Path weighted vertices multiply bone matrices and weights",function()
   local c,d,a,root,target,follow,slot=setupPath(2)
-  a.armatureData.parent.intArray=values(2,0,0,0,0,1,0,1,0)
+  a.armatureData.parent.intArray=values(2,0,0,0,0,1,1,0,1,0)
   -- source weight offset=3, floats start=0, geometry offset=0
   -- iB = 3+2+1 = 6, vertex 0: one bone index 0, vertex 1 same.
   a.armatureData.parent.floatArray=values(0.5,10,20,0.5,30,40)
