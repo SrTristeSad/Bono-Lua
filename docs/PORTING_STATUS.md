@@ -34,6 +34,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/SkinData.ts | dragonbones/original/model/SkinData.lua | Mapa de displays por slot, busca, associação parent, nulos e limpeza com pool |
 | model/DragonBonesData.ts | dragonbones/original/model/DragonBonesData.lua | Metadados, arrays, mapa de armaduras, add/get, reciclagem e referências binárias |
 | model/ArmatureData.ts | dragonbones/original/model/ArmatureData.lua | Quatro classes originais: `ArmatureData`, `BoneData`, `SurfaceData`, `SlotData`; ordenação, caches, associação de dados e limpeza |
+| model/AnimationData.ts | dragonbones/original/model/AnimationData.lua | `AnimationData`, `TimelineData` e `AnimationTimelineData` com mapas de timelines, caches, índices e devolução ao pool |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -92,6 +93,16 @@ Testes: `tests/original_armature_data.lua` cobre **19 cenários** de valores pad
 
 Branch `port-original-armature-data` integrada pelo [PR #8](https://github.com/SrTristeSad/Bono-Lua/pull/8), commit de integração [`648856d`](https://github.com/SrTristeSad/Bono-Lua/commit/648856d8dfde3eadf16a85ff71259cc9b3949a46). A CI do PR aprovou **148 testes Lua** (129 anteriores + 19 novos) e a verificação gráfica LÖVE. Ainda não há teste diferencial completo contra o TypeScript original.
 
+### Lote: AnimationData.ts — dados de animação e timelines
+
+Fonte integral verificada: `DragonBones/src/dragonBones/model/AnimationData.ts`, commit fixado `64b6c69ae35777c2404be68c9192e2c56906079e` (375 linhas), classe `AnimationData` e duas classes de timeline (`TimelineData`, `AnimationTimelineData`). Destino: `dragonbones/original/model/AnimationData.lua`. Métodos de inclusão e consulta dos quatro mapas de timelines preservam a unicidade por identidade, além das tabelas separadas de índices de cache para ossos e slots. A limpeza devolve ao pool todos os timelines, incluindo `actionTimeline` e `zOrderTimeline`, e mantém a identidade das tabelas que o construtor inicializa.
+
+**Comportamento peculiar confirmado no original:** em `cacheFrames()`, o código TS lê `this.cacheFrames.length` (o comprimento da *função*, de aridade 1), **não** `this.cachedFrames.length`. Por isso somente o primeiro elemento de `cachedFrames` recebe `false`; os demais ficam como *holes* (`undefined`). Não foi corrigido no porte. A tradução Lua mantém um campo numérico `cachedFrames.length` para o tamanho lógico do array JS (o operador `#` não preserva o tamanho de arrays esparsos Lua), `cachedFrames[1] = false` e `nil` nas outras posições; a conversão de índices públicos JavaScript → Lua é explicitada nos testes. Para `boneCachedFrameIndices` e `slotCachedFrameIndices`, todas as entradas são inicializadas em `-1` como no original. `cacheFrameRate` é calculado por `max(ceil(frameRate * scale), 1)`, e a contagem inclui mais um frame, preservando o comentário do código original.
+
+Diferenças de linguagem: metatables substituem classes e herança, e `nil` representa `null` e posições não inicializadas, enquanto `cachedFrames.length` conserva o comprimento do array JS. O runtime do protótipo permanece separado. **Ainda faltam comparação diferencial executando o TS original, integração à animação real e testes em LuaJIT/LÖVE para essa camada de dados.** Suíte: `tests/original_animation_data.lua` com 16 casos, incluindo integração com `ArmatureData.cacheFrames`.
+
+Branch do lote: `port-original-animation-data`. Registrar PR e commit após validação CI.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -99,7 +110,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `ArmatureData.ts` agora possui porte inicial de suas quatro classes. A próxima dependência do runtime é `AnimationData.ts` (e seus tipos de timeline), seguida da análise de `Bone.ts`, `Slot.ts` e `Armature.ts` em ordem de dependências. Evitar substitutos simplificados.
+2. `AnimationData.ts` agora possui porte inicial das três classes e integração de dados com `ArmatureData.ts`. Prosseguir pela análise das dependências de `Bone.ts`, `Slot.ts` e `Armature.ts` em ordem de dependências, sem stubs produtivos nem simplificações.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
