@@ -73,7 +73,7 @@ local function fixture()
   slotData.color=Color.new()
   slotData.zOrder=2;slotData.zIndex=3;slotData.alpha=0.6
   local s=new()
-  local raw={id="raw"},mesh={id="mesh"}
+  local raw,mesh={id="raw"},{id="mesh"}
   s:init(slotData,a,raw,mesh)
   return s,a,b,raw,mesh,slotData
 end
