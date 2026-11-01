@@ -2,8 +2,9 @@
 -- Source: DragonBonesJS commit 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and other contributors.
 -- MIT license: see LICENSE-DRAGONBONES.
--- AnimationState.ts and BlendState.ts remain separate, not-yet-ported
--- classes: original dependencies are loaded only when their methods run.
+-- AnimationState and BlendState are separate classes declared in the SAME
+-- original AnimationState.ts file. BlendState.lua is now ported; the full
+-- AnimationState class remains a deferred dependency of playConfig().
 local BaseObject=require("dragonbones.original.core.BaseObject")
 local Core=require("dragonbones.original.core.DragonBones")
 local Config=require("dragonbones.original.model.AnimationConfig")
