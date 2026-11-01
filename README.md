@@ -2,7 +2,7 @@
 
 Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
 
-## Estado atual: fase 3 — runtime original compilado e testado
+## Estado atual: fase 5 — visualizador original e importação de projetos
 
 - Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
 - Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
@@ -10,7 +10,7 @@ Projeto independente para recuperar primeiro o funcionamento do **DragonBones or
 - Testes automatizados: matrizes, classes, hierarquia de ossos, animações, relógio e importação de um exemplo real.
 - Integração: [GitHub Actions](.github/workflows/dragonbones-original.yml), com build e testes em Node.js 20.
 
-**Importante:** o runtime validado ainda não é o **editor visual**. O DragonBonesJS é a biblioteca de execução; a interface do editor será reconstruída separadamente. A reprodução visual de um personagem também não está concluída.
+**Importante:** o runtime e o viewer de reprodução visual já foram validados no Chromium, mas ainda não constituem o **editor original completo**. O DragonBonesJS é a biblioteca de execução; a interface de criação/edição será reconstruída separadamente.
 
 ## Reproduzir
 
@@ -36,7 +36,7 @@ Para rodar apenas os testes, use `npm test`. Testes dependentes do código origi
 
 Veja [docs/compatibilidade.md](docs/compatibilidade.md).
 
-## Viewer original — Fase 4 (integração gráfica)
+## Viewer original — fases 4–5 (integração gráfica e importação)
 
 A versão de compatibilidade inclui agora um viewer de navegador baseado no **adapter PixiJS 8 oficial do DragonBonesJS**, sem substituir seu motor de animação.
 
@@ -47,14 +47,14 @@ npm run demo:prepare
 npm run demo:serve
 ```
 
-Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar de personagem e animação, importar localmente arquivos de esqueleto JSON, atlas JSON e PNG, além de navegar pelo tempo da animação. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
 
 ## Próximas etapas
 
-1. Renderizar um personagem real usando um adaptador gráfico oficial do DragonBonesJS.
-2. Reproduzir animações reais, com pausa, troca de animação e duração.
-3. Validar skins, malhas, deformações, timelines e exportação.
-4. Reconstruir interface equivalente ao editor clássico, com importação e edição.
+1. Testar projetos DragonBones mais complexos: skins, malhas, deformações, constraints e IK.
+2. Começar a reconstrução da interface original de edição: árvore de ossos, seleção de slots e transformações.
+3. Recuperar ferramentas de edição de keyframes e timeline, com testes de projeto salvo/reaberto.
+4. Testar equivalência de exportação original.
 5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
 
 ## Licença e autoria
