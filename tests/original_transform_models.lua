@@ -286,7 +286,8 @@ test("TextureAtlasData.copyFrom clones textures with original parent semantics",
   assert(copy.rotated and copy.region.width==32)
   assert(target.autoSearch and target.width==512 and target.height==256)
   assert(target.scale==1.5 and target.name=="source" and target.imagePath=="packed.png")
-  assert(old._isInPool==true)
+  -- The original pool can immediately reuse the discarded texture during copyFrom.
+  assert(copy==old and not old._isInPool)
   target:returnToPool();source:returnToPool()
 end)
 test("TextureAtlasData.createTexture remains abstract without backend implementation",function()
