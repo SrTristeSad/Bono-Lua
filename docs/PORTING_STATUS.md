@@ -116,7 +116,7 @@ A implementação não adiciona recursos de edição de boneMask ou controlador 
 Diferenças inevitáveis: TS class -> tabela/metatable Lua e índices de arrays de 0 para 1. O retorno `void` e as atribuições originais permanecem.
 Testes: `tests/original_animation_config.lua`, 16 cenários de defaults, cópias, máscaras, reutilização no pool e parâmetros extremos.
 **Pendente:** comparação diferencial executando o TypeScript original e integração com `Animation.ts` e `AnimationState.ts` ainda não portados.
-Branch de trabalho: `port-original-animation-config`. Registrar commit de integração após a CI aprovada.
+Branch `port-original-animation-config` integrada pelo [PR #10](https://github.com/SrTristeSad/Bono-Lua/pull/10), commit [c65b9c6](https://github.com/SrTristeSad/Bono-Lua/commit/c65b9c6a0ad2be2af9b251cfccdef37962f1906d). CI do PR: **180 testes Lua aprovados** (164 existentes + 16 novos), mais renderização e verificação gráfica do LÖVE. A validação diferencial completa contra TypeScript executado continua pendente.
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
