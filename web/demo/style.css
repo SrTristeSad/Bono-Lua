@@ -69,3 +69,11 @@
 .key-fields input{width:100%;min-width:0;background:#172338;color:#fff;border:1px solid #526482;border-radius:6px;padding:7px 4px;font-size:12px}
 #key-apply{width:100%;background:#535fcb;color:#fff;border:1px solid #8493ee;border-radius:8px;padding:10px;font-size:12px;font-weight:650;margin-bottom:10px;cursor:pointer}
 #key-apply:disabled{opacity:.45;cursor:not-allowed}
+
+/* Phase 10 — split, resize, and remove frames in the original DragonBones timeline */
+.key-timing{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+.key-timing label{display:flex;flex-direction:column;gap:4px;margin:0;color:#b8cae2;font-size:11px}
+.key-timing input{width:100%;min-width:0;color:#fff;background:#172338;border:1px solid #526482;border-radius:7px;padding:8px}
+.key-timing button{align-self:end;min-height:34px;background:#293d5b;color:#fff;border:1px solid #516689;border-radius:7px;padding:8px 6px;font-size:11px;cursor:pointer}
+.key-timing #key-delete{grid-column:1/-1;background:#443653;border-color:#705774}
+.key-timing button:disabled,.key-timing input:disabled{opacity:.45;cursor:not-allowed}
