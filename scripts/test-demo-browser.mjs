@@ -3,6 +3,7 @@
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 const port=4179;
 const url='http://127.0.0.1:'+port+'/';
@@ -68,6 +69,27 @@ try {
   assert.equal(await page.locator('#speed-output').innerText(),'1,50×');
   await page.locator('#bones').check();
   await page.waitForTimeout(300);
+  const sampleDir = resolve('vendor/DragonBonesJS/Cocos/Demos/assets/resources/mecha_1406');
+  await page.locator('#skeleton-file').setInputFiles(resolve(sampleDir,'mecha_1406_ske.json'));
+  await page.locator('#atlas-file').setInputFiles(resolve(sampleDir,'mecha_1406_tex.json'));
+  await page.locator('#texture-file').setInputFiles(resolve(sampleDir,'mecha_1406_tex.png'));
+  await page.locator('#import-character').click();
+  await page.waitForFunction(() => {
+    const txt=document.getElementById('import-status')?.textContent || '';
+    return txt.includes('importada(s)') || txt.startsWith('Erro:');
+  },{timeout:30000});
+  const importResult=await page.locator('#import-status').innerText();
+  assert.match(importResult,/1 armadura\(s\) importada\(s\)/,'local DragonBones import');
+  assert.match(await page.locator('#model-origin').innerText(),/Arquivo local/);
+  assert.match(await page.locator('#character').inputValue(),/^bono-local-1-/);
+  assert.equal(await page.locator('#bone-count').innerText(),'17');
+  assert.equal(await page.locator('#slot-count').innerText(),'13');
+  await page.locator('#animation').selectOption('walk');
+  const importedStart=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  await page.waitForTimeout(240);
+  const importedEnd=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.notEqual(importedStart,importedEnd,'imported original animation must advance');
+
   await mkdir('artifacts',{recursive:true});
   await page.screenshot({path:'artifacts/bono-lua-viewer.png',fullPage:true});
   assert.deepEqual(errors,[],'JavaScript errors');
