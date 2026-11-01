@@ -64,5 +64,24 @@ test("Runtime: easing and Bezier curve",function()
   close(DB.animation.eased({tweenEasing=-2},.5),0)
   close(DB.animation.bezier({0,0,1,1},.5),.5,1e-5)
 end)
+test("DragonBones: scale keyframes default to 1",function()
+  local input={version="5.5",armature={{name="scale",bone={{name="root"}},animation={{
+    name="grow",duration=24,bone={{name="root",scaleFrame={
+      {duration=12,x=1,y=1,tweenEasing=0},{duration=12,x=2}
+    }}}}
+  }}}}
+  local project=DB.parser.parse(input)
+  local anim=DB.animation.new(project,"scale")
+  anim:play("grow")
+  anim:advance(.75)
+  local pose=anim:pose("root")
+  close(pose.scaleX,2)
+  close(pose.scaleY,1)
+end)
+test("JSON: rejects malformed numbers and executable text",function()
+  for _,source in ipairs({"01","[1,]","2e+","{true:1}","os.execute('exit')"}) do
+    assert(not pcall(DB.json.decode,source),"accepted invalid JSON: "..source)
+  end
+end)
 print(string.format("%d/%d Lua tests passed",ok,tests))
 if ok~=tests then os.exit(1) end
