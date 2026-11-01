@@ -164,6 +164,22 @@ Testes: `tests/original_surface.lua`, **28 cenários**, cobrindo inicialização
 
 Branch `port-original-surface-runtime` integrada pelo [PR #16](https://github.com/SrTristeSad/Bono-Lua/pull/16), commit de integração [`2fbe3b5`](https://github.com/SrTristeSad/Bono-Lua/commit/2fbe3b575bf9c468a1322451518c726b0a838ef5). GitHub Actions do PR: **28/28 novos cenários Surface aprovados em Lua 5.4 e LuaJIT**; no total, **253 cenários de porte original**, mais **22 testes do protótipo** em Lua 5.4, compatibilidade LuaJIT e os jobs gráficos LÖVE. O porte diferencial contra TypeScript executado permanece pendente.
 
+### Lote: armature/Constraint.ts — Constraint, IKConstraint, PathConstraint
+
+Fonte integral consultada: `DragonBones/src/dragonBones/armature/Constraint.ts`, 835 linhas, do DragonBonesJS no commit fixado `64b6c69ae35777c2404be68c9192e2c56906079e` (MIT). Destino: `dragonbones/original/armature/Constraint.lua`.
+
+Portados os três tipos originais: a base abstrata `Constraint`, `IKConstraint` (todos os métodos `_onClear`, `_computeA`, `_computeB`, `init`, `update`, `invalidUpdate`, `toString`) e `PathConstraint` (`_onClear`, `_updatePathVertices`, `_computeVertices`, `_computeBezierCurve`, `addCurvePosition`, `init`, `update`, `invalidUpdate`, `toString`). Mantidos os cálculos originais, ordem de avaliação, caminhos de cotovelo e reflexão de IK, curvas Bézier com velocidade constante e variável, interpolação numérica, rotação da corrente, pesos geométricos e a interface de nomes. As assinaturas abstratas `init`, `update`, `invalidUpdate` na base permanecem sem corpo concreto.
+
+**Sem alterações de produto**: os módulos de protótipo e o LÖVE continuam isolados. `Armature` e `Slot` ainda não portados são representados apenas por objetos de contrato em testes. `BaseObject`, `Bone`, `Transform`, `Matrix` e enums são os portes já existentes.
+
+**Adaptações/peculiaridades:** arrays JS com índices zero-based e posições esparsas usam tabela Lua com `.length`; `math.fmod` mantém o módulo assinado de JS; `atan2` é `math.atan2` em LuaJIT ou `math.atan(y,x)` em Lua 5.4. Preservados o nome `lenghts`, `_segments = [10]` (não vetor de dez posições), o `_computeVertices` com limite `i < count` em vez de `offset+count`, a iteração `i += 2` da geometria sem pesos, o `PathConstraint.invalidUpdate()` vazio e o `init` sem guarda de duplicidade. Quando o TS utiliza `undefined` em aritmética de posições esparsas, o Lua converte para NaN (não substitui por zero).
+
+Testes de conformidade em `tests/original_constraint.lua`, cobrindo herança, pool, IK com um e dois ossos, pesos, reflexos, cálculos de curva, vértices ponderados, cache de arrays, limites de geometria, flags e atualizações. CI roda Lua 5.4 e LuaJIT e testes gráficos LÖVE.
+
+**Pendente:** comparação diferencial com DragonBonesJS original executado, incluindo números especiais e avaliação visual de constraints de projetos reais; porte de `Slot.ts`, `Armature.ts` e integrações de caminhos completos. Não declaramos equivalência 1:1 já comprovada.
+
+Branch `port-original-constraint-runtime`; PR, testes e commit de integração serão registrados após validação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
