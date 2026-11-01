@@ -162,7 +162,7 @@ Adaptações documentadas: classes/herança por metatables Lua; acesso JS zero-b
 
 Testes: `tests/original_surface.lua`, **28 cenários**, cobrindo inicialização/pool, malha e deformação, cálculos de superfície, 5 regiões e seus triângulos, cache e invalidação, vínculo pai `Bone` e `Surface`, limites, constraints e acesso ao `ArmatureData` original. GitHub Actions executa o teste em Lua 5.4 e automaticamente no loop de conformidade LuaJIT. **Pendente:** comparador diferencial executando o código TS original, casos degenerados e integração real com `Armature.ts`, `Constraint.ts` e `Slot.ts`.
 
-Branch `port-original-surface-runtime`; PR, validação e SHA de integração serão adicionados após a CI.
+Branch `port-original-surface-runtime` integrada pelo [PR #16](https://github.com/SrTristeSad/Bono-Lua/pull/16), commit de integração [`2fbe3b5`](https://github.com/SrTristeSad/Bono-Lua/commit/2fbe3b575bf9c468a1322451518c726b0a838ef5). GitHub Actions do PR: **28/28 novos cenários Surface aprovados em Lua 5.4 e LuaJIT**; no total, **253 cenários de porte original**, mais **22 testes do protótipo** em Lua 5.4, compatibilidade LuaJIT e os jobs gráficos LÖVE. O porte diferencial contra TypeScript executado permanece pendente.
 
 ## Código que já existia antes deste porte
 
