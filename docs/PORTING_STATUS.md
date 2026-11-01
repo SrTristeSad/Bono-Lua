@@ -26,8 +26,12 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/UserData.ts | dragonbones/original/model/UserData.lua | `UserData` e `ActionData` portados, inclusive ciclo de vida no pool |
 | event/EventObject.ts | dragonbones/original/event/EventObject.lua | Constantes, `actionDataToInstance` e `_onClear` portados |
 | core/DragonBones.ts | dragonbones/original/core/DragonBones.lua | Enums, fila de eventos, buffer de objetos e integração com `WorldClock` portados |
+| armature/TransformObject.ts | dragonbones/original/armature/TransformObject.lua | Classe-base abstrata, getters e transformações geométricas portados, testes em subclasses somente de teste |
+| model/CanvasData.ts | dragonbones/original/model/CanvasData.lua | Campos originais, limpeza e pool portados |
+| model/ConstraintData.ts | dragonbones/original/model/ConstraintData.lua | Classes `ConstraintData`, `IKConstraintData`, `PathConstraintData`, enums e limpeza dos ossos portados |
+| model/TextureAtlasData.ts | dragonbones/original/model/TextureAtlasData.lua | Classes abstratas `TextureAtlasData` e `TextureData`, métodos de cópia, atributos, regiões, frames e pool portados |
 
-Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua` e `tests/original_worldclock.lua` e `tests/original_events.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
+Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
 **Não se deve tratar estes testes locais como prova de equivalência 1:1 do runtime inteiro.** Falta um comparador diferencial exaustivo contra a execução do original. Diferenças de linguagem: classes TS vs tabelas/metatables Lua, deslocamento de arrays zero-based para um-based, semântica de resto assinada (`math.fmod`) e diferenças de stringificação em `toString`. `BaseObject` usa uma tabela de classe como chave de pool, em lugar de `String(object.constructor)`, pois Lua não dispõe dessa representação textual de construtor; subclasses fornecem `Class.new()` e chamam `BaseObject.new(Class)`. Preservam-se a sequência de operações, comportamento do pool e o incremento do `hashCode`, mas ainda falta validação diferencial abrangente contra o TypeScript executado. A mutabilidade e a ordem de cálculo foram mantidas no porte inicial.
 
@@ -49,6 +53,18 @@ O `DragonBones.ts` porta os enums numéricos da fonte, a versão 5.7.000, `advan
 
 **Diferenças técnicas:** a implementação usa metatables Lua em vez de herança TypeScript, e mapas/tabelas de enums em vez de enums TypeScript eliminados na compilação. O despacho de eventos espera o contrato original do `Armature`, ainda não portado; o teste usa dublês limitados ao contrato e não os contabiliza como porte. Os shims globais exclusivos do ambiente JS (CommonJS/AMD, console e `__extends`) **não são usados no runtime Lua**. Ainda faltam conformidade diferencial executando código TypeScript original, tratamento de edge cases de ciclos de eventos e as classes completas de Armature, Bone e Slot.
 
+### Lote — TransformObject e modelos dependentes de armadura
+
+Fonte inspecionada no commit fixado: `armature/TransformObject.ts`, `model/CanvasData.ts`, `model/ConstraintData.ts` e `model/TextureAtlasData.ts`. Cada arquivo foi portado **inteiro** para seus módulos em `dragonbones/original/`, sem implementar atalhos no runtime antigo. As classes abstratas (`TransformObject`, `ConstraintData`, `TextureAtlasData` e `TextureData`) continuam abstratas; os testes utilizam subclasses privadas, sem incluí-las no produto como substitutas.
+
+A transformação global preserva a propriedade `_globalDirty` e só decompõe a matriz quando `updateGlobalTransform()` é chamado com esse sinal ativo. `ConstraintData.ts` inclui a classe básica e as subclasses IK e Path, com método `AddBone` preservado com maiúsculas. `TextureAtlasData.ts` inclui `TextureData.createRectangle`, `copyFrom`, `addTexture`, `getTexture`, `createTexture` abstrato e devolução dos objetos de textura ao pool; preserva inclusive a referência a `source.parent` ao copiar `TextureData`, sem corrigi-la por conta própria.
+
+Diferenças de linguagem: propriedades `readonly` e getters TypeScript são representados por campos e metatables Lua; subclasses em Lua devem encaminhar a propriedade herdada `armature`. A implementação de `createTexture` depende da futura implementação de plataforma, como a classe abstrata original; ausência de backend provoca erro explícito. `console.warn` é adaptado para `io.stderr`. Contagens de arrays Lua começam em 1, sem alterar a ordem dos dados.
+
+Testes: `tests/original_transform_models.lua`, **21 cenários** cobrindo identidades, mutabilidade, casos de limpeza, IK/Path, frames recortados, duplicatas de textura e pool. Não é uma demonstração de equivalência binária com os runtimes Cocos/Pixi; ainda faltam testes diferenciais contra a execução TypeScript do commit fixado, além de Bone/Slot/Armature completos.
+
+Branch do lote: `port-original-transform-models`. Integração e SHA registrados após aprovação da CI.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -56,7 +72,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `WorldClock.ts`, `EventObject.ts`, `UserData.ts` e `core/DragonBones.ts` já têm portes iniciais em Lua. Prosseguir pelas dependências originais de armadura, osso, slot e dados de animação, sem criar stubs produtivos que mudem a semântica.
+2. `TransformObject.ts`, `CanvasData.ts`, `ConstraintData.ts` e `TextureAtlasData.ts` foram incluídos como dependências de armaduras, ossos e slots. Prosseguir com as demais classes de dados (`DragonBonesData.ts`, `ArmatureData.ts`, `DisplayData.ts`, `SkinData.ts`), seus contratos e os arquivos `Bone.ts`, `Slot.ts`, `Armature.ts`, sem simplificar suas dependências.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
