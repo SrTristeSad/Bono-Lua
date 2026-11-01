@@ -70,6 +70,16 @@ No painel **Slots e desenhos**, a seleção exibe nome do slot, osso pai, índic
 
 Essas duas ferramentas são **inspeção e seleção**, não deformação automática de malhas nem edição dos dados de slots. Alterar o osso na pose-base ainda ocorre pelos campos X/Y/Rotação e pode ser exportado como JSON; os slots são apenas leitura nesta etapa.
 
+## Edição básica de slots — fase 8
+
+O painel **Slots e desenhos** permite alterar o **desenho padrão** de cada slot: escolha uma imagem do skin padrão ou **Ocultar slot**. O comando **Restaurar desenho** recupera o índice da exportação carregada. O runtime DragonBonesJS recebe a mudança imediatamente (a reprodução é pausada para inspeção), enquanto o JSON original do personagem é editado sem alterar as timelines. Os outros skins continuam preservados.
+
+Os botões **Subir camada** e **Descer camada** mudam a ordem-base de sobreposição da peça, alterando a sequência de `armature[].slot[]` no documento exportado. A prévia utiliza o método de ordenação do **runtime original fixado**. Se o personagem possuir timelines de animação Z-order, a mudança de ordem é bloqueada: remapear keyframes ainda não foi implementado. O avanço de uma animação que controla displays pode substituir temporariamente o desenho padrão; a edição é visível na pose parada e persiste na exportação.
+
+O botão **Salvar esqueleto JSON**, na seção Ossos, salva **também as modificações dos slots**. Reimporte o JSON exportado com o mesmo atlas JSON e PNG para continuar o trabalho. A reordenação de slots não altera imagens, atlas, ossos, pesos nem o restante do arquivo.
+
+**Limitações:** por enquanto não são editáveis as opções de skins alternativas, pesos, malhas, constraints e keyframes. A troca de desenho opera sobre opções já presentes na exportação DragonBones: ainda não se importa uma imagem nova para o atlas.
+
 ## Testes
 
 ```bash
