@@ -20,7 +20,7 @@ test("JSON: escape, arrays, bool, null and Unicode",function()
 end)
 test("DragonBones: armature, slots and skins",function()
   local arm=project.armatures.PersonagemA
-  assert(arm and #arm.slots==1 and #arm.skins==1)
+  assert(arm and #arm.slots==2 and #arm.skins==1)
   assert(#arm.ordered==3 and arm.frameRate==24)
   assert(arm.ordered[3].name=="forearm")
 end)
@@ -82,6 +82,76 @@ test("JSON: rejects malformed numbers and executable text",function()
   for _,source in ipairs({"01","[1,]","2e+","{true:1}","os.execute('exit')"}) do
     assert(not pcall(DB.json.decode,source),"accepted invalid JSON: "..source)
   end
+end)
+
+test("Atlas: parse DragonBones SubTexture and slots in Z order",function()
+  local f=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
+  local raw=f:read("*a");f:close()
+  local atlas=DB.atlas.parse(raw)
+  local player=DB.animation.new(project,"PersonagemA")
+  local attachments,missing=DB.atlas.attachments(player.armature,atlas)
+  assert(#attachments==2 and #missing==0)
+  assert(attachments[1].slot=="upperArm" and attachments[2].slot=="forearm")
+  assert(atlas.regions.upperArm.width==64 and atlas.regions.forearm.x==64)
+end)
+test("Atlas: position sprites through hierarchical DragonBones matrices",function()
+  local f=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
+  local atlas=DB.atlas.parse(f:read("*a"));f:close()
+  local player=DB.animation.new(project,"PersonagemA")
+  local commands,warnings=DB.atlas.commands(player,atlas)
+  assert(#commands==2 and #warnings==0)
+  close(commands[1].matrix.tx,33)
+  close(commands[2].matrix.tx,110)
+  close(commands[1].offsetX,-32)
+  close(commands[1].offsetY,-16)
+  assert(commands[1].name=="upperArm")
+end)
+test("Atlas: hidden slot, missing region and non-image are safe",function()
+  local arm=project.armatures.PersonagemA
+  local atlas=DB.atlas.parse({width=20,height=20,SubTexture={{name="upperArm",x=0,y=0,width=10,height=10}}})
+  local saved=arm.slots[2].displayIndex
+  arm.slots[2].displayIndex=-1
+  local commands,warnings=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),atlas)
+  assert(#commands==1 and #warnings==0)
+  arm.slots[2].displayIndex=saved
+  commands,warnings=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),atlas)
+  assert(#commands==1 and #warnings==1)
+  assert(warnings[1].slot=="forearm")
+end)
+test("Atlas: reject duplicate, outside and invalid frame coordinates",function()
+  local function parse(x) return DB.atlas.parse(x) end
+  assert(not pcall(parse,{width=20,height=20,SubTexture={{name="a",x=19,y=0,width=2,height=5}}}))
+  assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=-1,height=5}}}))
+  assert(not pcall(parse,{SubTexture={{name="a",x=0,y=0,width=1,height=5},{name="a",x=1,y=0,width=1,height=5}}}))
+end)
+test("LÖVE adapter: draw textured atlas quads with graphics state restored",function()
+  local f=assert(io.open("tests/fixtures/atlas-minimo.json","rb"))
+  local atlas=DB.atlas.parse(f:read("*a"));f:close()
+  local commands=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),atlas)
+  local calls={}
+  local oldLove=_G.love
+  _G.love={math={},graphics={
+    newQuad=function(x,y,w,h,tw,th) return {x=x,y=y,w=w,h=h,tw=tw,th=th} end,
+    setColor=function() end,
+    push=function() calls[#calls+1]="push" end,
+    pop=function() calls[#calls+1]="pop" end,
+    applyTransform=function(t) calls[#calls+1]="transform" end,
+    draw=function(image,quad,x,y)
+      calls[#calls+1]={name=quad.x,offsetX=x,offsetY=y}
+    end
+  }}
+  _G.love.math.newTransform=function()
+    return {setMatrix=function(self,a,b,c,d,tx,ty) self.tx=tx end}
+  end
+  local success,errorMessage=pcall(function()
+    local image={getWidth=function() return 128 end,getHeight=function() return 64 end}
+    local prepared=DB.love_renderer.prepare(image,atlas)
+    DB.love_renderer.draw(prepared,commands)
+  end)
+  _G.love=oldLove
+  assert(success,errorMessage)
+  assert(#calls==8 and calls[1]=="push" and calls[4]=="pop" and calls[8]=="pop")
+  close(calls[3].offsetX,-32)
 end)
 print(string.format("%d/%d Lua tests passed",ok,tests))
 if ok~=tests then os.exit(1) end
