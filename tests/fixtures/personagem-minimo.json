@@ -55,6 +55,15 @@
                     "x": 28,
                     "y": 0
                   }
+                },
+                {
+                  "name": "forearm",
+                  "path": "forearm",
+                  "type": "image",
+                  "transform": {
+                    "x": 28,
+                    "y": 0
+                  }
                 }
               ]
             },
@@ -109,6 +118,34 @@
                 {
                   "duration": 24,
                   "rotate": 90
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "swap",
+          "duration": 24,
+          "playTimes": 0,
+          "slot": [
+            {
+              "name": "upperArm",
+              "displayFrame": [
+                {
+                  "duration": 6,
+                  "value": 0
+                },
+                {
+                  "duration": 6,
+                  "value": 1
+                },
+                {
+                  "duration": 6,
+                  "value": -1
+                },
+                {
+                  "duration": 6,
+                  "value": 0
                 }
               ]
             }
