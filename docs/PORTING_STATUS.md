@@ -35,6 +35,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/DragonBonesData.ts | dragonbones/original/model/DragonBonesData.lua | Metadados, arrays, mapa de armaduras, add/get, reciclagem e referências binárias |
 | model/ArmatureData.ts | dragonbones/original/model/ArmatureData.lua | Quatro classes originais: `ArmatureData`, `BoneData`, `SurfaceData`, `SlotData`; ordenação, caches, associação de dados e limpeza |
 | model/AnimationData.ts | dragonbones/original/model/AnimationData.lua | `AnimationData`, `TimelineData` e `AnimationTimelineData` com mapas de timelines, caches, índices e devolução ao pool |
+| model/AnimationConfig.ts | dragonbones/original/model/AnimationConfig.lua | Campos de reprodução, máscaras de ossos, `clear`, `copyFrom` e pool portados |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -103,6 +104,19 @@ Diferenças de linguagem: metatables substituem classes e herança, e `nil` repr
 
 Branch `port-original-animation-data` integrada pelo [PR #9](https://github.com/SrTristeSad/Bono-Lua/pull/9), commit [b86023c](https://github.com/SrTristeSad/Bono-Lua/commit/b86023c34655c34a2db76293edbcb766897dddc8). A CI do PR aprovou **164 testes Lua** (148 anteriores + 16 novos), testes do exemplo Mecha 1406 e a verificação gráfica LÖVE. A equivalência diferencial 1:1 com o TypeScript original ainda está pendente.
 
+### Lote AnimationConfig.ts — parâmetros de reprodução
+
+Fonte: `DragonBones/src/dragonBones/model/AnimationConfig.ts` no commit fixado `64b6c69ae35777c2404be68c9192e2c56906079e`.
+Destino: `dragonbones/original/model/AnimationConfig.lua`. O arquivo contém a classe `AnimationConfig`, com `toString`, `_onClear`, `clear` e `copyFrom`.
+Preservados os 21 campos originais e valores-padrão, inclusive sentinelas `playTimes=-1`, `duration=-1`, `timeScale=-100`, `fadeOutTime=-1`,
+`autoFadeOutTime=-1`, `fadeOutMode=AnimationFadeOutMode.All` e `fadeInTweenType=TweenType.Line`.
+O array `boneMask` conserva identidade em `clear` e `copyFrom`, não compartilha a referência com a configuração de origem e mantém a ordem dos nomes.
+A implementação não adiciona recursos de edição de boneMask ou controlador de reprodução, pois não existem nesse arquivo.
+
+Diferenças inevitáveis: TS class -> tabela/metatable Lua e índices de arrays de 0 para 1. O retorno `void` e as atribuições originais permanecem.
+Testes: `tests/original_animation_config.lua`, 16 cenários de defaults, cópias, máscaras, reutilização no pool e parâmetros extremos.
+**Pendente:** comparação diferencial executando o TypeScript original e integração com `Animation.ts` e `AnimationState.ts` ainda não portados.
+Branch de trabalho: `port-original-animation-config`. Registrar commit de integração após a CI aprovada.
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -110,7 +124,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `AnimationData.ts` agora possui porte inicial das três classes e integração de dados com `ArmatureData.ts`. Prosseguir pela análise das dependências de `Bone.ts`, `Slot.ts` e `Armature.ts` em ordem de dependências, sem stubs produtivos nem simplificações.
+2. `AnimationConfig.ts` foi portado como dependência da implementação original de `Animation.ts` e `AnimationState.ts`. Prosseguir pelas dependências restantes de `Bone.ts`, `Slot.ts` e `Armature.ts`, sem stubs ou simplificações.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
