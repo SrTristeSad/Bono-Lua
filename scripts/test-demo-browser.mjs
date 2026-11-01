@@ -225,6 +225,74 @@ try {
   await page.locator('#bone-restore').click();
   assert.equal(Number(await page.locator('#bone-x').inputValue()),baseX+14,'restore uses reimported baseline');
 
+  // Phase 9 — edit a REAL original DragonBones walk keyframe.
+  await page.locator('#animation').selectOption('walk');
+  await page.locator('#bone-tree button[data-bone="pelvis"]').click();
+  await page.locator('#key-channel').selectOption('translate');
+  assert.ok(await page.locator('#key-list button:not([disabled])').count() >= 2,
+    'official Mecha walk must contain editable pelvis keyframes');
+  await page.locator('#key-list button:not([disabled])').first().click();
+  const beforeTimeline=await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    const clip=model.document.armature.find(a=>a.name==='mecha_1406').animation.find(a=>a.name==='walk');
+    const pelvis=clip.bone.find(b=>b.name==='pelvis');
+    return {
+      x:pelvis.translateFrame[0].x,
+      duration:pelvis.translateFrame[0].duration,
+      runtimePose:window.__bonoDemo.display.armature.getBone('pelvis').animationPose.x
+    };
+  });
+  await page.locator('#key-x').fill(String(beforeTimeline.x+30));
+  await page.locator('#key-apply').click();
+  await page.waitForFunction(()=>{
+    const text=document.getElementById('key-status')?.textContent||'';
+    return text.includes('Keyframe original atualizado') || text.startsWith('Erro:');
+  },{timeout:30000});
+  assert.match(await page.locator('#key-status').innerText(),/Keyframe original atualizado/);
+  const afterTimeline=await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    const clip=model.document.armature.find(a=>a.name==='mecha_1406').animation.find(a=>a.name==='walk');
+    const pelvis=clip.bone.find(b=>b.name==='pelvis');
+    return {
+      x:pelvis.translateFrame[0].x,
+      duration:pelvis.translateFrame[0].duration,
+      runtimePose:window.__bonoDemo.display.armature.getBone('pelvis').animationPose.x,
+      cacheKey:model.editorCacheKey,
+      displayChildren:window.__bonoDemo.display.children.length
+    };
+  });
+  assert.equal(afterTimeline.x,beforeTimeline.x+30,'original keyframe JSON updated');
+  assert.equal(afterTimeline.duration,beforeTimeline.duration,'frame duration preserved');
+  assert.match(afterTimeline.cacheKey,/^bono-keyframe-/);
+  assert.ok(afterTimeline.displayChildren>0,'original Pixi armature rebuilt');
+  assert.ok(Math.abs(afterTimeline.runtimePose-beforeTimeline.runtimePose)>1,
+    'recompiled DragonBones animation should change the actual bone pose');
+
+  const timelineDownload=page.waitForEvent('download');
+  await page.locator('#bone-export').click();
+  const timelineSaved=JSON.parse(await readFile(await (await timelineDownload).path(),'utf8'));
+  const exportedClip=timelineSaved.armature.find(a=>a.name==='mecha_1406')
+    .animation.find(a=>a.name==='walk');
+  assert.equal(exportedClip.bone.find(b=>b.name==='pelvis').translateFrame[0].x,beforeTimeline.x+30);
+  await page.locator('#skeleton-file').setInputFiles({
+    name:'edited_timeline_ske.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify(timelineSaved))
+  });
+  await page.locator('#import-character').click();
+  await page.waitForFunction(() => {
+    const text=document.getElementById('import-status')?.textContent||'';
+    return text.includes('importada(s)') || text.startsWith('Erro:');
+  },{timeout:30000});
+  assert.match(await page.locator('#import-status').innerText(),/importada\(s\)/,
+    'edited keyframes reimport in official parser');
+  await page.locator('#animation').selectOption('walk');
+  const reimportedKey=await page.evaluate(() => {
+    const model=window.__bonoDemo.models.get(document.getElementById('character').value);
+    return model.document.armature.find(a=>a.name==='mecha_1406')
+      .animation.find(a=>a.name==='walk').bone.find(b=>b.name==='pelvis').translateFrame[0].x;
+  });
+  assert.equal(reimportedKey,beforeTimeline.x+30,'roundtrip keyframe value');
+
   await mkdir('artifacts',{recursive:true});
   await page.screenshot({path:'artifacts/bono-lua-viewer.png',fullPage:true});
   assert.deepEqual(errors,[],'JavaScript errors');
