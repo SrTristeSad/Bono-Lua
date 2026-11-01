@@ -51,6 +51,8 @@ jobs:
         run: lua5.4 tests/original_display_frame.lua
       - name: Verify original Slot.ts display, cache and collision behavior
         run: lua5.4 tests/original_slot.lua
+      - name: Verify original Armature.ts orchestration, cache, collisions and clocks
+        run: lua5.4 tests/original_armature.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
