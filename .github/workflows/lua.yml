@@ -41,6 +41,8 @@ jobs:
         run: lua5.4 tests/original_boundingbox.lua
       - name: Verify original DataParser static constants and type conversions
         run: lua5.4 tests/original_data_parser.lua
+      - name: Verify original runtime Bone transforms cache and constraints
+        run: lua5.4 tests/original_bone.lua
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream
