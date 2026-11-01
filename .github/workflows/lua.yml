@@ -1,0 +1,53 @@
+name: Lua - core and animation
+on:
+  push:
+    branches: [lua-rebuild]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lua-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.4
+        run: sudo apt-get update && sudo apt-get install -y lua5.4
+      - name: Check Lua syntax
+        run: find . -name '*.lua' -print0 | xargs -0 -n1 luac5.4 -p
+      - name: Run Lua core tests
+        run: lua5.4 tests/run.lua
+      - name: Download pinned original DragonBones example
+        run: |
+          mkdir -p artifacts/upstream
+          base="https://raw.githubusercontent.com/DragonBones/DragonBonesJS/64b6c69ae35777c2404be68c9192e2c56906079e/Cocos/Demos/assets/resources/mecha_1406"
+          curl --fail --location --retry 3 "$base/mecha_1406_ske.json" -o artifacts/upstream/mecha_1406_ske.json
+          curl --fail --location --retry 3 "$base/mecha_1406_tex.json" -o artifacts/upstream/mecha_1406_tex.json
+      - name: Verify DragonBones original character in Lua
+        run: lua5.4 tests/upstream_real.lua
+  love-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LÖVE and virtual X11 display
+        run: sudo apt-get update && sudo apt-get install -y love xvfb
+      - name: Render a frame in LÖVE and exit cleanly
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_SCREENSHOT=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Verify screenshot output
+        run: |
+          mkdir -p artifacts
+          screenshot="$(find "$HOME" -name bono-lua-preview.png -type f -print -quit)"
+          test -n "$screenshot" && test -s "$screenshot"
+          cp "$screenshot" artifacts/bono-lua-preview.png
+          file artifacts/bono-lua-preview.png
+      - name: Publish graphical preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: bono-lua-love-preview
+          path: artifacts/bono-lua-preview.png
+          if-no-files-found: error

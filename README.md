@@ -1,64 +1,62 @@
-# Bono-Lua — reconstrução compatível com DragonBonesJS
+# Bono-Lua — DragonBones reconstruído em Lua
 
-Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
+**Linguagem do projeto: Lua.** O [DragonBonesJS](https://github.com/DragonBones/DragonBonesJS) é apenas a **referência técnica** para o porte, não uma dependência de execução.
 
-## Estado atual: fase 10 — inserir, remover e ajustar keyframes
+Esta branch substitui o protótipo JavaScript anterior por uma base inteiramente escrita em Lua. O histórico da implementação anterior permanece acessível na branch main e nos commits antigos. **Não é ainda uma cópia funcional completa do DragonBones**: este é o primeiro núcleo executável do porte.
 
-- Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
-- Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
-- Runtime original: TypeScript compilado para JavaScript sem modificar o upstream.
-- Testes automatizados: matrizes, classes, hierarquia de ossos, animações, relógio e importação de um exemplo real.
-- Integração: [GitHub Actions](.github/workflows/dragonbones-original.yml), com build e testes em Node.js 20.
+## Como executar
 
-**Importante:** o runtime e o viewer de reprodução visual já foram validados no Chromium, mas ainda não constituem o **editor original completo**. O DragonBonesJS é a biblioteca de execução; a interface de criação/edição será reconstruída separadamente.
+Requisitos para testes: **Lua 5.4** (nenhum pacote Lua externo).
 
-## Reproduzir
-
-Pré-requisitos: Node.js >= 18, npm, Git e conexão de rede (para baixar as dependências originais).
-
-```bash
-npm run upstream:clone
-npm run original:build
-npm run original:verify
+```sh
+lua tests/run.lua
 ```
 
-O script de download **não altera o original** e verifica o commit fixado em `upstream.lock.mjs`. O JavaScript compilado aparece em `dist/original/dragonBones.js`.
+Para abrir a visualização 2D com sprites de atlas, instale [LÖVE 11.x](https://love2d.org/) e execute:
 
-Para rodar apenas os testes, use `npm test`. Testes dependentes do código original são marcados como ignorados caso você ainda não tenha realizado o build; a CI executa os testes **após** compilar e verifica que todos foram executados.
-
-## O que foi comprovado
-
-- `ObjectDataParser` lê o personagem de teste do projeto e um exemplo autêntico do DragonBonesJS (20 ossos, 19 slots, animação `idle`).
-- `Matrix` transforma coordenadas e executa a transformação inversa.
-- `WorldClock` avança objetos animáveis registrados.
-- Classes principais da API pública são carregadas.
-- A CI compila o runtime original sem modificar os arquivos upstream.
-
-Veja [docs/compatibilidade.md](docs/compatibilidade.md).
-
-## Viewer original — fases 4–5 (integração gráfica e importação)
-
-A versão de compatibilidade inclui agora um viewer de navegador baseado no **adapter PixiJS 8 oficial do DragonBonesJS**, sem substituir seu motor de animação.
-
-```bash
-npm run upstream:clone
-npm run original:build
-npm run demo:prepare
-npm run demo:serve
+```sh
+love .
 ```
 
-Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia ou na prévia**, editar X/Y/rotação da pose-base, trocar o desenho padrão dos slots, alterar a ordem-base das camadas (quando seguro), **editar valores de keyframes, dividir intervalos, remover quadros intermediários e ajustar suas durações** nos canais de translação e rotação, e salvar o esqueleto JSON. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+Controles: **espaço** pausa/continua; **esquerda/direita** troca animação; **B** mostra/oculta ossos; **R** recarrega; clique seleciona o osso mais próximo.
 
-## Próximas etapas
+## Personagens externos — JSON + PNG
 
-1. Testar projetos DragonBones mais complexos: skins, malhas, deformações, constraints e IK.
-2. Ampliar compatibilidade de slots para skins alternativas e animações com ordem Z, com testes de remapeamento.
-3. Evoluir a timeline para criação de canais e edição de interpolação (curvas, easing), com testes de salvamento e reabertura.
-4. Testar compatibilidade avançada de exportação, inclusive projetos com constraints, meshes e animações complexas.
-5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
+A demonstração abre por padrão uma fixture simples de dois sprites, cuja textura de exemplo é **gerada em Lua**; não é necessário baixar recursos.
 
-## Licença e autoria
+Para abrir uma exportação DragonBones sua, crie a pasta `assets/` na raiz e coloque estes arquivos:
 
-O runtime original DragonBonesJS é licenciado sob MIT, copyright DragonBones team e contribuidores (2012–2025). Reutilizações e distribuições devem preservar esses avisos. Outros recursos (demos, imagens e editores) têm de ser auditados separadamente antes de distribuição.
+```text
+assets/
+  project_ske.json  # JSON de armadura DragonBones
+  project_tex.json  # Atlas JSON (SubTexture)
+  project_tex.png   # Imagem PNG do atlas
+```
 
-**Bono-Lua não é um projeto oficial DragonBones.**
+Depois execute `love .`. O programa lê os três arquivos locais automaticamente e usa a primeira armadura e o primeiro clip. Para voltar ao exemplo integrado, mova ou renomeie `assets/project_ske.json`.
+
+O atlas atual renderiza **displays de imagem não rotacionados** com os pivôs e matrizes de seus ossos; omite malhas, regiões rotacionadas e outros tipos de display ainda não implementados. A renderização de PNG externos exige o LÖVE, mas todo o código do projeto está em Lua.
+
+## Núcleo Lua incluído
+
+- Leitor JSON estrito e independente de JavaScript.
+- Parser dos dados DragonBones JSON 5.x: armaduras, ossos, hierarquia, slots, skins e timelines básicas.
+- Matrizes 2D e transformações baseadas na matemática original do DragonBones.
+- Reprodução em Lua de timelines de translação e rotação, com keyframes, looping, easing e curva cúbica Bézier.
+- Cálculo de transformações hierárquicas, associação de imagens de atlas aos slots e quadros de renderização LÖVE.
+- Renderização inicial de sprites recortados do PNG e sobreposição opcional de ossos.
+- Testes de importação, matrizes, hierarquia, pausas, keyframes, curvas e geração de comandos de sprites.
+- Teste de integração com o **Mecha 1406** oficial: 17 ossos, 13 slots e 13 sprites resolvidos pelo runtime Lua (o exemplo é obtido durante a CI, sem distribuir seus assets).
+- Teste gráfico com o LÖVE em tela virtual, com captura de imagem disponível como artefato no GitHub Actions.
+
+## Limites atuais
+
+Faltam os recursos do motor original: atlas rotacionados, trocas animadas de displays, malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
+
+A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bibliotecas nativas para obter janela, GPU e áudio; o código da aplicação e da lógica de animação continua em Lua.
+
+## Licenças e referência
+
+O projeto original DragonBonesJS utiliza licença MIT. Este porte é trabalho independente e deve preservar avisos de atribuição quando incorporar código original substancial. Não copia assets nem redistribui o runtime JavaScript.
+
+O nome do repositório permanece Bono-Lua por decisão prévia, mas agora corresponde à tecnologia usada. A execução gráfica real é verificada separadamente no GitHub Actions usando uma tela virtual; isso valida a prévia básica, mas não prova equivalência 1:1 com todas as animações e funcionalidades originais.

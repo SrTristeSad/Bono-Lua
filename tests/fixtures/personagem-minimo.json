@@ -1,6 +1,6 @@
 {
   "version": "5.5",
-  "name": "BonoCompatibilityFixture",
+  "name": "BonoFixture",
   "frameRate": 24,
   "armature": [
     {
@@ -51,7 +51,10 @@
                 {
                   "name": "upperArm",
                   "type": "image",
-                  "path": "upperArm"
+                  "transform": {
+                    "x": 28,
+                    "y": 0
+                  }
                 }
               ]
             },
@@ -61,7 +64,10 @@
                 {
                   "name": "forearm",
                   "type": "image",
-                  "path": "forearm"
+                  "transform": {
+                    "x": 25,
+                    "y": 0
+                  }
                 }
               ]
             }
@@ -85,12 +91,24 @@
                 {
                   "duration": 24,
                   "x": 0,
-                  "y": 0
+                  "y": 0,
+                  "tweenEasing": 0
                 },
                 {
                   "duration": 24,
                   "x": 12,
                   "y": 0
+                }
+              ],
+              "rotateFrame": [
+                {
+                  "duration": 24,
+                  "rotate": 0,
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 24,
+                  "rotate": 90
                 }
               ]
             }

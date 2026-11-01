@@ -1,0 +1,22 @@
+{
+  "name": "BonoFixture",
+  "imagePath": "sample_tex.png",
+  "width": 128,
+  "height": 64,
+  "SubTexture": [
+    {
+      "name": "upperArm",
+      "x": 0,
+      "y": 0,
+      "width": 64,
+      "height": 32
+    },
+    {
+      "name": "forearm",
+      "x": 64,
+      "y": 0,
+      "width": 64,
+      "height": 32
+    }
+  ]
+}

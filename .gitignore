@@ -1,10 +1,10 @@
-node_modules/
-vendor/
-dist/
-.tmp/
+*.love
+*.zip
 .DS_Store
+logs/
 
-# Recursos gerados a partir do upstream fixado
-web/demo/vendor/
-web/demo/assets/
+# Local outputs and user-supplied DragonBones assets
 artifacts/
+assets/project_ske.json
+assets/project_tex.json
+assets/project_tex.png
