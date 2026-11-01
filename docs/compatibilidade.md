@@ -12,11 +12,13 @@ Referência: `DragonBones/DragonBonesJS` no commit `64b6c69ae35777c2404be68c9192
 | Clock | Adição, avanço e remoção de animável | Passou |
 | Troca de personagem e animação | Mecha 1002 idle, Mecha 1406 walk, pausa/retomada | Passou |
 | Amostra Mecha 1406 | 17 ossos, 13 slots e oito animações disponíveis | Passou |
+| Importação de arquivos locais | Esqueleto JSON, atlas JSON e PNG do Mecha 1406 | Passou no Chromium |
+| Controle temporal de animação | AnimationState.currentTime + pausa/reprodução | Passou no Chromium |
 | Reprodução visual | PixiJS 8 + DragonBonesJS original, Chromium headless | Passou |
 | Skins, IK, deformação e malhas | Testes comparativos | Não implementado |
-| Editor original | UI reconstruída | Não implementado |
+| Editor original | Edição de rigging, skins, keyframes e timeline autoral | Não implementado |
 | Exportação de vídeo e PNG | Render/encoder | Não implementado |
 
 Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41334992841).
 
-**Nota:** agora o teste em Chromium comprova a integração de renderização e o avanço temporal de dois clips originais, mas isso **não** significa equivalência funcional com todo o editor DragonBones. Skins, IK, deformações e a edição visual completa exigem testes próprios.
+**Nota:** os testes no Chromium comprovam a integração de renderização, avanço temporal e importação local de um exemplo real; isso **não** significa equivalência funcional com todo o editor DragonBones. Skins, IK, deformações e a edição visual completa exigem testes próprios.
