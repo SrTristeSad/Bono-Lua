@@ -27,6 +27,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | event/EventObject.ts | dragonbones/original/event/EventObject.lua | Constantes, `actionDataToInstance` e `_onClear` portados |
 | core/DragonBones.ts | dragonbones/original/core/DragonBones.lua | Enums, fila de eventos, buffer de objetos e integração com `WorldClock` portados |
 | armature/TransformObject.ts | dragonbones/original/armature/TransformObject.lua | Classe-base abstrata, getters e transformações geométricas portados, testes em subclasses somente de teste |
+| armature/Bone.ts | dragonbones/original/armature/Bone.lua | Classe executável original: transformação herdada, offsets, alpha, cache, constraints, visibilidade, inicialização, getters e pool |
 | model/CanvasData.ts | dragonbones/original/model/CanvasData.lua | Campos originais, limpeza e pool portados |
 | model/ConstraintData.ts | dragonbones/original/model/ConstraintData.lua | Classes `ConstraintData`, `IKConstraintData`, `PathConstraintData`, enums e limpeza dos ossos portados |
 | model/TextureAtlasData.ts | dragonbones/original/model/TextureAtlasData.lua | Classes abstratas `TextureAtlasData` e `TextureData`, métodos de cópia, atributos, regiões, frames e pool portados |
@@ -140,6 +141,19 @@ Teste dedicado: `tests/original_data_parser.lua`, **14 cenários**, com 131 veri
 
 Branch `port-original-data-parser` integrada pelo [PR #12](https://github.com/SrTristeSad/Bono-Lua/pull/12), commit de integração [`54b7fe4`](https://github.com/SrTristeSad/Bono-Lua/commit/54b7fe4ae1e07985d653840101ca6e3f81250073). GitHub Actions do PR: **14/14 testes DataParser aprovados, 263 verificações, 220 testes Lua totais aprovados**, mais sintaxe e renderização gráfica LÖVE. Continua pendente a execução diferencial abrangente contra TypeScript.
 
+### Lote: Bone.ts — classe executável de ossos
+
+Fonte consultada integralmente: `DragonBones/src/dragonBones/armature/Bone.ts` no SHA fixo `64b6c69ae35777c2404be68c9192e2c56906079e`. Destino: `dragonbones/original/armature/Bone.lua`.
+Todos os métodos da classe foram traduzidos: `toString`, `_onClear`, `_updateGlobalTransformMatrix`, `_updateAlpha`, `init`, `update`, `updateByConstraint`, `invalidUpdate`, `contains`, getters `boneData`, `visible`, `name`, `parent` e setter `visible`.
+O método `_updateGlobalTransformMatrix` mantém seus ramos de herança de escala, translação, rotação, reflexão, `OffsetMode.Additive/None/Override`, inversões `flipX`/`flipY`, pai do tipo `Surface` e sincronização `_globalDirty`.
+O método `update` mantém a ordem de atualização de constraints, reutilização de frames cacheados e índices de cache **zero-based** na interface original (com deslocamento de 1 apenas para o array físico Lua), incluindo os estados `_cachedFrameIndex`, `_localDirty` e `_childrenTransformDirty`.
+O getter/setter de visibilidade usa `__index`/`__newindex` de metatable em Lua, sem campo público redundante que possa mascarar o setter. O método herdado `TransformObject.updateGlobalTransform` continua disponível.
+
+Os testes em `tests/original_bone.lua` cobrem **20 cenários**, incluindo hierarquia, pais comuns e `Surface`, modos de offset, rotação/flip, alpha, visibilidade, dirty flags, cache de frames e constraints. Objetos auxiliares de armadura, Surface e slots só existem dentro do teste para atender aos contratos de chamada do original; não se introduziu runtime alternativo.
+
+**Limites:** `Armature.ts`, `Slot.ts`, `Surface.ts` e constraints executáveis ainda não foram portados; a classe Bone invoca suas interfaces originais e não pode ser usada como runtime completo isoladamente. Comparação diferencial exaustiva TS vs Lua e casos de matriz degenerada permanecem pendentes. Algumas classes auxiliares dependem da semântica de números especiais da VM. O porte é uma etapa real, não prova de equivalência integral 1:1.
+
+Branch de implementação: `port-original-runtime-bone`; PR e commit de integração são registrados após CI aprovada.
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
