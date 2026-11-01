@@ -10,7 +10,7 @@ Projeto independente para recuperar primeiro o funcionamento do **DragonBones or
 - Testes automatizados: matrizes, classes, hierarquia de ossos, animações, relógio e importação de um exemplo real.
 - Integração: [GitHub Actions](.github/workflows/dragonbones-original.yml), com build e testes em Node.js 20.
 
-**Importante:** o runtime validado ainda não é o **editor visual**. O DragronBonesJS é a biblioteca de execução; a interface do editor será reconstruída separadamente. A reprodução visual de um personagem também não está concluída.
+**Importante:** o runtime validado ainda não é o **editor visual**. O DragonBonesJS é a biblioteca de execução; a interface do editor será reconstruída separadamente. A reprodução visual de um personagem também não está concluída.
 
 ## Reproduzir
 
