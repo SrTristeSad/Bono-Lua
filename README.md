@@ -35,7 +35,7 @@ assets/
 
 Depois execute `love .`. O programa lê os três arquivos locais automaticamente e usa a primeira armadura e o primeiro clip. Para voltar ao exemplo integrado, mova ou renomeie `assets/project_ske.json`.
 
-O atlas atual renderiza **displays de imagem não rotacionados** com os pivôs e matrizes de seus ossos; omite malhas, regiões rotacionadas e outros tipos de display ainda não implementados. A renderização de PNG externos exige o LÖVE, mas todo o código do projeto está em Lua.
+O atlas atual renderiza **displays de imagem normais e rotacionados em 90°**, com recorte, pivô e transformação pelos ossos. Malhas, múltiplos atlas, eventos, máscaras e outros tipos avançados de display ainda não estão implementados. A renderização de PNG externos exige o LÖVE, mas todo o código do projeto está em Lua.
 
 ## Núcleo Lua incluído
 
@@ -47,11 +47,11 @@ O atlas atual renderiza **displays de imagem não rotacionados** com os pivôs e
 - Renderização inicial de sprites recortados do PNG e sobreposição opcional de ossos.
 - Testes de importação, matrizes, hierarquia, pausas, keyframes, curvas e geração de comandos de sprites.
 - Teste de integração com o **Mecha 1406** oficial: 17 ossos, 13 slots e 13 sprites resolvidos pelo runtime Lua (o exemplo é obtido durante a CI, sem distribuir seus assets).
-- Teste gráfico com o LÖVE em tela virtual, com captura de imagem disponível como artefato no GitHub Actions.
+- Teste gráfico com o LÖVE em tela virtual, com captura de imagem disponível como artefato no GitHub Actions. O CI também valida os pixels de uma textura propositalmente rotacionada em 90°, além de conferir a matriz e o pivô.
 
 ## Limites atuais
 
-Faltam os recursos do motor original: atlas rotacionados, trocas animadas de displays, malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
+Faltam os recursos do motor original: trocas animadas de displays, malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
 
 A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bibliotecas nativas para obter janela, GPU e áudio; o código da aplicação e da lógica de animação continua em Lua.
 
