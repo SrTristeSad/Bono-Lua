@@ -44,10 +44,14 @@ try {
   assert.equal(state.canvas,1,'canvas');
   assert.ok(state.ready,'ready');
   assert.ok((state.children??0)>0,'mounted display objects');
+  const before=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  await page.waitForTimeout(260);
+  const after=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.notEqual(after,before,'original DragonBones animation must advance');
   await page.locator('#pause').click();
   assert.match(await page.locator('#status').innerText(),/Pausado/);
   await page.locator('#play').click();
-  await page.locator('#speed').fill('1.5');
+  await page.locator('#speed').evaluate(input => { input.value='1.5'; input.dispatchEvent(new Event('input',{bubbles:true})); });
   assert.equal(await page.locator('#speed-output').innerText(),'1,50×');
   await page.locator('#bones').check();
   await page.waitForTimeout(300);
