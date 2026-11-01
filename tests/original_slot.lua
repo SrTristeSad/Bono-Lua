@@ -190,9 +190,18 @@ test("display property creates first frame with display index zero",function()
   eq(frame(s,0).display.id,"custom")
   eq(calls(s,"_initDisplay"),3)
 end)
+test("display assignment on empty list does not mark displayDataDirty in source",function()
+  local s=fixture()
+  s.display="custom"
+  eq(s._displayDataDirty,false)
+  s:update(-1)
+  eq(s.display,nil)
+  s:invalidUpdate();s:update(-1)
+  eq(s.display,"custom")
+end)
 test("display getter and deprecated alias return currently selected display",function()
   local s=fixture();s.display="custom"
-  s:update(-1)
+  s:invalidUpdate();s:update(-1)
   eq(s.display,"custom")
   eq(s:getDisplay(),"custom")
   s:setDisplay("new")
@@ -380,6 +389,7 @@ test("_updateDisplay chooses custom display and renderer replacement",function()
   local custom={id=1}
   frame(s).display=custom
   s:_setDisplayIndex(0)
+  s:_updateDisplayData()
   s:_updateDisplay()
   eq(s.display,custom)
   eq(calls(s,"_replaceDisplay"),1)
@@ -394,7 +404,8 @@ test("update skips display hooks if no display is currently active",function()
   eq(calls(s,"_updateTransform"),0)
 end)
 test("update applies flagged renderer hooks once per frame",function()
-  local s=fixture();s.display="custom";s:update(-1)
+  local s=fixture();s.display="custom";s:invalidUpdate();s:update(-1)
+  s.calls={}
   s._visibleDirty=true;s._blendModeDirty=true
   s._colorDirty=true;s._zOrderDirty=true;s._transformDirty=true
   s:update(-1)
@@ -407,7 +418,7 @@ test("update applies flagged renderer hooks once per frame",function()
 end)
 test("update dirty skinned mesh calls _updateMesh and returns before transforms",function()
   local s,a,b,raw,mesh=fixture()
-  s.display=mesh;s:update(-1)
+  s.display=mesh;s:invalidUpdate();s:update(-1)
   s._geometryData={weight={}}
   s._verticesDirty=true
   s._transformDirty=true
@@ -417,7 +428,7 @@ test("update dirty skinned mesh calls _updateMesh and returns before transforms"
 end)
 test("update rigid mesh propagates to parent transform",function()
   local s,a,b,raw,mesh=fixture()
-  s.display=mesh;s:update(-1)
+  s.display=mesh;s:invalidUpdate();s:update(-1)
   s._geometryData={weight=nil}
   s._verticesDirty=true;s._transformDirty=true
   b.globalTransformMatrix.tx=25
@@ -446,7 +457,7 @@ test("cache same frame index does not update transform again",function()
 end)
 test("cache different stored index reloads matrix from ArmatureData",function()
   local s,a,b=fixture()
-  s.display="custom";s:update(-1)
+  s.display="custom";s:invalidUpdate();s:update(-1)
   a._armatureData.parent.cachedFrames={1,0,0,1,40,60,0,0,1,1}
   s._cachedFrameIndices={[1]=0}
   s:update(0)
