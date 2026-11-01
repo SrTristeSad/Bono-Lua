@@ -129,6 +129,7 @@ test("LÖVE adapter: draw textured atlas quads with graphics state restored",fun
   local atlas=DB.atlas.parse(f:read("*a"));f:close()
   local commands=DB.atlas.commands(DB.animation.new(project,"PersonagemA"),atlas)
   local calls={}
+  local matrices={}
   local oldLove=_G.love
   _G.love={math={},graphics={
     newQuad=function(x,y,w,h,tw,th) return {x=x,y=y,w=w,h=h,tw=tw,th=th} end,
@@ -141,7 +142,12 @@ test("LÖVE adapter: draw textured atlas quads with graphics state restored",fun
     end
   }}
   _G.love.math.newTransform=function()
-    return {setMatrix=function(self,a,b,c,d,tx,ty) self.tx=tx end}
+    return {setMatrix=function(self,layout,...)
+      assert(layout=="row","LÖVE matrix layout must be row")
+      local values={...}
+      assert(#values==16,"LÖVE requires a 4x4 matrix")
+      matrices[#matrices+1]=values
+    end}
   end
   local success,errorMessage=pcall(function()
     local image={getWidth=function() return 128 end,getHeight=function() return 64 end}
@@ -152,6 +158,10 @@ test("LÖVE adapter: draw textured atlas quads with graphics state restored",fun
   assert(success,errorMessage)
   assert(#calls==8 and calls[1]=="push" and calls[4]=="pop" and calls[8]=="pop")
   close(calls[3].offsetX,-32)
+  close(matrices[1][4],33)
+  close(matrices[2][4],110)
+  close(matrices[1][1],1)
+  close(matrices[1][6],1)
 end)
 print(string.format("%d/%d Lua tests passed",ok,tests))
 if ok~=tests then os.exit(1) end
