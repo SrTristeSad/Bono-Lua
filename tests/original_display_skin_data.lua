@@ -280,7 +280,7 @@ test("DragonBonesData addArmature sets parent and name order",function()
 end)
 test("DragonBonesData duplicate name does not replace entry or reorder",function()
   local d=borrow(DBData)
-  local first={name="identical"},other={name="identical"}
+  local first,other={name="identical"},{name="identical"}
   d:addArmature(first);d:addArmature(other)
   assert(d:getArmature("identical")==first)
   assert(other.parent==nil)
