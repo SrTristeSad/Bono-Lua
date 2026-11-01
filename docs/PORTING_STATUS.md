@@ -165,6 +165,10 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
 6. **Somente então** discutir melhorias adicionais.
 
+### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
+
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI agora executa **todos os testes `tests/original_*.lua` em ambas as máquinas virtuais**, além dos testes gráficos já existentes. Isto testa adaptações de linguagem e evita declarar fidelidade baseada exclusivamente em Lua 5.4.
+Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 
 Fonte examinada antes do porte: `geom/ColorTransform.ts` e `core/BaseObject.ts`, ambos do commit fixado. Branch de desenvolvimento: `port-original-core-pool`. Código integrado à `main` pelo [PR #3](https://github.com/SrTristeSad/Bono-Lua/pull/3), commit de integração [`73beb1d`](https://github.com/SrTristeSad/Bono-Lua/commit/73beb1d94637de254354707b82184f461074057a). A CI só prova os comportamentos expressamente testados, não uma equivalência 1:1 do runtime.
