@@ -52,9 +52,6 @@ function json.decode(source)
     local token=remain:match("^%-?%d+%.?%d*[eE][%+%-]?%d+")
       or remain:match("^%-?%d+%.%d+")
       or remain:match("^%-?%d+")
-    if not token or not token:match("^%-?(0|[1-9])") then -- Lua patterns do not support alternation.
-      -- Validity is checked with an anchored complete numeric grammar below.
-    end
     if not token or token:match("^%-?0%d") then fail("invalid number") end
     local value=tonumber(token)
     if not value or value==math.huge or value==-math.huge then fail("invalid numeric value") end
