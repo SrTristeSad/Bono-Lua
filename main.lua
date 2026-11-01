@@ -56,7 +56,7 @@ function love.keypressed(key)
     paused=not paused
     if paused then player:pause() else player:resume() end
   elseif (key=="left" or key=="right") and #clipNames>0 then
-    clipIndex=(clipIndex-1+(key=="right" and 2 or 0))%#clipNames+1
+    clipIndex=((clipIndex-1+(key=="right" and 1 or -1))%#clipNames)+1
     player:play(clipNames[clipIndex])
     if paused then player:pause() end
   end
