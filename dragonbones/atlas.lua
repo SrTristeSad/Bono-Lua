@@ -62,9 +62,7 @@ function Atlas.attachments(armature, atlas, skinName)
       if dtype == "image" or dtype == 0 then
         local name = display.path or display.name
         local region = atlas.regions[name]
-        if region and region.rotated then
-          skipped[#skipped+1] = {slot=slot.name,reason="rotated atlas region not supported yet: "..name}
-        elseif region then
+        if region then
           attachments[#attachments+1] = {
             slot = slot.name, bone = slot.parent, order = order,
             name = name, region = region,
@@ -93,8 +91,11 @@ function Atlas.commands(animation, atlas, skinName)
       warnings[#warnings+1] = {slot=entry.slot, reason="missing parent bone"}
     else
       local region = entry.region
-      local fullWidth = region.frameWidth or region.width
-      local fullHeight = region.frameHeight or region.height
+      -- Packed 90-degree regions swap width/height when laid out unrotated.
+      local logicalWidth = region.rotated and region.height or region.width
+      local logicalHeight = region.rotated and region.width or region.height
+      local fullWidth = region.frameWidth or logicalWidth
+      local fullHeight = region.frameHeight or logicalHeight
       -- DragonBones default display pivot is its center. Frames represent trimmed images.
       local pivotX = entry.pivotX * fullWidth + region.frameX
       local pivotY = entry.pivotY * fullHeight + region.frameY
@@ -102,6 +103,7 @@ function Atlas.commands(animation, atlas, skinName)
         slot = entry.slot, name = entry.name, order = entry.order,
         matrix = Matrix.multiply(world[entry.bone], Matrix.from_transform(entry.transform)),
         source = region,
+        rotated = region.rotated,
         offsetX = -pivotX, offsetY = -pivotY
       }
     end
