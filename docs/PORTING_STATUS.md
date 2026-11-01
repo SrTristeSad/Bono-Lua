@@ -140,6 +140,18 @@ Teste dedicado: `tests/original_data_parser.lua`, **14 cenários**, com 131 veri
 
 Branch `port-original-data-parser` integrada pelo [PR #12](https://github.com/SrTristeSad/Bono-Lua/pull/12), commit de integração [`54b7fe4`](https://github.com/SrTristeSad/Bono-Lua/commit/54b7fe4ae1e07985d653840101ca6e3f81250073). GitHub Actions do PR: **14/14 testes DataParser aprovados, 263 verificações, 220 testes Lua totais aprovados**, mais sintaxe e renderização gráfica LÖVE. Continua pendente a execução diferencial abrangente contra TypeScript.
 
+### Lote: armature/Bone.ts — motor original de ossos
+
+Fonte integral examinada: `DragonBones/src/dragonBones/armature/Bone.ts` (578 linhas), referência fixa `64b6c69ae35777c2404be68c9192e2c56906079e`. Destino: `dragonbones/original/armature/Bone.lua`, sem modificar `dragonbones/animation.lua` nem o renderer protótipo.
+
+Portados todos os métodos do arquivo: `toString`, `_onClear`, `_updateGlobalTransformMatrix`, `_updateAlpha`, `init`, `update`, `updateByConstraint`, `invalidUpdate`, `contains` e os getters/setter originais `boneData`, `visible`, `name`, `parent`. Preservadas as três regras de `OffsetMode`, comportamento `DragonBones.yDown` e inversões, herança de translação/rotação/escala/reflexão, atualização de pais do tipo `Surface`, índices de cache, propagação de alterações e atualização de constraints. A base `TransformObject` e os algoritmos geométricos existentes são reutilizados, sem novos atalhos.
+
+**Adaptações:** herança e acessores TS são representados por metatables `__index`/`__newindex`. As posições de `_cachedFrameIndices` começam em 1 no armazenamento Lua; índices de frame passados à API e offsets retornados por `ArmatureData.setCacheFrame` permanecem com semântica zero-based. Buracos `undefined` em arrays JS são lidos como `nil` e tratados como comparação `>= 0` falsa. `Math.PI` é `math.pi`; operações numéricas seguem a mesma ordem algorítmica.
+
+Teste: `tests/original_bone.lua`, **27 cenários** cobrindo inicialização e reaproveitamento, acesso, visibilidade, cadeia ancestral, alpha, offset/yDown, flips, superfícies, heranças, reflexão, atualização de constraints, cache e invalidações. O teste usa apenas dublês de contrato para o `Armature`/`Surface`/`Slot`/`Constraint` ainda não portados, não componentes substitutos no produto. **Não se declara 1:1 integral:** ainda faltam `Surface.ts`, `Slot.ts`, `Armature.ts`, `Constraint.ts` e validação diferencial executando o código JS original.
+
+Branch `port-original-bone-runtime`. PR/CI e SHA de integração serão preenchidos após validação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
