@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./style.css">
   <script src="./vendor/pixi.js" defer></script>
   <script src="./vendor/dragonBones-pixi8.js" defer></script>
+  <script src="./rig-editor.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -16,7 +17,7 @@
         <span class="mark">B</span>
         <div><strong>Bono-Lua</strong><small>DragonBonesJS · reprodução original</small></div>
       </div>
-      <span class="phase">Fase 5 · Importador</span>
+      <span class="phase">Fase 6 · Ossos</span>
     </header>
 
     <main class="studio">
@@ -55,6 +56,22 @@
         <label for="speed">Velocidade <output id="speed-output">1,0×</output></label>
         <input id="speed" type="range" min="0.25" max="2" value="1" step="0.25" disabled>
         <label class="check"><input id="bones" type="checkbox" disabled> Exibir ossos e articulações</label>
+        <section class="rig-panel" aria-label="Edição da pose-base dos ossos">
+          <h2>Ossos · pose-base</h2>
+          <p>Selecione um osso e ajuste sua posição de repouso. A prévia muda sem modificar os keyframes existentes.</p>
+          <div id="bone-tree" class="bone-tree" role="tree" aria-label="Hierarquia de ossos"></div>
+          <div id="selected-bone" class="bone-selected">Selecione um osso</div>
+          <div class="bone-inputs">
+            <label for="bone-x">X <input id="bone-x" type="number" step="1" disabled></label>
+            <label for="bone-y">Y <input id="bone-y" type="number" step="1" disabled></label>
+            <label for="bone-rotation">Rotação (°) <input id="bone-rotation" type="number" step="1" disabled></label>
+          </div>
+          <div class="bone-actions">
+            <button id="bone-restore" type="button" disabled>Restaurar osso</button>
+            <button id="bone-export" type="button" disabled>Salvar esqueleto JSON</button>
+          </div>
+          <div id="bone-status" role="status" aria-live="polite">Nenhuma edição realizada.</div>
+        </section>
         <div class="info">
           <div><span>Armadura</span><strong id="armature-name">—</strong></div>
           <div><span>Ossos</span><strong id="bone-count">—</strong></div>
