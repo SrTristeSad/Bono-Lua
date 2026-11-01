@@ -19,7 +19,10 @@ const files = new Map([
   ['LICENSE', 'vendor/DRAGONBONES-LICENSE'],
   ['Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.json', 'assets/mecha_ske.json'],
   ['Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.json', 'assets/mecha_tex.json'],
-  ['Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png', 'assets/mecha_tex.png']
+  ['Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png', 'assets/mecha_tex.png'],
+  ['Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.json', 'assets/mecha1406_ske.json'],
+  ['Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.json', 'assets/mecha1406_tex.json'],
+  ['Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.png', 'assets/mecha1406_tex.png']
 ]);
 for (const [source, target] of files) {
   const from = resolve(vendor, source);
