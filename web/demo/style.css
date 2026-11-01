@@ -52,3 +52,20 @@
 .slot-actions button:last-child{grid-column:1/-1;background:#404e87}
 .slot-actions button:disabled{opacity:.45;cursor:not-allowed}
 #slot-status{font-size:11px;color:#a4b6d0;line-height:1.5;overflow-wrap:anywhere}
+
+/* Phase 9 — existing-frame DragonBones animation editing */
+.keyframe-panel{border:1px solid #374761;background:#111b2b;border-radius:12px;padding:14px;margin:18px 0}
+.keyframe-panel h2{font-size:15px;margin:0 0 7px}
+.keyframe-panel p{font-size:12px;line-height:1.5;margin:0 0 12px}
+.keyframe-panel label{font-size:12px;margin:10px 0 5px}
+.keyframe-panel select{width:100%;background:#172338;color:#e8effb;border:1px solid #526482;border-radius:7px;padding:9px;font-size:12px}
+.key-list{display:flex;flex-wrap:wrap;gap:5px;max-height:145px;overflow:auto;border:1px solid #34445e;border-radius:8px;padding:8px;background:#121d2d;margin:12px 0}
+.key-list button{font-size:11px;padding:7px;border-radius:6px;border:1px solid #4c617f;color:#dce7f7;background:#24344a;cursor:pointer}
+.key-list button[aria-pressed=true]{background:#5965d7;color:#fff;border-color:#9ea8ff}
+.key-list button:disabled{opacity:.4;cursor:not-allowed}
+#key-selected,#key-status{font-size:11px;color:#a4b6d0;line-height:1.5;overflow-wrap:anywhere}
+.key-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.key-fields label{display:flex;flex-direction:column;align-items:stretch;gap:4px;margin:0}
+.key-fields input{width:100%;min-width:0;background:#172338;color:#fff;border:1px solid #526482;border-radius:6px;padding:7px 4px;font-size:12px}
+#key-apply{width:100%;background:#535fcb;color:#fff;border:1px solid #8493ee;border-radius:8px;padding:10px;font-size:12px;font-weight:650;margin-bottom:10px;cursor:pointer}
+#key-apply:disabled{opacity:.45;cursor:not-allowed}
