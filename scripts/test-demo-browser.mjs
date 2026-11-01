@@ -112,6 +112,26 @@ try {
   assert.match(await page.locator('#model-origin').innerText(),/Arquivo local/,'bad import preserves previous selection');
 
 
+  // Select a joint visually on top of the ORIGINAL Pixi canvas.
+  await page.locator('#pick-bones').check();
+  assert.equal(await page.locator('#bone-overlay .bone-marker').count(),17);
+  const visibleMarkers = await page.locator('#bone-overlay .bone-marker').evaluateAll(nodes =>
+    nodes.map(node => ({ name:node.dataset.bone, x:Number(node.getAttribute('cx')), y:Number(node.getAttribute('cy')) }))
+      .filter(p => p.x > 10 && p.x < 950 && p.y > 10 && p.y < 530));
+  assert.ok(visibleMarkers.length > 0,'bone markers should be projected onto the stage');
+  const chosenMarker = page.locator('#bone-overlay .bone-marker')
+    .filter({has: page.locator('title')}).first();
+  await chosenMarker.click({force:true});
+  assert.match(await page.locator('#bone-status').innerText(),/selecionado na prévia/);
+  assert.equal(await page.locator('#bone-x').isEnabled(),true);
+
+  // The read-only slot inspector must reveal the parent bone and skin displays.
+  assert.equal(await page.locator('#slot-list button').count(),13);
+  await page.locator('#slot-list button').first().click();
+  assert.match(await page.locator('#slot-details').innerText(),/Slot:/);
+  assert.match(await page.locator('#slot-details').innerText(),/Osso:/);
+  assert.match(await page.locator('#slot-details').innerText(),/Desenhos:/);
+
   // Editing the rest pose works through the ORIGINAL bone offset API.
   const boneChoices=page.locator('#bone-tree button');
   assert.equal(await boneChoices.count(),17,'Imported mecha must expose 17 editable bones');
