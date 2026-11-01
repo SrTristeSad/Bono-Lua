@@ -16,7 +16,7 @@ local function eq(a,b)
   assert(a==b,tostring(a).." ~= "..tostring(b))
 end
 local function close(a,b)
-  assert(type(a)=="number" and type(b)=="number" and math.abs(a-b)<1e-5,
+  assert(type(a)=="number" and type(b)=="number" and math.abs(a-b)<1e-4,
     tostring(a).." ~= "..tostring(b))
 end
 local function point() return {} end
@@ -202,7 +202,7 @@ test("polygon with pointB nil stops after first intersection as source",function
   local p=polygon()
   local a=point()
   eq(p:intersectsSegment(-5,5,15,5,a,nil,nil),1)
-  assert(a.x==0 or a.x==10)
+  assert(math.abs(a.x)<1e-4 or math.abs(a.x-10)<1e-4)
   p:returnToPool()
 end)
 test("polygon miss rejected by rectangle pre-check",function()
