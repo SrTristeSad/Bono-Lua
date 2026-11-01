@@ -19,7 +19,9 @@
   ];
   const $ = id => document.getElementById(id);
   const el = {
-    host: $('canvas-host'), status: $('status'), fps: $('fps'),
+    host: $('canvas-host'), stageLayer: $('stage-layer'), boneOverlay: $('bone-overlay'),
+    pickBones: $('pick-bones'), slotList: $('slot-list'), slotDetails: $('slot-details'),
+    status: $('status'), fps: $('fps'),
     character: $('character'), characterName: $('character-name'),
     armatureName: $('armature-name'), animation: $('animation'),
     play: $('play'), pause: $('pause'), reset: $('reset'),
@@ -35,7 +37,8 @@
   };
   const state = {
     ready: false, paused: false, speed: 1, display: null, app: null,
-    models: new Map(), factory: null, center: null, importSequence: 0, selectedBone: null
+    models: new Map(), factory: null, center: null, importSequence: 0,
+    selectedBone: null, selectedSlot: null, markers: new Map()
   };
   window.__bonoDemo = state;
 
@@ -44,7 +47,7 @@
     el.status.textContent = message;
   }
   function controls(enabled) {
-    for (const id of ['character', 'animation', 'play', 'pause', 'reset', 'speed', 'bones']) {
+    for (const id of ['character', 'animation', 'play', 'pause', 'reset', 'speed', 'bones', 'pickBones']) {
       el[id].disabled = !enabled;
     }
   }
@@ -90,6 +93,9 @@
       button.setAttribute('aria-selected', String(button.dataset.bone === name));
     }
     updateBoneForm();
+    for (const marker of state.markers.values()) {
+      marker.setAttribute('aria-pressed', String(marker.dataset.bone === name));
+    }
   }
   function renderBoneTree(model) {
     state.selectedBone = null;
@@ -121,6 +127,7 @@
     model.display.armature.invalidUpdate(null, true);
     model.display.armature.advanceTime(0);
     state.paused = true;
+    updateMarkerPositions();
     el.boneStatus.textContent = 'Pose-base modificada: ' + name + '. Salve o JSON para reutilizá-la.';
     updateBoneForm();
   }
@@ -159,6 +166,93 @@
     el.boneStatus.textContent = 'Esqueleto JSON preparado para salvar. Guarde também atlas e PNG originais.';
   }
 
+
+  // Markers use the original DragonBones bone matrices and Pixi world transforms.
+  // Their positions are updated every frame, including during playback.
+  function renderMarkers(model) {
+    const namespace = 'http://www.w3.org/2000/svg';
+    el.boneOverlay.replaceChildren();
+    state.markers.clear();
+    for (const bone of BonoRigEditor.hierarchy(model.document, model.spec.armature)) {
+      const marker = document.createElementNS(namespace, 'circle');
+      marker.setAttribute('class', 'bone-marker');
+      marker.setAttribute('data-bone', bone.name);
+      marker.setAttribute('aria-label', 'Selecionar osso ' + bone.name);
+      marker.setAttribute('aria-pressed', 'false');
+      marker.setAttribute('tabindex', '0');
+      marker.setAttribute('role', 'button');
+      marker.setAttribute('r', '7');
+      marker.setAttribute('cx', '-100');
+      marker.setAttribute('cy', '-100');
+      const label = document.createElementNS(namespace, 'title');
+      label.textContent = bone.name;
+      marker.appendChild(label);
+      const choose = () => {
+        selectBone(bone.name);
+        state.paused = true; // Keep joints still while inspecting the rest pose.
+        el.boneStatus.textContent = 'Osso selecionado na prévia: ' + bone.name;
+      };
+      marker.addEventListener('click', choose);
+      marker.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          choose();
+        }
+      });
+      el.boneOverlay.appendChild(marker);
+      state.markers.set(bone.name, marker);
+    }
+    updateMarkerVisibility();
+    updateMarkerPositions();
+  }
+  function updateMarkerVisibility() {
+    const show = Boolean(el.pickBones.checked);
+    el.boneOverlay.style.display = show ? 'block' : 'none';
+    if (show) updateMarkerPositions();
+  }
+  function updateMarkerPositions() {
+    if (!state.display || !el.pickBones.checked || state.markers.size === 0) return;
+    const model = activeModel();
+    if (!model) return;
+    for (const point of BonoVisualInspector.bonePositions(model)) {
+      const marker = state.markers.get(point.name);
+      if (!marker) continue;
+      marker.setAttribute('cx', point.x.toFixed(3));
+      marker.setAttribute('cy', point.y.toFixed(3));
+      marker.style.display = point.x < 0 || point.x > 960 || point.y < 0 || point.y > 540 ? 'none' : '';
+    }
+  }
+  function renderSlots(model) {
+    const slots = BonoVisualInspector.slotList(model.document, model.spec.armature);
+    state.selectedSlot = null;
+    el.slotList.replaceChildren();
+    el.slotDetails.textContent = slots.length + ' slots disponíveis. Selecione um para inspecionar.';
+    for (const slot of slots) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.slot = slot.name;
+      button.textContent = slot.name;
+      button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', () => {
+        state.selectedSlot = slot.name;
+        for (const child of el.slotList.querySelectorAll('button')) {
+          child.setAttribute('aria-pressed', String(child.dataset.slot === slot.name));
+        }
+        const displays = slot.displays.map(d => d.skin + ': ' + d.name + ' (' + d.type + ')');
+        el.slotDetails.textContent =
+          'Slot: ' + slot.name
+          + '\nOsso: ' + (slot.parent || '(nenhum)')
+          + '\nÍndice de exibição: ' + slot.displayIndex
+          + '\nOrdem inicial: ' + slot.zOrder
+          + '\nDesenhos: ' + (displays.length ? displays.join(', ') : '(nenhum)');
+        if (slot.parent && model.display.armature.getBone(slot.parent)) {
+          selectBone(slot.parent);
+        }
+      });
+      el.slotList.appendChild(button);
+    }
+  }
+
   function selectCharacter(id) {
     const model = state.models.get(id);
     if (!model) throw new Error('Personagem inexistente: ' + id);
@@ -182,6 +276,8 @@
     el.animation.value = names.includes('idle') ? 'idle' : names[0];
     model.display.debugDraw = el.bones.checked;
     renderBoneTree(model);
+    renderSlots(model);
+    renderMarkers(model);
     selectAnimation(el.animation.value);
   }
   async function loadJson(path) {
@@ -292,7 +388,7 @@
   }
 
   async function main() {
-    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor) {
+    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor || !window.BonoVisualInspector) {
       throw new Error('Bibliotecas não encontradas. Rode npm run demo:prepare.');
     }
     const app = new PIXI.Application();
@@ -302,7 +398,7 @@
     });
     state.app = app;
     app.canvas.setAttribute('aria-label', 'Personagem original DragonBones animado');
-    el.host.appendChild(app.canvas);
+    el.stageLayer.prepend(app.canvas);
 
     // Drive the original runtime with elapsed seconds for pause/speed control.
     dragonBones.PixiFactory.useSharedTicker = false;
@@ -337,6 +433,7 @@
         dragonBones.PixiFactory.advanceTime(Math.min(ticker.deltaMS, 50) * 0.001 * state.speed);
       }
       el.fps.textContent = Math.round(ticker.FPS) + ' FPS';
+      updateMarkerPositions();
       const clip = state.display?.animation?.lastAnimationState;
       if (clip && clip.totalTime > 0) {
         const now = Math.min(clip.totalTime, Math.max(0, clip.currentTime));
@@ -362,6 +459,7 @@
     for (const field of [el.boneX, el.boneY, el.boneRotation]) field.addEventListener('change', editFromFields);
     el.boneRestore.addEventListener('click', restoreBone);
     el.boneExport.addEventListener('click', exportSkeleton);
+    el.pickBones.addEventListener('change', updateMarkerVisibility);
     el.timeline.addEventListener('input', () => {
       const clip = state.display?.animation?.lastAnimationState;
       if (!clip || clip.totalTime <= 0) return;
