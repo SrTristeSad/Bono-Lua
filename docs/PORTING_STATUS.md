@@ -167,7 +167,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 
 ### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
 
-Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI agora executa **todos os testes `tests/original_*.lua` em ambas as máquinas virtuais**, além dos testes gráficos já existentes. Isto testa adaptações de linguagem e evita declarar fidelidade baseada exclusivamente em Lua 5.4.
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 12 suítes de `tests/original_*.lua` em ambas as máquinas virtuais** e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
 Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 
