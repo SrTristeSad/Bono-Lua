@@ -22,9 +22,12 @@ Referência: `DragonBones/DragonBonesJS` no commit `64b6c69ae35777c2404be68c9192
 | Edição de slots | Troca/ocultação de desenho, restauração, ordem-base, exportação e reimportação | Passou no Chromium |
 | Proteção de Z-order animado | Bloquear mudança da ordem-base com timelines de sobreposição existentes | Passou em teste unitário |
 | Persistência | Salvar e reimportar esqueleto editado mantendo animações originais | Passou no Chromium |
-| Editor completo | Criação/remoção de ossos, IK, skins, keyframes e timeline | Não implementado |
+| Edição de keyframes existentes | Translação X/Y, rotação e seleção por quadro em dados DragonBones 5.x | Passou no Chromium |
+| Recompilação de timeline editada | Parser e armadura originais, pose reavaliada após mudança de keyframe | Passou no Chromium |
+| Exportação/reimportação da timeline | Valor modificado sobrevive ao roundtrip JSON e mantém demais dados | Passou no Chromium |
+| Editor completo | Criação/remoção de ossos e keyframes, IK, skins e interpolação | Não implementado |
 | Exportação de vídeo e PNG | Render/encoder | Não implementado |
 
-Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41338178659).
+Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41339211563).
 
-**Nota:** o Chromium confirma renderização, seleção visual, inspeção dos slots, edição inicial da pose-base, download do JSON e reimportação de um exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: skins alternativas, pesos de malhas, IK, deformações, Z-order animado e edição de keyframes ainda precisam ser desenvolvidos e validados.
+**Nota:** o Chromium confirma renderização, seleção visual, inspeção dos slots, edição inicial da pose-base, download do JSON e reimportação de um exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: skins alternativas, pesos de malhas, IK, deformações, Z-order animado e criação de keyframes e edição de interpolação ainda precisam ser desenvolvidos e validados.
