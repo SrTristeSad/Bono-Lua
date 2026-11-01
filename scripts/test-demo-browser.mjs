@@ -132,6 +132,41 @@ try {
   assert.match(await page.locator('#slot-details').innerText(),/Osso:/);
   assert.match(await page.locator('#slot-details').innerText(),/Desenhos:/);
 
+  // Phase 8: change the default slot display without editing animation keyframes.
+  const firstSlotName = await page.locator('#slot-list button').first().getAttribute('data-slot');
+  const defaultDisplay = Number(await page.locator('#slot-display').inputValue());
+  const oldOrder = await page.evaluate(() =>
+    window.__bonoDemo.models.get(document.getElementById('character').value)
+      .document.armature.find(a=>a.name==='mecha_1406').slot.map(s=>s.name));
+  await page.locator('#slot-display').selectOption('-1');
+  const hidden = await page.evaluate(name => ({
+    runtime:window.__bonoDemo.display.armature.getSlot(name).displayIndex,
+    raw:window.BonoSlotEditor.getDisplayIndex(
+      window.__bonoDemo.models.get(document.getElementById('character').value).document,
+      'mecha_1406',name)
+  }), firstSlotName);
+  assert.equal(hidden.runtime,-1,'runtime slot must hide display');
+  assert.equal(hidden.raw,-1,'JSON slot index must be updated');
+  await page.locator('#slot-restore').click();
+  assert.equal(Number(await page.locator('#slot-display').inputValue()),defaultDisplay);
+  await page.locator('#slot-up').click();
+  const moved = await page.evaluate(() => ({
+    raw:window.__bonoDemo.models.get(document.getElementById('character').value)
+      .document.armature.find(a=>a.name==='mecha_1406').slot.map(s=>s.name),
+    orders:window.__bonoDemo.display.armature.getSlots()
+      .map(s=>({name:s.name,order:s._zOrder}))
+  }));
+  assert.equal(moved.raw[1],firstSlotName,'JSON order changed');
+  assert.deepEqual(moved.raw.slice(2),oldOrder.slice(2),'other slots unaffected');
+  assert.ok(moved.orders.find(s=>s.name===firstSlotName).order > 0,'runtime z-order updated');
+  await page.locator('#slot-down').click();
+  const restoredOrder=await page.evaluate(() =>
+    window.__bonoDemo.models.get(document.getElementById('character').value)
+      .document.armature.find(a=>a.name==='mecha_1406').slot.map(s=>s.name));
+  assert.deepEqual(restoredOrder,oldOrder,'inverse move restores original slot order');
+  await page.locator('#slot-display').selectOption('-1');
+  assert.match(await page.locator('#slot-status').innerText(),/Desenho alterado/);
+
   // Editing the rest pose works through the ORIGINAL bone offset API.
   const boneChoices=page.locator('#bone-tree button');
   assert.equal(await boneChoices.count(),17,'Imported mecha must expose 17 editable bones');
@@ -158,6 +193,7 @@ try {
   const arm=exported.armature.find(a=>a.name==='mecha_1406');
   const saved=arm.bone.find(b=>b.name===chosenBone);
   assert.equal(saved.transform.x,baseX+14);
+  assert.equal(arm.slot.find(slot=>slot.name===firstSlotName).displayIndex,-1,'slot selection must persist in exported JSON');
   assert.ok(Math.abs((saved.transform.rotate??saved.transform.skY)-(baseRotation+15))<1e-9);
 
   // A saved JSON document is a genuine DragonBones skeleton; reimport it
@@ -178,6 +214,12 @@ try {
     return window.BonoRigEditor.pose(model.document,model.spec.armature,name);
   },chosenBone);
   assert.equal(importedPose.x,baseX+14,'roundtrip X');
+  const reimportedSlot=await page.evaluate(name=>{
+    const state=window.__bonoDemo;
+    const model=state.models.get(document.getElementById('character').value);
+    return window.BonoSlotEditor.getDisplayIndex(model.document,model.spec.armature,name);
+  },firstSlotName);
+  assert.equal(reimportedSlot,-1,'roundtrip slot displayIndex');
   assert.ok(Math.abs(importedPose.rotation-(baseRotation+15))<1e-9,'roundtrip rotation');
   await page.locator('#bone-tree button').nth(1).click();
   await page.locator('#bone-restore').click();
