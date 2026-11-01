@@ -66,7 +66,7 @@ test('inserir no meio do intervalo sem mudar a duracao do clipe',()=>{
   const inserted=editor.insertFrame(d,'PersonagemA','walk','upperArm','translate',10);
   assert.equal(inserted.start,10);
   assert.equal(inserted.duration,14);
-  assert.deepEqual(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]),[[0,10],[10,14],[24,24]]);
+  assert.deepEqual(JSON.parse(JSON.stringify(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]))),[[0,10],[10,14],[24,24]]);
   assert.equal(clip.duration,48);
   assert.equal(clip.bone[0].translateFrame[1].x,0);
   assert.equal(clip.bone[0].translateFrame[2].x,12);
@@ -79,7 +79,7 @@ test('apagar frame intermediario redistribui seus quadros e preserva outros cana
   const savedAnimations=JSON.stringify(arm.animation[0]);
   const updated=editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',1);
   assert.equal(updated.index,0);
-  assert.deepEqual(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]),[[0,24],[24,24]]);
+  assert.deepEqual(JSON.parse(JSON.stringify(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]))),[[0,24],[24,24]]);
   assert.equal(JSON.stringify(arm.animation[0]),savedAnimations);
 });
 test('ajustar a duracao redistribui somente dois intervalos vizinhos',()=>{
@@ -87,7 +87,7 @@ test('ajustar a duracao redistribui somente dois intervalos vizinhos',()=>{
   editor.insertFrame(d,'PersonagemA','walk','upperArm','translate',8);
   const edited=editor.setFrameDuration(d,'PersonagemA','walk','upperArm','translate',0,5);
   assert.equal(edited.duration,5);
-  assert.deepEqual(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]),[[0,5],[5,19],[24,24]]);
+  assert.deepEqual(JSON.parse(JSON.stringify(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]))),[[0,5],[5,19],[24,24]]);
   assert.equal(d.armature[0].animation[1].duration,48);
 });
 test('preservar marcador final (duration 0) e nao o editar',()=>{
@@ -100,7 +100,7 @@ test('preservar marcador final (duration 0) e nao o editar',()=>{
   const entries=editor.frames(d,'PersonagemA','walk','upperArm','translate');
   assert.deepEqual(entries.map(k=>[k.start,k.duration]),[[0,24],[24,6],[30,18],[48,0]]);
   assert.equal(editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',2).index,1);
-  assert.deepEqual(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]),[[0,24],[24,24],[48,0]]);
+  assert.deepEqual(JSON.parse(JSON.stringify(editor.frames(d,'PersonagemA','walk','upperArm','translate').map(k=>[k.start,k.duration]))),[[0,24],[24,24],[48,0]]);
   assert.throws(()=>editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',2),/primeiro quadro/);
 });
 test('inserir frame com valores explicitos e sem duplicar eventos',()=>{
@@ -134,6 +134,6 @@ test('operacoes na rotacao preservam skew de outros canais e duracao',()=>{
   const inserted=editor.insertFrame(d,'PersonagemA','walk','upperArm','rotate',8,{rotate:45});
   assert.equal(inserted.rotate,45);
   assert.equal(bone.rotateFrame[1].duration,40);
-  assert.deepEqual(editor.frames(d,'PersonagemA','walk','upperArm','rotate').map(k=>k.start),[0,8,48]);
+  assert.deepEqual(Array.from(editor.frames(d,'PersonagemA','walk','upperArm','rotate'),k=>k.start),[0,8,48]);
   assert.equal(d.armature[0].animation[1].duration,48);
 });
