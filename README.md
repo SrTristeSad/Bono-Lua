@@ -1,8 +1,15 @@
-# Bono-Lua — DragonBones reconstruído em Lua
+# Bono-Lua — porte do DragonBones original para Lua
 
 **Linguagem do projeto: Lua.** O [DragonBonesJS](https://github.com/DragonBones/DragonBonesJS) é apenas a **referência técnica** para o porte, não uma dependência de execução.
 
 A branch principal (`main`) contém agora uma base escrita inteiramente em Lua, no lugar do protótipo JavaScript anterior. O histórico do protótipo continua acessível nos commits antigos do Git. **Não é ainda uma cópia funcional completa do DragonBones**: este é o primeiro núcleo executável do porte.
+
+
+## Direção obrigatória: porte fiel do original
+
+**O objetivo é portar o DragonBones original, não criar um novo motor inspirado nele.** Os módulos anteriores eram protótipos simplificados. Eles continuam para preservar a prévia existente, mas não representam fidelidade 1:1.
+
+O trabalho verificável de porta original está em dragonbones/original/; detalhes por arquivo em docs/PORTING_STATUS.md. As regras permanentes estão em PORTING_RULES.md. O código original pertence ao DragonBones team, sob licença MIT (LICENSE-DRAGONBONES).
 
 ## Como executar
 

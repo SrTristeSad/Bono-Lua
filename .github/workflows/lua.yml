@@ -19,6 +19,8 @@ jobs:
         run: find . -name '*.lua' -print0 | xargs -0 -n1 luac5.4 -p
       - name: Run Lua core tests
         run: lua5.4 tests/run.lua
+      - name: Verify original DragonBones geometry modules
+        run: lua5.4 tests/original_geom.lua
       - name: Download pinned original DragonBones example
         run: |
           mkdir -p artifacts/upstream
