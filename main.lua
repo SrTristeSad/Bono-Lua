@@ -4,6 +4,8 @@
 local DB=require("dragonbones")
 local player,armature,clipNames,selected,atlas,prepared,warning
 local paused,showBones=false,false
+local smokeScreenshot=os.getenv("BONO_LUA_SCREENSHOT")=="1"
+local smokeElapsed,screenshotRequested=0,false
 local camera={x=480,y=280,zoom=1}
 local clipIndex=1
 
@@ -69,6 +71,7 @@ end
 
 function love.update(dt)
   if not paused then player:advance(math.min(dt,.05)) end
+  if smokeScreenshot then smokeElapsed=smokeElapsed+dt end
 end
 
 function love.draw()
@@ -109,6 +112,14 @@ function love.draw()
   love.graphics.print("Osso: "..(selected or "-"),16,94)
   love.graphics.setColor(.71,.78,.88)
   love.graphics.print(warning or "",16,h-25)
+  if smokeScreenshot and smokeElapsed>=.35 and not screenshotRequested then
+    screenshotRequested=true
+    love.graphics.captureScreenshot(function(imageData)
+      imageData:encode("png","bono-lua-preview.png")
+      print("Bono-Lua screenshot saved in "..love.filesystem.getSaveDirectory())
+      love.event.quit(0)
+    end)
+  end
 end
 
 function love.keypressed(key)
