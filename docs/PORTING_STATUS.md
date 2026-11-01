@@ -223,6 +223,20 @@ Testes: `tests/original_armature.lua` em Lua 5.4 e LuaJIT, mais suíte regressiv
 
 Branch `port-original-armature-runtime` integrada pelo [PR #20](https://github.com/SrTristeSad/Bono-Lua/pull/20), commit de integração [`c10ef93`](https://github.com/SrTristeSad/Bono-Lua/commit/c10ef9364d666b6fa833731e47aad2c35c49fb18). CI do PR #20: **44/44 cenários Armature.ts, 167 verificações, em Lua 5.4 e LuaJIT**, suites regressivas e os dois testes gráficos LÖVE aprovados. Total acumulado **403 testes de porte original** (359 anteriores + 44), além dos 22 do protótipo. `Armature.init()` foi verificado por contrato com uma classe Animation criada exclusivamente no teste; a classe Animation real continua pendente.
 
+### Lote: animation/Animation.ts — reprodutor e orquestração de estados original
+
+Referência fixa: `DragonBones/src/dragonBones/animation/Animation.ts` (960 linhas), revisão `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. Destino: `dragonbones/original/animation/Animation.lua`. Branch de trabalho: `port-original-animation-runtime`.
+
+Portados os métodos concretos `toString`, `_onClear`, `_fadeOut`, `init`, `advanceTime`, `reset`, `stop`, `playConfig`, `play`, `fadeIn`, `gotoAndPlayByTime`, `gotoAndPlayByFrame`, `gotoAndPlayByProgress`, `gotoAndStopByTime`, `gotoAndStopByFrame`, `gotoAndStopByProgress`, `getBlendState`, `getState`, `hasAnimation`, `getStates`. Getters/setters: `isPlaying`, `isCompleted`, `lastAnimationName`, `animationNames`, `animations`, `animationConfig`, `lastAnimationState`. Preservada a herança de velocidade das armaduras filhas, sincronização de caches, expiração de estados, seleção de estados por layer, fadeOutMode, propagação de ações, combinação de animações filhas, reuso do pool e as decisões de `playConfig` (incluindo `%\` do JS, limites de duração e `Single`).
+
+A classe `Animation` já pode ser obtida pelo `Armature.init()` original, criando `AnimationConfig` real; **ainda não é um player de animação plenamente funcional**. Falta portar as dependências originais `animation/AnimationState.ts` e `animation/BlendState.ts`, carregadas por `require` quando realmente utilizadas, sem stubs de produto. As subclasses de teste `State` e `Blend` existem exclusivamente em `tests/original_animation.lua`, onde são instaladas apenas temporariamente em `package.loaded`. Nenhuma melhoria de produto e nenhum algoritmo aproximado foi introduzido.
+
+Adaptações: arrays JavaScript indexados de zero para Lua +1, mapas TS para tabelas com preservação de identidade do mapa `animations`, `Math.fmod`/resto JS com sinal, classes/herança por metatable, ordenação por layers via `table.insert`. A ordem de enumeração de mapas Lua não replica necessariamente a ordem de propriedades de objetos JavaScript, portanto precisa de teste diferencial próprio. `BaseObject` permanece como classe-base original adaptada. `AnimationState` e `BlendState` reais, timelines, eventos e teste JS x Lua integral permanecem pendentes.
+
+Testes: `tests/original_animation.lua` cobrindo construção, integração com `Armature.init`, estados, fadeOut, cache, blend, loops, ponteiros, pools, posições limite e reprodução. CI executa em Lua 5.4 e LuaJIT, preservando testes LÖVE já existentes.
+
+PR, commit de integração e evidência da CI serão adicionados somente após aprovação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
