@@ -89,6 +89,28 @@ try {
   await page.waitForTimeout(240);
   const importedEnd=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
   assert.notEqual(importedStart,importedEnd,'imported original animation must advance');
+  await page.locator('#timeline').evaluate(input => {
+    input.value='0.65';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  assert.equal(await page.evaluate(()=>window.__bonoDemo.paused),true,'scrubbing pauses playback');
+  const seekTime=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.ok(Math.abs(seekTime - 0.65) < 0.05,'seek must use original currentTime API');
+  await page.waitForTimeout(200);
+  const held=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.equal(held,seekTime,'scrubbed frame remains frozen');
+  await page.locator('#play').click();
+  await page.waitForTimeout(180);
+  const resumed=await page.evaluate(()=>window.__bonoDemo.display.animation.lastAnimationState.currentTime);
+  assert.notEqual(resumed,held,'play resumes after seeking');
+  await page.locator('#skeleton-file').setInputFiles({
+    name:'broken.json', mimeType:'application/json',buffer:Buffer.from('{broken')
+  });
+  await page.locator('#import-character').click();
+  await page.waitForFunction(() => document.getElementById('import-status')?.textContent?.startsWith('Erro:'));
+  assert.match(await page.locator('#import-status').innerText(),/Erro:/);
+  assert.match(await page.locator('#model-origin').innerText(),/Arquivo local/,'bad import preserves previous selection');
+
 
   await mkdir('artifacts',{recursive:true});
   await page.screenshot({path:'artifacts/bono-lua-viewer.png',fullPage:true});
