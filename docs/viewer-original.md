@@ -32,6 +32,7 @@ O script `demo:prepare` copia esses arquivos para `web/demo/vendor` e `web/demo/
 - Seleção entre dois personagens oficiais do DragonBonesJS.
 - Seleção da animação disponível para cada personagem (incluindo caminhada no Mecha 1406).
 - Pausa, retomada e reinício.
+- Barra de posição no clipe, usando a propriedade `AnimationState.currentTime` do runtime original. Arrastar a barra pausa a reprodução; o botão Reproduzir continua a partir do ponto escolhido.
 - Alteração da velocidade da reprodução.
 - Exibir ossos/articulações para depuração.
 - Visualização do número de ossos e slots.
@@ -62,7 +63,7 @@ npx playwright install chromium
 npm run demo:test-browser
 ```
 
-Esse teste usa a mesma página do usuário, espera a armadura aparecer, compara a contagem de ossos/slots, verifica a evolução temporal das animações, a troca de personagem e a pausa efetiva do relógio, além de testar os controles. A CI executa esse teste automaticamente.
+Esse teste usa a mesma página do usuário, espera a armadura aparecer, compara a contagem de ossos/slots, verifica a evolução temporal das animações, a troca de personagem, a importação de arquivos locais, a busca na timeline, a pausa efetiva do relógio e a preservação do personagem atual quando um JSON inválido é enviado. A CI executa esse teste automaticamente.
 
 ## Licença
 
