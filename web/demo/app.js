@@ -21,6 +21,8 @@
   const el = {
     host: $('canvas-host'), stageLayer: $('stage-layer'), boneOverlay: $('bone-overlay'),
     pickBones: $('pick-bones'), slotList: $('slot-list'), slotDetails: $('slot-details'),
+    slotDisplay: $('slot-display'), slotUp: $('slot-up'), slotDown: $('slot-down'),
+    slotRestore: $('slot-restore'), slotStatus: $('slot-status'),
     status: $('status'), fps: $('fps'),
     character: $('character'), characterName: $('character-name'),
     armatureName: $('armature-name'), animation: $('animation'),
@@ -222,35 +224,111 @@
       marker.style.display = point.x < 0 || point.x > 960 || point.y < 0 || point.y > 540 ? 'none' : '';
     }
   }
+  function updateSlotForm() {
+    const model = activeModel();
+    const name = state.selectedSlot;
+    const enabled = Boolean(model && name);
+    el.slotDisplay.replaceChildren();
+    if (!enabled) {
+      const option = document.createElement('option');
+      option.textContent = 'Selecione um slot';
+      el.slotDisplay.appendChild(option);
+      el.slotDisplay.disabled = true;
+      el.slotUp.disabled = el.slotDown.disabled = el.slotRestore.disabled = true;
+      return;
+    }
+    const choices = BonoSlotEditor.getDisplayOptions(model.document, model.spec.armature, name);
+    for (const item of [{index:-1,name:'(Ocultar slot)'},...choices]) {
+      const option = document.createElement('option');
+      option.value = String(item.index);
+      option.textContent = item.index < 0 ? item.name : item.index + ': ' + item.name;
+      el.slotDisplay.appendChild(option);
+    }
+    const index = BonoSlotEditor.getDisplayIndex(model.document, model.spec.armature, name);
+    el.slotDisplay.value = String(index);
+    el.slotDisplay.disabled = false;
+    el.slotRestore.disabled = false;
+    const slots = BonoRigEditor.armature(model.document, model.spec.armature).slot || [];
+    const position = slots.findIndex(slot => slot.name === name);
+    const safe = BonoSlotEditor.canReorder(model.document, model.spec.armature);
+    el.slotUp.disabled = !safe || position >= slots.length - 1;
+    el.slotDown.disabled = !safe || position <= 0;
+    const selected = BonoVisualInspector.slotList(model.document,model.spec.armature)
+      .find(slot => slot.name === name);
+    const displays = selected.displays.map(d => d.skin + ': ' + d.name + ' (' + d.type + ')');
+    el.slotDetails.textContent = 'Slot: ' + name
+      + '\nOsso: ' + (selected.parent || '(nenhum)')
+      + '\nÍndice de exibição: ' + selected.displayIndex
+      + '\nOrdem inicial: ' + selected.zOrder
+      + '\nDesenhos: ' + (displays.length ? displays.join(', ') : '(nenhum)');
+    el.slotUp.title = el.slotDown.title = safe ? 'Alterar a ordem-base' : 'Bloqueado: animação Z-order presente';
+  }
+  function selectSlot(name) {
+    state.selectedSlot = name;
+    for (const button of el.slotList.querySelectorAll('button')) {
+      button.setAttribute('aria-pressed',String(button.dataset.slot === name));
+    }
+    updateSlotForm();
+    const model = activeModel();
+    const raw = BonoSlotEditor.getSlot(model.document,model.spec.armature,name);
+    if (raw.parent && model.display.armature.getBone(raw.parent)) selectBone(raw.parent);
+  }
   function renderSlots(model) {
     const slots = BonoVisualInspector.slotList(model.document, model.spec.armature);
     state.selectedSlot = null;
     el.slotList.replaceChildren();
-    el.slotDetails.textContent = slots.length + ' slots disponíveis. Selecione um para inspecionar.';
+    el.slotDetails.textContent = slots.length + ' slots disponíveis. Selecione um para editar.';
+    el.slotStatus.textContent = 'As alterações modificam a pose-base, não os keyframes de animação.';
     for (const slot of slots) {
       const button = document.createElement('button');
       button.type = 'button';
       button.dataset.slot = slot.name;
       button.textContent = slot.name;
       button.setAttribute('aria-pressed', 'false');
-      button.addEventListener('click', () => {
-        state.selectedSlot = slot.name;
-        for (const child of el.slotList.querySelectorAll('button')) {
-          child.setAttribute('aria-pressed', String(child.dataset.slot === slot.name));
-        }
-        const displays = slot.displays.map(d => d.skin + ': ' + d.name + ' (' + d.type + ')');
-        el.slotDetails.textContent =
-          'Slot: ' + slot.name
-          + '\nOsso: ' + (slot.parent || '(nenhum)')
-          + '\nÍndice de exibição: ' + slot.displayIndex
-          + '\nOrdem inicial: ' + slot.zOrder
-          + '\nDesenhos: ' + (displays.length ? displays.join(', ') : '(nenhum)');
-        if (slot.parent && model.display.armature.getBone(slot.parent)) {
-          selectBone(slot.parent);
-        }
-      });
+      button.addEventListener('click', () => selectSlot(slot.name));
       el.slotList.appendChild(button);
     }
+    updateSlotForm();
+  }
+  function changeSlotDisplay(value) {
+    const model = activeModel();
+    if (!model || !state.selectedSlot) return;
+    const name = state.selectedSlot;
+    try {
+      const index = Number(value);
+      // Validate before mutation and preserve all other skeleton fields.
+      BonoSlotEditor.setDisplayIndex(model.document, model.spec.armature, name, index);
+      state.paused = true;
+      BonoSlotEditor.applyRuntimeDisplay(model.display.armature, name, index);
+      el.slotStatus.textContent = 'Desenho alterado: ' + name + ', índice ' + index + '. Salve o esqueleto JSON.';
+      updateSlotForm();
+    } catch (error) {
+      el.slotStatus.textContent = 'Erro: ' + error.message;
+      updateSlotForm();
+    }
+  }
+  function moveSelectedSlot(direction) {
+    const model = activeModel();
+    if (!model || !state.selectedSlot) return;
+    const name = state.selectedSlot;
+    try {
+      BonoSlotEditor.moveSlot(model.document, model.spec.armature, name, direction);
+      state.paused = true;
+      BonoSlotEditor.applyRuntimeOrder(model.display.armature,model.baseDocument,model.document,model.spec.armature);
+      renderSlots(model);
+      selectSlot(name);
+      el.slotStatus.textContent = 'Ordem de camadas atualizada: ' + name + '. Salve o esqueleto JSON.';
+    } catch (error) {
+      el.slotStatus.textContent = 'Erro: ' + error.message;
+      updateSlotForm();
+    }
+  }
+  function restoreSelectedSlot() {
+    const model = activeModel();
+    if (!model || !state.selectedSlot) return;
+    const originalIndex = BonoSlotEditor.getDisplayIndex(model.baseDocument,model.spec.armature,state.selectedSlot);
+    changeSlotDisplay(String(originalIndex));
+    el.slotStatus.textContent = 'Desenho original restaurado: ' + state.selectedSlot;
   }
 
   function selectCharacter(id) {
@@ -388,7 +466,7 @@
   }
 
   async function main() {
-    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor || !window.BonoVisualInspector) {
+    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor || !window.BonoVisualInspector || !window.BonoSlotEditor) {
       throw new Error('Bibliotecas não encontradas. Rode npm run demo:prepare.');
     }
     const app = new PIXI.Application();
@@ -459,6 +537,10 @@
     for (const field of [el.boneX, el.boneY, el.boneRotation]) field.addEventListener('change', editFromFields);
     el.boneRestore.addEventListener('click', restoreBone);
     el.boneExport.addEventListener('click', exportSkeleton);
+    el.slotDisplay.addEventListener('change', () => changeSlotDisplay(el.slotDisplay.value));
+    el.slotUp.addEventListener('click', () => moveSelectedSlot(1));
+    el.slotDown.addEventListener('click', () => moveSelectedSlot(-1));
+    el.slotRestore.addEventListener('click', restoreSelectedSlot);
     el.pickBones.addEventListener('change', updateMarkerVisibility);
     el.timeline.addEventListener('input', () => {
       const clip = state.display?.animation?.lastAnimationState;
