@@ -35,6 +35,10 @@
         {
           "name": "upperArm",
           "parent": "upperArm"
+        },
+        {
+          "name": "forearm",
+          "parent": "forearm"
         }
       ],
       "skin": [
@@ -46,7 +50,24 @@
               "display": [
                 {
                   "name": "upperArm",
-                  "type": "image"
+                  "type": "image",
+                  "transform": {
+                    "x": 28,
+                    "y": 0
+                  }
+                }
+              ]
+            },
+            {
+              "name": "forearm",
+              "display": [
+                {
+                  "name": "forearm",
+                  "type": "image",
+                  "transform": {
+                    "x": 25,
+                    "y": 0
+                  }
                 }
               ]
             }
