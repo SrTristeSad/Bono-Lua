@@ -206,6 +206,22 @@ Teste novo `tests/original_slot.lua`, cobrindo getters/setters, callbacks abstra
 
 Branch `port-original-slot-runtime` integrada pelo [PR #19](https://github.com/SrTristeSad/Bono-Lua/pull/19), commit de integração [`3ec2004`](https://github.com/SrTristeSad/Bono-Lua/commit/3ec2004c3ba3e21c1cf9a6292872210eb99addde). GitHub Actions do PR: **48/48 cenários Slot aprovados em Lua 5.4 e LuaJIT**, com **162 asserções**; **359 testes de porte original** (311 anteriores + 48), além dos 22 testes do protótipo e dos jobs gráficos LÖVE. A verificação diferencial contra o TypeScript original executado, a classe Armature e os hooks gráficos concretos continuam pendentes.
 
+### Lote: armature/Armature.ts — orquestração original de armaduras
+
+Referência fixa: `DragonBones/src/dragonBones/armature/Armature.ts` (941 linhas), commit `64b6c69ae35777c2404be68c9192e2c56906079e`, licença MIT. Destino: `dragonbones/original/armature/Armature.lua`, branch `port-original-armature-runtime`.
+
+Portados os métodos concretos do arquivo: `toString`, `_onSortSlots`, `_onClear`, `_sortZOrder`, `_addBone`, `_addSlot`, `_addConstraint`, `_bufferAction`, `dispose`, `init`, `advanceTime`, `invalidUpdate`, `containsPoint`, `intersectsSegment`, `getBone`, `getBoneByDisplay`, `getSlot`, `getSlotByDisplay`, `getBones`, `getSlots` e `getDisplay`. Também representados os getters/setters do código original: `flipX`, `flipY`, `cacheFrameRate`, `name`, `armatureData`, `animation`, `proxy`, `eventDispatcher`, `display`, `replacedTexture`, `clock`, `parent`. Arrays de instância, flags e ciclo de retorno ao pool mantêm a arquitetura de `BaseObject`. `IAnimatable` é uma interface original sem implementação a inventar.
+
+Caminhos efetivamente implementados: adição e ordenação de ossos/slots/constraints, ordenação por índice Z, buffer de ações, `ActionType.Play` para animação da armadura ou das filhas, propagação de transparência, cache de frames, atualização de bones/slots, inserção e remoção do `WorldClock`, texturas substituídas, obtenção de ossos/slots e consulta de colisões. A passagem de índices de `slotIndices` e offsets JS para arrays Lua adiciona +1 exclusivamente no armazenamento.
+
+**Dependência real ainda ausente:** `Armature.init` invoca `BaseObject.borrowObject(Animation)` no original; `animation/Animation.ts` ainda NÃO foi portado. A dependência Lua é resolvida sob demanda por `require("dragonbones.original.animation.Animation")`, sem stub ou motor paralelo incluído no produto. Sem essa classe original, não é possível declarar uma armadura real completamente inicializável ou o runtime 1:1. Os testes de `advanceTime` utilizam **objetos de contrato somente nos testes** para cobrir a sequência e a coordenação sem falsear uma integração executável.
+
+**Diferenças e atenção:** o comparador original `_onSortSlots` retorna -1 em empates, ao contrário de uma função de ordenação estritamente válida. O porte usa ordenação por inserção para evitar o contrato de `table.sort`; a ordem exata de empates produzida por `Array.sort` do motor JS não está diferencialmente comprovada. Mantidos o retorno antecipado de `advanceTime` com `_lockUpdate=true` nos dois caminhos de descarte, a seleção assimétrica dos extremos de `intersectsSegment` e a ordem de execução de ações. A representação de `null` é `nil` em Lua.
+
+Testes: `tests/original_armature.lua` em Lua 5.4 e LuaJIT, mais suíte regressiva e LÖVE. **Pendente**: comparação diferencial com o DragonBonesJS executado, porte de `Animation.ts` e timelines correspondentes, integração `Armature` + `Slot` + `Bone` com gráficos reais, empates Z e dados de animação.
+
+Branch `port-original-armature-runtime`; PR, resultados da CI e SHA da integração serão registrados após os testes.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
