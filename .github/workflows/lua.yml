@@ -15,5 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Lua 5.4
         run: sudo apt-get update && sudo apt-get install -y lua5.4
+      - name: Check Lua syntax
+        run: find . -name '*.lua' -print0 | xargs -0 -n1 luac5.4 -p
       - name: Run Lua core tests
         run: lua5.4 tests/run.lua
