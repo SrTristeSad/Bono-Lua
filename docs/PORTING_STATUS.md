@@ -36,6 +36,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | model/ArmatureData.ts | dragonbones/original/model/ArmatureData.lua | Quatro classes originais: `ArmatureData`, `BoneData`, `SurfaceData`, `SlotData`; ordenação, caches, associação de dados e limpeza |
 | model/AnimationData.ts | dragonbones/original/model/AnimationData.lua | `AnimationData`, `TimelineData` e `AnimationTimelineData` com mapas de timelines, caches, índices e devolução ao pool |
 | model/AnimationConfig.ts | dragonbones/original/model/AnimationConfig.lua | Campos de reprodução, máscaras de ossos, `clear`, `copyFrom` e pool portados |
+| model/BoundingBoxData.ts | dragonbones/original/model/BoundingBoxData.lua | Quatro classes; retângulo Cohen–Sutherland, elipse e polígono com `containsPoint` e `intersectsSegment` originais |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -117,6 +118,18 @@ Diferenças inevitáveis: TS class -> tabela/metatable Lua e índices de arrays 
 Testes: `tests/original_animation_config.lua`, 16 cenários de defaults, cópias, máscaras, reutilização no pool e parâmetros extremos.
 **Pendente:** comparação diferencial executando o TypeScript original e integração com `Animation.ts` e `AnimationState.ts` ainda não portados.
 Branch `port-original-animation-config` integrada pelo [PR #10](https://github.com/SrTristeSad/Bono-Lua/pull/10), commit [c65b9c6](https://github.com/SrTristeSad/Bono-Lua/commit/c65b9c6a0ad2be2af9b251cfccdef37962f1906d). CI do PR: **180 testes Lua aprovados** (164 existentes + 16 novos), mais renderização e verificação gráfica do LÖVE. A validação diferencial completa contra TypeScript executado continua pendente.
+### Lote: BoundingBoxData.ts — algoritmos geométricos originais
+
+Fonte examinada: `DragonBones/src/dragonBones/model/BoundingBoxData.ts` (729 linhas), commit `64b6c69ae35777c2404be68c9192e2c56906079e`. Destino: `dragonbones/original/model/BoundingBoxData.lua`. O arquivo original contém a classe abstrata `BoundingBoxData` e as classes `RectangleBoundingBoxData`, `EllipseBoundingBoxData`, `PolygonBoundingBoxData`. Portados métodos `_onClear`, `containsPoint`, `intersectsSegment` e os três algoritmos estáticos de interseção, além do código estático `_computeOutCode` e arrays de vértices.
+
+O algoritmo Cohen–Sutherland mantém os outcodes e códigos de retorno originais (`-1`, `0`, `1`, `2`, `3`), sem substituir por interseção matemática alternativa. A fonte original tem peculiaridade em `rectangleIntersectsSegment`: ao encontrar saída de uma extremidade interna, escreve `intersectionPointB.y = xB`; mantida literalmente, mesmo parecendo erro. A elipse conserva o retorno de `EllipseBoundingBoxData.toString()` como `[class dragonBones.EllipseData]`. Para polígono, preservados os valores de perturbação `0.000001`/`0.0001`, ordem do algoritmo de interseção, parada antecipada sem `intersectionPointB`, e gate de retângulo.
+
+Adaptações linguísticas: flags de bit 1, 2, 4, 8 verificadas por aritmética inteira em vez de operadores de bit específicos do JavaScript (compatível com Lua 5.4 e LuaJIT); `Math.atan2(y,x)` usa `math.atan2` do LuaJIT quando disponível ou `math.atan(y,x)` do Lua 5.4; herança representada por metatables. Nenhuma melhoria ou correção do algoritmo original foi introduzida.
+
+Suíte: `tests/original_boundingbox.lua`, 26 cenários de defaults, retângulos, elipses, polígonos, normais, pontos de interseção e devolução ao pool. **Ainda falta comparação diferencial automatizada contra o TypeScript executado, cobrindo casos degenerados e precisão dos retornos.** O código do protótipo anterior não foi alterado.
+
+Branch do lote: `port-original-boundingbox`; integração e SHA deverão ser registrados após a CI.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -124,7 +137,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 ## Continuidade obrigatória
 
 1. Todos os cinco arquivos da pasta `geom/` foram portados inicialmente. Aumentar testes diferenciais com o original executado, incluindo números especiais.
-2. `AnimationConfig.ts` foi portado como dependência da implementação original de `Animation.ts` e `AnimationState.ts`. Prosseguir pelas dependências restantes de `Bone.ts`, `Slot.ts` e `Armature.ts`, sem stubs ou simplificações.
+2. `BoundingBoxData.ts` foi portado para suportar as dependências de colisão das armaduras. Prosseguir com os arquivos originais `Bone.ts`, `Slot.ts`, `Armature.ts` e suas dependências de runtime ainda ausentes, sem stubs nem simplificações.
 3. Portar dados, parsers, fábricas, armaduras, animação, timelines, slots, malhas, FFD, IK e constraints na arquitetura do original. Mapear cada arquivo.
 4. Conectar os módulos fiéis ao LÖVE somente como backend gráfico; ele não define a semântica do DragonBones.
 5. Identificar a fonte e versão do editor GUI original e portar esse editor separadamente para Lua, conforme disponibilidade/licença.
