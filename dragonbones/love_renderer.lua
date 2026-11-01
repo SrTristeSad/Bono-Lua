@@ -6,9 +6,7 @@ function Render.prepare(image, atlas)
   local width,height = image:getWidth(),image:getHeight()
   local quads={}
   for name,region in pairs(atlas.regions) do
-    if not region.rotated then
-      quads[name] = love.graphics.newQuad(region.x,region.y,region.width,region.height,width,height)
-    end
+    quads[name] = love.graphics.newQuad(region.x,region.y,region.width,region.height,width,height)
   end
   return {image=image,quads=quads}
 end
@@ -20,16 +18,29 @@ function Render.draw(prepared, commands)
     local quad=prepared.quads[item.name]
     if quad then
       local m=item.matrix
-      -- LÖVE 11 Transform:setMatrix accepts a 4x4 matrix in row-major layout.
-      -- Convert the six DragonBones affine coefficients explicitly.
+      local a,b,c,d,tx,ty = m.a,m.b,m.c,m.d,m.tx,m.ty
+      local drawX,drawY = item.offsetX,item.offsetY
+      if item.rotated then
+        -- DragonBones' packed rotated region stores an image turned clockwise.
+        -- Convert source (x,y) back to unrotated local coordinates
+        -- (y, packedWidth - x), then apply the normal bone transform.
+        -- The offset is applied in logical/unrotated image coordinates.
+        local packedWidth=item.source.width
+        local localX,localY=item.offsetX,item.offsetY+packedWidth
+        a,b,c,d = -m.c,-m.d,m.a,m.b
+        tx=m.a*localX+m.c*localY+m.tx
+        ty=m.b*localX+m.d*localY+m.ty
+        drawX,drawY=0,0
+      end
+      -- LÖVE 11 accepts an explicit row-major 4x4 matrix.
       transform:setMatrix("row",
-        m.a, m.c, 0, m.tx,
-        m.b, m.d, 0, m.ty,
+        a, c, 0, tx,
+        b, d, 0, ty,
         0, 0, 1, 0,
         0, 0, 0, 1)
       love.graphics.push()
       love.graphics.applyTransform(transform)
-      love.graphics.draw(prepared.image,quad,item.offsetX,item.offsetY)
+      love.graphics.draw(prepared.image,quad,drawX,drawY)
       love.graphics.pop()
     end
   end
