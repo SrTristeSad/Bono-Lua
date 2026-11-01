@@ -43,6 +43,8 @@ jobs:
         run: lua5.4 tests/original_data_parser.lua
       - name: Verify original Bone.ts runtime transforms and cache
         run: lua5.4 tests/original_bone.lua
+      - name: Verify original Surface.ts mesh deformation and affine cache
+        run: lua5.4 tests/original_surface.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
