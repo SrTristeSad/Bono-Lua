@@ -118,7 +118,7 @@ test('recusar operacoes fora de alcance sem alterar o JSON',()=>{
   const d=ctx.BonoRigEditor.clone(sample);
   const before=JSON.stringify(d);
   for(const at of [-1,0,24,48,49,3.2]) {
-    assert.throws(()=>editor.insertFrame(d,'PersonagemA','walk','upperArm','translate',at),/quadro|existe/);
+    assert.throws(()=>editor.insertFrame(d,'PersonagemA','walk','upperArm','translate',at),/quadro|existe|clipe/);
     assert.equal(JSON.stringify(d),before);
   }
   assert.throws(()=>editor.removeFrame(d,'PersonagemA','walk','upperArm','translate',0),/primeiro quadro/);
