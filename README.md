@@ -2,7 +2,7 @@
 
 Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
 
-## Estado atual: fase 7 — seleção visual de ossos e inspeção de slots
+## Estado atual: fase 8 — edição básica de slots e camadas
 
 - Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
 - Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
@@ -47,12 +47,12 @@ npm run demo:prepare
 npm run demo:serve
 ```
 
-Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia ou na prévia**, editar X/Y/rotação da pose-base, inspecionar slots e salvar o esqueleto JSON. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia ou na prévia**, editar X/Y/rotação da pose-base, trocar o desenho padrão dos slots, alterar a ordem-base das camadas (quando seguro) e salvar o esqueleto JSON. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
 
 ## Próximas etapas
 
 1. Testar projetos DragonBones mais complexos: skins, malhas, deformações, constraints e IK.
-2. Evoluir a edição de slots e testar alterações de displayIndex, desenho e ordem Z preservando o arquivo DragonBones.
+2. Ampliar compatibilidade de slots para skins alternativas e animações com ordem Z, com testes de remapeamento.
 3. Recuperar ferramentas de edição de keyframes e timeline, com testes de projeto salvo/reaberto.
 4. Testar equivalência de exportação original.
 5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
