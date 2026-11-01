@@ -23,6 +23,9 @@
     pickBones: $('pick-bones'), slotList: $('slot-list'), slotDetails: $('slot-details'),
     slotDisplay: $('slot-display'), slotUp: $('slot-up'), slotDown: $('slot-down'),
     slotRestore: $('slot-restore'), slotStatus: $('slot-status'),
+    keyChannel: $('key-channel'), keyList: $('key-list'), keySelected: $('key-selected'),
+    keyX: $('key-x'), keyY: $('key-y'), keyRotate: $('key-rotate'),
+    keyApply: $('key-apply'), keyStatus: $('key-status'),
     status: $('status'), fps: $('fps'),
     character: $('character'), characterName: $('character-name'),
     armatureName: $('armature-name'), animation: $('animation'),
@@ -40,7 +43,8 @@
   const state = {
     ready: false, paused: false, speed: 1, display: null, app: null,
     models: new Map(), factory: null, center: null, importSequence: 0,
-    selectedBone: null, selectedSlot: null, markers: new Map()
+    selectedBone: null, selectedSlot: null, selectedFrame: null,
+    markers: new Map(), revision: 0
   };
   window.__bonoDemo = state;
 
@@ -65,6 +69,7 @@
     el.timeline.disabled = duration <= 0;
     el.timelineOutput.value = '0,00 / ' + duration.toFixed(2).replace('.', ',') + ' s';
     status('Reproduzindo: ' + name, 'ready');
+    renderKeyframes();
   }
 
   function activeModel() {
@@ -95,6 +100,7 @@
       button.setAttribute('aria-selected', String(button.dataset.bone === name));
     }
     updateBoneForm();
+    renderKeyframes();
     for (const marker of state.markers.values()) {
       marker.setAttribute('aria-pressed', String(marker.dataset.bone === name));
     }
@@ -331,6 +337,148 @@
     el.slotStatus.textContent = 'Desenho original restaurado: ' + state.selectedSlot;
   }
 
+
+  function renderKeyframes() {
+    const model = activeModel();
+    const bone = state.selectedBone;
+    const channel = el.keyChannel.value;
+    state.selectedFrame = null;
+    el.keyList.replaceChildren();
+    for (const input of [el.keyX, el.keyY, el.keyRotate, el.keyApply]) input.disabled = true;
+    el.keySelected.textContent = 'Nenhum keyframe selecionado.';
+    el.keyX.value = el.keyY.value = el.keyRotate.value = '';
+    const clip = el.animation.value;
+    if (!model || !bone || !clip) {
+      el.keyStatus.textContent = 'Selecione uma animação e um osso na árvore ou na prévia.';
+      return;
+    }
+    let keys;
+    try {
+      keys = BonoTimelineEditor.frames(model.document,model.spec.armature,clip,bone,channel);
+    } catch (error) {
+      el.keyStatus.textContent = 'Erro na timeline: ' + error.message;
+      return;
+    }
+    const duration = BonoTimelineEditor.animation(model.document,model.spec.armature,clip).duration;
+    if (!keys.length) {
+      el.keyStatus.textContent = 'Este osso não tem keyframes existentes neste canal.';
+      return;
+    }
+    for (const key of keys) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.frame = String(key.index);
+      button.setAttribute('aria-pressed','false');
+      const isTerminal = key.start >= duration;
+      button.disabled = isTerminal;
+      button.textContent = '#' + (key.index + 1) + ' · quadro ' + key.start
+        + (isTerminal ? ' (final)' : '');
+      button.title = 'Duração: ' + key.duration + ' quadros';
+      button.addEventListener('click',() => selectKeyframe(key.index));
+      el.keyList.appendChild(button);
+    }
+    el.keyStatus.textContent = keys.length + ' pontos originais encontrados em ' + clip
+      + ' · ' + channel + '.';
+  }
+  function selectKeyframe(index) {
+    const model = activeModel();
+    if (!model || !state.selectedBone) return;
+    const channel = el.keyChannel.value;
+    const clip = el.animation.value;
+    const keys = BonoTimelineEditor.frames(model.document,model.spec.armature,clip,state.selectedBone,channel);
+    const key = keys[index];
+    if (!key) return;
+    const duration = BonoTimelineEditor.animation(model.document,model.spec.armature,clip).duration;
+    if (key.start >= duration) return;
+    state.selectedFrame = index;
+    for (const button of el.keyList.querySelectorAll('button')) {
+      button.setAttribute('aria-pressed',String(Number(button.dataset.frame) === index));
+    }
+    const moving = channel === 'translate';
+    el.keyX.disabled = el.keyY.disabled = !moving;
+    el.keyRotate.disabled = moving;
+    el.keyApply.disabled = false;
+    el.keyX.value = moving ? String(key.x) : '';
+    el.keyY.value = moving ? String(key.y) : '';
+    el.keyRotate.value = moving ? '' : String(key.rotate);
+    el.keySelected.textContent = 'Quadro ' + key.start + ' · duração ' + key.duration + ' quadros';
+    state.paused = true;
+    const stateAnimation = state.display?.animation?.lastAnimationState;
+    const frameRate = model.armature.frameRate || 24;
+    if (stateAnimation && stateAnimation.totalTime > 0) {
+      stateAnimation.currentTime = Math.min(stateAnimation.totalTime - 0.00001, key.start / frameRate);
+      state.display.armature.advanceTime(0);
+    }
+  }
+  function rebuildModelPreview(model, candidate) {
+    // Reparse a fresh cache entry. Existing animation timelines are compiled by
+    // DragonBonesJS itself; changing the JSON alone cannot update compiled timelines.
+    const factory = state.factory;
+    const cacheKey = 'bono-keyframe-' + (++state.revision);
+    const wasVisible = model.display.visible;
+    const oldDisplay = model.display;
+    const oldKey = model.editorCacheKey;
+    let nextDisplay = null;
+    let nextData = null;
+    try {
+      nextData = factory.parseDragonBonesData(candidate, cacheKey);
+      if (!nextData) throw new Error('O parser original rejeitou a timeline modificada.');
+      factory.parseTextureAtlasData(model.atlas,model.textureSource,cacheKey);
+      nextDisplay = factory.buildArmatureDisplay(model.spec.armature,cacheKey);
+      if (!nextDisplay) throw new Error('Não foi possível reconstruir o personagem.');
+      nextDisplay.scale.set(oldDisplay.scale.x,oldDisplay.scale.y);
+      nextDisplay.position.set(oldDisplay.position.x,oldDisplay.position.y);
+      nextDisplay.visible = wasVisible;
+    } catch (error) {
+      if (nextDisplay) nextDisplay.dispose();
+      factory.removeDragonBonesData(cacheKey);
+      factory.removeTextureAtlasData(cacheKey);
+      throw error;
+    }
+    state.center.addChild(nextDisplay);
+    if (wasVisible) state.display = nextDisplay;
+    oldDisplay.removeFromParent();
+    oldDisplay.dispose();
+    model.display = nextDisplay;
+    model.armature = nextData.getArmature(model.spec.armature);
+    model.document = candidate;
+    model.editorCacheKey = cacheKey;
+    if (oldKey) {
+      factory.removeDragonBonesData(oldKey);
+      factory.removeTextureAtlasData(oldKey);
+    }
+  }
+  function applyKeyframeEdit() {
+    const model = activeModel();
+    if (!model || !state.selectedBone || state.selectedFrame === null) return;
+    const bone = state.selectedBone;
+    const clipName = el.animation.value;
+    const index = state.selectedFrame;
+    const channel = el.keyChannel.value;
+    try {
+      const data = BonoRigEditor.clone(model.document);
+      const values = channel === 'translate' ? {x:Number(el.keyX.value),y:Number(el.keyY.value)}
+        : {rotate:Number(el.keyRotate.value)};
+      BonoTimelineEditor.editExistingFrame(data,model.spec.armature,clipName,bone,channel,index,values);
+      const position = state.display.animation.lastAnimationState?.currentTime ?? 0;
+      rebuildModelPreview(model,data);
+      el.character.value = model.spec.id;
+      selectCharacter(model.spec.id);
+      el.animation.value = clipName;
+      selectAnimation(clipName);
+      if (model.display.animation.lastAnimationState) {
+        model.display.animation.lastAnimationState.currentTime = position;
+        model.display.armature.advanceTime(0);
+      }
+      state.paused = true;
+      selectBone(bone);
+      selectKeyframe(index);
+      el.keyStatus.textContent = 'Keyframe original atualizado. Use Salvar esqueleto JSON para exportar.';
+    } catch (error) {
+      el.keyStatus.textContent = 'Erro: ' + error.message;
+    }
+  }
+
   function selectCharacter(id) {
     const model = state.models.get(id);
     if (!model) throw new Error('Personagem inexistente: ' + id);
@@ -440,7 +588,8 @@
         display.visible = false;
         display.scale.set(0.70);
         display.position.set(0, 40);
-        imported.push({ spec, armature, display,
+        imported.push({ spec, armature, display, atlas: BonoRigEditor.clone(atlas),
+          textureSource: texture.source,
           document: BonoRigEditor.clone(skeleton), baseDocument: BonoRigEditor.clone(skeleton) });
       }
       if (!imported.length) throw new Error('Nenhuma armadura montada.');
@@ -466,7 +615,7 @@
   }
 
   async function main() {
-    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor || !window.BonoVisualInspector || !window.BonoSlotEditor) {
+    if (!window.PIXI || !window.dragonBones?.PixiFactory || !window.BonoRigEditor || !window.BonoVisualInspector || !window.BonoSlotEditor || !window.BonoTimelineEditor) {
       throw new Error('Bibliotecas não encontradas. Rode npm run demo:prepare.');
     }
     const app = new PIXI.Application();
@@ -502,7 +651,8 @@
       display.position.set(0, 40);
       center.addChild(display);
       const armature = data.getArmature(spec.armature);
-      state.models.set(spec.id, { spec, armature, display,
+      state.models.set(spec.id, { spec, armature, display, atlas: BonoRigEditor.clone(atlas),
+        textureSource: texture.source,
         document: BonoRigEditor.clone(skeleton), baseDocument: BonoRigEditor.clone(skeleton) });
     }
 
@@ -541,6 +691,8 @@
     el.slotUp.addEventListener('click', () => moveSelectedSlot(1));
     el.slotDown.addEventListener('click', () => moveSelectedSlot(-1));
     el.slotRestore.addEventListener('click', restoreSelectedSlot);
+    el.keyChannel.addEventListener('change', renderKeyframes);
+    el.keyApply.addEventListener('click', applyKeyframeEdit);
     el.pickBones.addEventListener('change', updateMarkerVisibility);
     el.timeline.addEventListener('input', () => {
       const clip = state.display?.animation?.lastAnimationState;
