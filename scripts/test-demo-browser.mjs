@@ -2,7 +2,7 @@
 // Example: npm install --no-save playwright@1.56.1 && npx playwright install chromium
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 const port=4179;
@@ -111,6 +111,57 @@ try {
   assert.match(await page.locator('#import-status').innerText(),/Erro:/);
   assert.match(await page.locator('#model-origin').innerText(),/Arquivo local/,'bad import preserves previous selection');
 
+
+  // Editing the rest pose works through the ORIGINAL bone offset API.
+  const boneChoices=page.locator('#bone-tree button');
+  assert.equal(await boneChoices.count(),17,'Imported mecha must expose 17 editable bones');
+  const chosenBone=await boneChoices.nth(1).getAttribute('data-bone');
+  await boneChoices.nth(1).click();
+  assert.equal(await page.locator('#bone-x').isEnabled(),true);
+  const baseX=Number(await page.locator('#bone-x').inputValue());
+  const baseRotation=Number(await page.locator('#bone-rotation').inputValue());
+  await page.locator('#bone-x').fill(String(baseX+14));
+  await page.locator('#bone-x').press('Tab');
+  await page.locator('#bone-rotation').fill(String(baseRotation+15));
+  await page.locator('#bone-rotation').press('Tab');
+  const preview=await page.evaluate(name=>{
+    const bone=window.__bonoDemo.display.armature.getBone(name);
+    return {x:bone.offset.x,rotation:bone.offset.rotation};
+  },chosenBone);
+  assert.ok(Math.abs(preview.x-14)<.001,'bone offset should change preview');
+  assert.ok(Math.abs(preview.rotation-Math.PI/12)<.001,'bone rotation should change preview');
+  const pendingDownload=page.waitForEvent('download');
+  await page.locator('#bone-export').click();
+  const download=await pendingDownload;
+  assert.match(download.suggestedFilename(),/_ske\.json$/);
+  const exported=JSON.parse(await readFile(await download.path(),'utf8'));
+  const arm=exported.armature.find(a=>a.name==='mecha_1406');
+  const saved=arm.bone.find(b=>b.name===chosenBone);
+  assert.equal(saved.transform.x,baseX+14);
+  assert.ok(Math.abs((saved.transform.rotate??saved.transform.skY)-(baseRotation+15))<1e-9);
+
+  // A saved JSON document is a genuine DragonBones skeleton; reimport it
+  // with the matching atlas and texture, without converting to a new format.
+  await page.locator('#skeleton-file').setInputFiles({
+    name:'edited_ske.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify(exported))
+  });
+  await page.locator('#import-character').click();
+  await page.waitForFunction(()=> {
+    const txt=document.getElementById('import-status')?.textContent||'';
+    return txt.startsWith('Erro:') || txt.includes('importada(s)');
+  });
+  assert.match(await page.locator('#import-status').innerText(),/importada\(s\)/);
+  const importedPose=await page.evaluate(name=>{
+    const state=window.__bonoDemo;
+    const model=state.models.get(document.getElementById('character').value);
+    return window.BonoRigEditor.pose(model.document,model.spec.armature,name);
+  },chosenBone);
+  assert.equal(importedPose.x,baseX+14,'roundtrip X');
+  assert.ok(Math.abs(importedPose.rotation-(baseRotation+15))<1e-9,'roundtrip rotation');
+  await page.locator('#bone-tree button').nth(1).click();
+  await page.locator('#bone-restore').click();
+  assert.equal(Number(await page.locator('#bone-x').inputValue()),baseX+14,'restore uses reimported baseline');
 
   await mkdir('artifacts',{recursive:true});
   await page.screenshot({path:'artifacts/bono-lua-viewer.png',fullPage:true});
