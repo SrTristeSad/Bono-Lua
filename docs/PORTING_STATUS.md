@@ -101,7 +101,7 @@ Fonte integral verificada: `DragonBones/src/dragonBones/model/AnimationData.ts`,
 
 Diferenças de linguagem: metatables substituem classes e herança, e `nil` representa `null` e posições não inicializadas, enquanto `cachedFrames.length` conserva o comprimento do array JS. O runtime do protótipo permanece separado. **Ainda faltam comparação diferencial executando o TS original, integração à animação real e testes em LuaJIT/LÖVE para essa camada de dados.** Suíte: `tests/original_animation_data.lua` com 16 casos, incluindo integração com `ArmatureData.cacheFrames`.
 
-Branch do lote: `port-original-animation-data`. Registrar PR e commit após validação CI.
+Branch `port-original-animation-data` integrada pelo [PR #9](https://github.com/SrTristeSad/Bono-Lua/pull/9), commit [b86023c](https://github.com/SrTristeSad/Bono-Lua/commit/b86023c34655c34a2db76293edbcb766897dddc8). A CI do PR aprovou **164 testes Lua** (148 anteriores + 16 novos), testes do exemplo Mecha 1406 e a verificação gráfica LÖVE. A equivalência diferencial 1:1 com o TypeScript original ainda está pendente.
 
 ## Código que já existia antes deste porte
 
