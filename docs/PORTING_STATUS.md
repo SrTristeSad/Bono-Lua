@@ -138,7 +138,7 @@ As constantes, nomes (inclusive `DRADON_BONES`, assim grafado no original), valo
 
 Teste dedicado: `tests/original_data_parser.lua`, **14 cenários**, com 131 verificações de constantes, versões ordenadas, todas as entradas dos 10 mapeamentos, variantes ASCII em caixa alta, defaults e entradas inválidas. A CI executa esse teste separadamente. **Pendente:** comparar diferencialmente com TypeScript executado; `string.lower` de Lua cobre as entradas ASCII previstas, mas não é uma implementação geral das regras Unicode de `String.toLowerCase`/`toLocaleLowerCase` do JavaScript. A classe `DataParser` é abstrata; nenhum parser de dados real é declarado concluído neste lote.
 
-Branch: `port-original-data-parser`. Integração e SHA serão atualizados após aprovação dos testes GitHub Actions.
+Branch `port-original-data-parser` integrada pelo [PR #12](https://github.com/SrTristeSad/Bono-Lua/pull/12), commit de integração [`54b7fe4`](https://github.com/SrTristeSad/Bono-Lua/commit/54b7fe4ae1e07985d653840101ca6e3f81250073). GitHub Actions do PR: **14/14 testes DataParser aprovados, 263 verificações, 220 testes Lua totais aprovados**, mais sintaxe e renderização gráfica LÖVE. Continua pendente a execução diferencial abrangente contra TypeScript.
 
 ## Código que já existia antes deste porte
 
