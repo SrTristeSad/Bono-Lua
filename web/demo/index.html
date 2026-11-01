@@ -23,11 +23,13 @@
       <section class="viewport" aria-label="Prévia do personagem animado">
         <div class="viewport-top"><span>PRÉVIA</span><span id="fps">— FPS</span></div>
         <div id="canvas-host" class="canvas-host"></div>
-        <div class="viewport-bottom"><span>Personagem oficial: Mecha 1002</span><span id="status" role="status" data-state="loading">Carregando...</span></div>
+        <div class="viewport-bottom"><span id="character-name">Personagem original DragonBones</span><span id="status" role="status" data-state="loading">Carregando...</span></div>
       </section>
       <aside class="panel">
         <h1>Reprodução de animação</h1>
         <p>Este visualizador usa a biblioteca de execução original do DragonBonesJS, integrada ao PixiJS 8. Não é ainda o editor visual.</p>
+        <label for="character">Personagem</label>
+        <select id="character" disabled><option>Carregando...</option></select>
         <label for="animation">Animação</label>
         <select id="animation" disabled><option>Carregando...</option></select>
 
@@ -40,7 +42,7 @@
         <input id="speed" type="range" min="0.25" max="2" value="1" step="0.25" disabled>
         <label class="check"><input id="bones" type="checkbox" disabled> Exibir ossos e articulações</label>
         <div class="info">
-          <div><span>Armadura</span><strong>mecha_1002_101d</strong></div>
+          <div><span>Armadura</span><strong id="armature-name">—</strong></div>
           <div><span>Ossos</span><strong id="bone-count">—</strong></div>
           <div><span>Slots</span><strong id="slot-count">—</strong></div>
           <div><span>Origem</span><strong>DragonBonesJS oficial</strong></div>
