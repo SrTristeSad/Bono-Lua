@@ -24,11 +24,14 @@
     armatureName: $('armature-name'), animation: $('animation'),
     play: $('play'), pause: $('pause'), reset: $('reset'),
     speed: $('speed'), speedOutput: $('speed-output'), bones: $('bones'),
-    boneCount: $('bone-count'), slotCount: $('slot-count')
+    boneCount: $('bone-count'), slotCount: $('slot-count'),
+    skeletonFile: $('skeleton-file'), atlasFile: $('atlas-file'),
+    textureFile: $('texture-file'), importCharacter: $('import-character'),
+    importStatus: $('import-status'), modelOrigin: $('model-origin')
   };
   const state = {
     ready: false, paused: false, speed: 1, display: null, app: null,
-    models: new Map()
+    models: new Map(), factory: null, center: null, importSequence: 0
   };
   window.__bonoDemo = state;
 
@@ -54,7 +57,8 @@
     for (const value of state.models.values()) value.display.visible = (value === model);
     state.display = model.display;
 
-    el.characterName.textContent = 'Exemplo oficial: ' + model.spec.label;
+    el.characterName.textContent = (model.spec.local ? 'Importado: ' : 'Exemplo oficial: ') + model.spec.label;
+    el.modelOrigin.textContent = model.spec.local ? 'Arquivo local' : 'DragonBonesJS oficial';
     el.armatureName.textContent = model.spec.armature;
     el.boneCount.textContent = String(model.armature.sortedBones.length);
     el.slotCount.textContent = String(model.armature.sortedSlots.length);
@@ -76,6 +80,102 @@
     if (!response.ok) throw new Error('Falha ao carregar ' + path + ': ' + response.status);
     return response.json();
   }
+
+  function validateJsonFiles(skeletonFile, atlasFile, textureFile) {
+    if (!skeletonFile || !atlasFile || !textureFile) {
+      throw new Error('Selecione esqueleto JSON, atlas JSON e textura PNG.');
+    }
+    for (const file of [skeletonFile, atlasFile]) {
+      if (!/\.json$/i.test(file.name)) throw new Error('Esqueleto e atlas precisam de extensão .json.');
+      if (file.size === 0 || file.size > 8 * 1024 * 1024) {
+        throw new Error('Arquivo JSON vazio ou maior que 8 MB: ' + file.name);
+      }
+    }
+    if (!/\.png$/i.test(textureFile.name) || textureFile.size === 0 || textureFile.size > 20 * 1024 * 1024) {
+      throw new Error('A imagem precisa ser um PNG de até 20 MB.');
+    }
+  }
+  function validateStructure(skeleton, atlas) {
+    if (!skeleton || typeof skeleton !== 'object'
+        || !Array.isArray(skeleton.armature) || !skeleton.armature.length) {
+      throw new Error('O esqueleto não possui o campo armature válido.');
+    }
+    if (typeof skeleton.version !== 'string') {
+      throw new Error('Esqueleto DragonBones sem versão declarada.');
+    }
+    if (!atlas || typeof atlas !== 'object'
+        || !Array.isArray(atlas.SubTexture)) {
+      throw new Error('Atlas incompatível: faltou SubTexture.');
+    }
+    const armatureNames = skeleton.armature.map(armature => armature?.name);
+    if (armatureNames.some(name => typeof name !== 'string' || !name)) {
+      throw new Error('Uma armadura não possui nome.');
+    }
+    return armatureNames;
+  }
+  async function importCharacter() {
+    const btn = el.importCharacter;
+    if (btn.disabled || !state.factory || !state.center) return;
+    btn.disabled = true;
+    el.importStatus.textContent = 'Lendo os arquivos locais...';
+    let url = null;
+    try {
+      const skeletonFile = el.skeletonFile.files[0];
+      const atlasFile = el.atlasFile.files[0];
+      const textureFile = el.textureFile.files[0];
+      validateJsonFiles(skeletonFile, atlasFile, textureFile);
+      const [skeleton, atlas] = await Promise.all([
+        skeletonFile.text().then(JSON.parse),
+        atlasFile.text().then(JSON.parse)
+      ]);
+      validateStructure(skeleton, atlas);
+      url = URL.createObjectURL(textureFile);
+      const texture = await PIXI.Assets.load({ src: url, parser: 'texture' });
+      if (!texture?.source) throw new Error('O PNG não foi carregado pelo PixiJS.');
+      const importIndex = ++state.importSequence;
+      const cacheKey = 'bono-local-' + importIndex;
+      const data = state.factory.parseDragonBonesData(skeleton, cacheKey);
+      if (!data) throw new Error('O parser DragonBones rejeitou o esqueleto. Confira a versão.');
+      state.factory.parseTextureAtlasData(atlas, texture.source, cacheKey);
+
+      const imported = [];
+      for (const armatureName of data.armatureNames) {
+        const display = state.factory.buildArmatureDisplay(armatureName, cacheKey);
+        if (!display) throw new Error('Não foi possível montar a armadura ' + armatureName);
+        const armature = data.getArmature(armatureName);
+        if (!armature) throw new Error('Armadura não encontrada: ' + armatureName);
+        const id = cacheKey + '-' + imported.length;
+        const spec = {
+          id, label: skeletonFile.name + ' / ' + armatureName,
+          armature: armatureName, data: cacheKey, local: true
+        };
+        display.visible = false;
+        display.scale.set(0.70);
+        display.position.set(0, 40);
+        imported.push({ spec, armature, display });
+      }
+      if (!imported.length) throw new Error('Nenhuma armadura montada.');
+      for (const model of imported) {
+        state.center.addChild(model.display);
+        state.models.set(model.spec.id, model);
+        const option = document.createElement('option');
+        option.value = model.spec.id;
+        option.textContent = model.spec.label;
+        el.character.appendChild(option);
+      }
+      el.character.value = imported[0].spec.id;
+      selectCharacter(imported[0].spec.id);
+      el.importStatus.textContent = imported.length + ' armadura(s) importada(s). Nenhum arquivo foi enviado a servidor.';
+    } catch (error) {
+      console.error('Falha na importação DragonBones:', error);
+      el.importStatus.textContent = 'Erro: ' + error.message;
+    } finally {
+      // The texture has already been decoded; no object URL remains available outside this session.
+      if (url) URL.revokeObjectURL(url);
+      btn.disabled = false;
+    }
+  }
+
   async function main() {
     if (!window.PIXI || !window.dragonBones?.PixiFactory) {
       throw new Error('Bibliotecas não encontradas. Rode npm run demo:prepare.');
@@ -92,9 +192,11 @@
     // Drive the original runtime with elapsed seconds for pause/speed control.
     dragonBones.PixiFactory.useSharedTicker = false;
     const factory = dragonBones.PixiFactory.newInstance(false);
+    state.factory = factory;
     const center = new PIXI.Container();
     center.position.set(480, 270);
     app.stage.addChild(center);
+    state.center = center;
 
     for (const spec of examples) {
       const [skeleton, atlas, texture] = await Promise.all([
@@ -129,9 +231,11 @@
       el.character.appendChild(option);
     }
     controls(true);
+    el.importCharacter.disabled = false;
     state.ready = true;
     selectCharacter(el.character.value);
     el.character.addEventListener('change', () => selectCharacter(el.character.value));
+    el.importCharacter.addEventListener('click', importCharacter);
     el.animation.addEventListener('change', () => selectAnimation(el.animation.value));
     el.pause.addEventListener('click', () => {
       state.paused = true;
