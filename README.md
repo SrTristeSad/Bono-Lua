@@ -2,7 +2,7 @@
 
 Projeto independente para recuperar primeiro o funcionamento do **DragonBones original** e depois construir um Studio de animação 2D simplificado.
 
-## Estado atual: fase 9 — edição de keyframes existentes e prévia recompilada
+## Estado atual: fase 10 — inserir, remover e ajustar keyframes
 
 - Fonte upstream: [DragonBones/DragonBonesJS](https://github.com/DragonBones/DragonBonesJS).
 - Revisão fixa: `64b6c69ae35777c2404be68c9192e2c56906079e` (2025-05-24).
@@ -47,13 +47,13 @@ npm run demo:prepare
 npm run demo:serve
 ```
 
-Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia ou na prévia**, editar X/Y/rotação da pose-base, trocar o desenho padrão dos slots, alterar a ordem-base das camadas (quando seguro), **editar valores de keyframes existentes em translação e rotação** e salvar o esqueleto JSON. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
+Abra http://127.0.0.1:4173 e veja [instruções do viewer](docs/viewer-original.md). A interface permite trocar personagens/animações, importar localmente esqueleto JSON, atlas JSON e PNG, navegar pelo tempo e agora **selecionar ossos na hierarquia ou na prévia**, editar X/Y/rotação da pose-base, trocar o desenho padrão dos slots, alterar a ordem-base das camadas (quando seguro), **editar valores de keyframes, dividir intervalos, remover quadros intermediários e ajustar suas durações** nos canais de translação e rotação, e salvar o esqueleto JSON. Os arquivos binários e texturas originais são copiados apenas ao preparar o demo, não ficam permanentemente versionados. Há um teste opcional de navegador em `npm run demo:test-browser` (requer Playwright/Chromium).
 
 ## Próximas etapas
 
 1. Testar projetos DragonBones mais complexos: skins, malhas, deformações, constraints e IK.
 2. Ampliar compatibilidade de slots para skins alternativas e animações com ordem Z, com testes de remapeamento.
-3. Evoluir a timeline de edição para criar/remover keyframes e controlar interpolação, testando o salvamento e a reabertura.
+3. Evoluir a timeline para criação de canais e edição de interpolação (curvas, easing), com testes de salvamento e reabertura.
 4. Testar compatibilidade avançada de exportação, inclusive projetos com constraints, meshes e animações complexas.
 5. **Somente depois**: rigging por silhueta, múltiplas perspectivas, ações de cena e exportação de vídeo/PNG.
 
