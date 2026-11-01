@@ -43,11 +43,12 @@ local function timelineClass(name)
   if class==nil then error("Missing original TimelineState class: "..name) end
   return class
 end
-local function borrowTimeline(name,target,armature,state,data,into,pose)
+local function borrowTimeline(name,target,armature,state,data,into,pose,frame)
   local timeline=BaseObject.borrowObject(timelineClass(name))
   if target~=nil then timeline.target=target end
+  if frame~=nil then timeline.displayFrame=frame end
   timeline:init(armature,state,data)
-  into[#into+1]=timeline
+  if into~=nil then into[#into+1]=timeline end
   if pose~=nil then pose[#pose+1]=timeline end
   return timeline
 end
@@ -303,12 +304,10 @@ function AnimationState:_updateBoneAndSlotTimelines()
                   local frame=slot:getDisplayFrameAt(i)
                   local geometry=frame:getGeometryData()
                   if geometry~=nil and geometry.offset==geometryOffset then
-                    local timeline=borrowTimeline("DeformTimelineState",
+                    borrowTimeline("DeformTimelineState",
                       self._armature.animation:getBlendState(
                         BlendState.SLOT_DEFORM,frame.rawDisplayData.name,slot),
-                      self._armature,self,data,self._slotBlendTimelines)
-                    timeline.displayFrame=frame
-                    -- TS sets displayFrame before calling init(); see note below.
+                      self._armature,self,data,self._slotBlendTimelines,nil,frame)
                     frame:updateDeformVertices()
                     ffdFlags[#ffdFlags+1]=geometryOffset
                     break
@@ -335,10 +334,9 @@ function AnimationState:_updateBoneAndSlotTimelines()
               if #frame.deformVertices>0 then
                 local geometry=frame:getGeometryData()
                 if geometry~=nil and not has(ffdFlags,geometry.offset) then
-                  local timeline=borrowTimeline("DeformTimelineState",
+                  borrowTimeline("DeformTimelineState",
                     self._armature.animation:getBlendState(BlendState.SLOT_DEFORM,name,slot),
-                    self._armature,self,nil,self._slotBlendTimelines,self._poseTimelines)
-                  timeline.displayFrame=frame
+                    self._armature,self,nil,self._slotBlendTimelines,self._poseTimelines,frame)
                 end
               end
             end
@@ -454,19 +452,15 @@ function AnimationState:init(armature,animationData,config)
   end
 
   self._actionTimeline=borrowTimeline("ActionTimelineState",nil,
-    armature,self,animationData.actionTimeline,self._poseTimelines)
-  -- In the source ActionTimelineState is not a pose timeline: remove from
-  -- the temporary destination without recycling, preserving ownership.
-  self._poseTimelines[#self._poseTimelines]=nil
+    armature,self,animationData.actionTimeline,nil)
   self._actionTimeline.currentTime=self._time
   if self._actionTimeline.currentTime<0.0 then
     self._actionTimeline.currentTime=
       self._duration-self._actionTimeline.currentTime
   end
   if animationData.zOrderTimeline~=nil then
-    local holder={}
     self._zOrderTimeline=borrowTimeline("ZOrderTimelineState",nil,
-      armature,self,animationData.zOrderTimeline,holder)
+      armature,self,animationData.zOrderTimeline,nil)
   end
 end
 
