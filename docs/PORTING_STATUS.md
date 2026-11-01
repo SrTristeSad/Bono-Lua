@@ -56,6 +56,6 @@ Fonte examinada antes do porte: `geom/ColorTransform.ts` e `core/BaseObject.ts`,
 
 ### Lote WorldClock
 
-Branch: `port-original-worldclock`. Origem fixa: `animation/WorldClock.ts` e contrato `animation/IAnimatable.ts`. Destinos: `dragonbones/original/animation/WorldClock.lua` e `tests/original_worldclock.lua`. CI compara cenários definidos de tempo automático, `timeScale`, elementos removidos, repetição de adição, ancestrais, relógios aninhados e callbacks. Status da integração e SHA devem ser consultados no GitHub PR correspondente. Falta comparação diferencial exaustiva executando o original.
+Branch: `port-original-worldclock`. Origem fixa: `animation/WorldClock.ts` e contrato `animation/IAnimatable.ts`. Destinos: `dragonbones/original/animation/WorldClock.lua` e `tests/original_worldclock.lua`. CI compara cenários definidos de tempo automático, `timeScale`, elementos removidos, repetição de adição, ancestrais, relógios aninhados e callbacks. Integração: [PR #4](https://github.com/SrTristeSad/Bono-Lua/pull/4), commit [77f5dee](https://github.com/SrTristeSad/Bono-Lua/commit/77f5dee46199a29024910ca80af6b3a3acee5ea3). Na execução do PR, passaram 22 testes do protótipo, 11 de geometria, 14 de core e 15 de WorldClock, além da verificação gráfica LÖVE. Falta comparação diferencial exaustiva executando o original.
 
 Toda próxima fase deve registrar a comparação, os testes, pendências e o commit sem alterar os objetivos.
