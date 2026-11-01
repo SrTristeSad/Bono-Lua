@@ -17,10 +17,12 @@ Referência: `DragonBones/DragonBonesJS` no commit `64b6c69ae35777c2404be68c9192
 | Reprodução visual | PixiJS 8 + DragonBonesJS original, Chromium headless | Passou |
 | Skins, IK, deformação e malhas | Testes comparativos | Não implementado |
 | Editor de pose-base | Hierarquia, seleção, X/Y/rotação, preview e exportação do _ske.json | Passou no Chromium |
+| Seleção visual de ossos | Marcadores atualizados por matriz global do DragonBones e clique na prévia | Passou no Chromium |
+| Inspeção de slots | Osso pai, ordem, índice de display e imagens por skin | Passou no Chromium |
 | Persistência | Salvar e reimportar esqueleto editado mantendo animações originais | Passou no Chromium |
 | Editor completo | Criação/remoção de ossos, IK, skins, keyframes e timeline | Não implementado |
 | Exportação de vídeo e PNG | Render/encoder | Não implementado |
 
-Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41336047352).
+Execuções CI: [ver workflow](../.github/workflows/dragonbones-original.yml). [Execução de referência com visualizador gráfico aprovado](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41336731566).
 
-**Nota:** os testes no Chromium comprovam renderização, edição inicial da pose-base, download do JSON e reimportação do exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: pesos de malhas, IK, deformação, animações e hierarquia em edição avançada ainda precisam de validação. Skins, IK, deformações e a edição visual completa exigem testes próprios.
+**Nota:** o Chromium confirma renderização, seleção visual, inspeção dos slots, edição inicial da pose-base, download do JSON e reimportação de um exemplo real. Isso **não** significa equivalência completa ao editor DragonBones: alterações de slots, pesos de malhas, IK, deformações e edição avançada de keyframes ainda precisam ser desenvolvidos e validados. Skins, IK, deformações e a edição visual completa exigem testes próprios.
