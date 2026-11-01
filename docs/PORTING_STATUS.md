@@ -249,7 +249,7 @@ A classe `Animation` previamente portada agora consome o `BlendState` Lua real p
 
 Teste dedicado: `tests/original_blend_state.lua` com cenários de saturação, empate exato, múltiplas camadas, pesos extremos, identidade do target, reuso de pool, `Animation` e `Armature`; CI roda Lua 5.4 e LuaJIT, além da regressão gráfica LÖVE. **Pendente:** porte completo da classe `AnimationState` do arquivo-fonte original, estados de timeline e comparação diferencial executando o TypeScript fixado. As diferenças de representação de classes e acesso Lua seguem documentadas nos lotes anteriores.
 
-Branch `port-original-blend-state`; PR, validação e SHA de integração serão acrescentados depois da CI.
+Branch `port-original-blend-state` integrada pelo [PR #22](https://github.com/SrTristeSad/Bono-Lua/pull/22), commit de integração [`f7d00a6`](https://github.com/SrTristeSad/Bono-Lua/commit/f7d00a6d2a1739aefd30518617fd5663ef0bfb7a). CI do PR: **33/33 cenários BlendState e 136 verificações** aprovados em Lua 5.4 e LuaJIT, além de ambos os jobs LÖVE e das regressões anteriores. Total acumulado: **473 testes dos portes originais** (440 + 33), mais os 22 testes do protótipo. Ainda não há validação diferencial sistemática entre TS e Lua; a classe AnimationState completa segue pendente.
 
 ## Código que já existia antes deste porte
 
