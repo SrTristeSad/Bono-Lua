@@ -62,7 +62,9 @@ function Atlas.attachments(armature, atlas, skinName)
       if dtype == "image" or dtype == 0 then
         local name = display.path or display.name
         local region = atlas.regions[name]
-        if region then
+        if region and region.rotated then
+          skipped[#skipped+1] = {slot=slot.name,reason="rotated atlas region not supported yet: "..name}
+        elseif region then
           attachments[#attachments+1] = {
             slot = slot.name, bone = slot.parent, order = order,
             name = name, region = region,
