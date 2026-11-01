@@ -468,5 +468,54 @@ test("reuse of pooled armature retains array identity",function()
   eq(b._actions,actions);eq(b._constraints,constraints)
   b:returnToPool()
 end)
+test("init borrows Animation class, runs proxy/animation init and attaches original data",function()
+  local modulePath="dragonbones.original.animation.Animation"
+  local previous=package.loaded[modulePath]
+  local FakeAnimation={};FakeAnimation.__index=FakeAnimation
+  setmetatable(FakeAnimation,{__index=Base})
+  function FakeAnimation.new() return Base.new(FakeAnimation) end
+  function FakeAnimation:_onClear() self.owner=nil;self.animations=nil end
+  function FakeAnimation:init(owner) self.owner=owner end
+  package.loaded[modulePath]=FakeAnimation
+  local ok,err=pcall(function()
+    local a=new()
+    local data=Base.borrowObject(Model.ArmatureData)
+    data.animations={idle={name="idle"}}
+    local proxy={count=0}
+    function proxy:dbInit(owner) self.count=self.count+1;self.owner=owner end
+    local display={}
+    local dragonBones={}
+    a:init(data,proxy,display,dragonBones)
+    eq(a.armatureData,data)
+    eq(a.animation.owner,a)
+    eq(a.animation.animations,data.animations)
+    eq(a.proxy,proxy);eq(proxy.owner,a)
+    eq(proxy.count,1)
+    eq(a.display,display);eq(a._dragonBones,dragonBones)
+    a:init(data,proxy,display,dragonBones)
+    eq(proxy.count,1)
+  end)
+  package.loaded[modulePath]=previous
+  assert(ok,err)
+end)
+
+test("actual ported Bone can be initialized and updated inside real Armature",function()
+  local a,data,animation,proxy=fixture()
+  local boneData=Base.borrowObject(Model.BoneData)
+  boneData.name="real_root"
+  boneData.alpha=0.8
+  local b=Base.borrowObject(Bone)
+  b:init(boneData,a)
+  eq(a:getBone("real_root"),b)
+  eq(b.armature,a)
+  a._alpha=0.5
+  b:invalidUpdate()
+  a:advanceTime(1/60)
+  near(a._globalAlpha,0.5)
+  near(b._globalAlpha,0.4)
+  eq(b._transformDirty,false)
+  eq(proxy.updated,1)
+end)
+
 print(("Original Armature.ts: %d passed, %d failed, %d assertions"):format(passed,failed,assertions))
 if failed>0 then os.exit(1) end
