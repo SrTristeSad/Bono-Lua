@@ -8,7 +8,10 @@
     "upstream:status": "node scripts/upstream-status.mjs",
     "test": "node --test tests/*.test.mjs",
     "original:build": "node scripts/build-original.mjs",
-    "original:verify": "npm run upstream:status && npm test"
+    "original:verify": "npm run upstream:status && npm test",
+    "demo:prepare": "node scripts/prepare-demo.mjs",
+    "demo:serve": "node scripts/serve-demo.mjs",
+    "demo:test-browser": "node scripts/test-demo-browser.mjs"
   },
   "engines": {
     "node": ">=18"
