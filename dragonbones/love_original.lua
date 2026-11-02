@@ -4,8 +4,8 @@
 -- Platform adaptation reference: DragonBonesJS (MIT), pinned commit
 -- 64b6c69ae35777c2404be68c9192e2c56906079e,
 -- Pixi/5.x/src/dragonBones/pixi/{PixiFactory,PixiSlot}.ts.
--- Currently handles ordinary and atlas-rotated IMAGE displays.
--- Mesh/FFD rendering is deliberately not claimed until ported.
+-- IMAGE and MESH displays follow the pinned PixiSlot.ts geometry and FFD
+-- algorithms, with LÖVE meshes as the graphics transport.
 local BaseFactory=require("dragonbones.original.factory.BaseFactory")
 local Slot=require("dragonbones.original.armature.Slot")
 local Armature=require("dragonbones.original.armature.Armature")
@@ -54,7 +54,7 @@ end
 
 local function node(kind)
   return {kind=kind,visible=true,alpha=1,r=1,g=1,b=1,
-    a=1,bm="alpha",texture=nil,quad=nil,
+    a=1,bm="alpha",texture=nil,quad=nil,mesh=nil,vertices=nil,
     a11=1,a12=0,a21=0,a22=1,tx=0,ty=0}
 end
 function LoveSlot:_onClear()
@@ -64,7 +64,7 @@ function LoveSlot:_onClear()
 end
 function LoveSlot:_initDisplay(_value,_retain) end
 function LoveSlot:_disposeDisplay(value,_release)
-  if value~=nil then value.quad=nil end
+  if value~=nil then value.quad=nil;value.mesh=nil;value.vertices=nil end
 end
 function LoveSlot:_onUpdateDisplay()
   self._renderDisplay=self._display or self._rawDisplay
@@ -108,33 +108,156 @@ function LoveSlot:_updateColor()
     render.alpha=c.alphaMultiplier*self._globalAlpha
   end
 end
+-- Original PixiSlot.ts accesses Uint16Array/Float32Array via zero-based
+-- offsets. All arrays in the Lua parser are 1-based; only this accessor
+-- translates the index, without changing the original offset arithmetic.
+local function dataAt(array,offset)
+  return array[offset+1]
+end
+local function correctedOffset(value)
+  -- Preserve the original DragonBones 16-bit overflow workaround.
+  return value<0 and value+65536 or value
+end
+
 function LoveSlot:_updateFrame()
   local render=self._renderDisplay
   if render==nil then return end
   render.texture=nil
   render.quad=nil
+  render.mesh=nil
+  render.vertices=nil
   local texture=self._textureData
   if self._display==nil or self._displayIndex<0 or texture==nil then return end
-  if self._geometryData~=nil and self._display==self._meshDisplay then
-    error("LÖVE backend: original mesh/FFD display not implemented")
-  end
   local atlas=texture.parent
   if atlas==nil or atlas.image==nil then return end
   local image=atlas.image
   assert(type(image.getWidth)=="function" and type(image.getHeight)=="function",
     "LÖVE backend: textureAtlas must be a LÖVE Image")
-  local width,height=image:getWidth(),image:getHeight()
-  local r=texture.region
-  -- LÖVE objects are created lazily, only inside a running graphics context.
-  render.quad=love.graphics.newQuad(r.x,r.y,r.width,r.height,width,height)
-  render.texture=image
-  render.rotated=texture.rotated
-  render.packedWidth=r.width
-  self._textureScale=atlas.scale*self._armature._armatureData.scale
+  local imageWidth,imageHeight=image:getWidth(),image:getHeight()
+  local region=texture.region
+
+  if self._geometryData~=nil and self._display==self._meshDisplay then
+    -- PixiSlot._updateFrame: positions, UV rotation and triangle indices.
+    local geometry=self._geometryData
+    local data=geometry.data
+    local intArray,floatArray=data.intArray,data.floatArray
+    local offset=DragonBones.BinaryOffset
+    local vertexCount=dataAt(intArray,geometry.offset+offset.GeometryVertexCount)
+    local triangleCount=dataAt(intArray,geometry.offset+offset.GeometryTriangleCount)
+    local vertexOffset=correctedOffset(dataAt(intArray,
+      geometry.offset+offset.GeometryFloatOffset))
+    local uvOffset=vertexOffset+vertexCount*2
+    local scale=self._armature._armatureData.scale
+    local vertices={}
+    for i=0,vertexCount-1 do
+      local x=dataAt(floatArray,vertexOffset+i*2)*scale
+      local y=dataAt(floatArray,vertexOffset+i*2+1)*scale
+      local u=dataAt(floatArray,uvOffset+i*2)
+      local v=dataAt(floatArray,uvOffset+i*2+1)
+      if texture.rotated then
+        u,v=1-v,u
+      end
+      -- Pixi's renderTexture applies the atlas frame to [0,1] UVs.
+      -- LÖVE's Mesh uses UVs of the entire Image instead.
+      u=(region.x+u*region.width)/imageWidth
+      v=(region.y+v*region.height)/imageHeight
+      vertices[i+1]={x,y,u,v,1,1,1,1}
+    end
+    local indices={}
+    for i=0,triangleCount*3-1 do
+      indices[i+1]=dataAt(intArray,
+        geometry.offset+offset.GeometryVertexIndices+i)+1
+    end
+    render.vertices=vertices
+    if vertexCount>0 and #indices>0 then
+      local mesh=love.graphics.newMesh(vertices,"triangles","dynamic")
+      mesh:setVertexMap(indices)
+      mesh:setTexture(image)
+      render.mesh=mesh
+    end
+    self._textureScale=1
+    render.texture=image
+    if geometry.weight~=nil
+        or self._parent._boneData.type~=DragonBones.BoneType.Bone then
+      self:_identityTransform()
+    end
+  else
+    -- Original simple image path; rotated packed frames are handled at draw.
+    render.quad=love.graphics.newQuad(region.x,region.y,
+      region.width,region.height,imageWidth,imageHeight)
+    render.texture=image
+    render.rotated=texture.rotated
+    render.packedWidth=region.width
+    self._textureScale=atlas.scale*self._armature._armatureData.scale
+  end
   self._visibleDirty=true
 end
+
 function LoveSlot:_updateMesh()
-  error("LÖVE backend: original mesh/FFD deformation rendering not implemented")
+  -- Direct translation of PixiSlot._updateMesh, pinned DragonBonesJS commit.
+  -- Graphics transport differs: setVertices updates the LÖVE GPU buffer.
+  local render=self._renderDisplay
+  if render==nil or render.mesh==nil then return end
+  local scale=self._armature._armatureData.scale
+  local geometry=self._geometryData
+  local data=geometry.data
+  local ints,floats=data.intArray,data.floatArray
+  local offset=DragonBones.BinaryOffset
+  local deform=self._displayFrame.deformVertices
+  local hasDeform=#deform>0 and geometry.inheritDeform
+  local vertexCount=dataAt(ints,geometry.offset+offset.GeometryVertexCount)
+  local bones=self._geometryBones
+  local weight=geometry.weight
+  local vertices=render.vertices
+
+  if weight~=nil then
+    local weightFloatOffset=correctedOffset(dataAt(ints,
+      weight.offset+offset.WeigthFloatOffset))
+    local iB=weight.offset+offset.WeigthBoneIndices+#bones
+    local iV=weightFloatOffset
+    local iF=0
+    for i=0,vertexCount-1 do
+      local boneCount=dataAt(ints,iB);iB=iB+1
+      local xG,yG=0,0
+      for _=1,boneCount do
+        local boneIndex=dataAt(ints,iB);iB=iB+1
+        local bone=bones[boneIndex+1]
+        if bone~=nil then
+          local matrix=bone.globalTransformMatrix
+          local boneWeight=dataAt(floats,iV);iV=iV+1
+          local xL=dataAt(floats,iV)*scale;iV=iV+1
+          local yL=dataAt(floats,iV)*scale;iV=iV+1
+          if hasDeform then
+            xL=xL+deform[iF+1];iF=iF+1
+            yL=yL+deform[iF+1];iF=iF+1
+          end
+          xG=xG+(matrix.a*xL+matrix.c*yL+matrix.tx)*boneWeight
+          yG=yG+(matrix.b*xL+matrix.d*yL+matrix.ty)*boneWeight
+        end
+      end
+      vertices[i+1][1],vertices[i+1][2]=xG,yG
+    end
+  else
+    local isSurface=self._parent._boneData.type~=DragonBones.BoneType.Bone
+    local vertexOffset=correctedOffset(dataAt(ints,
+      geometry.offset+offset.GeometryFloatOffset))
+    for i=0,vertexCount-1 do
+      local x=dataAt(floats,vertexOffset+i*2)*scale
+      local y=dataAt(floats,vertexOffset+i*2+1)*scale
+      if hasDeform then
+        x=x+deform[i*2+1]
+        y=y+deform[i*2+2]
+      end
+      if isSurface then
+        local matrix=self._parent:_getGlobalTransformMatrix(x,y)
+        vertices[i+1][1]=matrix.a*x+matrix.c*y+matrix.tx
+        vertices[i+1][2]=matrix.b*x+matrix.d*y+matrix.ty
+      else
+        vertices[i+1][1],vertices[i+1][2]=x,y
+      end
+    end
+  end
+  render.mesh:setVertices(vertices)
 end
 function LoveSlot:_updateTransform()
   self:updateGlobalTransform()
@@ -230,7 +353,7 @@ local function drawArmature(armature)
   for _,slot in ipairs(armature:getSlots()) do
     local render=slot._renderDisplay
     if slot._display~=nil and render~=nil and render.visible
-        and render.texture~=nil and render.quad~=nil then
+        and render.texture~=nil and (render.quad~=nil or render.mesh~=nil) then
       local a,b,c,d=render.a11,render.a21,render.a12,render.a22
       local tx,ty=render.tx,render.ty
       if render.rotated then
@@ -249,7 +372,11 @@ local function drawArmature(armature)
       graphics.setBlendMode(render.bm)
       graphics.setColor(render.r,render.g,render.b,render.alpha)
       graphics.applyTransform(transform)
-      graphics.draw(render.texture,render.quad,0,0)
+      if render.mesh~=nil then
+        graphics.draw(render.mesh,0,0)
+      else
+        graphics.draw(render.texture,render.quad,0,0)
+      end
       graphics.pop()
     elseif slot.childArmature~=nil then
       -- Child armatures share the graphics context but use their own runtime
