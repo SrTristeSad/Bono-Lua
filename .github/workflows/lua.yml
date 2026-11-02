@@ -132,6 +132,13 @@ jobs:
             tests/fixtures/binary_typed_cases.tsv artifacts/upstream/binary_typed_expected.tsv
           lua5.4 tests/original_binary_typed_differential.lua
           luajit tests/original_binary_typed_differential.lua
+          # Collision queries run against actual pinned DragonBonesJS
+          # Rectangle/Ellipse/Polygon classes, including output mutations.
+          node tests/differential_boundingbox_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/boundingbox_cases.tsv artifacts/upstream/boundingbox_expected.tsv
+          lua5.4 tests/original_boundingbox_differential.lua
+          luajit tests/original_boundingbox_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
