@@ -1,9 +1,8 @@
 -- ObjectDataParser._modifyArray conformance against the original
 -- DragonBonesJS source (commit 64b6c69ae35777c2404be68c9192e2c56906079e).
 -- Original: DragonBones/src/dragonBones/parser/ObjectDataParser.ts 2215-2292.
--- Lua-only tests run under Lua 5.4 and LuaJIT. The result is a packed
--- little-endian byte string with typed-view numeric snapshots, not a JS
--- mutable ArrayBuffer; differences are tracked in PORTING_STATUS.
+-- Lua-only tests run under Lua 5.4 and LuaJIT. The original seven typed
+-- views share one mutable byte buffer; binary string reads reflect edits.
 package.path="./?.lua;./?/init.lua;"..package.path
 local Parser=require("dragonbones.original.parser.ObjectDataParser")
 local DBData=require("dragonbones.original.model.DragonBonesData")
@@ -254,15 +253,32 @@ test("finalizing after _parseArray uses newly cleared source buffers",function()
   eq(original,fromBytes(1,0,2,0))
   eq(data.binary,fromBytes(3,0,4,0))
 end)
-test("binary and numeric views are snapshots not mutable shared ArrayBuffer",function()
+test("Int16 mutation writes through to the shared binary bytes",function()
   local p,data=fixture()
   p._intArray={2,3}
   p:_modifyArray()
-  local bytes=data.binary
+  local before=data.binary -- immutable Lua string snapshot
   data.intArray[1]=9
-  eq(bytes,data.binary)
-  eq(data.binary,fromBytes(2,0,3,0))
-  eq(p._intArray[1],2)
+  eq(before,fromBytes(2,0,3,0))
+  eq(data.binary,fromBytes(9,0,3,0))
+  eq(data.intArray[1],9)
+  eq(p._intArray[1],2) -- source parser arrays stay separate as upstream
+end)
+test("Int16 Float32 Uint16 writes retain typed alias offsets and coercion",function()
+  local p,data=fixture()
+  p._intArray={1,2}
+  p._floatArray={0.1}
+  p._timelineArray={3,4}
+  p:_modifyArray()
+  data.intArray[2]=65535
+  eq(data.intArray[2],-1)
+  data.timelineArray[1]=-1
+  eq(data.timelineArray[1],65535)
+  data.floatArray[1]=-0.0
+  eq(1/data.floatArray[1],-math.huge)
+  checkHex(data.binary,"01 00 ff ff 00 00 00 80 ff ff 04 00")
+  data.floatArray[1]=2^-149
+  checkHex(data.binary,"01 00 ff ff 01 00 00 00 ff ff 04 00")
 end)
 test("source fifth alignment condition is a no-op after timeline padding",function()
   local p,data=fixture()
