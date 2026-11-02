@@ -985,6 +985,154 @@ test("nested child Armature and sibling retain independent display order",functi
   eq(#child.display._renderSlots,1)
 end)
 
+-- PixiArmatureDisplay.ts and PixiFactory.ts use a single object as
+-- both Armature.proxy/eventDispatcher and Armature.display. The LÖVE host
+-- exposes the same IArmatureProxy contract on its retained display.
+test("PixiArmatureDisplay is exactly the Armature proxy and display",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  eq(display,rig.proxy)
+  eq(display,rig.eventDispatcher)
+  eq(display.armature,rig)
+  eq(display.animation,rig.animation)
+  eq(display.debugDraw,false)
+  eq(#display._renderSlots,1)
+end)
+test("PixiFactory buildArmatureDisplay exposes original proxy event API",function()
+  local f=Love.Factory.new()
+  f:parseDragonBonesData(sample(),"proxy")
+  f:parseTextureAtlasData(atlas(),image(8,4),"proxy")
+  local display=assert(f:buildArmatureDisplay("rig","proxy"))
+  eq(display.armature.display,display)
+  eq(display.armature.proxy,display)
+  local hits={}
+  local callback=function(ev) hits[#hits+1]=ev.name end
+  display:addDBEventListener("frameEvent",callback)
+  eq(display:hasDBEventListener("frameEvent"),true)
+  display:dispatchDBEvent("frameEvent",{name="step"})
+  eq(hits[1],"step")
+  display:removeDBEventListener("frameEvent",callback)
+  eq(display:hasDBEventListener("frameEvent"),false)
+  display.armature.clock=nil
+end)
+test("PixiArmatureDisplay event listeners preserve context and insertion order",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  local first={tag="first",count=0}
+  local second={tag="second",count=0}
+  local seen={}
+  local callback=function(target,event)
+    target.count=target.count+1
+    seen[#seen+1]=target.tag..event.name
+  end
+  display:addDBEventListener("hit",callback,first)
+  display:addDBEventListener("hit",callback,second)
+  eq(display:hasDBEventListener("hit"),true)
+  display:dispatchDBEvent("hit",{name="!"})
+  eq(seen[1],"first!")
+  eq(seen[2],"second!")
+  eq(first.count,1)
+  eq(second.count,1)
+  display:removeDBEventListener("hit",callback,first)
+  display:dispatchDBEvent("hit",{name="?"})
+  eq(first.count,1)
+  eq(second.count,2)
+  eq(seen[3],"second?")
+  display:removeDBEventListener("hit",callback,second)
+  eq(display:hasDBEventListener("hit"),false)
+end)
+test("PixiArmatureDisplay supports duplicate unbound EventEmitter registrations",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  local count=0
+  local callback=function(event)count=count+event.increment end
+  display:addDBEventListener("hit",callback)
+  display:addDBEventListener("hit",callback)
+  display:dispatchDBEvent("hit",{increment=2})
+  eq(count,4)
+  display:removeDBEventListener("hit",callback)
+  eq(display:hasDBEventListener("hit"),false)
+  display:dispatchDBEvent("hit",{increment=4})
+  eq(count,4)
+end)
+test("PixiArmatureDisplay dispatch snapshots listeners during reentrant edits",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  local calls={}
+  local late=function()calls[#calls+1]="late" end
+  local first=function()
+    calls[#calls+1]="first"
+    display:addDBEventListener("hit",late)
+  end
+  local second=function()calls[#calls+1]="second" end
+  display:addDBEventListener("hit",first)
+  display:addDBEventListener("hit",second)
+  display:dispatchDBEvent("hit",{})
+  eq(table.concat(calls,","),"first,second")
+  display:dispatchDBEvent("hit",{})
+  eq(table.concat(calls,","),"first,second,first,second,late")
+end)
+test("PixiArmatureDisplay routes original DragonBones frame and sound events",function()
+  local f,_,_,rig=build()
+  local EventObject=require("dragonbones.original.event.EventObject")
+  local hits={}
+  local onFrame=function(event)hits[#hits+1]="frame:"..event.name end
+  local onSound=function(event)hits[#hits+1]="sound:"..event.name end
+  local onGlobal=function(event)hits[#hits+1]="global:"..event.name end
+  rig.display:addDBEventListener(EventObject.FRAME_EVENT,onFrame)
+  rig.display:addDBEventListener(EventObject.SOUND_EVENT,onSound)
+  f.soundEventManager:addDBEventListener(EventObject.SOUND_EVENT,onGlobal)
+  local frame=BaseObject.borrowObject(EventObject)
+  frame.type=EventObject.FRAME_EVENT
+  frame.name="move"
+  frame.armature=rig
+  f.dragonBones:bufferEvent(frame)
+  local sound=BaseObject.borrowObject(EventObject)
+  sound.type=EventObject.SOUND_EVENT
+  sound.name="impact"
+  sound.armature=rig
+  f.dragonBones:bufferEvent(sound)
+  f.dragonBones:advanceTime(0)
+  eq(table.concat(hits,","),"frame:move,sound:impact,global:impact")
+  f.soundEventManager:removeDBEventListener(EventObject.SOUND_EVENT,onGlobal)
+  eq(f.soundEventManager:hasDBEventListener(EventObject.SOUND_EVENT),false)
+end)
+test("PixiArmatureDisplay dispose detaches immediately and clears on pool return",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  local touched=0
+  display:addDBEventListener("hit",function()touched=touched+1 end)
+  eq(#display._renderSlots,1)
+  display:dispose(false) -- Pixi ignores disposeProxy.
+  eq(display.armature,nil)
+  eq(display:hasDBEventListener("hit"),true) -- deferred dbClear
+  f.dragonBones:advanceTime(0)
+  eq(display.armature,nil)
+  eq(#display._renderSlots,0)
+  eq(display:hasDBEventListener("hit"),false)
+  display:dispatchDBEvent("hit",{})
+  eq(touched,0)
+end)
+test("PixiArmatureDisplay destroy invokes the same armature disposal contract",function()
+  local f,_,_,rig=build()
+  local display=rig.display
+  display:destroy()
+  eq(display.armature,nil)
+  f.dragonBones:advanceTime(0)
+  eq(#display._renderSlots,0)
+  local ok=pcall(function()return display.animation end)
+  eq(ok,false) -- Original getter dereferences a detached armature.
+end)
+test("PixiArmatureDisplay surfaces unsupported debug draw instead of faking it",function()
+  local f,_,_,rig=build()
+  rig.display.debugDraw=true
+  local ok,err=pcall(function()rig.display:dbUpdate()end)
+  eq(ok,false)
+  eq(tostring(err):find("debugDraw is not ported",1,true)~=nil,true)
+  rig.display.debugDraw=false
+  rig.display:dbUpdate()
+end)
+
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
   :format(passed,failed,checks))
 if failed>0 then os.exit(1) end
