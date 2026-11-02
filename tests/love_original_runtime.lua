@@ -348,15 +348,34 @@ function Test.run()
   assert(#display._renderSlots==0)
   -- PixiArmatureDisplay.dbUpdate debug Sprite: cyan line/circle for bones,
   -- magenta outline for a bounding box, drawn above the regular children.
-  local debugRaw={version="5.5",name="GPU-Debug",frameRate=24,
-    armature={{name="rig",
-      bone={{name="root",length=6,transform={x=8,y=8}}},
-      slot={{name="hitbox",parent="root",displayIndex=0}},
-      skin={{name="default",slot={{name="hitbox",display={{
-        name="hitbox",type="boundingBox",subType="rectangle",
-        width=10,height=8
-      }}}}}}
-    }}
+  local debugRaw={
+    version="5.5",
+    name="GPU-Debug",
+    frameRate=24,
+    armature={
+      {
+        name="rig",
+        bone={{name="root",length=6,transform={x=8,y=8}}},
+        slot={{name="hitbox",parent="root",displayIndex=0}},
+        skin={
+          {
+            name="default",
+            slot={
+              {
+                name="hitbox",
+                display={
+                  {
+                    name="hitbox",type="boundingBox",subType="rectangle",
+                    width=10,height=8
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   local debugFactory=Love.Factory.new()
   debugFactory:parseDragonBonesData(debugRaw,"debug")
   local debugRig=assert(debugFactory:buildArmature("rig","debug"))
