@@ -6,6 +6,11 @@
 local JSNumberString={}
 
 function JSNumberString.format(value)
+  -- Lua 5.4 has int64 values; JS Number parameters are always binary64.
+  -- Round integer arguments to a double *before* finding JS notation.
+  -- In particular, int64 values beyond 2^53 cannot round-trip as int64
+  -- through a decimal produced from their JS binary64 representation.
+  value=value+0.0
   if value~=value then return "NaN" end
   if value==math.huge then return "Infinity" end
   if value==-math.huge then return "-Infinity" end
@@ -25,7 +30,7 @@ function JSNumberString.format(value)
       break
     end
   end
-  assert(shortest~=nil,"No round-trip decimal for finite number")
+  assert(shortest~=nil,"No round-trip decimal for finite number: "..tostring(value))
 
   -- ECMAScript uses fixed notation in [1e-6,1e21) and scientific outside.
   -- printf %g instead chooses exponent notation beginning at 1e-4.
