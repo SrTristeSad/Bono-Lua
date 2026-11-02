@@ -846,10 +846,9 @@ function ObjectDataParser:_parseArray(_rawData)
 end
 
 -- ObjectDataParser.ts _modifyArray (source lines 2215-2292).
--- The source constructs one ArrayBuffer with seven typed views. Lua has no
--- standard shared mutable ArrayBuffer; a byte string plus seven numeric
--- typed-view snapshots preserves the original byte layout at finalization.
--- See PORTING_STATUS for the explicit post-finalization aliasing limitation.
+-- The source constructs one ArrayBuffer with seven typed views.
+-- SharedBinaryBuffer keeps the original byte layout, views and writes
+-- synchronized in Lua; DragonBonesData.binary reads their current bytes.
 local function truncNumber(value)
   if type(value)=="boolean" then value=value and 1 or 0 end
   if value==nil or value==JsonNull then return 0 end
@@ -973,14 +972,39 @@ function ObjectDataParser:_modifyArray()
 
   local data=self._data
   local segments={}
-  data.intArray=appendTyped(self._intArray,"int16",segments)
-  data.floatArray=appendTyped(self._floatArray,"float32",segments)
-  data.frameIntArray=appendTyped(self._frameIntArray,"int16",segments)
-  data.frameFloatArray=appendTyped(self._frameFloatArray,"float32",segments)
-  data.frameArray=appendTyped(self._frameArray,"int16",segments)
-  data.timelineArray=appendTyped(self._timelineArray,"uint16",segments)
-  data.colorArray=appendTyped(self._colorArray,"int16",segments)
-  data.binary=table.concat(segments)
+  appendTyped(self._intArray,"int16",segments)
+  appendTyped(self._floatArray,"float32",segments)
+  appendTyped(self._frameIntArray,"int16",segments)
+  appendTyped(self._frameFloatArray,"float32",segments)
+  appendTyped(self._frameArray,"int16",segments)
+  appendTyped(self._timelineArray,"uint16",segments)
+  appendTyped(self._colorArray,"int16",segments)
+  -- Seven independent TypedArray views of the SAME ArrayBuffer in upstream.
+  -- Construct one Lua byte-backed store, then map the seven source slices.
+  local Shared=require("dragonbones.original.parser.SharedBinaryBuffer")
+  local store=Shared.new(table.concat(segments))
+  local cursor=0
+  local function view(source,kind)
+    local unit=kind=="float32" and 4 or 2
+    local byteLength=#source*unit
+    local result=Shared.view(store,cursor,byteLength,kind)
+    cursor=cursor+byteLength
+    return result
+  end
+  data.intArray=view(self._intArray,"int16")
+  data.floatArray=view(self._floatArray,"float32")
+  data.frameIntArray=view(self._frameIntArray,"int16")
+  data.frameFloatArray=view(self._frameFloatArray,"float32")
+  data.frameArray=view(self._frameArray,"int16")
+  data.timelineArray=view(self._timelineArray,"uint16")
+  data.colorArray=view(self._colorArray,"int16")
+  if data.setBinaryBuffer~=nil then
+    data:setBinaryBuffer(store)
+  else
+    -- Parsers can be tested with bare data tables; they have no dynamic
+    -- DragonBonesData.binary getter. The production model does.
+    data.binary=store:bytes()
+  end
   self._defaultColorOffset=-1
 end
 
