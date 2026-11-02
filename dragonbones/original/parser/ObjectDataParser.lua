@@ -368,6 +368,316 @@ function ObjectDataParser:parseTextureAtlasData(raw,atlas,scale)
   return true
 end
 
+
+-- Structural model parsing from ObjectDataParser.ts, lines 473-877.
+-- Geometry serialization (_parseGeometry) remains an original-method
+-- dependency, not a replacement. Mesh, Path and Surface call it when used.
+local ArmatureModels=require("dragonbones.original.model.ArmatureData")
+local ConstraintModels=require("dragonbones.original.model.ConstraintData")
+local DisplayModels=require("dragonbones.original.model.DisplayData")
+local BoundingModels=require("dragonbones.original.model.BoundingBoxData")
+local SkinData=require("dragonbones.original.model.SkinData")
+
+function ObjectDataParser:_parseBone(raw)
+  local kind
+  if type(get(raw,DataParser.TYPE))=="string" then
+    kind=DataParser._getBoneType(raw[DataParser.TYPE])
+  else
+    kind=ObjectDataParser._getNumber(raw,DataParser.TYPE,Core.BoneType.Bone)
+  end
+  if kind==Core.BoneType.Bone then
+    local scale=self._armature.scale
+    local bone=Pool.borrowObject(ArmatureModels.BoneData)
+    bone.inheritTranslation=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_TRANSLATION,true)
+    bone.inheritRotation=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_ROTATION,true)
+    bone.inheritScale=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_SCALE,true)
+    bone.inheritReflection=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_REFLECTION,true)
+    bone.length=ObjectDataParser._getNumber(raw,DataParser.LENGTH,0)*scale
+    bone.alpha=ObjectDataParser._getNumber(raw,DataParser.ALPHA,1.0)
+    bone.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+    if get(raw,DataParser.TRANSFORM)~=nil then
+      self:_parseTransform(raw[DataParser.TRANSFORM],bone.transform,scale)
+    end
+    return bone
+  end
+  local surface=Pool.borrowObject(ArmatureModels.SurfaceData)
+  surface.alpha=ObjectDataParser._getNumber(raw,DataParser.ALPHA,1.0)
+  surface.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  surface.segmentX=ObjectDataParser._getNumber(raw,DataParser.SEGMENT_X,0)
+  surface.segmentY=ObjectDataParser._getNumber(raw,DataParser.SEGMENT_Y,0)
+  self:_parseGeometry(raw,surface.geometry)
+  return surface
+end
+
+function ObjectDataParser:_parseIKConstraint(raw)
+  local bone=self._armature:getBone(ObjectDataParser._getString(raw,DataParser.BONE,""))
+  if bone==nil then return nil end
+  local target=self._armature:getBone(ObjectDataParser._getString(raw,DataParser.TARGET,""))
+  if target==nil then return nil end
+  local chain=ObjectDataParser._getNumber(raw,DataParser.CHAIN,0)
+  local c=Pool.borrowObject(ConstraintModels.IKConstraintData)
+  c.scaleEnabled=ObjectDataParser._getBoolean(raw,DataParser.SCALE,false)
+  c.bendPositive=ObjectDataParser._getBoolean(raw,DataParser.BEND_POSITIVE,true)
+  c.weight=ObjectDataParser._getNumber(raw,DataParser.WEIGHT,1.0)
+  c.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  c.type=Core.ConstraintType.IK
+  c.target=target
+  if chain>0 and bone.parent~=nil then
+    c.root=bone.parent
+    c.bone=bone
+  else
+    c.root=bone
+    c.bone=nil
+  end
+  return c
+end
+
+function ObjectDataParser:_parsePathConstraint(raw)
+  local target=self._armature:getSlot(ObjectDataParser._getString(raw,DataParser.TARGET,""))
+  if target==nil then return nil end
+  local defaultSkin=self._armature.defaultSkin
+  if defaultSkin==nil then return nil end
+  local display=defaultSkin:getDisplay(target.name,
+    ObjectDataParser._getString(raw,DataParser.TARGET_DISPLAY,target.name))
+  if display==nil or getmetatable(display)~=DisplayModels.PathDisplayData then
+    return nil
+  end
+  local bones=get(raw,DataParser.BONES)
+  if bones==nil or bones==JsonNull or #bones==0 then return nil end
+  local c=Pool.borrowObject(ConstraintModels.PathConstraintData)
+  c.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  c.type=Core.ConstraintType.Path
+  c.pathSlot=target
+  c.pathDisplayData=display
+  c.target=target.parent
+  c.positionMode=DataParser._getPositionMode(
+    ObjectDataParser._getString(raw,DataParser.POSITION_MODE,""))
+  c.spacingMode=DataParser._getSpacingMode(
+    ObjectDataParser._getString(raw,DataParser.SPACING_MODE,""))
+  c.rotateMode=DataParser._getRotateMode(
+    ObjectDataParser._getString(raw,DataParser.ROTATE_MODE,""))
+  c.position=ObjectDataParser._getNumber(raw,DataParser.POSITION,0)
+  c.spacing=ObjectDataParser._getNumber(raw,DataParser.SPACING,0)
+  c.rotateOffset=ObjectDataParser._getNumber(raw,DataParser.ROTATE_OFFSET,0)
+  c.rotateMix=ObjectDataParser._getNumber(raw,DataParser.ROTATE_MIX,1)
+  c.translateMix=ObjectDataParser._getNumber(raw,DataParser.TRANSLATE_MIX,1)
+  for _,name in ipairs(bones) do
+    local bone=self._armature:getBone(name)
+    if bone~=nil then
+      c:AddBone(bone)
+      if c.root==nil then c.root=bone end
+    end
+  end
+  return c
+end
+
+function ObjectDataParser:_parseSlot(raw,zOrder)
+  local slot=Pool.borrowObject(ArmatureModels.SlotData)
+  slot.displayIndex=ObjectDataParser._getNumber(raw,DataParser.DISPLAY_INDEX,0)
+  slot.zOrder=zOrder
+  slot.zIndex=ObjectDataParser._getNumber(raw,DataParser.Z_INDEX,0)
+  slot.alpha=ObjectDataParser._getNumber(raw,DataParser.ALPHA,1.0)
+  slot.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  slot.parent=self._armature:getBone(ObjectDataParser._getString(raw,DataParser.PARENT,""))
+  if type(get(raw,DataParser.BLEND_MODE))=="string" then
+    slot.blendMode=DataParser._getBlendMode(raw[DataParser.BLEND_MODE])
+  else
+    slot.blendMode=ObjectDataParser._getNumber(raw,DataParser.BLEND_MODE,Core.BlendMode.Normal)
+  end
+  if get(raw,DataParser.COLOR)~=nil then
+    slot.color=ArmatureModels.SlotData.createColor()
+    self:_parseColorTransform(raw[DataParser.COLOR],slot.color)
+  else
+    slot.color=ArmatureModels.SlotData.DEFAULT_COLOR
+  end
+  if get(raw,DataParser.ACTIONS)~=nil then
+    self._slotChildActions[slot.name]=self:_parseActionData(
+      raw[DataParser.ACTIONS],Core.ActionType.Play,nil,nil)
+  end
+  return slot
+end
+
+function ObjectDataParser:_parseSkin(raw)
+  local skin=Pool.borrowObject(SkinData)
+  skin.name=ObjectDataParser._getString(raw,DataParser.NAME,DataParser.DEFAULT_NAME)
+  if #skin.name==0 then skin.name=DataParser.DEFAULT_NAME end
+  if get(raw,DataParser.SLOT)~=nil then
+    self._skin=skin
+    for _,rawSlot in ipairs(raw[DataParser.SLOT]) do
+      local name=ObjectDataParser._getString(rawSlot,DataParser.NAME,"")
+      local slot=self._armature:getSlot(name)
+      if slot~=nil then
+        self._slot=slot
+        if get(rawSlot,DataParser.DISPLAY)~=nil then
+          for _,rawDisplay in ipairs(rawSlot[DataParser.DISPLAY]) do
+            if rawDisplay~=false and rawDisplay~=JsonNull and rawDisplay~=nil then
+              skin:addDisplay(name,self:_parseDisplay(rawDisplay))
+            else
+              skin:addDisplay(name,nil)
+            end
+          end
+        end
+        self._slot=nil
+      end
+    end
+    self._skin=nil
+  end
+  return skin
+end
+
+function ObjectDataParser:_parseDisplay(raw)
+  local name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  local path=ObjectDataParser._getString(raw,DataParser.PATH,"")
+  local kind=Core.DisplayType.Image
+  if type(get(raw,DataParser.TYPE))=="string" then
+    kind=DataParser._getDisplayType(raw[DataParser.TYPE])
+  else
+    kind=ObjectDataParser._getNumber(raw,DataParser.TYPE,kind)
+  end
+  local display=nil
+  if kind==Core.DisplayType.Image then
+    display=Pool.borrowObject(DisplayModels.ImageDisplayData)
+    display.name=name
+    display.path=#path>0 and path or name
+    self:_parsePivot(raw,display)
+  elseif kind==Core.DisplayType.Armature then
+    display=Pool.borrowObject(DisplayModels.ArmatureDisplayData)
+    display.name=name
+    display.path=#path>0 and path or name
+    display.inheritAnimation=true
+    if get(raw,DataParser.ACTIONS)~=nil then
+      for _,action in ipairs(self:_parseActionData(
+          raw[DataParser.ACTIONS],Core.ActionType.Play,nil,nil)) do
+        display:addAction(action)
+      end
+    elseif self._slot~=nil and self._slotChildActions[self._slot.name]~=nil then
+      local displays=self._skin:getDisplays(self._slot.name)
+      if (displays==nil and self._slot.displayIndex==0)
+          or (displays~=nil and self._slot.displayIndex==#displays) then
+        for _,action in ipairs(self._slotChildActions[self._slot.name]) do
+          display:addAction(action)
+        end
+        self._slotChildActions[self._slot.name]=nil
+      end
+    end
+  elseif kind==Core.DisplayType.Mesh then
+    display=Pool.borrowObject(DisplayModels.MeshDisplayData)
+    display.geometry.inheritDeform=ObjectDataParser._getBoolean(
+      raw,DataParser.INHERIT_DEFORM,true)
+    display.name=name
+    display.path=#path>0 and path or name
+    if get(raw,DataParser.SHARE)~=nil then
+      display.geometry.data=self._data
+      self._cacheRawMeshes[#self._cacheRawMeshes+1]=raw
+      self._cacheMeshes[#self._cacheMeshes+1]=display
+    else
+      self:_parseMesh(raw,display)
+    end
+  elseif kind==Core.DisplayType.BoundingBox then
+    local bounding=self:_parseBoundingBox(raw)
+    if bounding~=nil then
+      display=Pool.borrowObject(DisplayModels.BoundingBoxDisplayData)
+      display.name=name
+      display.path=#path>0 and path or name
+      display.boundingBox=bounding
+    end
+  elseif kind==Core.DisplayType.Path then
+    local lengths=get(raw,DataParser.LENGTHS)
+    display=Pool.borrowObject(DisplayModels.PathDisplayData)
+    display.closed=ObjectDataParser._getBoolean(raw,DataParser.CLOSED,false)
+    display.constantSpeed=ObjectDataParser._getBoolean(raw,DataParser.CONSTANT_SPEED,false)
+    display.name=name
+    display.path=#path>0 and path or name
+    for i,v in ipairs(lengths) do display.curveLengths[i]=v end
+    self:_parsePath(raw,display)
+  end
+  if display~=nil and get(raw,DataParser.TRANSFORM)~=nil then
+    self:_parseTransform(raw[DataParser.TRANSFORM],
+      display.transform,self._armature.scale)
+  end
+  return display
+end
+
+function ObjectDataParser:_parsePath(raw,display)
+  self:_parseGeometry(raw,display.geometry)
+end
+
+function ObjectDataParser:_parsePivot(raw,display)
+  if get(raw,DataParser.PIVOT)~=nil then
+    local pivot=raw[DataParser.PIVOT]
+    display.pivot.x=ObjectDataParser._getNumber(pivot,DataParser.X,0.0)
+    display.pivot.y=ObjectDataParser._getNumber(pivot,DataParser.Y,0.0)
+  else
+    display.pivot.x=0.5
+    display.pivot.y=0.5
+  end
+end
+
+function ObjectDataParser:_parseMesh(raw,mesh)
+  self:_parseGeometry(raw,mesh.geometry)
+  if get(raw,DataParser.WEIGHTS)~=nil then
+    local name=self._skin.name.."_"..self._slot.name.."_"..mesh.name
+    self._weightSlotPose[name]=raw[DataParser.SLOT_POSE]
+    self._weightBonePoses[name]=raw[DataParser.BONE_POSE]
+  end
+end
+
+function ObjectDataParser:_parseBoundingBox(raw)
+  local kind=Core.BoundingBoxType.Rectangle
+  if type(get(raw,DataParser.SUB_TYPE))=="string" then
+    kind=DataParser._getBoundingBoxType(raw[DataParser.SUB_TYPE])
+  else
+    kind=ObjectDataParser._getNumber(raw,DataParser.SUB_TYPE,kind)
+  end
+  local bounding=nil
+  if kind==Core.BoundingBoxType.Rectangle then
+    bounding=Pool.borrowObject(BoundingModels.RectangleBoundingBoxData)
+  elseif kind==Core.BoundingBoxType.Ellipse then
+    bounding=Pool.borrowObject(BoundingModels.EllipseBoundingBoxData)
+  elseif kind==Core.BoundingBoxType.Polygon then
+    bounding=self:_parsePolygonBoundingBox(raw)
+  end
+  if bounding~=nil then
+    bounding.color=ObjectDataParser._getNumber(raw,DataParser.COLOR,0x000000)
+    if kind==Core.BoundingBoxType.Rectangle or kind==Core.BoundingBoxType.Ellipse then
+      bounding.width=ObjectDataParser._getNumber(raw,DataParser.WIDTH,0)
+      bounding.height=ObjectDataParser._getNumber(raw,DataParser.HEIGHT,0)
+    end
+  end
+  return bounding
+end
+
+function ObjectDataParser:_parsePolygonBoundingBox(raw)
+  local bounding=Pool.borrowObject(BoundingModels.PolygonBoundingBoxData)
+  if get(raw,DataParser.VERTICES)~=nil then
+    local scale=self._armature.scale
+    local vertices=raw[DataParser.VERTICES]
+    local result=bounding.vertices
+    for i=1,#vertices,2 do
+      local x=vertices[i]*scale
+      local y=vertices[i+1]*scale
+      result[i]=x
+      result[i+1]=y
+      if i==1 then
+        bounding.x=x
+        bounding.y=y
+        bounding.width=x
+        bounding.height=y
+      else
+        if x<bounding.x then bounding.x=x
+        elseif x>bounding.width then bounding.width=x end
+        if y<bounding.y then bounding.y=y
+        elseif y>bounding.height then bounding.height=y end
+      end
+    end
+    bounding.width=bounding.width-bounding.x
+    bounding.height=bounding.height-bounding.y
+  else
+    io.stderr:write("Data error.\\n Please reexport DragonBones Data to fixed the bug.\\n")
+  end
+  return bounding
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
