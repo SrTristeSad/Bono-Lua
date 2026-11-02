@@ -572,3 +572,156 @@ function SlotZIndexTimelineState:blend(isDirty)
     self._armature._zIndexDirty=true
   end
 end
+
+local DeformTimelineState=klass("DeformTimelineState",Multi)
+function DeformTimelineState:_onClear()
+  Multi._onClear(self)
+  self.displayFrame=nil
+  self._deformCount=0
+  self._deformOffset=0
+  self._sameValueOffset=0
+end
+function DeformTimelineState:init(a,s,d)
+  Multi.init(self,a,s,d)
+  if self._timelineData~=nil then
+    local offset=self._animationData.frameIntOffset+
+      at(self._timelineArray,self._timelineData.offset+BO.TimelineFrameValueCount)
+    local db=self._animationData.parent.parent
+    local ints=db.frameIntArray
+    self._valueOffset=self._animationData.frameFloatOffset
+    self._valueCount=at(ints,offset+BO.DeformValueCount)
+    self._deformCount=at(ints,offset+BO.DeformCount)
+    self._deformOffset=at(ints,offset+BO.DeformValueOffset)
+    self._sameValueOffset=at(ints,offset+BO.DeformFloatOffset)
+    if self._sameValueOffset<0 then
+      self._sameValueOffset=self._sameValueOffset+65536
+    end
+    self._sameValueOffset=self._sameValueOffset+
+      self._animationData.frameFloatOffset
+    self._valueScale=self._armature.armatureData.scale
+    self._valueArray=db.frameFloatArray
+    self._rd.length=self._valueCount*2
+  else
+    self._deformCount=#self.displayFrame.deformVertices
+  end
+end
+function DeformTimelineState:blend(isDirty)
+  local blend=self.target
+  local slot=blend.target
+  local weight=blend.blendWeight
+  local result=self.displayFrame.deformVertices
+  local values=self._valueArray
+  if values~=nil then
+    local count=self._valueCount
+    local offset=self._deformOffset
+    local same=self._sameValueOffset
+    local rd=self._rd
+    for i=0,self._deformCount-1 do
+      local value=0.0
+      if i<offset then value=at(values,same+i)
+      elseif i<offset+count then value=at(rd,i-offset)
+      else value=at(values,same+i-count) end
+      if blend.dirty>1 then
+        set(result,i,at(result,i)+value*weight)
+      else
+        set(result,i,value*weight)
+      end
+    end
+  elseif blend.dirty==1 then
+    for i=0,self._deformCount-1 do set(result,i,0.0) end
+  end
+  if isDirty or self.dirty then
+    self.dirty=false
+    if slot._geometryData==self.displayFrame:getGeometryData() then
+      slot._verticesDirty=true
+    end
+  end
+end
+
+local IKConstraintTimelineState=klass("IKConstraintTimelineState",Double)
+function IKConstraintTimelineState:_onUpdateFrame()
+  Double._onUpdateFrame(self)
+  local constraint=self.target
+  if self._timelineData~=nil then
+    constraint._bendPositive=self._currentA>0.0
+    constraint._weight=self._currentB
+  else
+    local data=constraint._constraintData
+    constraint._bendPositive=data.bendPositive
+    constraint._weight=data.weight
+  end
+  constraint:invalidUpdate()
+  self.dirty=false
+end
+function IKConstraintTimelineState:init(a,s,d)
+  Double.init(self,a,s,d)
+  self._valueOffset=self._animationData.frameIntOffset
+  self._valueScale=0.01
+  self._valueArray=self._animationData.parent.parent.frameIntArray
+end
+
+local AnimationProgressTimelineState=klass("AnimationProgressTimelineState",Single)
+function AnimationProgressTimelineState:_onUpdateFrame()
+  Single._onUpdateFrame(self)
+  local state=self.target
+  if state._parent~=nil then
+    state.currentTime=self._result*state.totalTime
+  end
+  self.dirty=false
+end
+function AnimationProgressTimelineState:init(a,s,d)
+  Single.init(self,a,s,d)
+  self._valueOffset=self._animationData.frameIntOffset
+  self._valueScale=0.0001
+  self._valueArray=self._animationData.parent.parent.frameIntArray
+end
+
+local AnimationWeightTimelineState=klass("AnimationWeightTimelineState",Single)
+function AnimationWeightTimelineState:_onUpdateFrame()
+  Single._onUpdateFrame(self)
+  local state=self.target
+  if state._parent~=nil then state.weight=self._result end
+  self.dirty=false
+end
+function AnimationWeightTimelineState:init(a,s,d)
+  Single.init(self,a,s,d)
+  self._valueOffset=self._animationData.frameIntOffset
+  self._valueScale=0.0001
+  self._valueArray=self._animationData.parent.parent.frameIntArray
+end
+
+local AnimationParametersTimelineState=klass("AnimationParametersTimelineState",Double)
+function AnimationParametersTimelineState:_onUpdateFrame()
+  Double._onUpdateFrame(self)
+  local state=self.target
+  if state._parent~=nil then
+    state.parameterX=self._resultA
+    state.parameterY=self._resultB
+  end
+  self.dirty=false
+end
+function AnimationParametersTimelineState:init(a,s,d)
+  Double.init(self,a,s,d)
+  self._valueOffset=self._animationData.frameIntOffset
+  self._valueScale=0.0001
+  self._valueArray=self._animationData.parent.parent.frameIntArray
+end
+
+return {
+  ActionTimelineState=ActionTimelineState,
+  ZOrderTimelineState=ZOrderTimelineState,
+  BoneAllTimelineState=BoneAllTimelineState,
+  BoneTranslateTimelineState=BoneTranslateTimelineState,
+  BoneRotateTimelineState=BoneRotateTimelineState,
+  BoneScaleTimelineState=BoneScaleTimelineState,
+  SurfaceTimelineState=SurfaceTimelineState,
+  AlphaTimelineState=AlphaTimelineState,
+  SlotDisplayTimelineState=SlotDisplayTimelineState,
+  SlotColorTimelineState=SlotColorTimelineState,
+  SlotZIndexTimelineState=SlotZIndexTimelineState,
+  DeformTimelineState=DeformTimelineState,
+  IKConstraintTimelineState=IKConstraintTimelineState,
+  AnimationProgressTimelineState=AnimationProgressTimelineState,
+  AnimationWeightTimelineState=AnimationWeightTimelineState,
+  AnimationParametersTimelineState=AnimationParametersTimelineState
+}
