@@ -426,7 +426,7 @@ test("top-level DragonBones JSON parse remains unavailable, not invented",functi
   local p=setup()
   eq(p.parseDragonBonesData,nil)
   eq(type(p._parseGeometry),"function")
-  eq(p._modifyArray,nil)
+  eq(type(p._modifyArray),"function")
   eq(p._parseAnimation,nil)
 end)
 
