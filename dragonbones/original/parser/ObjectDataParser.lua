@@ -1686,6 +1686,115 @@ function ObjectDataParser:_parseSlotTimeline(rawData)
   self._slot=nil
 end
 
+
+-- Original ObjectDataParser.ts _parseSlotDeformFrame (1790-1875) and
+-- _parseDeformFrame (1975-2036). Binary offsets remain zero-based;
+-- Lua table indices are offset+1, including indirect weight indices.
+local function rawAt(array,index) return array[index+1] end
+local function rawSet(array,index,value) array[index+1]=value end
+local function appendZeros(array,count)
+  for _=1,count do array[#array+1]=0 end
+end
+local function deformValue(raw,index,offset)
+  if raw==nil then return 0.0 end
+  local atIndex=index-offset
+  if atIndex<0 or atIndex>=#raw then return 0.0 end
+  return rawAt(raw,atIndex)
+end
+local function appendDeformHeader(self,geometryOffset,frameFloatOffset)
+  local at=#self._frameIntArray
+  local b=Core.BinaryOffset
+  appendZeros(self._frameIntArray,5)
+  local total=#self._frameFloatArray-frameFloatOffset
+  rawSet(self._frameIntArray,at+b.DeformVertexOffset,geometryOffset)
+  rawSet(self._frameIntArray,at+b.DeformCount,total)
+  rawSet(self._frameIntArray,at+b.DeformValueCount,total)
+  rawSet(self._frameIntArray,at+b.DeformValueOffset,0)
+  rawSet(self._frameIntArray,at+b.DeformFloatOffset,
+    frameFloatOffset-self._animation.frameFloatOffset)
+  rawSet(self._timelineArray,
+    self._timeline.offset+b.TimelineFrameValueCount,
+    at-self._animation.frameIntOffset)
+end
+
+function ObjectDataParser:_parseSlotDeformFrame(rawData,frameStart,frameCount)
+  local frameFloatOffset=#self._frameFloatArray
+  local frameOffset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local rawVertices=get(rawData,DataParser.VERTICES)
+  local offset=ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0)
+  local mesh=self._mesh
+  local geometry=mesh.geometry
+  local vertexCount=rawAt(self._intArray,
+    geometry.offset+Core.BinaryOffset.GeometryVertexCount)
+  local meshName=mesh.parent.name.."_"..self._slot.name.."_"..mesh.name
+  local weight=geometry.weight
+  local iB,iV=0,0
+  if weight~=nil then
+    local slotPose=self._weightSlotPose[meshName]
+    self._helpMatrixA:copyFromArray(slotPose,0)
+    appendZeros(self._frameFloatArray,weight.count*2)
+    iB=weight.offset+Core.BinaryOffset.WeigthBoneIndices+#weight.bones
+  else
+    appendZeros(self._frameFloatArray,vertexCount*2)
+  end
+  for i=0,vertexCount*2-1,2 do
+    local x=deformValue(rawVertices,i,offset)
+    local y=deformValue(rawVertices,i+1,offset)
+    if weight~=nil then
+      local bonePoses=self._weightBonePoses[meshName]
+      local boneCount=rawAt(self._intArray,iB)
+      iB=iB+1
+      self._helpMatrixA:transformPoint(x,y,self._helpPoint,true)
+      x,y=self._helpPoint.x,self._helpPoint.y
+      for _=1,boneCount do
+        local boneIndex=rawAt(self._intArray,iB)
+        iB=iB+1
+        self._helpMatrixB:copyFromArray(bonePoses,boneIndex*7+1)
+        self._helpMatrixB:invert()
+        self._helpMatrixB:transformPoint(x,y,self._helpPoint,true)
+        rawSet(self._frameFloatArray,frameFloatOffset+iV,self._helpPoint.x)
+        iV=iV+1
+        rawSet(self._frameFloatArray,frameFloatOffset+iV,self._helpPoint.y)
+        iV=iV+1
+      end
+    else
+      rawSet(self._frameFloatArray,frameFloatOffset+i,x)
+      rawSet(self._frameFloatArray,frameFloatOffset+i+1,y)
+    end
+  end
+  if frameStart==0 then
+    appendDeformHeader(self,geometry.offset,frameFloatOffset)
+  end
+  return frameOffset
+end
+
+function ObjectDataParser:_parseDeformFrame(rawData,frameStart,frameCount)
+  local frameFloatOffset=#self._frameFloatArray
+  local frameOffset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local rawVertices=get(rawData,DataParser.VERTICES)
+  if rawVertices==nil then rawVertices=get(rawData,DataParser.VALUE) end
+  local offset=ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0)
+  local geometry=self._geometry
+  local vertexCount=rawAt(self._intArray,
+    geometry.offset+Core.BinaryOffset.GeometryVertexCount)
+  if geometry.weight~=nil then
+    -- The pinned TypeScript source has a literal TODO branch for weighted
+    -- _parseDeformFrame. Do not invent geometry calculations here.
+  else
+    appendZeros(self._frameFloatArray,vertexCount*2)
+    for i=0,vertexCount*2-1,2 do
+      rawSet(self._frameFloatArray,frameFloatOffset+i,
+        deformValue(rawVertices,i,offset))
+      rawSet(self._frameFloatArray,frameFloatOffset+i+1,
+        deformValue(rawVertices,i+1,offset))
+    end
+  end
+  if frameStart==0 then
+    appendDeformHeader(self,geometry.offset,frameFloatOffset)
+  end
+  return frameOffset
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
