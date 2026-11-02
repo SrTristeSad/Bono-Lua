@@ -21,7 +21,7 @@ love .
 
 Controles: **espaço** pausa/continua; **esquerda/direita** troca animação; **B** mostra/oculta ossos; **R** recarrega; clique seleciona o osso mais próximo. No exemplo integrado, escolha a animação **`swap`** para ver a troca e a ocultação dos desenhos do braço.
 
-## Personagens externos — JSON + PNG
+## Personagens externos — DragonBones JSON ou DBBIN + atlas PNG
 
 A demonstração abre por padrão uma fixture simples de dois sprites, cuja textura de exemplo é **gerada em Lua**; não é necessário baixar recursos.
 
@@ -29,12 +29,13 @@ Para abrir uma exportação DragonBones sua, crie a pasta `assets/` na raiz e co
 
 ```text
 assets/
-  project_ske.json  # JSON de armadura DragonBones
-  project_tex.json  # Atlas JSON (SubTexture)
-  project_tex.png   # Imagem PNG do atlas
+  project_ske.json   # Esqueleto JSON DragonBones (opção A)
+  project_ske.dbbin  # Esqueleto binário original DBDT (opção B)
+  project_tex.json   # Atlas JSON (SubTexture)
+  project_tex.png    # Imagem PNG do atlas
 ```
 
-Depois execute `love .`. O programa lê os três arquivos locais automaticamente e usa a primeira armadura e o primeiro clip. Para voltar ao exemplo integrado, mova ou renomeie `assets/project_ske.json`.
+Escolha **somente um esqueleto**: `project_ske.json` **ou** `project_ske.dbbin`. O nome `.dbbin` é usado para o formato binário DragonBones com assinatura `DBDT`, interpretado pelo `BinaryDataParser` original portado. Se os dois existirem, a aplicação dá preferência ao JSON. Depois execute `love .`. O programa carrega o atlas, usa a primeira armadura do modelo parseado e inicia o primeiro clip disponível. Para voltar ao exemplo integrado, mova ou renomeie os dois arquivos de esqueleto na pasta `assets/`. A cobertura de exportações binárias ainda é parcial; o formato é aceito pelo parser portado, mas não há garantia de equivalência para todos os assets.
 
 A aplicação principal agora utiliza `ObjectDataParser`, `BaseFactory`, `Armature`, `Animation` e `Slot` do porte original, com a GPU LÖVE no lugar de PixiJS. Há suporte e testes no backend original para malhas, FFD, atlas, relógio, eventos e Z-order; **isso não comprova compatibilidade com todas as exportações reais**. Máscaras e alguns blend modes avançados continuam ausentes. Não há dependência JavaScript no produto.
 
