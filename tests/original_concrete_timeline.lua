@@ -28,7 +28,7 @@ local function check(name,fn)
   if ok then passed=passed+1;print("ok original.concrete_timeline "..name)
   else failed=failed+1;print("not ok original.concrete_timeline "..name..": "..tostring(err)) end
 end
-local function fixture(className,withData)
+local function fixture(className,withData,priorTarget)
   if withData==nil then withData=true end
   local data={
     frameArray={0,Core.TweenType.Line,0,10,Core.TweenType.None,0},
@@ -66,6 +66,7 @@ local function fixture(className,withData)
   }
   local td={offset=0,frameIndicesOffset=0}
   local timeline=Pool.borrowObject(Classes[className])
+  if priorTarget~=nil then timeline.target=priorTarget end
   timeline:init(actor,state,withData and td or nil)
   return timeline,actor,state,animData,data,td
 end
@@ -383,10 +384,9 @@ check("Surface deform blends unchanged, animated and suffix channels",function()
   eq(target._transformDirty,true)
 end)
 check("Surface pose without float array resets vertex deviations only",function()
-  local t=fixture("SurfaceTimelineState",false)
   local target={_deformVertices={10,20,30},_transformDirty=false}
-  t.target=blend(target,0.3,1)
-  t._valueArray=nil;t._deformCount=3
+  local t=fixture("SurfaceTimelineState",false,blend(target,0.3,1))
+  t._valueArray=nil
   t:blend(false)
   near(target._deformVertices[1],0)
   near(target._deformVertices[3],0)
