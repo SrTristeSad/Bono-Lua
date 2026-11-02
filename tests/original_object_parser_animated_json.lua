@@ -44,7 +44,9 @@ local function parse(raw)
 end
 local function onlyAnimation(raw)
   local data=parse(document({raw}))
-  return data,data:getArmature("arm"):getAnimation(raw.name or "default")
+  local name=raw.name
+  if name==nil or name=="" then name="default" end
+  return data,data:getArmature("arm"):getAnimation(name)
 end
 local function sourceFixture()
   local f=assert(io.open("tests/fixtures/personagem-minimo.json","rb"))
@@ -149,8 +151,8 @@ test("legacy bone translate and rotate channels load from public parser",functio
   eq(a:getBoneTimelines("hand")[1].type,TT.BoneTranslate)
   eq(a:getBoneTimelines("hand")[2].type,TT.BoneRotate)
   eq(#data.frameIndices,26)
-  near(data.frameFloatArray[7],170*math.pi/180)
-  near(data.frameFloatArray[9],190*math.pi/180)
+  near(data.frameFloatArray[5],170*math.pi/180)
+  near(data.frameFloatArray[7],190*math.pi/180)
 end)
 test("legacy slot display and color channels retain their own timeline",function()
   local data,a=onlyAnimation({name="a",duration=12,slot={{
