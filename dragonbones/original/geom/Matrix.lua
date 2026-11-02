@@ -4,6 +4,7 @@
 -- This module follows the original class's methods, mutating self and preserving return values.
 local Matrix = {}
 Matrix.__index = Matrix
+local jsNumberString=require("dragonbones.original.geom.JSNumberString").format
 
 function Matrix.new(a, b, c, d, tx, ty)
   return setmetatable({
@@ -17,12 +18,12 @@ function Matrix.new(a, b, c, d, tx, ty)
 end
 
 function Matrix:toString()
-  return "[object dragonBones.Matrix] a:" .. tostring(self.a)
-    .. " b:" .. tostring(self.b)
-    .. " c:" .. tostring(self.c)
-    .. " d:" .. tostring(self.d)
-    .. " tx:" .. tostring(self.tx)
-    .. " ty:" .. tostring(self.ty)
+  return "[object dragonBones.Matrix] a:" .. jsNumberString(self.a)
+    .. " b:" .. jsNumberString(self.b)
+    .. " c:" .. jsNumberString(self.c)
+    .. " d:" .. jsNumberString(self.d)
+    .. " tx:" .. jsNumberString(self.tx)
+    .. " ty:" .. jsNumberString(self.ty)
 end
 
 function Matrix:copyFrom(value)

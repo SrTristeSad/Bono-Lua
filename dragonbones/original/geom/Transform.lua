@@ -4,6 +4,7 @@
 -- This module follows the original class's methods, mutating self and preserving return values.
 local Transform = {}
 Transform.__index = Transform
+local jsNumberString=require("dragonbones.original.geom.JSNumberString").format
 
 Transform.PI = math.pi
 Transform.PI_D = math.pi * 2.0
@@ -31,12 +32,12 @@ function Transform.new(x, y, skew, rotation, scaleX, scaleY)
 end
 
 function Transform:toString()
-  return "[object dragonBones.Transform] x:" .. tostring(self.x)
-    .. " y:" .. tostring(self.y)
-    .. " skewX:" .. tostring(self.skew * 180.0 / math.pi)
-    .. " skewY:" .. tostring(self.rotation * 180.0 / math.pi)
-    .. " scaleX:" .. tostring(self.scaleX)
-    .. " scaleY:" .. tostring(self.scaleY)
+  return "[object dragonBones.Transform] x:" .. jsNumberString(self.x)
+    .. " y:" .. jsNumberString(self.y)
+    .. " skewX:" .. jsNumberString(self.skew * 180.0 / math.pi)
+    .. " skewY:" .. jsNumberString(self.rotation * 180.0 / math.pi)
+    .. " scaleX:" .. jsNumberString(self.scaleX)
+    .. " scaleY:" .. jsNumberString(self.scaleY)
 end
 
 function Transform:copyFrom(value)
