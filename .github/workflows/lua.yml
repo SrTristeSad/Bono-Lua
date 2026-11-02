@@ -69,6 +69,8 @@ jobs:
         run: lua5.4 tests/original_object_parser_structure.lua
       - name: Verify original ObjectDataParser geometry and weighted mesh buffers
         run: lua5.4 tests/original_object_parser_geometry.lua
+      - name: Verify original ObjectDataParser _modifyArray typed binary layout
+        run: lua5.4 tests/original_object_parser_typed_arrays.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
