@@ -324,7 +324,29 @@ function Test.run()
   zRig:_sortZOrder({1,0},0)
   zRig:advanceTime(0)
   colorAt(zShot(),9,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: images, FFD, Pixi region textures, display-tree Z-order, nested alpha and clock.")
+  -- PixiFactory passes the same PixiArmatureDisplay as both proxy and
+  -- renderer. A real displayed armature must accept animation events.
+  assert(display==clockArmature.proxy)
+  assert(display==clockArmature.eventDispatcher)
+  assert(display.animation==clockArmature.animation)
+  local Events=require("dragonbones.original.event.EventObject")
+  local Objects=require("dragonbones.original.core.BaseObject")
+  local heard={}
+  local listener=function(event) heard[#heard+1]=event.name end
+  display:addDBEventListener(Events.FRAME_EVENT,listener)
+  local message=Objects.borrowObject(Events)
+  message.type=Events.FRAME_EVENT
+  message.name="gpuProxy"
+  message.armature=clockArmature
+  factory.dragonBones:bufferEvent(message)
+  factory.dragonBones:advanceTime(0)
+  assert(#heard==1 and heard[1]=="gpuProxy")
+  display:removeDBEventListener(Events.FRAME_EVENT,listener)
+  display:dispose()
+  assert(display.armature==nil)
+  factory.dragonBones:advanceTime(0) -- deferred Armature pool cleanup
+  assert(#display._renderSlots==0)
+  print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, display Z-order, PixiArmatureDisplay event proxy and clock.")
 
 
 end
