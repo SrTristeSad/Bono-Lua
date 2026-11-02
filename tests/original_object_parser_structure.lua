@@ -422,7 +422,7 @@ test("actual bundled fixture parses bone-slot-skin hierarchy with model classes"
   eq(#skin:getDisplays("forearm"),1)
   eq(skin:getDisplay("upperArm","forearm").path,"forearm")
 end)
-test("top-level DragonBones JSON parse remains unavailable, not invented",function()
+test("top-level DragonBones entry exists but animation parser remains absent",function()
   local p=setup()
   eq(p.parseDragonBonesData,nil)
   eq(type(p._parseGeometry),"function")
