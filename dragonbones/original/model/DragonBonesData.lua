@@ -6,7 +6,18 @@
 -- Lua arrays are one-indexed; the binary parser port must address that offset.
 local BaseObject=require("dragonbones.original.core.BaseObject")
 local DragonBonesData={}
-DragonBonesData.__index=DragonBonesData
+-- Lua string values are immutable; recompute the current bytes on access.
+-- All seven typed views keep the *same* mutable backing store internally.
+DragonBonesData.__index=function(self,key)
+  if key=="binary" then
+    local store=rawget(self,"_binaryBuffer")
+    return store~=nil and store:bytes() or nil
+  end
+  return rawget(DragonBonesData,key) or BaseObject[key]
+end
+function DragonBonesData:setBinaryBuffer(store)
+  self._binaryBuffer=store
+end
 setmetatable(DragonBonesData,{__index=BaseObject})
 
 function DragonBonesData.toString()
@@ -40,6 +51,7 @@ function DragonBonesData:_onClear()
   for i=#self.armatureNames,1,-1 do self.armatureNames[i]=nil end
 
   self.binary=nil
+  self._binaryBuffer=nil
   self.intArray=nil
   self.floatArray=nil
   self.frameIntArray=nil
