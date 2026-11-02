@@ -384,7 +384,7 @@ Testes: `tests/original_object_parser_bone_slot_frames.lua` com **34 cenários**
 
 **Pendente:** `_parseAnimation` ainda não está implementado, logo `parseDragonBonesData` não interpreta arquivos com animações, mesmo que os métodos especializados já existam. Faltam `_parseDeformFrame`, `_parseSlotDeformFrame`, `_parseAnimation` e os ramos genéricos do parser, além de `BinaryDataParser.ts`, `BaseFactory.ts`, integração gráfica real e testes diferenciais JS/Lua. A reprodução completa e fidelidade 1:1 do sistema não estão comprovadas.
 
-PR/CI/SHA serão incluídos após integração validada.
+Branch `port-original-parser-bone-slot-frames` integrada à `main` pelo [PR #32](https://github.com/SrTristeSad/Bono-Lua/pull/32), commit de integração [`1fe6c9d`](https://github.com/SrTristeSad/Bono-Lua/commit/1fe6c9d62ca3c448c133754a39fa97339564eb6c). CI do PR: **34/34 cenários e 120 verificações** aprovados em Lua 5.4 e LuaJIT, regressões anteriores e `love-render` igualmente aprovados. Total acumulado: **849 cenários dos portes originais** (815 + 34), além de 22 testes do protótipo. `ObjectDataParser.ts` continua PARCIAL até `_parseAnimation` e deformação estarem portados e validados; não declarar importação de animados completa.
 
 ## Código que já existia antes deste porte
 
