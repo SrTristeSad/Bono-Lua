@@ -666,9 +666,9 @@ test("PixiFactory texture display supports rotated atlas frame in LÖVE",functio
   eq(matrix[1],"row")
   near(matrix[2],0)
   near(matrix[3],1)
-  near(matrix[5],2)
+  near(matrix[5],0)
   near(matrix[6],-1)
-  near(matrix[9],0)
+  near(matrix[9],2) -- rotated packed source shifts Y, not X
 end)
 test("PixiFactory getTextureDisplay rejects unloaded atlas textures",function()
   fakeLove()
