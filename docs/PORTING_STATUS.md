@@ -372,7 +372,7 @@ As estruturas `AnimationData`, `TimelineData`, `AnimationTimelineData` e `Dragon
 
 **FALTANDO:** `_parseAnimation`, `_parseBoneTimeline`, `_parseSlotTimeline`, `_parseBoneAllFrame`, `_parseBoneRotateFrame`, `_parseBoneScaleFrame`, `_parseSlotDisplayFrame`, `_parseSlotColorFrame`, `_parseDeformFrame` e outras rotinas especializadas ainda precisam ser portadas; `parseDragonBonesData` continua não conseguindo importar arquivos com animações. O `ObjectDataParser.ts` permanece PARCIAL, assim como `ArrayBuffer` compartilhado, a factory e o backend gráfico do motor reconstruído. A implementação ainda não foi submetida a testes diferenciais contra o JavaScript original executado. Não reivindicar equivalência 1:1 global.
 
-PR, SHA do merge e resultado da CI serão incluídos após aprovação.
+Branch `port-original-parser-timeline-frames` integrada à `main` pelo [PR #31](https://github.com/SrTristeSad/Bono-Lua/pull/31), commit de merge [`b53804c`](https://github.com/SrTristeSad/Bono-Lua/commit/b53804c980b372dbb7e4fea0bf78dc9849658976). CI do PR: **32/32 cenários e 122 verificações** na suíte específica, aprovados em Lua 5.4 e LuaJIT; regressões anteriores e `love-render` também aprovados. Total acumulado **815 cenários de testes dos portes originais** (783 + 32), além dos 22 testes do protótipo. Os parsers especializados e `_parseAnimation` continuam pendentes; `parseDragonBonesData` ainda não consegue importar arquivos animados completos.
 
 ## Código que já existia antes deste porte
 
