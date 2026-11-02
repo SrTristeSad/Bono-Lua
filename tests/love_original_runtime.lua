@@ -393,8 +393,15 @@ function Test.run()
   debugRig.display.debugDraw=true
   debugRig:advanceTime(0)
   local debugPixels=debugShot()
-  colorAt(debugPixels,10,8,0,1,1,0.7)
-  colorAt(debugPixels,3,8,1,0,1,0.7)
+  -- The cyan bone line and joint circle overlap here. LÖVE's alpha
+  -- blending on a transparent canvas compounds the alpha (0.7 then 0.7),
+  -- so test the visible debug color rather than demanding a single pass.
+  local cr,cg,cb,ca=debugPixels:getPixel(10,8)
+  assert(cr<0.08 and cg>0.65 and cb>0.65 and ca>0.65,
+    "Pixi debugDraw cyan bone/joint must be visible on LÖVE GPU")
+  local mr,mg,mb,ma=debugPixels:getPixel(3,8)
+  assert(mr>0.6 and mg<0.08 and mb>0.6 and ma>0.6,
+    "Pixi debugDraw magenta bounding box must be visible on LÖVE GPU")
   colorAt(debugPixels,0,0,0,0,0,0)
   debugRig.display.debugDraw=false
   debugRig:advanceTime(0)
