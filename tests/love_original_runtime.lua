@@ -193,7 +193,46 @@ function Test.run()
   nestedImageSlot._colorDirty=true
   nestedImageSlot:update(-1)
   colorAt(nestedShot(true),17,15,1,0.75,0.75,1)
-  print("Original DragonBones LÖVE GPU passed: images, meshes, atlas replacement, tint and nested alpha.")
+  -- PixiFactory.getTextureDisplay: texture atlas Sprite transport.
+  local standalone=assert(factory:getTextureDisplay("green","pack"))
+  assert(standalone.kind=="image" and standalone.quad~=nil)
+  local function spriteShot(display)
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    factory:drawTextureDisplay(display)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  colorAt(spriteShot(standalone),9,9,0,1,0,1)
+  standalone.visible=false
+  colorAt(spriteShot(standalone),9,9,0,0,0,0)
+
+  -- PixiFactory.buildArmatureDisplay registers with the shared DragonBones
+  -- clock. The host has no Pixi ticker, so explicitly advance in seconds.
+  local display=assert(factory:buildArmatureDisplay("rig","pack"))
+  local clockArmature=assert(display.armature)
+  assert(clockArmature.clock==factory.clock)
+  local function clockShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    factory:drawArmature(clockArmature)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  clockArmature.animation:play("swap")
+  Love.Factory.advanceTime(0)
+  colorAt(clockShot(),9,9,1,0,0,1)
+  Love.Factory.advanceTime(4/12)
+  colorAt(clockShot(),9,9,0,1,0,1)
+  clockArmature.clock=nil
+  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, replacedTexture, tint, nested alpha, PixiFactory displays and clock.")
+
 
 end
 return Test
