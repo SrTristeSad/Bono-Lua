@@ -413,38 +413,9 @@ setmetatable(LoveFactory,{__index=function(_,key)
   return BaseFactory[key]
 end})
 
-local function makeDispatcher()
-  local listeners={}
-  local dispatcher={}
-  function dispatcher:addDBEventListener(eventType,callback)
-    if listeners[eventType]==nil then listeners[eventType]={} end
-    listeners[eventType][#listeners[eventType]+1]=callback
-  end
-  function dispatcher:removeDBEventListener(eventType,callback)
-    local list=listeners[eventType]
-    if list~=nil then
-      for i=#list,1,-1 do
-        if list[i]==callback then table.remove(list,i) end
-      end
-    end
-  end
-  function dispatcher:hasDBEventListener(eventType)
-    return listeners[eventType]~=nil and #listeners[eventType]>0
-  end
-  function dispatcher:dispatchDBEvent(eventType,event)
-    for _,callback in ipairs(listeners[eventType] or {}) do
-      callback(event)
-    end
-  end
-  function dispatcher:dbInit(armature)
-    self.armature=armature
-  end
-  function dispatcher:dbUpdate() end
-  function dispatcher:dbClear()
-    self.armature=nil
-  end
-  return dispatcher
-end
+-- PixiFactory creates PixiArmatureDisplay for both the global sound
+-- dispatcher and each armature. Keep proxy and display identity intact.
+local ArmatureDisplay=require("dragonbones.love_original_display")
 
 -- PixiFactory shares one DragonBones instance and its sound dispatcher
 -- across all factory instances. Only atlas/data caches belong to each
@@ -453,7 +424,7 @@ function LoveFactory.new(dataParser)
   local f=BaseFactory.new(dataParser)
   setmetatable(f,LoveFactory)
   if LoveFactory._dragonBonesInstance==nil then
-    local eventManager=makeDispatcher()
+    local eventManager=ArmatureDisplay.new()
     LoveFactory._dragonBonesInstance=DragonBones.new(eventManager)
   end
   f._dragonBones=LoveFactory._dragonBonesInstance
@@ -513,9 +484,9 @@ function LoveFactory:_buildTextureAtlasData(atlasData,textureAtlas)
 end
 function LoveFactory:_buildArmature(pkg)
   local armature=BaseObject.borrowObject(Armature)
-  local proxy=makeDispatcher()
-  local display={armature=armature,_renderSlots={}}
-  armature:init(pkg.armature,proxy,display,self._dragonBones)
+  local display=ArmatureDisplay.new()
+  -- PixiFactory.ts passes the very same PixiArmatureDisplay twice.
+  armature:init(pkg.armature,display,display,self._dragonBones)
   return armature
 end
 function LoveFactory:_buildSlot(_pkg,slotData,armature)
