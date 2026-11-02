@@ -633,6 +633,17 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Limitações preservadas:** uma validação finita de `_decodeUTF8` **não** comprova equivalência 1:1 do parser binário, do runtime inteiro ou do editor; views numéricas continuam snapshots sem suporte completo a mutações compartilhadas no mesmo `ArrayBuffer`. Também seguem pendentes máscaras, três modos de mistura Pixi avançados, mais testes diferenciais e editor original/licença.
 
+
+### Etapa 54 — BinaryDataParser._parseArray: tamanho de TypedArray e truncamento original
+
+**Fonte fixa:** `DragonBones/DragonBonesJS` MIT, SHA `64b6c69ae35777c2404be68c9192e2c56906079e`, `DragonBones/src/dragonBones/parser/BinaryDataParser.ts::_parseArray` e bundle original `Pixi/5.x/out/dragonBones.js`. O original chama `new Int16Array/Float32Array/Uint16Array(arrayBuffer, byteOffset, byteLength / BYTES_PER_ELEMENT)`: o construtor JavaScript converte a quantidade em elementos por `ToIndex`, truncando a parte fracionária positiva, mantendo os erros de alinhamento e limites.
+
+**Diferença comprovável pela leitura de código:** `dragonbones/original/parser/BinaryDataParser.lua::readTyped` exigia `length % itemBytes == 0` e validava `absoluteOffset + length`. Para um comprimento de **3 bytes** numa visão `Int16Array` de buffer com 2 bytes disponíveis no offset pedido, o original cria 1 elemento, mas o porte gerava erro mesmo quando o elemento cabia. Corrigido o adaptador para usar `math.floor(length/itemBytes)` na validação de bytes efetivamente representados e na contagem do loop. Não foram alterados os algoritmos do parser de timeline, geometry, JSON, animação, slots, GPU LÖVE, nem protótipos legados.
+
+**Prova diferencial prevista:** `tests/fixtures/binary_typed_cases.tsv` contém **32** cenários com 7 vistas tipadas, aliases de cor, deslocamento base, dados `Int16/Uint16/Float32`, IEEE-754 especial, tamanhos fracionários de elementos (incluindo `Float32Array`), visualizações vazias, alinhamento e intervalos inválidos. `tests/differential_binary_typed_original.js` invoca `_parseArray` **diretamente no bundle JS original** (somente CI) para gerar oráculo de sucesso/falha, comprimentos, elementos e identidade de alias de cor; `tests/original_binary_typed_differential.lua` confere Lua 5.4/LuaJIT. CI e links de merge serão acrescentados após execução; nenhuma equivalência além do conjunto de casos foi presumida.
+
+**Pendências expressas:** as vistas Lua continuam snapshots numéricos, **não** implementam ainda o `ArrayBuffer` mutável compartilhado da plataforma JavaScript; os casos de falha comparam aceitação/rejeição, não classe exata de exceção. As 32 entradas não comprovam equivalência do parser binário inteiro nem 1:1 do runtime. Permanecem máscaras, três modos de mistura avançados, mais testes diferenciais e identificação de fonte/licença do editor original.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
