@@ -310,7 +310,7 @@ Algoritmos preservados: amostragem Bézier por busca binária e precisão origin
 
 Nova suíte `tests/original_object_parser.lua`, com 43 cenários para métodos efetivamente implementados, incluindo leitura do JSON de atlas `tests/fixtures/atlas-minimo.json` já versionado, geometria, conversão de tipos e frames/actions. GitHub Actions executa Lua 5.4, LuaJIT e regressões anteriores, incluindo visual LÖVE.
 
-PR, resultados da CI e SHA do merge serão preenchidos após a validação.
+Branch `port-original-object-parser-atlas` integrada à `main` pelo [PR #26](https://github.com/SrTristeSad/Bono-Lua/pull/26), merge commit [`323cba6`](https://github.com/SrTristeSad/Bono-Lua/commit/323cba60f46c5e4fe579187ea28932e9fbd4a261). CI do PR #26: **43/43 cenários e 195 asserções**, aprovados em Lua 5.4 e LuaJIT; regressões gráficas LÖVE também aprovadas. Total acumulado: **668 testes dos portes originais** (625 anteriores + 43), além de 22 testes do protótipo. **ObjectDataParser permanece PARCIAL**, e sua presença não deve ser contada como arquivo completo nem como possibilidade de importar o DragonBones original por inteiro.
 
 ## Código que já existia antes deste porte
 
