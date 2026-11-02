@@ -118,6 +118,13 @@ jobs:
             tests/fixtures/geom_strings_cases.tsv artifacts/upstream/geom_strings_expected.tsv
           lua5.4 tests/original_geom_strings_differential.lua
           luajit tests/original_geom_strings_differential.lua
+          # Execute BinaryDataParser's actual pinned UTF8 state machine
+          # on 52 raw byte sequences; compare Lua 5.4 and LuaJIT output.
+          node tests/differential_binary_utf8_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/binary_utf8_cases.tsv artifacts/upstream/binary_utf8_expected.tsv
+          lua5.4 tests/original_binary_utf8_differential.lua
+          luajit tests/original_binary_utf8_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu

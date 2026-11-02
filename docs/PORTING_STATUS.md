@@ -620,6 +620,19 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Limites:** a busca por menor representação decimal é uma adaptação de plataforma testada em 26 cenários selecionados; não prova equivalência para **todos** os valores IEEE-754, inclusive casos de escolha de decimal em arredondamentos difíceis, nem para qualquer outra parte do motor. Não foi alterado cálculo geométrico ou reprodução visual Pixi. Não extrapolar fidelidade 1:1 ou percentual global. Continuam pendentes blends avançados, máscaras, buffers binários compartilhados mutáveis, validação diferencial ampla e a localização/licença do editor original.
 
+
+### Etapa 53 — BinaryDataParser._decodeUTF8: comparação executável com o original
+
+**Referência imutável:** DragonBones/DragonBonesJS MIT, commit `64b6c69ae35777c2404be68c9192e2c56906079e`, `DragonBones/src/dragonBones/parser/BinaryDataParser.ts::_decodeUTF8` e artefato compilado versionado `Pixi/5.x/out/dragonBones.js`. O teste executa diretamente `dragonBones.BinaryDataParser.prototype._decodeUTF8` original em sandbox Node exclusivamente na CI (não é um algoritmo JS novo nem parte do produto).
+
+**Escopo verificado:** 52 entradas determinísticas de bytes para a máquina de estados UTF-8 original, incluindo ASCII/NUL, limites UTF-8 de 2/3/4 bytes, emoji, máximo Unicode, overlongs, bytes iniciais proibidos, surrogates, sequências truncadas, continuações inválidas e a peculiaridade do original de reprocessar bytes inesperados. `tests/fixtures/binary_utf8_cases.tsv` codifica as entradas em hexadecimal; `tests/differential_binary_utf8_original.js` executa o **decodificador original** e grava a saída UTF-8 em hexadecimal; `tests/original_binary_utf8_differential.lua` compara byte a byte a saída do módulo `dragonbones/original/parser/BinaryDataParser.lua` em Lua 5.4 e LuaJIT. O bundle DragonBonesJS é baixado apenas em CI e sempre com o SHA original fixo, reutilizando a etapa existente do workflow.
+
+**Implementação:** suíte diferencial adicionada à infraestrutura de testes; a implementação existente do decodificador Lua **não foi alterada na abertura** do PR, pois a intenção é corrigir apenas diferenças realmente encontradas entre a execução original e a adaptação. Os protótipos antigos, código gráfico LÖVE, modelo binário e métodos de timeline permanecem inalterados. A comparação de strings Unicode usa a serialização UTF-8 que Node gera para o resultado original, não uma comparação da representação interna de strings UTF-16 do ECMAScript.
+
+**Arquivos desta etapa:** `tests/fixtures/binary_utf8_cases.tsv`, `tests/differential_binary_utf8_original.js` (somente CI), `tests/original_binary_utf8_differential.lua`, `.github/workflows/lua.yml` e este status. **PR e CI a confirmar.**
+
+**Limitações preservadas:** uma validação finita de `_decodeUTF8` **não** comprova equivalência 1:1 do parser binário, do runtime inteiro ou do editor; views numéricas continuam snapshots sem suporte completo a mutações compartilhadas no mesmo `ArrayBuffer`. Também seguem pendentes máscaras, três modos de mistura Pixi avançados, mais testes diferenciais e editor original/licença.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
