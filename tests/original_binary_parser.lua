@@ -68,12 +68,14 @@ end
 local function binary(header,parts)
   parts=parts or {}
   local h=header:gsub("OFFSET_MARKER",jsonOffsets(parts))
+  -- The JS ArrayBuffer typed views require 4-byte alignment for Float32.
+  h=h..string.rep(" ",(4-#h%4)%4)
   local content=table.concat(parts)
   return "DBDT"..string.rep("\0",4)..u32(#h)..h..content
 end
 local function simpleHeader(extra)
   return '{"version":"5.5","name":"BinaryFixture","frameRate":24,'..
-    '"offset":[OFFSET_MARKER],"armature":[{"name":"rig","bone":[{"name":"root"}]'..
+    '"offset":[OFFSET_MARKER],"armature":[{"name":"rig","bone":[{"name":"root"},{"name":"target"}]'..
     (extra or '')..'}]}'
 end
 local function fixture(extra,parts)
@@ -151,7 +153,7 @@ test("empty DBDT skeleton decodes with original data model and stage",function()
   eq(#model.armatureNames,1)
 end)
 test("typed array views retain exact signed unsigned float byte values",function()
-  local raw=fixture(nil,parts({-1,32767,-32768},{0.5,-2},
+  local raw=fixture(nil,parts({-1,32767,-32768,0},{0.5,-2},
     {65535,-32768},{1,math.huge},{0,6},{100,0,1,2,0,0},
     {50,-50}))
   local d=Binary.new():parseDragonBonesData(raw)
@@ -181,7 +183,7 @@ test("independent color array does not alias integer view",function()
   eq(d.colorArray~=d.intArray,true)
 end)
 test("typed arrays use full DBDT payload-relative offset positions",function()
-  local raw=fixture(nil,parts({5,7},{1},{-3},{0.5},{9},{4},{8}))
+  local raw=fixture(nil,parts({5,7},{1},{-3,0},{0.5},{9},{4},{8}))
   local d=Binary.new():parseDragonBonesData(raw)
   eq(d.intArray[2],7)
   eq(d.floatArray[1],1)
@@ -276,7 +278,7 @@ test("binary action and zOrder timelines use distinct original model fields",fun
 end)
 test("binary per-slot and per-constraint timeline maps attach by original name",function()
   local extra=',"slot":[{"name":"root","parent":"root"}],'..
-    '"ik":[{"name":"IK","bone":"root","target":"root"}],'..
+    '"ik":[{"name":"IK","bone":"root","target":"target"}],'..
     '"animation":[{"name":"a","duration":4,"offset":[0,0,0],'..
     '"slot":{"root":['..TT.SlotDisplay..',0]},'..
     '"constraint":{"IK":['..TT.IKConstraint..',6]}}]'
