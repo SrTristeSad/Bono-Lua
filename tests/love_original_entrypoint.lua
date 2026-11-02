@@ -71,8 +71,9 @@ function Test.run()
   assert(app.display.debugDraw==false)
   App.keypressed("r")
   local reloaded=assert(App.state())
-  assert(reloaded~=app and reloaded.armature~=app.armature,
-    "Reload must dispose previous original armature and rebuild")
+  -- Original BaseObject pool may legally reuse the previous Armature table.
+  assert(reloaded~=app and reloaded.factory~=app.factory,
+    "Reload must create a fresh original factory and project state")
   assert(getmetatable(reloaded.armature)==Armature)
   assertVisual(App)
   print("Default love . uses ORIGINAL DragonBones Lua: Armature, Slot, clock, timelines, GPU pixels, pause, debug, reload.")
