@@ -595,6 +595,10 @@ local function drawArmature(armature, inheritedAlpha)
       end
     end
   end
+  -- PixiArmatureDisplay.dbUpdate adds its debug Sprite as the final child
+  -- of the Armature container. The LÖVE adapter renders that overlay after
+  -- all normal Slot/child Armature displays, preserving its visual order.
+  armature.display:drawDebug(graphics,inheritedAlpha)
 end
 function LoveFactory:drawArmature(armature)
   return drawArmature(armature)
