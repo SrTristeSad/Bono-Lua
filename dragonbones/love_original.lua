@@ -345,43 +345,58 @@ function LoveFactory:_buildSlot(_pkg,slotData,armature)
   return slot
 end
 
--- Draw an already advanced original Armature in its actual sorted-slot order.
--- World transforms, animation, slots and pose remain the original Lua ports.
+-- The original PixiArmatureDisplay is a container. Child Armature display
+-- objects are installed into the parent Slot, and share that Slot's transform.
+-- LÖVE lacks PIXI's display tree, so the equivalent container transform is
+-- applied on the graphics stack while drawing the actual child Armature.
+-- No animation, constraint or slot ordering is reimplemented here.
+local function applyRenderTransform(graphics,render)
+  local a,b,c,d=render.a11,render.a21,render.a12,render.a22
+  local tx,ty=render.tx,render.ty
+  if render.rotated then
+    -- The packed image is rotated clockwise in the source atlas.
+    tx,ty=tx+c*render.packedWidth,ty+d*render.packedWidth
+    a,b,c,d=-c,-d,a,b
+  end
+  local transform=love.math.newTransform()
+  transform:setMatrix("row",
+    a,c,0,tx,
+    b,d,0,ty,
+    0,0,1,0,
+    0,0,0,1)
+  graphics.applyTransform(transform)
+end
+
+-- Preserve the original parent/child display hierarchy and the ordering of
+-- Armature.getSlots(): a child is drawn at its parent Slot's exact position
+-- among sibling slots. Visibility comes from Slot._updateVisible.
 local function drawArmature(armature)
   local graphics=assert(love and love.graphics,
     "LoveFactory.drawArmature requires LÖVE graphics")
   for _,slot in ipairs(armature:getSlots()) do
     local render=slot._renderDisplay
-    if slot._display~=nil and render~=nil and render.visible
-        and render.texture~=nil and (render.quad~=nil or render.mesh~=nil) then
-      local a,b,c,d=render.a11,render.a21,render.a12,render.a22
-      local tx,ty=render.tx,render.ty
-      if render.rotated then
-        -- Original atlas stores rotated sprites clockwise. The packed
-        -- source is de-rotated before applying the original world matrix.
-        tx,ty=tx+c*render.packedWidth,ty+d*render.packedWidth
-        a,b,c,d=-c,-d,a,b
+    if slot._display~=nil and render~=nil and render.visible then
+      local child=slot.childArmature
+      if child~=nil then
+        -- PixiSlot._updateTransformV4 applies the child display's own
+        -- global Slot transform; children retain their local transforms.
+        graphics.push("all")
+        applyRenderTransform(graphics,render)
+        drawArmature(child)
+        graphics.pop()
+      elseif render.texture~=nil and
+          (render.quad~=nil or render.mesh~=nil) then
+        graphics.push("all")
+        applyRenderTransform(graphics,render)
+        graphics.setBlendMode(render.bm)
+        graphics.setColor(render.r,render.g,render.b,render.alpha)
+        if render.mesh~=nil then
+          graphics.draw(render.mesh,0,0)
+        else
+          graphics.draw(render.texture,render.quad,0,0)
+        end
+        graphics.pop()
       end
-      local transform=love.math.newTransform()
-      transform:setMatrix("row",
-        a,c,0,tx,
-        b,d,0,ty,
-        0,0,1,0,
-        0,0,0,1)
-      graphics.push("all")
-      graphics.setBlendMode(render.bm)
-      graphics.setColor(render.r,render.g,render.b,render.alpha)
-      graphics.applyTransform(transform)
-      if render.mesh~=nil then
-        graphics.draw(render.mesh,0,0)
-      else
-        graphics.draw(render.texture,render.quad,0,0)
-      end
-      graphics.pop()
-    elseif slot.childArmature~=nil then
-      -- Child armatures share the graphics context but use their own runtime
-      -- transforms; follow-up integration will supply their parent transform.
-      error("LÖVE backend: nested armature drawing not yet supported")
     end
   end
 end
