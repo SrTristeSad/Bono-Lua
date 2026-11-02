@@ -346,7 +346,42 @@ function Test.run()
   assert(display.armature==nil)
   factory.dragonBones:advanceTime(0) -- deferred Armature pool cleanup
   assert(#display._renderSlots==0)
-  print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, display Z-order, PixiArmatureDisplay event proxy and clock.")
+  -- PixiArmatureDisplay.dbUpdate debug Sprite: cyan line/circle for bones,
+  -- magenta outline for a bounding box, drawn above the regular children.
+  local debugRaw={version="5.5",name="GPU-Debug",frameRate=24,
+    armature={{name="rig",
+      bone={{name="root",length=6,transform={x=8,y=8}}},
+      slot={{name="hitbox",parent="root",displayIndex=0}},
+      skin={{name="default",slot={{name="hitbox",display={{
+        name="hitbox",type="boundingBox",subType="rectangle",
+        width=10,height=8
+      }}}}}}
+    }}
+  local debugFactory=Love.Factory.new()
+  debugFactory:parseDragonBonesData(debugRaw,"debug")
+  local debugRig=assert(debugFactory:buildArmature("rig","debug"))
+  local function debugShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    debugFactory:drawArmature(debugRig)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  debugRig:advanceTime(0)
+  colorAt(debugShot(),10,8,0,0,0,0)
+  debugRig.display.debugDraw=true
+  debugRig:advanceTime(0)
+  local debugPixels=debugShot()
+  colorAt(debugPixels,10,8,0,1,1,0.7)
+  colorAt(debugPixels,3,8,1,0,1,0.7)
+  colorAt(debugPixels,0,0,0,0,0,0)
+  debugRig.display.debugDraw=false
+  debugRig:advanceTime(0)
+  colorAt(debugShot(),10,8,0,0,0,0)
+  colorAt(debugShot(),3,8,0,0,0,0)
+  print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, Z-order, proxy events, Pixi debug bones/bounds and clock.")
 
 
 end
