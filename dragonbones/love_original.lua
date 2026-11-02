@@ -128,8 +128,21 @@ function LoveSlot:_updateFrame()
   render.vertices=nil
   local texture=self._textureData
   if self._display==nil or self._displayIndex<0 or texture==nil then return end
+  -- Pinned PixiSlot._updateFrame: clone the source TextureAtlasData once
+  -- per armature when replacedTexture is assigned. TextureData.copyFrom
+  -- intentionally retains its original source parent as upstream does.
   local atlas=texture.parent
-  if atlas==nil or atlas.image==nil then return end
+  if self._armature.replacedTexture~=nil then
+    if self._armature._replaceTextureAtlasData==nil then
+      local replacement=BaseObject.borrowObject(LoveAtlas)
+      replacement:copyFrom(atlas)
+      replacement.image=self._armature.replacedTexture
+      self._armature._replaceTextureAtlasData=replacement
+    end
+    atlas=self._armature._replaceTextureAtlasData
+    texture=atlas:getTexture(texture.name)
+  end
+  if atlas==nil or atlas.image==nil or texture==nil then return end
   local image=atlas.image
   assert(type(image.getWidth)=="function" and type(image.getHeight)=="function",
     "LÖVE backend: textureAtlas must be a LÖVE Image")
@@ -367,6 +380,29 @@ local function applyRenderTransform(graphics,render)
   graphics.applyTransform(transform)
 end
 
+-- Pixi textures live in a display container, whereas LÖVE's draw commands
+-- retain the specific Image or Mesh texture captured at _updateFrame.
+-- The upstream Armature setter invalidates Slot transforms; in the Lua host
+-- we refresh that GPU resource at draw only when the image identity changes.
+-- Slot/Armature animation and data algorithms are left untouched.
+local function synchronizeRenderTexture(slot)
+  local render=slot._renderDisplay
+  if render==nil or slot._textureData==nil or slot._displayIndex<0 then
+    return
+  end
+  if slot._display~=slot._rawDisplay
+      and slot._display~=slot._meshDisplay then return end
+  local originalAtlas=slot._textureData.parent
+  local expected=slot._armature.replacedTexture
+      or (originalAtlas~=nil and originalAtlas.image)
+  if render.texture~=expected then
+    slot:_updateFrame()
+    if render.mesh~=nil and slot._geometryData~=nil then
+      slot:_updateMesh()
+    end
+  end
+end
+
 -- Preserve the original parent/child display hierarchy and the ordering of
 -- Armature.getSlots(): a child is drawn at its parent Slot's exact position
 -- among sibling slots. Visibility comes from Slot._updateVisible.
@@ -374,6 +410,7 @@ local function drawArmature(armature)
   local graphics=assert(love and love.graphics,
     "LoveFactory.drawArmature requires LÖVE graphics")
   for _,slot in ipairs(armature:getSlots()) do
+    synchronizeRenderTexture(slot)
     local render=slot._renderDisplay
     if slot._display~=nil and render~=nil and render.visible then
       local child=slot.childArmature
