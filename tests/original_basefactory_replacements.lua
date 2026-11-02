@@ -387,10 +387,10 @@ test("replaceAnimation recursively imports child Armature animation data",functi
   raw.armature[1].skin[1].slot[1].display[1]={
     name="child",type="armature",path="child"
   }
+  -- Child needs a default skin for replaceAnimation, but no child slot:
+  -- this models a leaf armature rather than recursively building itself.
   raw.armature[2]={name="child",bone={{name="root"}},
-    skin={{name="default",slot={{name="body",display={{
-      {name="child",type="armature",path="child"}
-    }}}}}}
+    skin={{name="default"}}}
   local f,data,m,rig=construct(raw)
   -- Data path in DisplayData is its intrinsic name, not the factory alias.
   f:addDragonBonesData(data,"data")
