@@ -16,6 +16,12 @@ function love.load()
     love.event.quit(ok and 0 or 1)
     return
   end
+  if os.getenv("BONO_LUA_ORIGINAL_BINARY_MESH_TEST")=="1" then
+    local ok,err=pcall(require("tests.love_original_binary_mesh_integration").run)
+    if not ok then io.stderr:write("Original DragonBones DBDT animated mesh test failed: "..tostring(err).."\n") end
+    love.event.quit(ok and 0 or 1)
+    return
+  end
   if os.getenv("BONO_LUA_ORIGINAL_DBBIN_TEST")=="1" then
     local ok,err=pcall(require("tests.love_original_dbbin_import").run)
     if not ok then io.stderr:write("Original DragonBones DBDT app integration failed: "..tostring(err).."\n") end
