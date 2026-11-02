@@ -4,10 +4,9 @@
 -- Copyright (c) 2012-2025 DragonBones team and other contributors.
 -- LICENSE-DRAGONBONES contains the upstream license.
 --
--- This module ports the original data coercion, Bézier sampling, actions,
--- transformations, color transforms, and COMPLETE texture atlas parser.
--- DragonBones armature parsing is NOT IMPLEMENTED YET: deliberately no fake
--- parseDragonBonesData() is published. See docs/PORTING_STATUS.md.
+-- Partial original ObjectDataParser: structural data, atlas, geometry,
+-- binary packing and generic timeline/frame methods. The full animation
+-- parser and derived frame methods remain pending. See PORTING_STATUS.md.
 local DataParser=require("dragonbones.original.parser.DataParser")
 local Core=require("dragonbones.original.core.DragonBones")
 local Pool=require("dragonbones.original.core.BaseObject")
@@ -1199,6 +1198,258 @@ function ObjectDataParser:parseDragonBonesData(rawData,scale)
     self._rawTextureAtlases=rawData[DataParser.TEXTURE_ATLAS]
   end
   return data
+end
+
+
+-- ObjectDataParser.ts, pinned lines 1210-1311 and 1430-1637:
+-- the original timeline offset table and the generic frame codecs.
+-- These work on original zero-based offsets, translated to Lua arrays.
+local AnimationModels=require("dragonbones.original.model.AnimationData")
+local function frameAt(array,index) return array[index+1] end
+local function frameSet(array,index,value) array[index+1]=value end
+local function reserve(array,count)
+  for i=1,count do array[#array+1]=0 end
+end
+-- JavaScript Math.round is floor(x + .5), including negative half ties.
+local function jsRound(n) return math.floor(n+0.5) end
+
+function ObjectDataParser:_parseTimeline(rawData,rawFrames,framesKey,
+    timelineType,frameValueType,frameValueCount,frameParser,timeline)
+  if rawData~=nil and #framesKey>0 and get(rawData,framesKey)~=nil then
+    rawFrames=rawData[framesKey]
+  end
+  if rawFrames==nil then return nil end
+  local keyFrameCount=#rawFrames
+  if keyFrameCount==0 then return nil end
+
+  local intStart=#self._frameIntArray
+  local floatStart=#self._frameFloatArray
+  local offset=#self._timelineArray
+  if timeline==nil then
+    timeline=Pool.borrowObject(AnimationModels.TimelineData)
+  end
+  timeline.type=timelineType
+  timeline.offset=offset
+  self._frameValueType=frameValueType
+  self._timeline=timeline
+  reserve(self._timelineArray,5+keyFrameCount)
+  local binary=Core.BinaryOffset
+
+  if rawData~=nil then
+    frameSet(self._timelineArray,offset+binary.TimelineScale,
+      jsRound(ObjectDataParser._getNumber(rawData,DataParser.SCALE,1.0)*100))
+    frameSet(self._timelineArray,offset+binary.TimelineOffset,
+      jsRound(ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0.0)*100))
+  else
+    frameSet(self._timelineArray,offset+binary.TimelineScale,100)
+    frameSet(self._timelineArray,offset+binary.TimelineOffset,0)
+  end
+  frameSet(self._timelineArray,offset+binary.TimelineKeyFrameCount,keyFrameCount)
+  frameSet(self._timelineArray,offset+binary.TimelineFrameValueCount,frameValueCount)
+  if frameValueType==ObjectDataParser.FrameValueType.Step then
+    frameSet(self._timelineArray,offset+binary.TimelineFrameValueOffset,0)
+  elseif frameValueType==ObjectDataParser.FrameValueType.Int then
+    frameSet(self._timelineArray,offset+binary.TimelineFrameValueOffset,
+      intStart-self._animation.frameIntOffset)
+  elseif frameValueType==ObjectDataParser.FrameValueType.Float then
+    frameSet(self._timelineArray,offset+binary.TimelineFrameValueOffset,
+      floatStart-self._animation.frameFloatOffset)
+  end
+
+  if keyFrameCount==1 then
+    timeline.frameIndicesOffset=-1
+    frameSet(self._timelineArray,offset+binary.TimelineFrameOffset,
+      frameParser(self,rawFrames[1],0,0)-self._animation.frameOffset)
+  else
+    local total=self._animation.frameCount+1
+    local indices=self._data.frameIndices
+    local indexOffset=#indices
+    reserve(indices,total)
+    timeline.frameIndicesOffset=indexOffset
+
+    local iK,frameStart,frameCount=0,0,0
+    for i=0,total-1 do
+      if frameStart+frameCount<=i and iK<keyFrameCount then
+        local raw=rawFrames[iK+1]
+        frameStart=i
+        if iK==keyFrameCount-1 then
+          frameCount=self._animation.frameCount-frameStart
+        elseif getmetatable(raw)==ObjectDataParser.ActionFrame then
+          -- Preserve upstream source's use of this._actionFrames rather
+          -- than the rawFrames argument for the next action time.
+          frameCount=self._actionFrames[iK+2].frameStart-frameStart
+        else
+          frameCount=ObjectDataParser._getNumber(raw,DataParser.DURATION,1)
+        end
+        frameSet(self._timelineArray,offset+binary.TimelineFrameOffset+iK,
+          frameParser(self,raw,frameStart,frameCount)-self._animation.frameOffset)
+        iK=iK+1
+      end
+      frameSet(indices,indexOffset+i,iK-1)
+    end
+  end
+  self._timeline=nil
+  return timeline
+end
+
+function ObjectDataParser:_parseFrame(_rawData,frameStart,_frameCount)
+  local offset=#self._frameArray
+  reserve(self._frameArray,1)
+  frameSet(self._frameArray,offset+Core.BinaryOffset.FramePosition,frameStart)
+  return offset
+end
+
+function ObjectDataParser:_parseTweenFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  local binary=Core.BinaryOffset
+  local tween=Core.TweenType
+  if frameCount>0 then
+    if get(rawData,DataParser.CURVE)~=nil then
+      local sampleCount=frameCount+1
+      for i=1,sampleCount do self._helpArray[i]=0 end
+      for i=#self._helpArray,sampleCount+1,-1 do self._helpArray[i]=nil end
+      local omitted=self:_samplingEasingCurve(rawData[DataParser.CURVE],
+        self._helpArray)
+      reserve(self._frameArray,2+#self._helpArray)
+      frameSet(self._frameArray,offset+binary.FrameTweenType,tween.Curve)
+      frameSet(self._frameArray,
+        offset+binary.FrameTweenEasingOrCurveSampleCount,
+        omitted and sampleCount or -sampleCount)
+      for i=0,sampleCount-1 do
+        frameSet(self._frameArray,offset+binary.FrameCurveSamples+i,
+          jsRound(self._helpArray[i+1]*10000))
+      end
+    else
+      local noTween=-2.0
+      local easing=ObjectDataParser._getNumber(rawData,DataParser.TWEEN_EASING,
+        noTween)
+      if easing==noTween then
+        reserve(self._frameArray,1)
+        frameSet(self._frameArray,offset+binary.FrameTweenType,tween.None)
+      elseif easing==0 then
+        reserve(self._frameArray,1)
+        frameSet(self._frameArray,offset+binary.FrameTweenType,tween.Line)
+      elseif easing<0 then
+        reserve(self._frameArray,2)
+        frameSet(self._frameArray,offset+binary.FrameTweenType,tween.QuadIn)
+        frameSet(self._frameArray,
+          offset+binary.FrameTweenEasingOrCurveSampleCount,
+          jsRound(-easing*100))
+      elseif easing<=1 then
+        reserve(self._frameArray,2)
+        frameSet(self._frameArray,offset+binary.FrameTweenType,tween.QuadOut)
+        frameSet(self._frameArray,
+          offset+binary.FrameTweenEasingOrCurveSampleCount,
+          jsRound(easing*100))
+      else
+        reserve(self._frameArray,2)
+        frameSet(self._frameArray,offset+binary.FrameTweenType,tween.QuadInOut)
+        frameSet(self._frameArray,
+          offset+binary.FrameTweenEasingOrCurveSampleCount,
+          jsRound(easing*100-100))
+      end
+    end
+  else
+    reserve(self._frameArray,1)
+    frameSet(self._frameArray,offset+binary.FrameTweenType,tween.None)
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseSingleValueFrame(rawData,frameStart,frameCount)
+  local offset=0
+  local value=ObjectDataParser._getNumber(
+    rawData,DataParser.VALUE,self._frameDefaultValue)
+  if self._frameValueType==ObjectDataParser.FrameValueType.Step then
+    offset=self:_parseFrame(rawData,frameStart,frameCount)
+    reserve(self._frameArray,1)
+    frameSet(self._frameArray,offset+1,value)
+  elseif self._frameValueType==ObjectDataParser.FrameValueType.Int then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    self._frameIntArray[#self._frameIntArray+1]=jsRound(value*self._frameValueScale)
+  elseif self._frameValueType==ObjectDataParser.FrameValueType.Float then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    self._frameFloatArray[#self._frameFloatArray+1]=value*self._frameValueScale
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseDoubleValueFrame(rawData,frameStart,frameCount)
+  local offset=0
+  local x=ObjectDataParser._getNumber(
+    rawData,DataParser.X,self._frameDefaultValue)
+  local y=ObjectDataParser._getNumber(
+    rawData,DataParser.Y,self._frameDefaultValue)
+  if self._frameValueType==ObjectDataParser.FrameValueType.Step then
+    offset=self:_parseFrame(rawData,frameStart,frameCount)
+    reserve(self._frameArray,2)
+    frameSet(self._frameArray,offset+1,x)
+    frameSet(self._frameArray,offset+2,y)
+  elseif self._frameValueType==ObjectDataParser.FrameValueType.Int then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    self._frameIntArray[#self._frameIntArray+1]=jsRound(x*self._frameValueScale)
+    self._frameIntArray[#self._frameIntArray+1]=jsRound(y*self._frameValueScale)
+  elseif self._frameValueType==ObjectDataParser.FrameValueType.Float then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    self._frameFloatArray[#self._frameFloatArray+1]=x*self._frameValueScale
+    self._frameFloatArray[#self._frameFloatArray+1]=y*self._frameValueScale
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseActionFrame(frame,frameStart,_frameCount)
+  local offset=#self._frameArray
+  local count=#frame.actions
+  reserve(self._frameArray,2+count)
+  frameSet(self._frameArray,offset+Core.BinaryOffset.FramePosition,frameStart)
+  frameSet(self._frameArray,offset+Core.BinaryOffset.FramePosition+1,count)
+  for i=0,count-1 do
+    frameSet(self._frameArray,offset+Core.BinaryOffset.FramePosition+2+i,
+      frame.actions[i+1])
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseZOrderFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  local raw=rawData[DataParser.Z_ORDER]
+  if raw~=nil and #raw>0 then
+    local slotCount=#self._armature.sortedSlots
+    local unchanged={}
+    local zOrders={}
+    for i=1,slotCount-#raw/2 do unchanged[i]=0 end
+    for i=1,slotCount do zOrders[i]=-1 end
+    local originalIndex,unchangedIndex=0,0
+    for i=1,#raw,2 do
+      local slotIndex,zOffset=raw[i],raw[i+1]
+      while originalIndex~=slotIndex do
+        unchanged[unchangedIndex+1]=originalIndex
+        unchangedIndex=unchangedIndex+1
+        originalIndex=originalIndex+1
+      end
+      zOrders[originalIndex+zOffset+1]=originalIndex
+      originalIndex=originalIndex+1
+    end
+    while originalIndex<slotCount do
+      unchanged[unchangedIndex+1]=originalIndex
+      unchangedIndex=unchangedIndex+1
+      originalIndex=originalIndex+1
+    end
+    reserve(self._frameArray,1+slotCount)
+    frameSet(self._frameArray,offset+1,slotCount)
+    for i=slotCount-1,0,-1 do
+      local result=zOrders[i+1]
+      if result==-1 then
+        result=unchanged[unchangedIndex] or 0
+        unchangedIndex=unchangedIndex-1
+      end
+      frameSet(self._frameArray,offset+2+i,result)
+    end
+    return offset
+  end
+  reserve(self._frameArray,1)
+  frameSet(self._frameArray,offset+1,0)
+  return offset
 end
 
 local instance=nil
