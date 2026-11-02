@@ -28,13 +28,21 @@ local function test(name,fn)
 end
 local state={}
 local function fakeLove()
-  state={draws={},quads={},colors={},blends={},matrices={},push=0,pop=0}
+  state={draws={},quads={},meshes={},colors={},blends={},matrices={},push=0,pop=0}
   _G.love={
     graphics={
       newQuad=function(x,y,w,h,iw,ih)
         local q={x=x,y=y,w=w,h=h,iw=iw,ih=ih}
         state.quads[#state.quads+1]=q
         return q
+      end,
+      newMesh=function(vertices,mode,usage)
+        local m={vertices=vertices,mode=mode,usage=usage}
+        function m:setVertexMap(map) self.map=map end
+        function m:setTexture(tex) self.texture=tex end
+        function m:setVertices(updated) self.vertices=updated end
+        state.meshes[#state.meshes+1]=m
+        return m
       end,
       push=function(mode)
         state.push=state.push+1
@@ -90,7 +98,8 @@ local function build(raw,atlasRaw)
   fakeLove()
   local f=Love.Factory.new()
   local data=f:parseDragonBonesData(raw or sample(),"pack")
-  local a=f:parseTextureAtlasData(atlasRaw or atlas(),image(8,4),"pack")
+  local atlasSpec=atlasRaw or atlas()
+  local a=f:parseTextureAtlasData(atlasSpec,image(atlasSpec.width,atlasSpec.height),"pack")
   local rig=f:buildArmature("rig","pack")
   return f,data,a,rig
 end
@@ -197,20 +206,91 @@ test("atlas rotated texture applies packed de-rotation matrix",function()
   near(m[6],-1)
   near(m[9],2) -- rotated packed region moves local origin by its width.
 end)
-test("unsupported geometry mesh rejects instead of silently rendering an image",function()
-  fakeLove()
-  local f=Love.Factory.new()
+local function meshRig(meshData,atlasData)
   local raw=sample()
-  raw.armature[1].skin[1].slot[1].display[1]={
-    name="red",type="mesh",vertices={0,0,2,0,2,2},
-    uvs={0,0,1,0,1,1},triangles={0,1,2}
-  }
-  f:parseDragonBonesData(raw,"pack")
-  f:parseTextureAtlasData(atlas(),image(8,4),"pack")
-  local ok,err=pcall(function() f:buildArmature("rig","pack") end)
-  eq(ok,false)
-  eq(type(err),"string")
-  eq(err:find("mesh/FFD",1,true)~=nil,true)
+  raw.armature[1].skin[1].slot[1].display[1]=meshData
+  local f,_,a,rig=build(raw,atlasData)
+  local slot=rig:getSlot("one")
+  return f,a,rig,slot
+end
+local function triangle()
+  return {name="red",type="mesh",vertices={0,0,2,0,2,2},
+    uvs={0,0,1,0,1,1},triangles={0,1,2}}
+end
+test("original mesh geometry builds a real GPU mesh and triangle map",function()
+  local f,a,rig,slot=meshRig(triangle())
+  local m=assert(slot._renderDisplay.mesh)
+  eq(m.mode,"triangles")
+  eq(m.usage,"dynamic")
+  eq(#m.vertices,3)
+  eq(m.map[1],1);eq(m.map[2],2);eq(m.map[3],3)
+  eq(m.texture,a.image)
+  near(m.vertices[2][1],2)
+  near(m.vertices[2][3],0.5) -- UV normalized to atlas Image, not frame.
+  f:drawArmature(rig)
+  eq(#state.draws,1)
+  eq(state.draws[1].image,m)
+  near(state.matrices[1][5],4)
+  near(state.matrices[1][9],5)
+end)
+test("original unweighted deform updates vertex coordinates, not UVs",function()
+  local f,a,rig,slot=meshRig(triangle())
+  local frame=slot:getDisplayFrameAt(0)
+  frame:updateDeformVertices()
+  frame.deformVertices[1]=3
+  frame.deformVertices[2]=-2
+  local mesh=slot._renderDisplay.mesh
+  local uvBefore=mesh.vertices[1][3]
+  slot:_updateMesh()
+  near(mesh.vertices[1][1],3)
+  near(mesh.vertices[1][2],-2)
+  near(mesh.vertices[1][3],uvBefore)
+  eq(#mesh.vertices,3)
+end)
+test("inheritDeform false retains the original source vertices",function()
+  local raw=triangle();raw.inheritDeform=false
+  local f,a,rig,slot=meshRig(raw)
+  local frame=slot:getDisplayFrameAt(0)
+  frame:updateDeformVertices()
+  frame.deformVertices[1]=20
+  slot:_updateMesh()
+  near(slot._renderDisplay.mesh.vertices[1][1],0)
+end)
+test("weighted geometry uses original bone matrices, weights and FFD",function()
+  local raw=triangle()
+  raw.weights={1,0,1,1,0,1,1,0,1}
+  raw.slotPose={1,0,0,1,0,0}
+  raw.bonePose={0,1,0,0,1,0,0}
+  local f,a,rig,slot=meshRig(raw)
+  eq(slot._geometryData.weight~=nil,true)
+  eq(#slot._geometryBones,1)
+  local mesh=slot._renderDisplay.mesh
+  -- Weighted vertices are world-space, so the PixiSlot original uses
+  -- identity transform rather than applying root translation twice.
+  near(slot._renderDisplay.tx,0)
+  near(slot._renderDisplay.ty,0)
+  local frame=slot:getDisplayFrameAt(0)
+  frame:updateDeformVertices()
+  frame.deformVertices[1]=3
+  frame.deformVertices[2]=-2
+  slot:_updateMesh()
+  near(mesh.vertices[1][1],7)
+  near(mesh.vertices[1][2],3)
+  f:drawArmature(rig)
+  near(state.matrices[1][5],0)
+  near(state.matrices[1][9],0)
+end)
+test("rotated atlas mesh UVs use PixiSlot rotation then full image scale",function()
+  local rotated={name="atlas",width=4,height=5,
+    SubTexture={{name="red",x=0,y=0,width=2,height=3,rotated=true}}}
+  local f,a,rig,slot=meshRig(triangle(),rotated)
+  local vertices=assert(slot._renderDisplay.mesh).vertices
+  near(vertices[1][3],0.5)
+  near(vertices[1][4],0)
+  near(vertices[2][3],0.5)
+  near(vertices[2][4],0.6)
+  near(vertices[3][3],0)
+  near(vertices[3][4],0.6)
 end)
 test("backend data and atlas maps are exposed via original BaseFactory API",function()
   local f,data,a,rig=build()

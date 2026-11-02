@@ -64,6 +64,44 @@ function Test.run()
   colorAt(shot(),9,9,0,0,0,0)
   armature:advanceTime(4/12)
   colorAt(shot(),9,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: red/green/hidden/loop via actual Armature + Animation.")
+  -- Real LÖVE 11.x GPU mesh: original ObjectDataParser -> BaseFactory ->
+  -- Slot -> PixiSlot geometry/FFD equations translated for LÖVE Mesh.
+  local meshRaw={version="5.5",name="GPUMesh",frameRate=12,
+    armature={{name="rig",bone={{name="root"}},
+      slot={{name="body",parent="root"}},
+      skin={{name="default",slot={{name="body",display={{
+        name="red",path="red",type="mesh",
+        vertices={0,0,4,0,0,4},
+        uvs={0,0,1,0,0,1},triangles={0,1,2}
+      }}}}}}
+    }}
+  }
+  local meshFactory=Love.Factory.new()
+  meshFactory:parseDragonBonesData(meshRaw,"mesh")
+  meshFactory:parseTextureAtlasData(atlas,image,"mesh")
+  local meshArmature=assert(meshFactory:buildArmature("rig","mesh"))
+  local meshSlot=assert(meshArmature:getSlot("body"))
+  assert(meshSlot._renderDisplay.mesh~=nil)
+  local function meshShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    meshFactory:drawArmature(meshArmature)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  colorAt(meshShot(),9,9,1,0,0,1)
+  local frame=meshSlot:getDisplayFrameAt(0)
+  frame:updateDeformVertices()
+  for i=1,#frame.deformVertices,2 do
+    frame.deformVertices[i]=6
+  end
+  meshSlot:_updateMesh()
+  local shifted=meshShot()
+  colorAt(shifted,9,9,0,0,0,0)
+  colorAt(shifted,15,9,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: red/green/hidden/loop and mesh/FFD pixels.")
 end
 return Test
