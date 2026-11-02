@@ -444,7 +444,7 @@ Branch `port-original-basefactory-build` integrada à `main` no [PR #36](https:/
 
 **Limitações:** a implementação desses métodos não prova fidelidade visual. `BaseFactory` continua abstrata, sem backend LÖVE e sem testes diferenciais executados contra o JavaScript original. `BinaryDataParser` ainda tem views de bytes sem mutabilidade compartilhada. Não declarar o motor/editor concluído ou 1:1 com base apenas em testes Lua.
 
-PR, commit e CI serão registrados após aprovação.
+Branch `port-original-basefactory-replacements` integrada à `main` pelo [PR #37](https://github.com/SrTristeSad/Bono-Lua/pull/37), commit de integração [`46d2af4`](https://github.com/SrTristeSad/Bono-Lua/commit/46d2af4ab84d2ebe522e3321c7953f4621b3e433). CI do PR: **31/31 cenários e 79 asserções** em Lua 5.4 e LuaJIT, regressões anteriores e `love-render` aprovados. Total acumulado: **1.009 cenários dos portes originais** (978 + 31), além dos 22 testes do protótipo. Os métodos concretos da `BaseFactory.ts` foram incluídos; backend abstrato de plataforma e verificação visual diferencial continuam pendentes.
 
 ## Código que já existia antes deste porte
 
