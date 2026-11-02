@@ -115,6 +115,162 @@ function BaseFactory:_fillBuildArmaturePackage(packageData,
   return false
 end
 
+-- Original BaseFactory.ts, lines 168-329: build actual runtime objects through
+-- the original classes. Only the platform hooks remain abstract.
+local Pool=require("dragonbones.original.core.BaseObject")
+local Core=require("dragonbones.original.core.DragonBones")
+local Bone=require("dragonbones.original.armature.Bone")
+local Surface=require("dragonbones.original.armature.Surface")
+local Constraint=require("dragonbones.original.armature.Constraint")
+local EventObject=require("dragonbones.original.event.EventObject")
+local SkinData=require("dragonbones.original.model.SkinData")
+
+function BaseFactory:_buildBones(dataPackage,armature)
+  for _,boneData in ipairs(dataPackage.armature.sortedBones) do
+    local cls=boneData.type==Core.BoneType.Bone and Bone or Surface
+    local bone=Pool.borrowObject(cls)
+    bone:init(boneData,armature)
+  end
+end
+
+function BaseFactory:_buildSlots(dataPackage,armature)
+  local currentSkin=dataPackage.skin
+  local defaultSkin=dataPackage.armature.defaultSkin
+  if currentSkin==nil or defaultSkin==nil then return end
+  local skinSlots={}
+  for name,displays in pairs(defaultSkin.displays) do
+    skinSlots[name]=displays
+  end
+  if currentSkin~=defaultSkin then
+    for name,displays in pairs(currentSkin.displays) do
+      skinSlots[name]=displays
+    end
+  end
+  for _,slotData in ipairs(dataPackage.armature.sortedSlots) do
+    local displayDatas=skinSlots[slotData.name]
+    local slot=self:_buildSlot(dataPackage,slotData,armature)
+    if displayDatas~=nil then
+      slot.displayFrameCount=#displayDatas
+      for i=0,slot.displayFrameCount-1 do
+        local displayData=displayDatas[i+1]
+        if displayData==SkinData.NULL then displayData=nil end
+        slot:replaceRawDisplayData(displayData,i)
+        if displayData~=nil then
+          if #dataPackage.textureAtlasName>0 then
+            local texture=self:_getTextureData(
+              dataPackage.textureAtlasName,displayData.path)
+            slot:replaceTextureData(texture,i)
+          end
+          local display=self:_getSlotDisplay(dataPackage,displayData,slot)
+          slot:replaceDisplay(display,i)
+        else
+          -- The source invokes replaceDisplay(null) WITHOUT the index.
+          slot:replaceDisplay(nil)
+        end
+      end
+    end
+    slot:_setDisplayIndex(slotData.displayIndex,true)
+  end
+end
+
+function BaseFactory:_buildConstraints(dataPackage,armature)
+  for _,constraintData in pairs(dataPackage.armature.constraints) do
+    local cls
+    if constraintData.type==Core.ConstraintType.IK then
+      cls=Constraint.IKConstraint
+    elseif constraintData.type==Core.ConstraintType.Path then
+      cls=Constraint.PathConstraint
+    else
+      -- Original fallback is IKConstraint, even for unknown type.
+      cls=Constraint.IKConstraint
+    end
+    local c=Pool.borrowObject(cls)
+    c:init(constraintData,armature)
+    armature:_addConstraint(c)
+  end
+end
+
+function BaseFactory:_buildChildArmature(dataPackage,_slot,displayData)
+  return self:buildArmature(displayData.path,
+    dataPackage~=nil and dataPackage.dataName or "",
+    "",dataPackage~=nil and dataPackage.textureAtlasName or "")
+end
+
+function BaseFactory:_getSlotDisplay(dataPackage,displayData,slot)
+  local dataName
+  if dataPackage~=nil then
+    dataName=dataPackage.dataName
+  else
+    dataName=displayData.parent.parent.parent.name
+  end
+  local display=nil
+  if displayData.type==Core.DisplayType.Image then
+    if displayData.texture==nil then
+      displayData.texture=self:_getTextureData(dataName,displayData.path)
+    end
+    display=slot.rawDisplay
+  elseif displayData.type==Core.DisplayType.Mesh then
+    if displayData.texture==nil then
+      displayData.texture=self:_getTextureData(dataName,displayData.path)
+    end
+    if self:_isSupportMesh() then
+      display=slot.meshDisplay
+    else
+      display=slot.rawDisplay
+    end
+  elseif displayData.type==Core.DisplayType.Armature then
+    local child=self:_buildChildArmature(dataPackage,slot,displayData)
+    if child~=nil then
+      child.inheritAnimation=displayData.inheritAnimation
+      if not child.inheritAnimation then
+        local actions=#displayData.actions>0 and displayData.actions
+          or child.armatureData.defaultActions
+        if #actions>0 then
+          for _,action in ipairs(actions) do
+            local event=Pool.borrowObject(EventObject)
+            EventObject.actionDataToInstance(action,event,slot.armature)
+            event.slot=slot
+            slot.armature:_bufferAction(event,false)
+          end
+        else
+          child.animation:play()
+        end
+      end
+      displayData.armature=child.armatureData
+    end
+    display=child
+  elseif displayData.type==Core.DisplayType.BoundingBox then
+    -- Empty branch in pinned TypeScript.
+  end
+  return display
+end
+
+-- _buildSlot is platform-abstract in the original BaseFactory.
+function BaseFactory:_buildSlot(_dataPackage,_slotData,_armature)
+  error("Abstract BaseFactory._buildSlot requires a backend")
+end
+
+function BaseFactory:buildArmature(armatureName,dragonBonesName,
+    skinName,textureAtlasName)
+  dragonBonesName=dragonBonesName or ""
+  skinName=skinName or ""
+  textureAtlasName=textureAtlasName or ""
+  local dataPackage=BuildArmaturePackage.new()
+  if not self:_fillBuildArmaturePackage(dataPackage,
+      dragonBonesName,armatureName,skinName,textureAtlasName) then
+    io.stderr:write("No armature data: "..tostring(armatureName)..
+      ", "..tostring(dragonBonesName).."\n")
+    return nil
+  end
+  local armature=self:_buildArmature(dataPackage)
+  self:_buildBones(dataPackage,armature)
+  self:_buildSlots(dataPackage,armature)
+  self:_buildConstraints(dataPackage,armature)
+  armature:invalidUpdate(nil,true)
+  armature:advanceTime(0.0)
+  return armature
+end
+
 -- The pinned abstract class delegates construction to a platform backend.
 -- Keep abstract methods unavailable instead of fabricating displays.
 function BaseFactory:_buildTextureAtlasData(_textureAtlasData,_textureAtlas)
