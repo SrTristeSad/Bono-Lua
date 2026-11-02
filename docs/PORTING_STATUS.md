@@ -446,6 +446,18 @@ Branch `port-original-basefactory-build` integrada à `main` no [PR #36](https:/
 
 Branch `port-original-basefactory-replacements` integrada à `main` pelo [PR #37](https://github.com/SrTristeSad/Bono-Lua/pull/37), commit de integração [`46d2af4`](https://github.com/SrTristeSad/Bono-Lua/commit/46d2af4ab84d2ebe522e3321c7953f4621b3e433). CI do PR: **31/31 cenários e 79 asserções** em Lua 5.4 e LuaJIT, regressões anteriores e `love-render` aprovados. Total acumulado: **1.009 cenários dos portes originais** (978 + 31), além dos 22 testes do protótipo. Os métodos concretos da `BaseFactory.ts` foram incluídos; backend abstrato de plataforma e verificação visual diferencial continuam pendentes.
 
+### Lote: backend LÖVE para as classes originais (imagens/atlas e GPU)
+
+**Referências:** motor DragonBonesJS original `64b6c69ae35777c2404be68c9192e2c56906079e`, `BaseFactory.ts`, `Slot.ts`, `Armature.ts`; guia da adaptação de plataforma `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts` e `PixiSlot.ts`, mesma revisão (MIT). Backend alvo é LÖVE 11.x em Lua, sem modificar algoritmos de animação/skeleton de `dragonbones/original`.
+
+**Novo:** `dragonbones/love_original.lua` fornece `Factory` derivada da `BaseFactory` reconstruída, `Slot` derivado do `Slot` original, `TextureAtlasData` e `TextureData` derivados dos modelos originais. Implementa os hooks de plataforma `_buildArmature`, `_buildSlot`, `_buildTextureAtlasData`, atlas como Quad, atualização de displays de imagem, pivôs, matriz afim, cor/multiplicadores de alfa, visibilidade, ordem de slots e desenho LÖVE por objeto real de armadura. Implementa um despachante de eventos de plataforma com add/remove/dispatch. O desenho consulta as matrizes produzidas pelo motor reconstruído, **não** a lista de comandos do protótipo antigo. Imagens giradas no atlas são desrotacionadas usando o mesmo sistema geométrico do renderizador já testado. O `main.lua` atual continua com o protótipo por padrão; a integração original é ativada em modo de regressão isolado `BONO_LUA_ORIGINAL_RENDER_TEST=1`.
+
+**Validação nova:** `tests/original_love_image_backend.lua` com **15 cenários** para construção real, atlas, quad, offset do osso, visibilidade, textura alternada, cor e tratamento explícito de malha não implementada; executados em Lua 5.4 e LuaJIT (as chamadas gráficas são mockadas só para inspeção). `tests/love_original_runtime.lua` é **teste de GPU real via LÖVE**: lê JSON animado por `BaseFactory`, monta `Armature` e `Slot`, avança `Animation` original e compara pixels de frames vermelho, verde, oculto e loop. CI `love-render` executa esse novo caminho com Xvfb/software GL, além dos testes de renderização do protótipo anterior.
+
+**Limites explícitos:** backend de imagem **não cobre malhas, FFD, blend modes avançados ou armaduras filhas**; esses ramos são marcados explicitamente como não suportados, não representam equivalência 1:1. A UI normal em `main.lua` ainda não foi migrada; dados/visualização completa de personagens com malhas continuam pendentes. Diferenças de `ArrayBuffer` e execução diferencial JS/Lua persistem. Não contar o runtime ou o editor como concluídos.
+
+PR, commit de merge e CI serão documentados após aprovação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -461,7 +473,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 
 ### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
 
-Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 34 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 35 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
 Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 
