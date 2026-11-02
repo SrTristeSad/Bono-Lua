@@ -348,7 +348,7 @@ Referência fixa: `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` do Dr
 
 Testes dedicados: `tests/original_object_parser_typed_arrays.lua` com **22 cenários**, cobrindo layout dos sete segmentos, padding, wrapping de 16 bits, Float32 decimal/subnormal/ties-to-even/zero negativo/NaN/infinito/overflow, integridade de offsets da geometria real e efeitos de `_parseArray`. A CI executa Lua 5.4, LuaJIT e a regressão visual LÖVE. As rotinas de montagem de armaduras, animações, timelines e `parseDragonBonesData` ainda não foram portadas; o `ObjectDataParser.ts` continua incompleto. Próxima fase é a construção dos modelos e timelines originais no parser, seguida de testes diferenciais e resolução do backing storage mutável.
 
-PR, CI e SHA de integração serão registrados após aprovação.
+Branch `port-original-object-parser-typed-arrays` integrada à `main` pelo [PR #29](https://github.com/SrTristeSad/Bono-Lua/pull/29), commit de merge [`0201c39`](https://github.com/SrTristeSad/Bono-Lua/commit/0201c39e9713ea1e4ab958853ca6d67937c1d9cd). A CI do PR validou **22/22 cenários e 98 asserções em Lua 5.4 e LuaJIT**, além das 25 suítes anteriores, testes originais de personagem e renderização LÖVE. Contagem acumulada: **755 cenários dos portes originais** (733 anteriores + 22), mais 22 testes do protótipo. O backing storage de views mutáveis segue pendente conforme a limitação descrita acima; `ObjectDataParser.ts` ainda é PARCIAL.
 
 ## Código que já existia antes deste porte
 
