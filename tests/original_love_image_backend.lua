@@ -1223,9 +1223,38 @@ test("Pixi debugDraw maps all three original bounding box geometries",function()
   near(shape[1][3],-3);near(shape[1][4],-2)
   near(shape[1][5],6);near(shape[1][6],4)
   eq(shape[2][1],"ellipse");eq(shape[2][2],"line")
-  near(shape[2][5],4);near(shape[2][6],2)
+  -- Original Pixi Graphics.drawEllipse(x, y, width, height):
+  -- x/y are the center, width/height are RADII (not diameters).
+  near(shape[2][3],-4);near(shape[2][4],-2)
+  near(shape[2][5],8);near(shape[2][6],4)
   eq(shape[3][1],"polygon");eq(shape[3][2],"line")
   eq(#shape[3][3],6)
+end)
+test("Pixi debugDraw ellipse retains upstream center/radii under slot pivot",function()
+  local f,rig=debugRig()
+  local oval=assert(rig:getSlot("oval"))
+  oval._pivotX=1.5
+  oval._pivotY=-2
+  rig.display.debugDraw=true
+  rig:advanceTime(0)
+  f:drawArmature(rig)
+  local ellipses={}
+  for _,op in ipairs(state.debugOps) do
+    if op[1]=="ellipse" then ellipses[#ellipses+1]=op end
+  end
+  eq(#ellipses,1)
+  -- The bounding box is 8x4; the pinned Pixi call centers it at (-4,-2)
+  -- with radii 8,4. Applying the pivot shifts the whole shape's matrix.
+  local shape=ellipses[1]
+  eq(shape[2],"line")
+  near(shape[3],-4);near(shape[4],-2)
+  near(shape[5],8);near(shape[6],4)
+  eq(#state.matrices,3)
+  near(state.matrices[2][5],2.5) -- global.x 4 - pivot.x 1.5
+  near(state.matrices[2][9],7)   -- global.y 5 - pivot.y (-2)
+  -- Local center after matrix: (-4+2.5,-2+7)=(-1.5,5).
+  near(shape[3]+state.matrices[2][5],-1.5)
+  near(shape[4]+state.matrices[2][9],5)
 end)
 test("Pixi debugDraw slot transform includes position and pivot",function()
   local f,rig=debugRig()
