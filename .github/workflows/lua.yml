@@ -87,6 +87,8 @@ jobs:
         run: lua5.4 tests/original_basefactory_build.lua
       - name: Verify original BaseFactory display skin and animation replacements
         run: lua5.4 tests/original_basefactory_replacements.lua
+      - name: Verify original DragonBones runtime LÖVE image backend
+        run: lua5.4 tests/original_love_image_backend.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
@@ -120,6 +122,10 @@ jobs:
       - name: Verify rotated atlas pixels using LÖVE GPU
         run: |
           LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ROTATED_TEST=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Render original DragonBones Armature and animation on LÖVE GPU
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ORIGINAL_RENDER_TEST=1 \
             timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
       - name: Verify screenshot output
         run: |
