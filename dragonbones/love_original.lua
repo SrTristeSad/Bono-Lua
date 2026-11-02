@@ -177,6 +177,9 @@ local function makeDispatcher()
       end
     end
   end
+  function dispatcher:hasDBEventListener(eventType)
+    return listeners[eventType]~=nil and #listeners[eventType]>0
+  end
   function dispatcher:dispatchDBEvent(eventType,event)
     for _,callback in ipairs(listeners[eventType] or {}) do
       callback(event)
