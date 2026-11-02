@@ -77,6 +77,8 @@ jobs:
         run: lua5.4 tests/original_object_parser_timeline.lua
       - name: Verify original bone slot and IK frame serialization
         run: lua5.4 tests/original_object_parser_bone_slot_frames.lua
+      - name: Verify original animated JSON import, generic timelines and FFD
+        run: lua5.4 tests/original_object_parser_animated_json.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
