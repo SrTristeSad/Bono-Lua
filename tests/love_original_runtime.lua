@@ -263,7 +263,29 @@ function Test.run()
   colorAt(lateShot(),9,9,0,0,0,0)
   lateAtlas.image=image
   colorAt(lateShot(),9,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, atlas attachment/restore, tint, nested alpha, PixiFactory displays and clock.")
+  -- PixiTextureAtlasData.renderTexture replaces every per-region
+  -- PIXI.Texture. In LÖVE the equivalent region proxies are Image/Quad
+  -- pairs, and both live slots and stand-alone sprites must follow them.
+  assert(spriteAtlas.renderTexture==sourceImage)
+  assert(spriteAtlas:getTexture("red").renderTexture.image==sourceImage)
+  assert(spriteAtlas:getTexture("green").renderTexture.quad~=nil)
+  factory:updateTextureAtlases({swappedImage},"pack")
+  assert(spriteAtlas.renderTexture==swappedImage)
+  assert(spriteAtlas:getTexture("red").renderTexture.image==swappedImage)
+  colorAt(shot(),9,9,0,0,1,1)
+  local atlasGreen=assert(factory:getTextureDisplay("green","pack"))
+  colorAt(spriteShot(atlasGreen),9,9,1,1,0,1)
+  spriteAtlas.renderTexture=nil
+  assert(spriteAtlas:getTexture("red").renderTexture==nil)
+  assert(factory:getTextureDisplay("green","pack")==nil)
+  colorAt(shot(),9,9,0,0,0,0)
+  spriteAtlas.renderTexture=sourceImage
+  colorAt(shot(),9,9,1,0,0,1)
+  meshAtlas.renderTexture=swappedImage
+  colorAt(meshShot(),15,9,0,0,1,1)
+  meshAtlas.renderTexture=meshImage
+  colorAt(meshShot(),15,9,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: images, FFD, Pixi region texture lifecycle, atlas restore, tint, nested alpha and clock.")
 
 
 end

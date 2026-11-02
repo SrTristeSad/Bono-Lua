@@ -22,11 +22,43 @@ end
 function LoveTexture:_onClear()
   TextureModels.TextureData._onClear(self)
   self.quad=nil
+  -- PixiTextureData._onClear destroys its previous PIXI.Texture. The
+  -- corresponding LÖVE region Quad is released by dropping this proxy.
+  self.renderTexture=nil
 end
 
 local LoveAtlas={}
 LoveAtlas.__index=function(self,key)
+  if key=="image" or key=="renderTexture" then
+    return rawget(self,"_renderTexture")
+  end
   return rawget(LoveAtlas,key) or TextureModels.TextureAtlasData[key]
+end
+-- PixiTextureAtlasData.renderTexture replaces the BaseTexture and rebuilds
+-- each PixiTextureData.renderTexture from its atlas region and rotation.
+-- LÖVE uses {Image, Quad} rather than a PIXI.Texture for the same purpose.
+-- image remains an alias for previous LÖVE callers; neither is stored as
+-- a public raw key, so every assignment (including nil) passes this setter.
+LoveAtlas.__newindex=function(self,key,value)
+  if key=="renderTexture" or key=="image" then
+    if rawget(self,"_renderTexture")==value then return end
+    rawset(self,"_renderTexture",value)
+    for _,texture in pairs(self.textures or {}) do
+      if value~=nil then
+        local region=texture.region
+        texture.renderTexture={
+          image=value,
+          quad=love.graphics.newQuad(region.x,region.y,
+            region.width,region.height,value:getWidth(),value:getHeight()),
+          rotated=texture.rotated
+        }
+      else
+        texture.renderTexture=nil
+      end
+    end
+    return
+  end
+  rawset(self,key,value)
 end
 setmetatable(LoveAtlas,{__index=TextureModels.TextureAtlasData})
 function LoveAtlas.new()
@@ -175,13 +207,15 @@ function LoveSlot:_updateFrame()
     atlas=self._armature._replaceTextureAtlasData
     texture=atlas:getTexture(texture.name)
   end
-  if atlas==nil or atlas.image==nil or texture==nil then
+  -- PixiSlot reads currentTextureData.renderTexture, which the atlas setter
+  -- creates for every region. Never bypass that slot-level resource by
+  -- reading only the BaseTexture; nil is a valid missing-frame state.
+  local currentTexture=texture and texture.renderTexture
+  if atlas==nil or currentTexture==nil then
     hideUntexturedDisplay()
     return
   end
-  local image=atlas.image
-  assert(type(image.getWidth)=="function" and type(image.getHeight)=="function",
-    "LÖVE backend: textureAtlas must be a LÖVE Image")
+  local image=currentTexture.image
   local imageWidth,imageHeight=image:getWidth(),image:getHeight()
   local region=texture.region
 
@@ -232,10 +266,9 @@ function LoveSlot:_updateFrame()
     end
   else
     -- Original simple image path; rotated packed frames are handled at draw.
-    render.quad=love.graphics.newQuad(region.x,region.y,
-      region.width,region.height,imageWidth,imageHeight)
+    render.quad=currentTexture.quad
     render.texture=image
-    render.rotated=texture.rotated
+    render.rotated=currentTexture.rotated
     render.packedWidth=region.width
     self._textureScale=atlas.scale*self._armature._armatureData.scale
   end
@@ -427,15 +460,13 @@ end
 -- the same atlas crop and rotation, with drawing in drawTextureDisplay.
 function LoveFactory:getTextureDisplay(textureName,textureAtlasName)
   local textureData=self:_getTextureData(textureAtlasName or "",textureName)
-  if textureData==nil or textureData.parent==nil
-      or textureData.parent.image==nil then return nil end
-  local texture=textureData.parent.image
+  if textureData==nil or textureData.renderTexture==nil then return nil end
+  local texture=textureData.renderTexture
   local region=textureData.region
   local render=node("image")
-  render.texture=texture
-  render.quad=love.graphics.newQuad(region.x,region.y,region.width,
-    region.height,texture:getWidth(),texture:getHeight())
-  render.rotated=textureData.rotated
+  render.texture=texture.image
+  render.quad=texture.quad
+  render.rotated=texture.rotated
   render.packedWidth=region.width
   return render
 end
@@ -443,7 +474,7 @@ function LoveFactory:_buildTextureAtlasData(atlasData,textureAtlas)
   if atlasData==nil then
     return BaseObject.borrowObject(LoveAtlas)
   end
-  atlasData.image=textureAtlas
+  atlasData.renderTexture=textureAtlas
   return atlasData
 end
 function LoveFactory:_buildArmature(pkg)
