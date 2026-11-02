@@ -655,6 +655,17 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Limites:** 62 entradas são uma amostra, não uma prova para todos os reais IEEE-754, todos os polígonos ou o restante do motor. Permanecem buffers compartilhados mutáveis, máscaras, modos Pixi avançados `Difference`, `HardLight`, `Overlay`, editor original/licença e validação diferencial de outras classes. Não afirmar equivalência 1:1 global.
 
+
+### Etapa 56 — Tornar a aplicação `love .` uma aplicação do runtime original
+
+**Origem fixa:** `DragonBones/DragonBonesJS` MIT, SHA `64b6c69ae35777c2404be68c9192e2c56906079e`; lógica em `DragonBones/src/dragonBones/{factory/BaseFactory,armature/Armature,animation/Animation,parser/ObjectDataParser}.ts` e infraestrutura de renderização `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, já adaptadas em Lua no projeto. **Problema efetivo identificado:** até a etapa 55, o comando principal `love .` carregava `require("dragonbones")` e portanto usava o protótipo antigo de animação, não a versão original portável, apesar de existirem integração e testes gráficos separados do runtime original.
+
+**Mudança de produto:** `main.lua` passa a encaminhar a janela e os eventos ao host `dragonbones/original_love_app.lua`. Esse host carrega as exportações JSON/atlas com `dragonbones.json`, utiliza diretamente `dragonbones.love_original.Factory:parseDragonBonesData`, `:parseTextureAtlasData` e `:buildArmatureDisplay`, cria `Armature`/`Slot` reais da árvore `dragonbones/original`, anima exclusivamente por `Animation:play` e pelo `DragonBones.clock` original via `Love.Factory.advanceTime`, e desenha por `:drawArmature`. Nenhum cálculo de pose, interpolação ou timeline é implementado na janela. A textura do exemplo continua gerada em Lua, somente como recurso visual. A UI preserva SPACE, setas, B, R, clique e o screenshot da CI; importação externa `assets/project_{ske,tex}.json` e `project_tex.png` continua suportada pelo mesmo parser original. Protótipos Lua históricos são preservados, mas não importados pelo caminho principal.
+
+**Teste integrado de GPU:** `tests/love_original_entrypoint.lua` exercita `App.load`, verificação das classes originais de `Armature` e `Slot`, registro no `WorldClock`, 3 animações JSON, mudanças de `displayIndex` por timeline original, pausa do host, debug do display e recarregamento com descarte do objeto anterior, além de amostragem de pixels em um Canvas LÖVE. A CI usa `BONO_LUA_ORIGINAL_APP_TEST=1 love .` com xvfb/llvmpipe, sem substituir ou simular o renderer. Os testes gráficos originais anteriores permanecem.
+
+**Resultado da CI/PR:** pendente de execução/merge nesta etapa; registrar SHAs/links após confirmação, sem afirmar equivalência global. A alteração integra o runtime portado à aplicação, mas não garante o funcionamento de todas as exportações nem finalização do porte. **Lacunas mantidas:** `ArrayBuffer` compartilhado mutável, máscaras, blends avançados, cobertura diferencial adicional e editor original/licença.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
