@@ -3,9 +3,9 @@
 -- Copyright (c) 2012-2025 DragonBones team and other contributors.
 -- See LICENSE-DRAGONBONES.
 --
--- Lua represents an ArrayBuffer with a raw binary string and the original
--- typed views with Lua numeric arrays. Their byte layout is retained, but
--- post-decode mutations do not write back to the shared binary string.
+-- The original ArrayBuffer and seven TypedArrays share one mutable region.
+-- Lua uses SharedBinaryBuffer with byte-backed mutable views; binary reads
+-- from DragonBonesData reflect edits made through any of those views.
 local ObjectDataParser=require("dragonbones.original.parser.ObjectDataParser")
 local DataParser=require("dragonbones.original.parser.DataParser")
 local Core=require("dragonbones.original.core.DragonBones")
@@ -100,60 +100,12 @@ function BinaryDataParser:_decodeUTF8(data)
   return table.concat(result)
 end
 
-local function readU16(bytes,offset)
-  local p=offset+1
-  local a,b=bytes:byte(p,p+1)
-  assert(b~=nil,"BinaryDataParser: truncated uint16 view")
-  return a+b*256
-end
-
+-- uint32 DBDT JSON header length remains little-endian, like the original.
 local function readU32(bytes,offset)
   local p=offset+1
   local a,b,c,d=bytes:byte(p,p+3)
   assert(d~=nil,"BinaryDataParser: truncated uint32")
   return a+b*256+c*65536+d*16777216
-end
-
-local function float32(bytes,offset)
-  local b0,b1,b2,b3=bytes:byte(offset+1,offset+4)
-  assert(b3~=nil,"BinaryDataParser: truncated float32 view")
-  local exponent=(b3%128)*2+math.floor(b2/128)
-  local fraction=b2%128*65536+b1*256+b0
-  local sign=b3>=128 and -1 or 1
-  if exponent==255 then
-    if fraction==0 then return sign*math.huge end
-    return 0/0
-  elseif exponent==0 then
-    return sign*(fraction*2^-149)
-  end
-  return sign*(1+fraction/8388608)*2^(exponent-127)
-end
-
-local function readTyped(bytes,absoluteOffset,length,itemBytes,kind)
-  assert(type(absoluteOffset)=="number" and absoluteOffset>=0
-    and absoluteOffset%itemBytes==0,
-    "BinaryDataParser: misaligned typed view")
-  -- Pinned BinaryDataParser.ts constructs the view with
-  -- length / TypedArray.BYTES_PER_ELEMENT. The JS constructor converts
-  -- that element count via ToIndex, truncating fractional positive counts.
-  -- Requiring a divisible *byte* length rejects inputs accepted upstream.
-  local elementCount=type(length)=="number" and length>=0
-      and math.floor(length/itemBytes) or nil
-  assert(elementCount~=nil and absoluteOffset+elementCount*itemBytes<=#bytes,
-    "BinaryDataParser: invalid typed view length")
-  local out={}
-  for i=0,elementCount-1 do
-    local pos=absoluteOffset+i*itemBytes
-    local n
-    if kind=="float" then
-      n=float32(bytes,pos)
-    else
-      n=readU16(bytes,pos)
-      if kind=="int" and n>=32768 then n=n-65536 end
-    end
-    out[i+1]=n
-  end
-  return out
 end
 
 function BinaryDataParser.new()
@@ -329,26 +281,31 @@ end
 
 function BinaryDataParser:_parseArray(raw)
   local offsets=raw[DataParser.OFFSET]
-  local bytes=self._binary
+  local Shared=require("dragonbones.original.parser.SharedBinaryBuffer")
+  local store=Shared.new(self._binary)
   local base=self._binaryOffset
-  local function part(startIndex,lengthIndex,unit,kind)
-    return readTyped(bytes,base+offsets[startIndex],
-      offsets[lengthIndex],unit,kind)
+  local function part(startIndex,lengthIndex,kind)
+    return Shared.view(store,base+offsets[startIndex],
+      offsets[lengthIndex],kind)
   end
   local data=self._data
-  local intArray=part(1,2,2,"int")
-  local floatArray=part(3,4,4,"float")
-  local frameIntArray=part(5,6,2,"int")
-  local frameFloatArray=part(7,8,4,"float")
-  local frameArray=part(9,10,2,"int")
-  local timelineArray=part(11,12,2,"uint")
+  local intArray=part(1,2,"int16")
+  local floatArray=part(3,4,"float32")
+  local frameIntArray=part(5,6,"int16")
+  local frameFloatArray=part(7,8,"float32")
+  local frameArray=part(9,10,"int16")
+  local timelineArray=part(11,12,"uint16")
   local colorArray
   if #offsets>12 and offsets[14]>0 then
-    colorArray=part(13,14,2,"int")
+    colorArray=part(13,14,"int16")
   else
     colorArray=intArray -- Pinned source aliases it when color length is zero.
   end
-  data.binary=bytes
+  if data.setBinaryBuffer~=nil then
+    data:setBinaryBuffer(store)
+  else
+    data.binary=store:bytes()
+  end
   data.intArray=intArray
   data.floatArray=floatArray
   data.frameIntArray=frameIntArray
