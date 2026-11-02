@@ -53,24 +53,33 @@ end
 
 function App.load()
   unload()
-  local external=love.filesystem.getInfo("assets/project_ske.json")~=nil
-  local skeletonPath=external and "assets/project_ske.json"
-      or "tests/fixtures/personagem-minimo.json"
+  -- Pixi/BaseFactory.parseDragonBonesData selects ObjectDataParser for
+  -- JSON objects and BinaryDataParser for ArrayBuffer. The Lua port uses a
+  -- JSON table or raw DBDT bytes to preserve that same parser dispatch.
+  -- Keep the established JSON preference when both exports are present.
+  local hasJson=love.filesystem.getInfo("assets/project_ske.json")~=nil
+  local hasBinary=love.filesystem.getInfo("assets/project_ske.dbbin")~=nil
+  local external=hasJson or hasBinary
+  local binary=not hasJson and hasBinary
+  local skeletonPath=hasJson and "assets/project_ske.json"
+      or (binary and "assets/project_ske.dbbin"
+      or "tests/fixtures/personagem-minimo.json")
   local atlasPath=external and "assets/project_tex.json"
       or "tests/fixtures/atlas-minimo.json"
   local image=external and love.graphics.newImage("assets/project_tex.png")
       or demoTexture()
-  local skeleton=JSON.decode(read(skeletonPath))
+  local bytes=read(skeletonPath)
+  local skeleton=binary and bytes or JSON.decode(bytes)
   local atlas=JSON.decode(read(atlasPath))
-  assert(type(skeleton)=="table" and type(skeleton.armature)=="table"
-      and skeleton.armature[1]~=nil,
-    "DragonBones JSON must include at least one armature")
   local factory=Love.Factory.new()
   local data=assert(factory:parseDragonBonesData(skeleton,"project"),
-    "Original DragonBones ObjectDataParser could not parse "..skeletonPath)
+    "Original DragonBones parser could not parse "..skeletonPath)
   local texture=assert(factory:parseTextureAtlasData(atlas,image,"project"),
     "Original DragonBones TextureAtlasData could not parse "..atlasPath)
-  local name=skeleton.armature[1].name
+  -- Source DragonBonesData.armatureNames records the parsed armature order,
+  -- independent of whether the header arrived as JSON or DBDT.
+  local name=assert(data.armatureNames[1],
+    "Original DragonBones parser did not find an armature in "..skeletonPath)
   local display=assert(factory:buildArmatureDisplay(name,"project"),
     "Original DragonBones BaseFactory could not build armature "..tostring(name))
   local armature=assert(display.armature)
@@ -78,7 +87,9 @@ function App.load()
   current={
     factory=factory,data=data,atlas=texture,display=display,
     armature=armature,animationNames=clipNames,external=external,
-    warning=external and "Original DragonBones Lua | projeto externo"
+    skeletonPath=skeletonPath,
+    warning=external and ("Original DragonBones Lua | projeto externo "
+      ..(binary and "DBBIN" or "JSON"))
       or "Original DragonBones Lua | exemplo incluido",
   }
   clipIndex=1
