@@ -43,7 +43,7 @@ Licença: MIT, incluída em LICENSE-DRAGONBONES.
 | animation/AnimationState.ts — classe AnimationState | dragonbones/original/animation/AnimationState.lua | Métodos e propriedades portados; integração com timelines concretas ainda depende de TimelineState.ts |
 | animation/BaseTimelineState.ts — cinco classes abstratas | dragonbones/original/animation/BaseTimelineState.lua | Controle do tempo, easing, interpolação e API abstrata original |
 | animation/TimelineState.ts — 16 classes concretas | dragonbones/original/animation/TimelineState.lua | Eventos, transforms, cores, Z-index, FFD, IK e progresso de animações filhas; integração JS diferencial ainda pendente |
-| parser/ObjectDataParser.ts — **parcial** | dragonbones/original/parser/ObjectDataParser.lua | Atlas, estruturas/geometry, bytes, _parseArmature e 16 métodos de timeline/frame incluindo bone/slot/IK; _parseAnimation e deformação ainda pendentes |
+| parser/ObjectDataParser.ts — **parcial** | dragonbones/original/parser/ObjectDataParser.lua | Atlas, estruturas/geometry, buffers, armaduras e animações JSON com _parseAnimation, FFD e métodos especializados; BaseFactory/BinaryDataParser e diferenciais pendentes |
 
 Testes determinísticos: `tests/original_geom.lua`, `tests/original_core.lua`, `tests/original_worldclock.lua`, `tests/original_events.lua` e `tests/original_transform_models.lua` e `tests/original_display_skin_data.lua` (Lua 5.4 no GitHub Actions). Os novos testes cobrem reutilização LIFO, descarte e tamanho dos pools, contador de identidade, limpeza, valores negativos/NaN, retorno duplicado e todos os métodos de `ColorTransform`.
 
@@ -386,6 +386,20 @@ Testes: `tests/original_object_parser_bone_slot_frames.lua` com **34 cenários**
 
 Branch `port-original-parser-bone-slot-frames` integrada à `main` pelo [PR #32](https://github.com/SrTristeSad/Bono-Lua/pull/32), commit de integração [`1fe6c9d`](https://github.com/SrTristeSad/Bono-Lua/commit/1fe6c9d62ca3c448c133754a39fa97339564eb6c). CI do PR: **34/34 cenários e 120 verificações** aprovados em Lua 5.4 e LuaJIT, regressões anteriores e `love-render` igualmente aprovados. Total acumulado: **849 cenários dos portes originais** (815 + 34), além de 22 testes do protótipo. `ObjectDataParser.ts` continua PARCIAL até `_parseAnimation` e deformação estarem portados e validados; não declarar importação de animados completa.
 
+### Lote: ObjectDataParser.ts — parser de animações e deformação FFD (ainda PARCIAL)
+
+Referência fixa: DragonBonesJS `64b6c69ae35777c2404be68c9192e2c56906079e`, `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` (MIT), métodos `_parseAnimation` (linhas 878–1208), `_parseSlotDeformFrame` (1790–1875), `_parseDeformFrame` (1975–2036). Branch `port-original-animation-ffd-parser`, módulo `dragonbones/original/parser/ObjectDataParser.lua`.
+
+**Novo código:** porta a lógica original da montagem de `AnimationData`: blendType, duração, playTimes, nome, fade/scale, offsets por animação, eventos top-level, zOrder, bone/slot/FFD/IK timelines, actionTimeline e todos os ramos suportados das timelines genéricas (alpha, z-index, cor, translate, rotate, scale, IK, progress, weight, parameter, Surface e SlotDeform). `AnimationTimelineData` com `x/y` é alocado para progress blend como no original. Os casos Action/ZOrder de timeline genérica e deformação ponderada do ramo `_parseDeformFrame` são **literalmente TODOs na fonte** e não recebem implementações inventadas.
+
+`_parseSlotDeformFrame` grava deslocamentos FFD em `_frameFloatArray` por vértice, calcula componentes transformadas por matrizes de pose de slot/osso quando há pesos e escreve o cabeçalho `DeformVertexOffset/DeformCount/DeformValueCount/DeformValueOffset/DeformFloatOffset` em `_frameIntArray`. `_parseDeformFrame` aceita `vertices` ou `value` em geometrias sem pesos, preenche regiões omitidas com zero e grava o mesmo cabeçalho. Offsets da fonte preservados em base zero.
+
+A etapa **permite finalmente ler o fixture JSON original com animações** (`tests/fixtures/personagem-minimo.json`) em `parseDragonBonesData`, incluindo `idle`, `walk` (ossos) e `swap` (display). Há **27 novos cenários** em `tests/original_object_parser_animated_json.lua` abrangendo metadados, offsets, eventos, z-order, FFD, IK, timelines genéricas e importação completa dos dados da fixture; dois testes anteriores atualizados para reconhecer `_parseAnimation` existente. CI verifica Lua 5.4, LuaJIT e LÖVE.
+
+**Limites importantes, ainda sem equivalência 1:1 do motor:** ler JSON animado para `DragonBonesData` não comprova animar/renderizar no backend LÖVE. Não há ainda teste diferencial real executado JS vs Lua, integração da fábrica original (`BaseFactory.ts`), leitor binário `BinaryDataParser.ts` nem backing `ArrayBuffer` mutável compartilhado. Alguns TODOs estão presentes no próprio TypeScript canônico; as rotinas de frames FFD ponderados ainda exigem mais cenários comparativos, e os casos gerais adversariais precisam auditoria. O projeto original do editor gráfico não é parte do runtime fixado. Não declarar importação e renderização 1:1 completas com base só nos testes unitários.
+
+PR/CI/SHA da integração serão inseridos depois da validação.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
@@ -401,7 +415,7 @@ Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram
 
 ### Compatibilidade com a máquina virtual LÖVE (LuaJIT)
 
-Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 29 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
+Os primeiros portes foram testados principalmente em Lua 5.4. Como o LÖVE utiliza LuaJIT, a CI executa **as 30 suítes atuais de `tests/original_*.lua` em LuaJIT**, além das mesmas suítes em Lua 5.4 e o exemplo real Mecha 1406 em LuaJIT, além dos testes gráficos já existentes. O [PR #15](https://github.com/SrTristeSad/Bono-Lua/pull/15), commit [d4abec6](https://github.com/SrTristeSad/Bono-Lua/commit/d4abec6c0c59e4f18b399362bf02927bb64c9ab9), passou nas duas VMs, incluindo 225 testes unitários do porte original em LuaJIT. Isto não constitui uma prova diferencial completa de equivalência com o DragonBonesJS executado.
 Esta etapa não adiciona funcionalidade nem substitui nenhum algoritmo do original; quaisquer diferenças detectadas deverão ser corrigidas preservando a referência fixa DragonBonesJS.
 ## Lote atual
 

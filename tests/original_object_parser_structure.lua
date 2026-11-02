@@ -427,7 +427,7 @@ test("top-level DragonBones entry exists but animation parser remains absent",fu
   eq(type(p.parseDragonBonesData),"function")
   eq(type(p._parseGeometry),"function")
   eq(type(p._modifyArray),"function")
-  eq(p._parseAnimation,nil)
+  eq(type(p._parseAnimation),"function")
 end)
 
 print(("Original ObjectDataParser structural: %d passed, %d failed, %d assertions"):format(pass,fail,assertions))
