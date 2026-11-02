@@ -176,6 +176,32 @@ test("color array aliases intArray when header has zero color length",function()
   local d=Binary.new():parseDragonBonesData(fixture(nil,parts({11,12})))
   eq(d.colorArray,d.intArray)
 end)
+test("overlapping binary Float32/Int16 views observe writes in both directions",function()
+  local parser=Binary.new()
+  parser._binary=string.char(0,0,128,63)
+  parser._binaryOffset=0
+  local data=Pool.borrowObject(DB)
+  parser._data=data
+  -- Actual typed constructor views can overlap within the same ArrayBuffer.
+  local offsets={0,4,0,4,4,0,4,0,4,0,4,0,4,0}
+  parser:_parseArray({offset=offsets})
+  eq(#data.intArray,2)
+  eq(#data.floatArray,1)
+  near(data.floatArray[1],1)
+  data.intArray[1]=0
+  data.intArray[2]=16384
+  near(data.floatArray[1],2)
+  eq(data.binary,string.char(0,0,0,64))
+  data.floatArray[1]=0.5
+  eq(data.intArray[1],0)
+  eq(data.intArray[2],16128)
+  eq(data.binary,string.char(0,0,0,63))
+  -- Zero-length color view is exactly the same object as intArray.
+  eq(data.colorArray,data.intArray)
+  data.colorArray[1]=-1
+  eq(data.intArray[1],-1)
+  eq(data.binary,string.char(255,255,0,63))
+end)
 test("independent color array does not alias integer view",function()
   local d=Binary.new():parseDragonBonesData(
     fixture(nil,parts({11,12},{},{},{},{},{},{22})))
