@@ -64,6 +64,14 @@ local function loadProject()
 end
 
 function love.load()
+  if os.getenv("BONO_LUA_ORIGINAL_RENDER_TEST")=="1" then
+    local ok,err=pcall(require("tests.love_original_runtime").run)
+    if not ok then
+      io.stderr:write("Original DragonBones GPU test failed: "..tostring(err).."\n")
+    end
+    love.event.quit(ok and 0 or 1)
+    return
+  end
   if os.getenv("BONO_LUA_ROTATED_TEST")=="1" then
     local ok,err=pcall(require("tests.love_pixels").run)
     if not ok then io.stderr:write("Rotated atlas pixel test failed: "..tostring(err).."\n") end
