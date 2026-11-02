@@ -81,31 +81,54 @@ function LoveSlot:_updateVisible()
     render.visible=self._visible and self._parent.visible
   end
 end
+-- PixiSlot.ts updates the blend mode only on a PIXI.Sprite. A mesh
+-- or child Armature display never receives this switch in the pinned source.
+-- Modes absent from the Pixi switch preserve the previous sprite mode.
 function LoveSlot:_updateBlendMode()
-  -- LÖVE's regular blend modes cover a subset of DragonBones/Pixi.
+  local render=self._renderDisplay
+  if render==nil or render.kind~="image" then return end
   local blend=self._blendMode
   local modes=DragonBones.BlendMode
   local mode
   if blend==modes.Normal then mode="alpha"
   elseif blend==modes.Add then mode="add"
+  elseif blend==modes.Darken then mode="darken"
+  elseif blend==modes.Lighten then mode="lighten"
   elseif blend==modes.Multiply then mode="multiply"
   elseif blend==modes.Screen then mode="screen"
-  elseif blend==modes.Subtract then mode="subtract"
-  elseif blend==modes.Lighten then mode="lighten"
-  elseif blend==modes.Darken then mode="darken"
-  else
-    error("LÖVE backend: DragonBones blend mode not yet supported: "..tostring(blend))
+  elseif blend==modes.Difference or blend==modes.HardLight
+      or blend==modes.Overlay then
+    -- The original Pixi adapter implements these three. Standard
+    -- LÖVE blend modes do not; do not silently render the wrong mode.
+    error("LÖVE backend: Pixi blend mode requires an unported shader: "..tostring(blend))
   end
-  if self._renderDisplay then self._renderDisplay.bm=mode end
+  if mode~=nil then render.bm=mode end
 end
+
+-- PixiSlot._updateColor packs its three rounded multipliers into a
+-- 24-bit tint integer: (round(r*255)<<16)+(round(g*255)<<8)+round(b*255).
+-- The JS bitwise shifts wrap their operands to 8 bits at the tint's
+-- RGB extraction; retain addition (not OR) and its potential carries.
+local function pixiTintChannels(r,g,b)
+  local rr=math.floor(r*255+0.5)
+  local gg=math.floor(g*255+0.5)
+  local bb=math.floor(b*255+0.5)
+  local tint=((rr%256)*65536+(gg%256)*256+bb)%16777216
+  return math.floor(tint/65536)/255,
+    (math.floor(tint/256)%256)/255,(tint%256)/255
+end
+
 function LoveSlot:_updateColor()
   local render=self._renderDisplay
   if render~=nil then
     local c=self._colorTransform
-    render.r=c.redMultiplier
-    render.g=c.greenMultiplier
-    render.b=c.blueMultiplier
+    -- All Pixi display types (including child Armature containers) receive
+    -- the unquantized alpha product. Only Sprite and SimpleMesh get tint.
     render.alpha=c.alphaMultiplier*self._globalAlpha
+    if render.kind=="image" or render.kind=="mesh" then
+      render.r,render.g,render.b=pixiTintChannels(
+        c.redMultiplier,c.greenMultiplier,c.blueMultiplier)
+    end
   end
 end
 -- Original PixiSlot.ts accesses Uint16Array/Float32Array via zero-based
@@ -406,7 +429,8 @@ end
 -- Preserve the original parent/child display hierarchy and the ordering of
 -- Armature.getSlots(): a child is drawn at its parent Slot's exact position
 -- among sibling slots. Visibility comes from Slot._updateVisible.
-local function drawArmature(armature)
+local function drawArmature(armature, inheritedAlpha)
+  inheritedAlpha=inheritedAlpha or 1
   local graphics=assert(love and love.graphics,
     "LoveFactory.drawArmature requires LÖVE graphics")
   for _,slot in ipairs(armature:getSlots()) do
@@ -419,14 +443,17 @@ local function drawArmature(armature)
         -- global Slot transform; children retain their local transforms.
         graphics.push("all")
         applyRenderTransform(graphics,render)
-        drawArmature(child)
+        -- PixiArmatureDisplay is a container whose alpha multiplies
+        -- the alpha of every nested Sprite/Mesh in the display tree.
+        drawArmature(child,inheritedAlpha*(render.alpha or 1))
         graphics.pop()
       elseif render.texture~=nil and
           (render.quad~=nil or render.mesh~=nil) then
         graphics.push("all")
         applyRenderTransform(graphics,render)
         graphics.setBlendMode(render.bm)
-        graphics.setColor(render.r,render.g,render.b,render.alpha)
+        graphics.setColor(render.r,render.g,render.b,
+          render.alpha*inheritedAlpha)
         if render.mesh~=nil then
           graphics.draw(render.mesh,0,0)
         else
