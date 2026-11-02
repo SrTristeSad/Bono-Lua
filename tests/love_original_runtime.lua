@@ -102,6 +102,45 @@ function Test.run()
   local shifted=meshShot()
   colorAt(shifted,9,9,0,0,0,0)
   colorAt(shifted,15,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: red/green/hidden/loop and mesh/FFD pixels.")
+  -- Nested real Armatures: PixiArmatureDisplay is a display-tree container.
+  -- Test the LÖVE stack equivalent with two independently transformed rigs.
+  local nestedRaw={version="5.5",name="GPUNested",frameRate=12,armature={
+    {name="outer",bone={{name="root",transform={x=5,y=4}}},
+      slot={{name="child",parent="root",displayIndex=0}},
+      skin={{name="default",slot={{name="child",display={{
+        name="inner",path="inner",type="armature"
+      }}}}}}
+    },
+    {name="inner",bone={{name="subroot",transform={x=3,y=2}}},
+      slot={{name="body",parent="subroot",displayIndex=0}},
+      skin={{name="default",slot={{name="body",display={{
+        name="red",path="red",type="image",pivot={x=0,y=0}
+      }}}}}}
+    }
+  }}
+  local nestedFactory=Love.Factory.new()
+  nestedFactory:parseDragonBonesData(nestedRaw,"nested")
+  nestedFactory:parseTextureAtlasData(atlas,image,"nested")
+  local outer=assert(nestedFactory:buildArmature("outer","nested"))
+  local childSlot=assert(outer:getSlot("child"))
+  local inner=assert(childSlot.childArmature)
+  assert(inner:getSlot("body")~=nil)
+  local function nestedShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    nestedFactory:drawArmature(outer)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  colorAt(nestedShot(),17,15,1,0,0,1)
+  colorAt(nestedShot(),9,9,0,0,0,0)
+  childSlot.visible=false
+  colorAt(nestedShot(),17,15,0,0,0,0)
+  childSlot.visible=true
+  colorAt(nestedShot(),17,15,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD and nested Armature pixels.")
 end
 return Test

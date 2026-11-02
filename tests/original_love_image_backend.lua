@@ -321,6 +321,81 @@ test("old prototype renderer is not referenced by the new adapter",function()
   eq(type(rig.animation.play),"function")
 end)
 
+-- PixiSlot.ts _onUpdateDisplay/_replaceDisplay and PixiArmatureDisplay
+-- container behavior, with an actual nested DragonBones Armature from JSON.
+local function buildNested()
+  fakeLove()
+  local f=Love.Factory.new()
+  local raw={
+    version="5.5",name="Nested",frameRate=24,
+    armature={
+      {name="outer",bone={{name="root",transform={x=4,y=5}}},
+        slot={
+          {name="child",parent="root",displayIndex=0,zOrder=0},
+          {name="front",parent="root",displayIndex=0,zOrder=1}
+        },
+        skin={{name="default",slot={
+          {name="child",display={{name="inner",path="inner",type="armature"}}},
+          {name="front",display={{name="blue",path="blue",type="image",
+            pivot={x=0,y=0}}}}
+        }}}
+      },
+      {name="inner",bone={{name="subroot",transform={x=2,y=3}}},
+        slot={{name="part",parent="subroot",displayIndex=0}},
+        skin={{name="default",slot={{name="part",display={{
+          name="red",path="red",type="image",pivot={x=0,y=0}
+        }}}}}}
+      }
+    }
+  }
+  f:parseDragonBonesData(raw,"pack")
+  f:parseTextureAtlasData(atlas(),image(8,4),"pack")
+  local outer=assert(f:buildArmature("outer","pack"))
+  local childSlot=assert(outer:getSlot("child"))
+  local child=assert(childSlot.childArmature)
+  return f,outer,childSlot,child
+end
+
+test("nested display is a genuine child Armature with its own Slot",function()
+  local f,outer,childSlot,child=buildNested()
+  eq(getmetatable(child),Armature)
+  eq(child.parent,childSlot)
+  eq(childSlot._renderDisplay,child.display)
+  eq(getmetatable(child:getSlot("part")),Love.Slot)
+  eq(child.name,"inner")
+end)
+test("nested LÖVE composition preserves parent and child slot matrices",function()
+  local f,outer,childSlot,child=buildNested()
+  f:drawArmature(outer)
+  eq(#state.draws,2)
+  eq(state.draws[1].quad.x,0)
+  eq(state.draws[2].quad.x,4)
+  near(state.matrices[1][5],4)
+  near(state.matrices[1][9],5)
+  near(state.matrices[2][5],2)
+  near(state.matrices[2][9],3)
+  eq(state.push,3)
+  eq(state.pop,3)
+end)
+test("nested Slot visibility hides child without hiding sibling display",function()
+  local f,outer,childSlot,child=buildNested()
+  childSlot.visible=false
+  f:drawArmature(outer)
+  eq(#state.draws,1)
+  eq(state.draws[1].quad.x,4)
+  eq(state.push,1)
+  eq(state.pop,1)
+end)
+test("nested child Slot visibility is independent of its parent sibling",function()
+  local f,outer,childSlot,child=buildNested()
+  child:getSlot("part").visible=false
+  f:drawArmature(outer)
+  eq(#state.draws,1)
+  eq(state.draws[1].quad.x,4)
+  eq(state.push,2)
+  eq(state.pop,2)
+end)
+
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
   :format(passed,failed,checks))
 if failed>0 then os.exit(1) end
