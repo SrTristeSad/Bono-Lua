@@ -98,7 +98,8 @@ local function build(raw,atlasRaw)
   fakeLove()
   local f=Love.Factory.new()
   local data=f:parseDragonBonesData(raw or sample(),"pack")
-  local a=f:parseTextureAtlasData(atlasRaw or atlas(),image(8,4),"pack")
+  local atlasSpec=atlasRaw or atlas()
+  local a=f:parseTextureAtlasData(atlasSpec,image(atlasSpec.width,atlasSpec.height),"pack")
   local rig=f:buildArmature("rig","pack")
   return f,data,a,rig
 end
