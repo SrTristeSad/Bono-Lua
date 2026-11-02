@@ -188,10 +188,16 @@ test("slot zOrder follows its index in source order",function()
   eq(a:getSlot("second").parent,a:getBone("root"))
 end)
 test("skin binds display to real slot and image display geometry",function()
-  local a=parse(mainRaw({{name="A",bone={bone("root")},
-    slot={{name="body",parent="root"}},skin={{name="default",slot={{
-      name="body",display={{name="face",type="image",pivot={x=0.3,y=0.6}}}
-    }}}}})):getArmature("A")
+  local raw=mainRaw({{name="A"}})
+  local rig=raw.armature[1]
+  rig.bone={bone("root")}
+  rig.slot={{name="body",parent="root"}}
+  local skinRaw={name="default"}
+  skinRaw.slot={{name="body",display={
+    {name="face",type="image",pivot={x=0.3,y=0.6}}
+  }}}
+  rig.skin={skinRaw}
+  local a=parse(raw):getArmature("A")
   local skin=a.defaultSkin
   eq(skin.name,"default")
   local display=skin:getDisplay("body","face")
@@ -200,14 +206,17 @@ test("skin binds display to real slot and image display geometry",function()
   eq(display.parent,skin)
 end)
 test("mesh geometry reaches finalized int/float binary views",function()
-  local a=parse(mainRaw({{name="A",bone={bone("root")},
-    slot={{name="meshslot",parent="root"}},
-    skin={{name="default",slot={{
-      name="meshslot",display={{name="mesh",type="mesh",
-        vertices={0,0,4,0,4,2},triangles={0,1,2},
-        uvs={0,0,1,0,1,1}
-      }}
-    }}}}}))
+  local raw=mainRaw({{name="A"}})
+  local rig=raw.armature[1]
+  rig.bone={bone("root")}
+  rig.slot={{name="meshslot",parent="root"}}
+  local skinRaw={name="default"}
+  skinRaw.slot={{name="meshslot",display={{
+    name="mesh",type="mesh",vertices={0,0,4,0,4,2},
+    triangles={0,1,2},uvs={0,0,1,0,1,1}
+  }}}}
+  rig.skin={skinRaw}
+  local a=parse(raw)
   local model=a:getArmature("A")
   local mesh=model.defaultSkin:getDisplay("meshslot","mesh")
   eq(getmetatable(mesh),Displays.MeshDisplayData)
