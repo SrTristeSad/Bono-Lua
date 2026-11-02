@@ -17,6 +17,7 @@ local Matrix=require("dragonbones.original.geom.Matrix")
 local Transform=require("dragonbones.original.geom.Transform")
 local ColorTransform=require("dragonbones.original.geom.ColorTransform")
 local Point=require("dragonbones.original.geom.Point")
+local JsonNull=require("dragonbones.json").null
 
 local ObjectDataParser={}
 ObjectDataParser.__index=ObjectDataParser
@@ -24,7 +25,8 @@ setmetatable(ObjectDataParser,{__index=DataParser})
 ObjectDataParser.FrameValueType={Step=0,Int=1,Float=2}
 
 local function get(raw,key)
-  return raw~=nil and raw[key] or nil
+  if raw==nil then return nil end
+  return raw[key]
 end
 -- The original looks for properties with JS "key in rawData" rather than
 -- comparing rawData[key] against null. Nil cannot express a present JS null.
@@ -56,6 +58,7 @@ end
 function ObjectDataParser._getBoolean(raw,key,defaultValue)
   local value=get(raw,key)
   if value==nil then return defaultValue end
+  if value==JsonNull then return false end
   if type(value)=="boolean" then return value end
   if type(value)=="string" then
     return value~="0" and value~="NaN" and value~=""
@@ -63,16 +66,17 @@ function ObjectDataParser._getBoolean(raw,key,defaultValue)
   end
   -- The JS (!!value) branch: all arrays and objects are truthy.
   if type(value)=="table" then return true end
-  return value~=0 and value==value
+  return value~=0
 end
 function ObjectDataParser._getNumber(raw,key,defaultValue)
   local value=get(raw,key)
-  if value==nil or value=="NaN" then return defaultValue end
+  if value==nil or value==JsonNull or value=="NaN" then return defaultValue end
   return jsNumber(value)
 end
 function ObjectDataParser._getString(raw,key,defaultValue)
   local value=get(raw,key)
   if value==nil then return defaultValue end
+  if value==JsonNull then return "null" end
   return toJSString(value)
 end
 
