@@ -41,6 +41,7 @@ local function bytes32(array)
     if n==0 then a=string.char(0,0,0,0)
     elseif n==1 then a=string.char(0,0,128,63)
     elseif n==0.5 then a=string.char(0,0,0,63)
+    elseif n==0.25 then a=string.char(0,0,128,62)
     elseif n==-2 then a=string.char(0,0,0,192)
     elseif n==math.huge then a=string.char(0,0,128,127)
     else error("test float fixture unsupported: "..tostring(n)) end
@@ -217,7 +218,7 @@ test("binary geometry reconstructs weighted bones and influence counts",function
     '{"name":"mesh","type":"mesh","offset":0}]}]}]'
   -- Geometry header at 0 -> weight header at 4.
   -- Weight: boneCount=1, floatOffset=0, bone 0, one vertex/one weight.
-  local raw=fixture(extra,parts({1,0,0,4,1,0,0,1,0},
+  local raw=fixture(extra,parts({1,0,0,4,1,0,0,1,0,0},
     {0,0,1,0.25,0.5}))
   local d=Binary.new():parseDragonBonesData(raw)
   local rig=d:getArmature("rig")
@@ -325,7 +326,7 @@ test("reuse binary parser across separate binary documents resets object data",f
   local first=p:parseDragonBonesData(fixture())
   local second=p:parseDragonBonesData(binary(
     '{"version":"5.5","name":"other","offset":[OFFSET_MARKER],'..
-    '"armature":[{"name":"second"}]}',parts({5})))
+    '"armature":[{"name":"second"}]}',parts({5,0})))
   eq(first.name,"BinaryFixture")
   eq(second.name,"other")
   eq(second:getArmature("second").name,"second")
