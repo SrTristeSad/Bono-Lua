@@ -360,7 +360,7 @@ As rotinas originais agora estão presentes: `parseDragonBonesData` verifica `ve
 
 Suíte `tests/original_object_parser_armature.lua`: **28 cenários** cobrindo a montagem de modelos reais, relações e ordenação dos ossos, canvas e AABB, frameRate e tipo de armadura, seleção de stage, ações, constraints IK, skin/slot/display, geometria e offsets binários, reuso do parser e fixture `tests/fixtures/personagem-minimo.json` com suas animações removidas **somente no teste**. Há teste explícito de erro na dependência `_parseAnimation`, não uma alegação de reprodução animada. Atualizadas as suítes anteriores para reconhecer as duas funções novas. A CI executa Lua 5.4, LuaJIT, regressões anteriores e LÖVE.
 
-PR, resultados da CI e SHA do merge serão registrados após aprovação.
+Branch `port-original-parser-armature-entry` integrada à `main` pelo [PR #30](https://github.com/SrTristeSad/Bono-Lua/pull/30), commit de integração [`380ce99`](https://github.com/SrTristeSad/Bono-Lua/commit/380ce99ea33f2aac0679c06577591838a59e1719). CI do PR: **28/28 cenários e 105 verificações em Lua 5.4 e LuaJIT**, regressões anteriores e `love-render` aprovados. Total acumulado: **783 cenários dos portes originais** (755 + 28), além dos 22 testes do protótipo. `parseDragonBonesData` agora existe, mas **não interpreta animações** porque `_parseAnimation` ainda não foi portado; esta limitação permanece aberta.
 
 ## Código que já existia antes deste porte
 
