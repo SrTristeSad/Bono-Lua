@@ -285,7 +285,46 @@ function Test.run()
   colorAt(meshShot(),15,9,0,0,1,1)
   meshAtlas.renderTexture=meshImage
   colorAt(meshShot(),15,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: images, FFD, Pixi region texture lifecycle, atlas restore, tint, nested alpha and clock.")
+  -- PixiSlot._updateZOrder updates the PixiArmatureDisplay child order,
+  -- independently from the internal Armature slots array. Overlapping
+  -- LÖVE sprites must change the actual visible foreground pixel.
+  local zRaw={version="5.5",name="GPUZOrder",frameRate=24,
+    armature={{name="rig",bone={{name="root"}},
+      slot={{name="back",parent="root",displayIndex=0},
+            {name="front",parent="root",displayIndex=0}},
+      skin={{name="default",slot={
+        {name="back",display={{name="red",path="red",pivot={x=0,y=0}}}},
+        {name="front",display={{name="green",path="green",pivot={x=0,y=0}}}}
+      }}}}
+    }}
+  local zFactory=Love.Factory.new()
+  zFactory:parseDragonBonesData(zRaw,"zOrder")
+  zFactory:parseTextureAtlasData(atlas,image,"zOrder")
+  local zRig=assert(zFactory:buildArmature("rig","zOrder"))
+  local zBack=assert(zRig:getSlot("back"))
+  local zFront=assert(zRig:getSlot("front"))
+  local function zShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    zFactory:drawArmature(zRig)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  colorAt(zShot(),9,9,0,1,0,1)
+  zBack:_setZOrder(1)
+  zBack:update(-1)
+  colorAt(zShot(),9,9,1,0,0,1)
+  zFront:_setZOrder(1)
+  zFront:update(-1)
+  colorAt(zShot(),9,9,0,1,0,1)
+  -- Change the visual order through the original Armature timeline hook.
+  zRig:_sortZOrder({1,0},0)
+  zRig:advanceTime(0)
+  colorAt(zShot(),9,9,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: images, FFD, Pixi region textures, display-tree Z-order, nested alpha and clock.")
 
 
 end

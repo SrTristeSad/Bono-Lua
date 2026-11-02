@@ -873,6 +873,118 @@ test("Pixi armature replacedTexture clones atlas region proxies separately",func
   eq(rig:getSlot("one")._renderDisplay.quad,source.quad)
 end)
 
+-- PixiSlot._addDisplay/_replaceDisplay/_removeDisplay/_updateZOrder:
+-- the native PixiArmatureDisplay child list is independent of the logical
+-- Armature.getSlots() list. Here the LÖVE host retains the owning Slot.
+local function layeredRig()
+  local raw={version="5.5",name="Layered",frameRate=24,
+    armature={{name="rig",bone={{name="root"}},
+      slot={{name="back",parent="root",displayIndex=0},
+            {name="middle",parent="root",displayIndex=0},
+            {name="front",parent="root",displayIndex=0}},
+      skin={{name="default",slot={
+        {name="back",display={{name="red",path="red",type="image",pivot={x=0,y=0}}}},
+        {name="middle",display={
+          {name="blue",path="blue",type="image",pivot={x=0,y=0}},
+          {name="blue",path="blue",type="mesh",vertices={0,0,4,0,0,4},
+            uvs={0,0,1,0,0,1},triangles={0,1,2}}
+        }},
+        {name="front",display={{name="green",path="green",type="image",pivot={x=0,y=0}}}}
+      }}}}
+    }}
+  local atlasRaw={name="layered",width=12,height=4,SubTexture={
+    {name="red",x=0,y=0,width=4,height=4},
+    {name="blue",x=4,y=0,width=4,height=4},
+    {name="green",x=8,y=0,width=4,height=4}
+  }}
+  local f,_,a,rig=build(raw,atlasRaw)
+  return f,rig,rig:getSlot("back"),rig:getSlot("middle"),rig:getSlot("front")
+end
+test("PixiSlot adds each display to its own ordered container",function()
+  local f,rig,back,middle,front=layeredRig()
+  eq(#rig.display._renderSlots,3)
+  eq(rig.display._renderSlots[1],back)
+  eq(rig.display._renderSlots[2],middle)
+  eq(rig.display._renderSlots[3],front)
+  f:drawArmature(rig)
+  eq(#state.draws,3)
+  eq(state.draws[1].quad.x,0)
+  eq(state.draws[2].quad.x,4)
+  eq(state.draws[3].quad.x,8)
+end)
+test("PixiSlot _updateZOrder moves display while keeping logical slot list",function()
+  local f,rig,back,middle,front=layeredRig()
+  local logical=rig:getSlots()
+  eq(logical[1],back)
+  back:_setZOrder(2)
+  back:update(-1)
+  eq(rig.display._renderSlots[1],middle)
+  eq(rig.display._renderSlots[2],front)
+  eq(rig.display._renderSlots[3],back)
+  eq(logical[1],back)
+  f:drawArmature(rig)
+  eq(state.draws[1].quad.x,4)
+  eq(state.draws[2].quad.x,8)
+  eq(state.draws[3].quad.x,0)
+end)
+test("PixiSlot display replacement preserves container position",function()
+  local f,rig,back,middle,front=layeredRig()
+  eq(middle._renderDisplay.kind,"image")
+  middle.displayIndex=1
+  eq(middle._renderDisplay.kind,"mesh")
+  eq(rig.display._renderSlots[2],middle)
+  f:drawArmature(rig)
+  eq(#state.draws,3)
+  eq(state.draws[2].image,middle._renderDisplay.mesh)
+  middle.displayIndex=0
+  eq(middle._renderDisplay.kind,"image")
+  eq(rig.display._renderSlots[2],middle)
+  f:drawArmature(rig)
+  eq(#state.draws,6)
+  eq(state.draws[5].quad.x,4)
+end)
+test("PixiSlot _removeDisplay detaches only that display",function()
+  local f,rig,back,middle,front=layeredRig()
+  middle:_removeDisplay()
+  eq(#rig.display._renderSlots,2)
+  eq(rig.display._renderSlots[1],back)
+  eq(rig.display._renderSlots[2],front)
+  f:drawArmature(rig)
+  eq(#state.draws,2)
+  eq(state.draws[1].quad.x,0)
+  eq(state.draws[2].quad.x,8)
+  middle:_addDisplay()
+  eq(#rig.display._renderSlots,3)
+  eq(rig.display._renderSlots[3],middle)
+end)
+test("PixiSlot armature z-order timeline uses display container order",function()
+  local f,rig,back,middle,front=layeredRig()
+  -- _sortZOrder is original Armature logic; slot hooks alone do the
+  -- graphics-side reordering, irrespective of logical array sort.
+  rig:_sortZOrder({2,1,0},0)
+  rig:advanceTime(0)
+  f:drawArmature(rig)
+  eq(#state.draws,3)
+  eq(state.draws[1].quad.x,8)
+  eq(state.draws[2].quad.x,4)
+  eq(state.draws[3].quad.x,0)
+end)
+test("nested child Armature and sibling retain independent display order",function()
+  local f,outer,childSlot,child=buildNested()
+  local front=outer:getSlot("front")
+  eq(#outer.display._renderSlots,2)
+  eq(#child.display._renderSlots,1)
+  front:_setZOrder(0)
+  front:update(-1)
+  eq(outer.display._renderSlots[1],front)
+  eq(outer.display._renderSlots[2],childSlot)
+  f:drawArmature(outer)
+  eq(#state.draws,2)
+  eq(state.draws[1].quad.x,4)
+  eq(state.draws[2].quad.x,0)
+  eq(#child.display._renderSlots,1)
+end)
+
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
   :format(passed,failed,checks))
 if failed>0 then os.exit(1) end
