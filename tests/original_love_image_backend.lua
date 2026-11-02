@@ -179,8 +179,8 @@ test("slot color multiplier is forwarded to the LÖVE draw call",function()
   slot._colorDirty=true
   rig:advanceTime(0)
   f:drawArmature(rig)
-  near(state.colors[1][1],0.5)
-  near(state.colors[1][2],0.25)
+  near(state.colors[1][1],128/255) -- PixiSlot: Math.round(0.5*255)
+  near(state.colors[1][2],64/255)
   near(state.colors[1][4],0.75)
 end)
 test("slot visible false is respected even when the texture is loaded",function()
@@ -480,6 +480,106 @@ test("replacedTexture belongs to one armature, not the shared BaseFactory atlas"
   eq(second:getSlot("one")._renderDisplay.texture,source.image)
   eq(second._replaceTextureAtlasData,nil)
   eq(f:getTextureAtlasData("pack")[1],source)
+end)
+
+-- PixiSlot._updateBlendMode sprite-only switch; uncovered Pixi modes are
+-- explicitly unsupported rather than silently mapped to incorrect math.
+test("PixiSlot maps its six standard sprite modes to LÖVE",function()
+  local f,_,_,rig=build()
+  local slot=rig:getSlot("one")
+  for _,entry in ipairs({
+    {Core.BlendMode.Normal,"alpha"},
+    {Core.BlendMode.Add,"add"},
+    {Core.BlendMode.Darken,"darken"},
+    {Core.BlendMode.Lighten,"lighten"},
+    {Core.BlendMode.Multiply,"multiply"},
+    {Core.BlendMode.Screen,"screen"},
+  }) do
+    slot._blendMode=entry[1]
+    slot:_updateBlendMode()
+    eq(slot._renderDisplay.bm,entry[2])
+  end
+end)
+test("PixiSlot default branch leaves existing sprite blend unchanged",function()
+  local f,_,_,rig=build()
+  local slot=rig:getSlot("one")
+  slot._blendMode=Core.BlendMode.Add
+  slot:_updateBlendMode()
+  for _,value in ipairs({
+    Core.BlendMode.Alpha,Core.BlendMode.Erase,
+    Core.BlendMode.Invert,Core.BlendMode.Layer,Core.BlendMode.Subtract
+  }) do
+    slot._blendMode=value
+    slot:_updateBlendMode()
+    eq(slot._renderDisplay.bm,"add")
+  end
+end)
+test("Pixi-only Difference HardLight Overlay are not silently approximated",function()
+  local f,_,_,rig=build()
+  local slot=rig:getSlot("one")
+  for _,value in ipairs({
+    Core.BlendMode.Difference,Core.BlendMode.HardLight,
+    Core.BlendMode.Overlay
+  }) do
+    slot._blendMode=value
+    local ok,err=pcall(function()slot:_updateBlendMode()end)
+    eq(ok,false)
+    eq(tostring(err):find("unported shader",1,true)~=nil,true)
+  end
+end)
+test("PixiSlot never changes blend on SimpleMesh",function()
+  local f,a,rig,slot=meshRig(triangle())
+  eq(slot._renderDisplay.kind,"mesh")
+  slot._blendMode=Core.BlendMode.Add
+  slot:_updateBlendMode()
+  eq(slot._renderDisplay.bm,"alpha")
+  slot._blendMode=Core.BlendMode.HardLight
+  slot:_updateBlendMode()
+  eq(slot._renderDisplay.bm,"alpha")
+end)
+test("PixiSlot tint rounds channels to bytes while preserving alpha precision",function()
+  local f,_,_,rig=build()
+  local slot=rig:getSlot("one")
+  local c=slot._colorTransform
+  c.redMultiplier=0.5
+  c.greenMultiplier=0.25
+  c.blueMultiplier=0.125
+  c.alphaMultiplier=0.123456
+  slot:_updateColor()
+  near(slot._renderDisplay.r,128/255)
+  near(slot._renderDisplay.g,64/255)
+  near(slot._renderDisplay.b,32/255)
+  near(slot._renderDisplay.alpha,0.123456)
+  f:drawArmature(rig)
+  near(state.colors[1][4],0.123456)
+end)
+test("PixiSlot 24-bit tint retains arithmetic carry of unmasked blue",function()
+  local f,_,_,rig=build()
+  local slot=rig:getSlot("one")
+  local c=slot._colorTransform
+  c.redMultiplier=0
+  c.greenMultiplier=0
+  c.blueMultiplier=257/255
+  slot:_updateColor()
+  near(slot._renderDisplay.r,0)
+  near(slot._renderDisplay.g,1/255)
+  near(slot._renderDisplay.b,1/255)
+end)
+test("Pixi child Armature container composes alpha with its own image slot",function()
+  local f,outer,childSlot,child=buildNested()
+  local childImage=child:getSlot("part")
+  childSlot._colorTransform.alphaMultiplier=0.5
+  childSlot._colorDirty=true
+  childSlot:update(-1)
+  childImage._colorTransform.alphaMultiplier=0.4
+  childImage._colorDirty=true
+  childImage:update(-1)
+  f:drawArmature(outer)
+  eq(#state.draws,2)
+  near(state.colors[1][4],0.2)
+  near(state.colors[2][4],1)
+  eq(state.push,3)
+  eq(state.pop,3)
 end)
 
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
