@@ -65,6 +65,8 @@ jobs:
         run: lua5.4 tests/original_concrete_timeline.lua
       - name: Verify original ObjectDataParser helpers, atlas, curves and actions
         run: lua5.4 tests/original_object_parser.lua
+      - name: Verify original ObjectDataParser structural model methods
+        run: lua5.4 tests/original_object_parser_structure.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
