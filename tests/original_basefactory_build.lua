@@ -59,7 +59,7 @@ local function sampleRaw(withSlots)
   local arm={
     name="rig",
     bone={{name="root"},{name="hand",parent="root"},
-      {name="target"} -- IK target must be independent of the constrained root}
+      {name="target"}} -- IK target independent of constrained root
   }
   if withSlots~=false then
     arm.slot={{name="body",parent="hand",displayIndex=0},
