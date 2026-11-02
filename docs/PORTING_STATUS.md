@@ -456,7 +456,7 @@ Branch `port-original-basefactory-replacements` integrada à `main` pelo [PR #37
 
 **Limites explícitos:** backend de imagem **não cobre malhas, FFD, blend modes avançados ou armaduras filhas**; esses ramos são marcados explicitamente como não suportados, não representam equivalência 1:1. A UI normal em `main.lua` ainda não foi migrada; dados/visualização completa de personagens com malhas continuam pendentes. Diferenças de `ArrayBuffer` e execução diferencial JS/Lua persistem. Não contar o runtime ou o editor como concluídos.
 
-PR, commit de merge e CI serão documentados após aprovação.
+Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #38](https://github.com/SrTristeSad/Bono-Lua/pull/38), commit de merge [`2769649`](https://github.com/SrTristeSad/Bono-Lua/commit/2769649dd083c17788327c5e010c80ea3b8360f6). CI do PR: **15/15 cenários e 58 verificações** aprovados em Lua 5.4 e LuaJIT, e teste **real de GPU LÖVE** aprovado, incluindo vermelho/verde/oculto/loop de `Armature`+`Animation` originais. Total acumulado: **1.024 cenários dos portes originais** (1.009 anteriores + 15), além dos 22 testes de protótipo. O backend ainda cobre imagens; malhas/FFD, filhos, blend modes adicionais e UI original continuam pendentes.
 
 ## Código que já existia antes deste porte
 
