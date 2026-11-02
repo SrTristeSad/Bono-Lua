@@ -772,6 +772,107 @@ test("PixiSlot clears unavailable mesh and restores its FFD vertices",function()
   near(mesh.vertices[2][3],0.25)
   eq(#state.draws,1)
 end)
+-- PixiTextureAtlasData.renderTexture and PixiTextureData.renderTexture,
+-- pinned DragonBonesJS: one texture wrapper per region, recreated when the
+-- BaseTexture changes, and released when the atlas becomes unavailable.
+test("PixiTextureAtlasData setter creates one textured Quad per region",function()
+  local f,_,atlasData,rig=build()
+  local red=assert(atlasData:getTexture("red"))
+  local blue=assert(atlasData:getTexture("blue"))
+  eq(atlasData.renderTexture,atlasData.image)
+  eq(red.renderTexture.image,atlasData.image)
+  eq(blue.renderTexture.image,atlasData.image)
+  eq(red.renderTexture.quad.x,0)
+  eq(blue.renderTexture.quad.x,4)
+  eq(red.renderTexture.quad.w,4)
+  eq(blue.renderTexture.quad.ih,4)
+  eq(rig:getSlot("one")._renderDisplay.quad,red.renderTexture.quad)
+  local display=assert(f:getTextureDisplay("blue","pack"))
+  eq(display.quad,blue.renderTexture.quad)
+end)
+test("PixiTextureAtlasData ignores reassigning the same BaseTexture",function()
+  local f,_,atlasData,rig=build()
+  local red=atlasData:getTexture("red")
+  local wrapper=red.renderTexture
+  local n=#state.quads
+  atlasData.renderTexture=atlasData.image
+  eq(red.renderTexture,wrapper)
+  eq(#state.quads,n)
+  atlasData.image=atlasData.renderTexture
+  eq(red.renderTexture,wrapper)
+  eq(#state.quads,n)
+end)
+test("PixiTextureAtlasData assignment rebuilds all per-texture wrappers",function()
+  local f,_,atlasData,rig=build()
+  local red=atlasData:getTexture("red")
+  local blue=atlasData:getTexture("blue")
+  local oldRed=red.renderTexture
+  local oldBlue=blue.renderTexture
+  local oldImage=atlasData.image
+  local replacement=image(16,8)
+  atlasData.renderTexture=replacement
+  eq(atlasData.image,replacement)
+  eq(red.renderTexture~=oldRed,true)
+  eq(blue.renderTexture~=oldBlue,true)
+  eq(red.renderTexture.image,replacement)
+  eq(red.renderTexture.quad.iw,16)
+  eq(blue.renderTexture.quad.ih,8)
+  eq(oldRed.image,oldImage) -- only the atlas's active proxy is replaced
+  eq(oldBlue.image,oldImage)
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.texture,replacement)
+  eq(rig:getSlot("one")._renderDisplay.quad,red.renderTexture.quad)
+end)
+test("PixiTextureAtlasData null BaseTexture clears all region resources",function()
+  local f,_,atlasData,rig=build()
+  atlasData.renderTexture=nil
+  eq(atlasData.image,nil)
+  eq(atlasData:getTexture("red").renderTexture,nil)
+  eq(atlasData:getTexture("blue").renderTexture,nil)
+  eq(f:getTextureDisplay("red","pack"),nil)
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.texture,nil)
+  eq(#state.draws,0)
+  local newImage=image(8,4)
+  atlasData.renderTexture=newImage
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.texture,newImage)
+  eq(rig:getSlot("one")._renderDisplay.quad,
+    atlasData:getTexture("red").renderTexture.quad)
+end)
+test("PixiFactory.updateTextureAtlases updates each Pixi region resource",function()
+  local f,_,atlasData,rig=build()
+  local previous=atlasData:getTexture("blue").renderTexture
+  local newImage=image(20,12)
+  f:updateTextureAtlases({newImage},"pack")
+  eq(atlasData.image,newImage)
+  eq(atlasData:getTexture("blue").renderTexture.image,newImage)
+  eq(atlasData:getTexture("blue").renderTexture.quad.iw,20)
+  eq(atlasData:getTexture("red").renderTexture.quad.ih,12)
+  eq(previous~=atlasData:getTexture("blue").renderTexture,true)
+  eq(assert(f:getTextureDisplay("blue","pack")).texture,newImage)
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.texture,newImage)
+end)
+test("Pixi armature replacedTexture clones atlas region proxies separately",function()
+  local f,_,atlasData,rig=build()
+  local source=atlasData:getTexture("red").renderTexture
+  local replacement=image(12,4)
+  rig.replacedTexture=replacement
+  f:drawArmature(rig)
+  local clone=assert(rig._replaceTextureAtlasData)
+  eq(clone.image,replacement)
+  eq(clone.renderTexture,replacement)
+  eq(clone:getTexture("red").renderTexture.image,replacement)
+  eq(clone:getTexture("red").renderTexture.quad,
+    rig:getSlot("one")._renderDisplay.quad)
+  eq(clone:getTexture("red").renderTexture~=source,true)
+  eq(atlasData:getTexture("red").renderTexture,source)
+  rig.replacedTexture=nil
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.quad,source.quad)
+end)
+
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
   :format(passed,failed,checks))
 if failed>0 then os.exit(1) end
