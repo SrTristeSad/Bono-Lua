@@ -1452,6 +1452,240 @@ function ObjectDataParser:_parseZOrderFrame(rawData,frameStart,frameCount)
   return offset
 end
 
+
+-- Original specialized frame serializers from ObjectDataParser.ts,
+-- DragonBonesJS 64b6c69ae35777c2404be68c9192e2c56906079e,
+-- source lines 1638-1790, 1876-1885. No substituted animation behavior.
+function ObjectDataParser:_parseBoneAllFrame(rawData,frameStart,frameCount)
+  self._helpTransform:identity()
+  if get(rawData,DataParser.TRANSFORM)~=nil then
+    self:_parseTransform(rawData[DataParser.TRANSFORM],self._helpTransform,1.0)
+  end
+  local rotation=self._helpTransform.rotation
+  if frameStart~=0 then
+    if self._prevClockwise==0 then
+      rotation=self._prevRotation+
+        Transform.normalizeRadian(rotation-self._prevRotation)
+    else
+      if (self._prevClockwise>0 and rotation>=self._prevRotation)
+          or (self._prevClockwise<0 and rotation<=self._prevRotation) then
+        if self._prevClockwise>0 then
+          self._prevClockwise=self._prevClockwise-1
+        else
+          self._prevClockwise=self._prevClockwise+1
+        end
+      end
+      rotation=self._prevRotation+rotation-self._prevRotation+
+        Transform.PI_D*self._prevClockwise
+    end
+  end
+  self._prevClockwise=ObjectDataParser._getNumber(
+    rawData,DataParser.TWEEN_ROTATE,0.0)
+  self._prevRotation=rotation
+  local frameOffset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local values=self._frameFloatArray
+  values[#values+1]=self._helpTransform.x
+  values[#values+1]=self._helpTransform.y
+  values[#values+1]=rotation
+  values[#values+1]=self._helpTransform.skew
+  values[#values+1]=self._helpTransform.scaleX
+  values[#values+1]=self._helpTransform.scaleY
+  self:_parseActionDataInFrame(rawData,frameStart,self._bone,self._slot)
+  return frameOffset
+end
+
+function ObjectDataParser:_parseBoneTranslateFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  self._frameFloatArray[#self._frameFloatArray+1]=ObjectDataParser._getNumber(
+    rawData,DataParser.X,0.0)
+  self._frameFloatArray[#self._frameFloatArray+1]=ObjectDataParser._getNumber(
+    rawData,DataParser.Y,0.0)
+  return offset
+end
+
+function ObjectDataParser:_parseBoneRotateFrame(rawData,frameStart,frameCount)
+  local rotation=ObjectDataParser._getNumber(
+    rawData,DataParser.ROTATE,0.0)*Transform.DEG_RAD
+  if frameStart~=0 then
+    if self._prevClockwise==0 then
+      rotation=self._prevRotation+
+        Transform.normalizeRadian(rotation-self._prevRotation)
+    else
+      if (self._prevClockwise>0 and rotation>=self._prevRotation)
+          or (self._prevClockwise<0 and rotation<=self._prevRotation) then
+        if self._prevClockwise>0 then
+          self._prevClockwise=self._prevClockwise-1
+        else
+          self._prevClockwise=self._prevClockwise+1
+        end
+      end
+      rotation=self._prevRotation+rotation-self._prevRotation+
+        Transform.PI_D*self._prevClockwise
+    end
+  end
+  self._prevClockwise=ObjectDataParser._getNumber(
+    rawData,DataParser.CLOCK_WISE,0)
+  self._prevRotation=rotation
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  self._frameFloatArray[#self._frameFloatArray+1]=rotation
+  self._frameFloatArray[#self._frameFloatArray+1]=ObjectDataParser._getNumber(
+    rawData,DataParser.SKEW,0.0)*Transform.DEG_RAD
+  return offset
+end
+
+function ObjectDataParser:_parseBoneScaleFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  self._frameFloatArray[#self._frameFloatArray+1]=ObjectDataParser._getNumber(
+    rawData,DataParser.X,1.0)
+  self._frameFloatArray[#self._frameFloatArray+1]=ObjectDataParser._getNumber(
+    rawData,DataParser.Y,1.0)
+  return offset
+end
+
+function ObjectDataParser:_parseSlotDisplayFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  local index
+  if get(rawData,DataParser.VALUE)~=nil then
+    index=ObjectDataParser._getNumber(rawData,DataParser.VALUE,0)
+  else
+    index=ObjectDataParser._getNumber(rawData,DataParser.DISPLAY_INDEX,0)
+  end
+  self._frameArray[#self._frameArray+1]=index
+  self:_parseActionDataInFrame(rawData,frameStart,self._slot.parent,self._slot)
+  return offset
+end
+
+function ObjectDataParser:_parseSlotColorFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local colorOffset=-1
+  if get(rawData,DataParser.VALUE)~=nil
+      or get(rawData,DataParser.COLOR)~=nil then
+    local rawColor
+    if get(rawData,DataParser.VALUE)~=nil then
+      rawColor=rawData[DataParser.VALUE]
+    else
+      rawColor=rawData[DataParser.COLOR]
+    end
+    -- The source performs for(k in rawColor) once; empty JSON objects
+    -- intentionally use the cached identity color.
+    if type(rawColor)=="table" and next(rawColor)~=nil then
+      self:_parseColorTransform(rawColor,self._helpColorTransform)
+      colorOffset=#self._colorArray
+      local c=self._helpColorTransform
+      local values={
+        jsRound(c.alphaMultiplier*100),
+        jsRound(c.redMultiplier*100),
+        jsRound(c.greenMultiplier*100),
+        jsRound(c.blueMultiplier*100),
+        jsRound(c.alphaOffset),
+        jsRound(c.redOffset),
+        jsRound(c.greenOffset),
+        jsRound(c.blueOffset)
+      }
+      for _,v in ipairs(values) do
+        self._colorArray[#self._colorArray+1]=v
+      end
+    end
+  end
+  if colorOffset<0 then
+    if self._defaultColorOffset<0 then
+      self._defaultColorOffset=#self._colorArray
+      local values={100,100,100,100,0,0,0,0}
+      for _,v in ipairs(values) do
+        self._colorArray[#self._colorArray+1]=v
+      end
+    end
+    colorOffset=self._defaultColorOffset
+  end
+  self._frameIntArray[#self._frameIntArray+1]=colorOffset
+  return offset
+end
+
+function ObjectDataParser:_parseIKConstraintFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local bend=ObjectDataParser._getBoolean(
+    rawData,DataParser.BEND_POSITIVE,true)
+  self._frameIntArray[#self._frameIntArray+1]=bend and 1 or 0
+  self._frameIntArray[#self._frameIntArray+1]=jsRound(
+    ObjectDataParser._getNumber(rawData,DataParser.WEIGHT,1.0)*100)
+  return offset
+end
+
+-- Original per-bone and per-slot timeline dispatchers,
+-- ObjectDataParser.ts 1312-1429.
+function ObjectDataParser:_parseBoneTimeline(rawData)
+  local bone=self._armature:getBone(
+    ObjectDataParser._getString(rawData,DataParser.NAME,""))
+  if bone==nil then return end
+  self._bone=bone
+  self._slot=self._armature:getSlot(bone.name)
+  local types=Core.TimelineType
+  local fv=ObjectDataParser.FrameValueType
+  if get(rawData,DataParser.TRANSLATE_FRAME)~=nil then
+    self._frameDefaultValue=0.0
+    self._frameValueScale=1.0
+    local t=self:_parseTimeline(rawData,nil,DataParser.TRANSLATE_FRAME,
+      types.BoneTranslate,fv.Float,2,self._parseDoubleValueFrame)
+    if t~=nil then self._animation:addBoneTimeline(bone.name,t) end
+  end
+  if get(rawData,DataParser.ROTATE_FRAME)~=nil then
+    self._frameDefaultValue=0.0
+    self._frameValueScale=1.0
+    local t=self:_parseTimeline(rawData,nil,DataParser.ROTATE_FRAME,
+      types.BoneRotate,fv.Float,2,self._parseBoneRotateFrame)
+    if t~=nil then self._animation:addBoneTimeline(bone.name,t) end
+  end
+  if get(rawData,DataParser.SCALE_FRAME)~=nil then
+    self._frameDefaultValue=1.0
+    self._frameValueScale=1.0
+    local t=self:_parseTimeline(rawData,nil,DataParser.SCALE_FRAME,
+      types.BoneScale,fv.Float,2,self._parseBoneScaleFrame)
+    if t~=nil then self._animation:addBoneTimeline(bone.name,t) end
+  end
+  if get(rawData,DataParser.FRAME)~=nil then
+    local t=self:_parseTimeline(rawData,nil,DataParser.FRAME,
+      types.BoneAll,fv.Float,6,self._parseBoneAllFrame)
+    if t~=nil then self._animation:addBoneTimeline(bone.name,t) end
+  end
+  self._bone=nil
+  self._slot=nil
+end
+
+function ObjectDataParser:_parseSlotTimeline(rawData)
+  local slot=self._armature:getSlot(
+    ObjectDataParser._getString(rawData,DataParser.NAME,""))
+  if slot==nil then return end
+  self._slot=slot
+  local types=Core.TimelineType
+  local fv=ObjectDataParser.FrameValueType
+  local displayTimeline,colorTimeline
+  if get(rawData,DataParser.DISPLAY_FRAME)~=nil then
+    displayTimeline=self:_parseTimeline(rawData,nil,
+      DataParser.DISPLAY_FRAME,types.SlotDisplay,
+      fv.Step,0,self._parseSlotDisplayFrame)
+  else
+    displayTimeline=self:_parseTimeline(rawData,nil,
+      DataParser.FRAME,types.SlotDisplay,
+      fv.Step,0,self._parseSlotDisplayFrame)
+  end
+  if get(rawData,DataParser.COLOR_FRAME)~=nil then
+    colorTimeline=self:_parseTimeline(rawData,nil,
+      DataParser.COLOR_FRAME,types.SlotColor,
+      fv.Int,1,self._parseSlotColorFrame)
+  else
+    colorTimeline=self:_parseTimeline(rawData,nil,
+      DataParser.FRAME,types.SlotColor,
+      fv.Int,1,self._parseSlotColorFrame)
+  end
+  if displayTimeline~=nil then
+    self._animation:addSlotTimeline(slot.name,displayTimeline)
+  end
+  if colorTimeline~=nil then
+    self._animation:addSlotTimeline(slot.name,colorTimeline)
+  end
+  self._slot=nil
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
