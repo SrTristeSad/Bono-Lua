@@ -322,7 +322,7 @@ Neste lote foram portados **11 métodos originais**: `_parseBone`, `_parseIKCons
 
 Suíte `tests/original_object_parser_structure.lua`: **42 casos** com modelos reais, formas de display, caixas, IK/path, objetos compartilhados e decodificação da hierarquia estrutural do JSON de `tests/fixtures/personagem-minimo.json` (sem inventar um `parseDragonBonesData`). Contratos de `_parseGeometry` são simulados apenas nos testes onde imprescindível. GitHub Actions executa Lua 5.4 e LuaJIT mais regressões existentes e renderização LÖVE. A implementação usa `SkinData.NULL` para slots `null` e traduz índices JS para Lua.
 
-Próximo passo: implementar os algoritmos de geometria e buffers binários, depois a construção de armaturas/animações/timelines no parser original. PR/commit e status da CI serão preenchidos após aprovação.
+Próximo passo: implementar os algoritmos de geometria e buffers binários, depois a construção de armaturas/animações/timelines no parser original. A branch `port-original-object-parser-structure` foi integrada à `main` via [PR #27](https://github.com/SrTristeSad/Bono-Lua/pull/27), commit de integração [`c37fb08`](https://github.com/SrTristeSad/Bono-Lua/commit/c37fb08e76f0df0dfc43bc92b37785607cba5326). CI do PR: **42/42 cenários e 181 asserções aprovados em Lua 5.4 e LuaJIT**, juntamente com o job `love-render` e as regressões existentes. Total acumulado **710 cenários dos portes originais** (668 + 42), além dos 22 testes do protótipo. **Este lote não transforma ObjectDataParser em parser completo:** continuam ausentes `_parseGeometry`, `_parseAnimation`, `_parseArmature` e `parseDragonBonesData`.
 
 ## Código que já existia antes deste porte
 
