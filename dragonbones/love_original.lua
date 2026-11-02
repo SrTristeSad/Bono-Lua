@@ -150,7 +150,17 @@ function LoveSlot:_updateFrame()
   render.mesh=nil
   render.vertices=nil
   local texture=self._textureData
-  if self._display==nil or self._displayIndex<0 or texture==nil then return end
+  -- PixiSlot._updateFrame's no-frame branch clears the Sprite/SimpleMesh
+  -- texture, resets local x/y and hides the display. The original runtime
+  -- still controls _displayIndex and all slot invalidation.
+  local function hideUntexturedDisplay()
+    render.tx,render.ty=0,0
+    render.visible=false
+  end
+  if self._display==nil or self._displayIndex<0 or texture==nil then
+    hideUntexturedDisplay()
+    return
+  end
   -- Pinned PixiSlot._updateFrame: clone the source TextureAtlasData once
   -- per armature when replacedTexture is assigned. TextureData.copyFrom
   -- intentionally retains its original source parent as upstream does.
@@ -165,7 +175,10 @@ function LoveSlot:_updateFrame()
     atlas=self._armature._replaceTextureAtlasData
     texture=atlas:getTexture(texture.name)
   end
-  if atlas==nil or atlas.image==nil or texture==nil then return end
+  if atlas==nil or atlas.image==nil or texture==nil then
+    hideUntexturedDisplay()
+    return
+  end
   local image=atlas.image
   assert(type(image.getWidth)=="function" and type(image.getHeight)=="function",
     "LÖVE backend: textureAtlas must be a LÖVE Image")
@@ -487,6 +500,13 @@ local function synchronizeRenderTexture(slot)
     slot:_updateFrame()
     if render.mesh~=nil and slot._geometryData~=nil then
       slot:_updateMesh()
+    end
+    -- LÖVE binds its resource when drawing; Pixi updates its retained
+    -- Sprite during Slot.update. Re-apply the original visibility predicate
+    -- after reattaching an image so an earlier hidden frame can reappear.
+    if slot._visibleDirty then
+      slot:_updateVisible()
+      slot._visibleDirty=false
     end
   end
 end
