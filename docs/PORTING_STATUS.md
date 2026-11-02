@@ -432,7 +432,7 @@ Fonte fixa: `DragonBones/src/dragonBones/factory/BaseFactory.ts`, commit DragonB
 
 **Pendente:** `replaceDisplay`, `replaceSlotDisplay`, `replaceSlotDisplayList`, `replaceSkin`, `replaceAnimation`; validação de construção e execução visual com backend LÖVE genuíno. Algumas regras dos objetos `Slot` e `Armature` são fiéis aos métodos fontes mas ainda não têm comparação diferencial com DragonBonesJS executado; este lote NÃO é equivalência 1:1 global. `ArrayBuffer` compartilhado ainda tem limitações documentadas.
 
-PR, CI e SHA serão registrados após validação.
+Branch `port-original-basefactory-build` integrada à `main` no [PR #36](https://github.com/SrTristeSad/Bono-Lua/pull/36), commit de merge [`c35fb96`](https://github.com/SrTristeSad/Bono-Lua/commit/c35fb966670b124f73d578ae7f55613e569b67c5). CI do PR: **32/32 casos e 108 verificações** em Lua 5.4 e LuaJIT, regressões anteriores e `love-render` aprovados. Total acumulado: **978 cenários dos portes originais** (946 + 32), além dos 22 testes de protótipo. BaseFactory continua PARCIAL e dependente de um backend para construir exibição real; não declarar runtime 1:1.
 
 ## Código que já existia antes deste porte
 
