@@ -644,6 +644,17 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Pendências expressas:** as vistas Lua continuam snapshots numéricos, **não** implementam ainda o `ArrayBuffer` mutável compartilhado da plataforma JavaScript; os casos de falha comparam aceitação/rejeição, não classe exata de exceção. As 32 entradas não comprovam equivalência do parser binário inteiro nem 1:1 do runtime. Permanecem máscaras, três modos de mistura avançados, mais testes diferenciais e identificação de fonte/licença do editor original.
 
+
+### Etapa 55 — BoundingBoxData.ts: colisões executadas no DragonBonesJS original
+
+**Origem fixa:** DragonBones/DragonBonesJS MIT, commit `64b6c69ae35777c2404be68c9192e2c56906079e`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts` e bundle original versionado `Pixi/5.x/out/dragonBones.js`. Foi inspecionado também `dragonbones/original/model/BoundingBoxData.lua`. O produto continua Lua, com LÖVE como backend; JavaScript é usado **somente na CI** para executar os métodos originais.
+
+**Escopo:** suíte diferencial de **62 casos determinísticos** compartilhados por `tests/fixtures/boundingbox_cases.tsv`, que executam `containsPoint` e `intersectsSegment` de `RectangleBoundingBoxData`, `EllipseBoundingBoxData` e `PolygonBoundingBoxData`. Casos de limites, fronteiras, diagonais, segmentos reversos, entradas/saídas, tangentes, polígonos convexos e côncavos, translação, incluindo saídas opcionais `intersectionPointA`, `intersectionPointB` e `normalRadians` com valores sentinela para detectar mutação ou ausência de escrita. O oráculo `tests/differential_boundingbox_original.js` chama de fato as classes originais do bundle fixado; `tests/original_boundingbox_differential.lua` compara contagem/tipo, classificação numérica (NaN/Infinity) e valores com tolerância relativa de `1e-9` quando finitos, em Lua 5.4 e LuaJIT. Acrescentado ao job `lua-tests` da CI.
+
+**Estado inicial:** nenhum algoritmo de produção modificado antes de verificar divergências. Se diferenças forem observadas, corrigi-las no porte Lua preservando peculiaridades do TypeScript fixado. Os protótipos históricos e backend LÖVE permanecem intocados. **CI/PR e resultados finais a registrar.**
+
+**Limites:** 62 entradas são uma amostra, não uma prova para todos os reais IEEE-754, todos os polígonos ou o restante do motor. Permanecem buffers compartilhados mutáveis, máscaras, modos Pixi avançados `Difference`, `HardLight`, `Overlay`, editor original/licença e validação diferencial de outras classes. Não afirmar equivalência 1:1 global.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
