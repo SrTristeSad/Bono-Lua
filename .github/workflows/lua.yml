@@ -111,6 +111,13 @@ jobs:
             tests/fixtures/transform_cases.tsv artifacts/upstream/transform_expected.tsv
           lua5.4 tests/original_transform_differential.lua
           luajit tests/original_transform_differential.lua
+          # toString delegates implicit number rendering to ECMAScript in
+          # the original bundle; assert exact text against the Lua ports.
+          node tests/differential_geom_strings_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/geom_strings_cases.tsv artifacts/upstream/geom_strings_expected.tsv
+          lua5.4 tests/original_geom_strings_differential.lua
+          luajit tests/original_geom_strings_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
