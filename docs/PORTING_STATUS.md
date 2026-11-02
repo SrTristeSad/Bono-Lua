@@ -295,7 +295,7 @@ A implementação agora permite que `AnimationState.init()` obtenha as classes r
 
 **Pendências de fidelidade 1:1:** `ObjectDataParser.ts`, `BinaryDataParser.ts` e `BaseFactory.ts` ainda ausentes; não há teste diferencial com DragonBonesJS original executado, importação DBBIN real nem validação extensa de timings adversariais/arrays esparsos. A demonstração `main.lua` ainda usa o protótipo simplificado anterior, não a integração gráfica do runtime reconstruído. `Slot` mantém hooks gráficos abstratos; falta backend LÖVE conforme API original. Não declarar o motor concluído até esses trabalhos estarem validados. As propriedades de arrays TypeScript `length` nos buffers de múltiplos valores são representadas por metadados Lua quando necessário. Observação: o algoritmo de `SlotColor` de transição usa a quarta potência do fade conforme fonte.
 
-PR, SHA e CI serão preenchidos depois da validação.
+Branch `port-original-concrete-timelines` integrada pelo [PR #25](https://github.com/SrTristeSad/Bono-Lua/pull/25), commit de merge [`660e3a8`](https://github.com/SrTristeSad/Bono-Lua/commit/660e3a81f7a8ee8430e0174af4f2c47f2573c426). CI do PR: **41/41 cenários TimelineState.ts, 171 asserções**, aprovados em Lua 5.4 e LuaJIT; regressões existentes e `love-render` aprovadas. Total acumulado dos testes do porte original: **625** (584 anteriores + 41), além de 22 cenários do protótipo. A suíte de timelines concretas usa as 16 classes reais, sem classes de timeline substitutas; falta teste diferencial de execução JS x Lua e integração de arquivos DragonBones via os parsers originais.
 
 ## Código que já existia antes deste porte
 
