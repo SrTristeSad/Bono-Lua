@@ -142,34 +142,59 @@ local function getValue(buf,offset,kind)
   end
   return sign*(1+fraction/8388608)*2^(exponent-127)
 end
+-- LuaJIT is Lua 5.1-compatible: table __len is not used there.
+-- newproxy(true) is a Lua-owned full userdata whose __len is honoured;
+-- Lua 5.4 uses an ordinary proxy table and its table __len. Both retain
+-- the same typed-array indexing and mutation semantics.
 local View={}
+local userdataStates=setmetatable({},{__mode="k"})
+local function viewState(self)
+  if type(self)=="userdata" then return userdataStates[self] end
+  return self
+end
 View.__index=function(self,index)
+  local state=viewState(self)
   if type(index)=="number" then
-    if index%1~=0 or index<1 or index>self._count then return nil end
-    return getValue(self._buffer,self._offset+(index-1)*self._unit,self._kind)
+    if index%1~=0 or index<1 or index>state._count then return nil end
+    return getValue(state._buffer,
+      state._offset+(index-1)*state._unit,state._kind)
   end
-  return View[index]
+  return rawget(View,index)
 end
 View.__newindex=function(self,index,value)
+  local state=viewState(self)
   if type(index)=="number" then
-    if index%1~=0 or index<1 or index>self._count then return end
+    if index%1~=0 or index<1 or index>state._count then return end
     local bytes
-    if self._kind=="float32" then bytes=Shared.pack32(value)
-    else bytes=Shared.pack16(value,self._kind=="uint16") end
-    self._buffer:writeBytes(self._offset+(index-1)*self._unit,bytes)
+    if state._kind=="float32" then bytes=Shared.pack32(value)
+    else bytes=Shared.pack16(value,state._kind=="uint16") end
+    state._buffer:writeBytes(state._offset+(index-1)*state._unit,bytes)
     return
   end
-  rawset(self,index,value)
+  if type(self)=="table" then rawset(self,index,value)
+  else error("SharedBinaryBuffer: cannot attach arbitrary fields to TypedArray") end
 end
-View.__len=function(self) return self._count end
+View.__len=function(self) return viewState(self)._count end
 View.__pairs=function(self)
-  local i=0
+  local index=0
+  local count=viewState(self)._count
   return function()
-    i=i+1
-    if i<=self._count then return i,self[i] end
+    index=index+1
+    if index<=count then return index,self[index] end
   end,self,nil
 end
 View.__ipairs=View.__pairs
+local function proxy(state)
+  if type(newproxy)=="function" then
+    local user=newproxy(true)
+    local meta=getmetatable(user)
+    for name,fn in pairs(View) do meta[name]=fn end
+    userdataStates[user]=state
+    return user
+  end
+  return setmetatable(state,View)
+end
+
 function Shared.view(buf,offset,byteLength,kind)
   local unit=kind=="float32" and 4 or 2
   assert(kind=="int16" or kind=="uint16" or kind=="float32",
@@ -180,7 +205,7 @@ function Shared.view(buf,offset,byteLength,kind)
     and math.floor(byteLength/unit) or nil
   assert(count~=nil and offset+count*unit<=buf:length(),
     "SharedBinaryBuffer: invalid typed view length")
-  return setmetatable({_buffer=buf,_offset=offset,_count=count,
-    _unit=unit,_kind=kind},View)
+  return proxy({_buffer=buf,_offset=offset,_count=count,
+    _unit=unit,_kind=kind})
 end
 return Shared
