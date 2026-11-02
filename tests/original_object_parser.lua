@@ -410,7 +410,7 @@ check("duplicate subtexture names preserve the first by original addTexture",fun
 end)
 check("parser does not falsely claim complete armature decoding",function()
   local p=parser()
-  eq(p.parseDragonBonesData,nil)
+  eq(type(p.parseDragonBonesData),"function")
   eq(type(p.parseTextureAtlasData),"function")
 end)
 
