@@ -402,6 +402,140 @@ function BaseFactory:clear(disposeData)
   end
 end
 
+-- BaseFactory.ts (fixed DragonBonesJS commit), lines 719–981.
+-- Public display, skin and animation replacement operations.
+local RuntimeArmature=require("dragonbones.original.armature.Armature")
+local function isRuntimeArmature(display)
+  if display==nil then return false end
+  local cls=getmetatable(display)
+  while type(cls)=="table" do
+    if cls==RuntimeArmature then return true end
+    cls=getmetatable(cls)
+  end
+  return false
+end
+
+function BaseFactory:replaceDisplay(slot,displayData,displayIndex)
+  if displayIndex==nil then displayIndex=-1 end
+  if displayIndex<0 then displayIndex=slot.displayIndex end
+  if displayIndex<0 then displayIndex=0 end
+
+  slot:replaceDisplayData(displayData,displayIndex)
+  if displayData~=nil and displayData~=SkinData.NULL then
+    local display=self:_getSlotDisplay(nil,displayData,slot)
+    if displayData.type==Core.DisplayType.Image then
+      local raw=slot:getDisplayFrameAt(displayIndex).rawDisplayData
+      if raw~=nil and raw.type==Core.DisplayType.Mesh then
+        display=slot.meshDisplay
+      end
+    end
+    slot:replaceDisplay(display,displayIndex)
+  else
+    slot:replaceDisplay(nil,displayIndex)
+  end
+end
+
+function BaseFactory:replaceSlotDisplay(dragonBonesName,armatureName,
+    slotName,displayName,slot,displayIndex)
+  local armatureData=self:getArmatureData(armatureName,dragonBonesName or "")
+  if armatureData==nil or armatureData.defaultSkin==nil then return false end
+  local displayData=armatureData.defaultSkin:getDisplay(slotName,displayName)
+  self:replaceDisplay(slot,displayData,displayIndex)
+  return true
+end
+
+function BaseFactory:replaceSlotDisplayList(dragonBonesName,armatureName,
+    slotName,slot)
+  local armatureData=self:getArmatureData(armatureName,dragonBonesName or "")
+  if armatureData==nil or armatureData.defaultSkin==nil then return false end
+  local displays=armatureData.defaultSkin:getDisplays(slotName)
+  if displays==nil then return false end
+  slot.displayFrameCount=#displays
+  for i=0,slot.displayFrameCount-1 do
+    local data=displays[i+1]
+    self:replaceDisplay(slot,data==SkinData.NULL and nil or data,i)
+  end
+  return true
+end
+
+function BaseFactory:replaceSkin(armature,skin,isOverride,exclude)
+  if isOverride==nil then isOverride=false end
+  local success=false
+  local defaultSkin=skin.parent.defaultSkin
+  local excluded={}
+  if exclude~=nil then
+    for _,slotName in ipairs(exclude) do excluded[slotName]=true end
+  end
+  for _,slot in ipairs(armature:getSlots()) do
+    if not excluded[slot.name] then
+      local displayDatas=skin:getDisplays(slot.name)
+      if displayDatas==nil then
+        if defaultSkin~=nil and skin~=defaultSkin then
+          displayDatas=defaultSkin:getDisplays(slot.name)
+        end
+        if displayDatas==nil then
+          if isOverride then slot.displayFrameCount=0 end
+        end
+      end
+      if displayDatas~=nil then
+        slot.displayFrameCount=#displayDatas
+        for i=0,slot.displayFrameCount-1 do
+          local displayData=displayDatas[i+1]
+          if displayData==SkinData.NULL then displayData=nil end
+          slot:replaceRawDisplayData(displayData,i)
+          if displayData~=nil then
+            slot:replaceDisplay(self:_getSlotDisplay(nil,displayData,slot),i)
+          else
+            slot:replaceDisplay(nil,i)
+          end
+        end
+        success=true
+      end
+    end
+  end
+  return success
+end
+
+function BaseFactory:replaceAnimation(armature,armatureData,isOverride)
+  if isOverride==nil then isOverride=true end
+  local skinData=armatureData.defaultSkin
+  if skinData==nil then return false end
+  if isOverride then
+    armature.animation.animations=armatureData.animations
+  else
+    local animations={}
+    for name,animation in pairs(armature.animation.animations) do
+      animations[name]=animation
+    end
+    for name,animation in pairs(armatureData.animations) do
+      animations[name]=animation
+    end
+    armature.animation.animations=animations
+  end
+  for _,slot in ipairs(armature:getSlots()) do
+    local displays=skinData:getDisplays(slot.name)
+    -- JS for-of visits every index (including holes). Slot.displayList is
+    -- constructed on access and may contain nil gaps in Lua.
+    for i=0,slot.displayFrameCount-1 do
+      local frame=slot:getDisplayFrameAt(i)
+      local display=frame~=nil and frame.display or nil
+      if isRuntimeArmature(display) and displays~=nil and i<#displays then
+        local displayData=displays[i+1]
+        if displayData~=nil and displayData~=SkinData.NULL
+            and displayData.type==Core.DisplayType.Armature then
+          local parent=displayData.parent
+          local dataName=parent.parent.parent.name
+          local childData=self:getArmatureData(displayData.path,dataName)
+          if childData~=nil then
+            self:replaceAnimation(display,childData,isOverride)
+          end
+        end
+      end
+    end
+  end
+  return true
+end
+
 function BaseFactory:getAllDragonBonesData()
   return self._dragonBonesDataMap
 end
