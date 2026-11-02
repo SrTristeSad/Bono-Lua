@@ -396,6 +396,92 @@ test("nested child Slot visibility is independent of its parent sibling",functio
   eq(state.pop,2)
 end)
 
+-- PixiSlot._updateFrame and PixiTextureAtlasData replacement atlas behavior.
+test("replacedTexture clones original atlas without changing its image or regions",function()
+  local f,data,source,rig=build()
+  local slot=rig:getSlot("one")
+  local replacement=image(12,4)
+  rig.replacedTexture=replacement
+  f:drawArmature(rig)
+  local cloned=assert(rig._replaceTextureAtlasData)
+  eq(getmetatable(cloned),Love.TextureAtlasData)
+  eq(cloned~=source,true)
+  eq(cloned.image,replacement)
+  eq(source.image~=replacement,true)
+  eq(cloned:getTexture("red")~=source:getTexture("red"),true)
+  eq(cloned:getTexture("red").region.x,0)
+  eq(cloned:getTexture("blue").region.x,4)
+  -- Preserved upstream TextureData.copyFrom source.parent quirk.
+  eq(cloned:getTexture("red").parent,source)
+  eq(slot._renderDisplay.texture,replacement)
+  eq(slot._renderDisplay.quad.iw,12)
+  eq(slot._renderDisplay.quad.ih,4)
+end)
+test("replacedTexture is identity-stable when assigned the same image",function()
+  local f,data,source,rig=build()
+  local swapped=image(8,4)
+  rig.replacedTexture=swapped
+  f:drawArmature(rig)
+  local clone=rig._replaceTextureAtlasData
+  local quad=rig:getSlot("one")._renderDisplay.quad
+  rig.replacedTexture=swapped
+  f:drawArmature(rig)
+  eq(rig._replaceTextureAtlasData,clone)
+  eq(rig:getSlot("one")._renderDisplay.quad,quad)
+end)
+test("changing or removing replacement recycles clone and restores source",function()
+  local f,data,source,rig=build()
+  local first=image(10,4)
+  local second=image(14,4)
+  rig.replacedTexture=first
+  f:drawArmature(rig)
+  local firstClone=assert(rig._replaceTextureAtlasData)
+  rig.replacedTexture=second
+  eq(rig._replaceTextureAtlasData,nil)
+  f:drawArmature(rig)
+  eq(rig:getSlot("one")._renderDisplay.texture,second)
+  eq(rig._replaceTextureAtlasData.image,second)
+  eq(rig:getSlot("one")._renderDisplay.quad.iw,14)
+  rig.replacedTexture=nil
+  eq(rig._replaceTextureAtlasData,nil)
+  f:drawArmature(rig)
+  eq(rig.replacedTexture,nil)
+  eq(rig:getSlot("one")._renderDisplay.texture,source.image)
+  eq(rig:getSlot("one")._renderDisplay.quad.iw,8)
+  eq(source:getTexture("red").region.width,4)
+  -- Pool reuse may return the same Lua atlas instance; never assume a new id.
+  eq(firstClone.image,nil)
+end)
+test("replacedTexture rebinds mesh image and atlas-relative UV coordinates",function()
+  local f,source,rig,slot=meshRig(triangle())
+  local original=assert(slot._renderDisplay.mesh)
+  near(original.vertices[2][3],0.5)
+  local swapped=image(16,4)
+  rig.replacedTexture=swapped
+  f:drawArmature(rig)
+  local mesh=assert(slot._renderDisplay.mesh)
+  eq(mesh.texture,swapped)
+  eq(slot._renderDisplay.texture,swapped)
+  near(mesh.vertices[2][3],0.25)
+  rig.replacedTexture=nil
+  f:drawArmature(rig)
+  local restored=assert(slot._renderDisplay.mesh)
+  eq(restored.texture,source.image)
+  near(restored.vertices[2][3],0.5)
+end)
+test("replacedTexture belongs to one armature, not the shared BaseFactory atlas",function()
+  local f,data,source,rig=build()
+  local second=assert(f:buildArmature("rig","pack"))
+  local newImage=image(8,4)
+  rig.replacedTexture=newImage
+  f:drawArmature(rig)
+  f:drawArmature(second)
+  eq(rig:getSlot("one")._renderDisplay.texture,newImage)
+  eq(second:getSlot("one")._renderDisplay.texture,source.image)
+  eq(second._replaceTextureAtlasData,nil)
+  eq(f:getTextureAtlasData("pack")[1],source)
+end)
+
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
   :format(passed,failed,checks))
 if failed>0 then os.exit(1) end
