@@ -73,6 +73,8 @@ jobs:
         run: lua5.4 tests/original_object_parser_typed_arrays.lua
       - name: Verify original ObjectDataParser armature and top-level entry
         run: lua5.4 tests/original_object_parser_armature.lua
+      - name: Verify original ObjectDataParser timeline and generic frame codecs
+        run: lua5.4 tests/original_object_parser_timeline.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
