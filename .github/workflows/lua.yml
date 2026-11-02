@@ -105,6 +105,12 @@ jobs:
             tests/fixtures/matrix_cases.tsv artifacts/upstream/matrix_expected.tsv
           lua5.4 tests/original_matrix_differential.lua
           luajit tests/original_matrix_differential.lua
+          # Reuse the SAME pinned DragonBonesJS bundle downloaded above.
+          node tests/differential_transform_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/transform_cases.tsv artifacts/upstream/transform_expected.tsv
+          lua5.4 tests/original_transform_differential.lua
+          luajit tests/original_transform_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
