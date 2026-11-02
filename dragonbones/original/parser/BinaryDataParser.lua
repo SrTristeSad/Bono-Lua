@@ -133,12 +133,16 @@ local function readTyped(bytes,absoluteOffset,length,itemBytes,kind)
   assert(type(absoluteOffset)=="number" and absoluteOffset>=0
     and absoluteOffset%itemBytes==0,
     "BinaryDataParser: misaligned typed view")
-  assert(type(length)=="number" and length>=0
-    and length%itemBytes==0
-    and absoluteOffset+length<=#bytes,
+  -- Pinned BinaryDataParser.ts constructs the view with
+  -- length / TypedArray.BYTES_PER_ELEMENT. The JS constructor converts
+  -- that element count via ToIndex, truncating fractional positive counts.
+  -- Requiring a divisible *byte* length rejects inputs accepted upstream.
+  local elementCount=type(length)=="number" and length>=0
+      and math.floor(length/itemBytes) or nil
+  assert(elementCount~=nil and absoluteOffset+elementCount*itemBytes<=#bytes,
     "BinaryDataParser: invalid typed view length")
   local out={}
-  for i=0,length/itemBytes-1 do
+  for i=0,elementCount-1 do
     local pos=absoluteOffset+i*itemBytes
     local n
     if kind=="float" then
