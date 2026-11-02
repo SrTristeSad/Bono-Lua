@@ -985,6 +985,222 @@ function ObjectDataParser:_modifyArray()
   self._defaultColorOffset=-1
 end
 
+
+-- Source: ObjectDataParser.ts _parseArmature (lines 285-472) and
+-- parseDragonBonesData (lines 2294-2353), same pinned original revision.
+-- The source invokes _parseAnimation for any animation collection; that
+-- method has NOT been ported. Keep the call and reject missing dependencies
+-- naturally, rather than silently dropping animation data.
+local DragonBonesData=require("dragonbones.original.model.DragonBonesData")
+local CanvasData=require("dragonbones.original.model.CanvasData")
+
+function ObjectDataParser:_parseArmature(rawData,scale)
+  local armature=Pool.borrowObject(ArmatureModels.ArmatureData)
+  armature.name=ObjectDataParser._getString(rawData,DataParser.NAME,"")
+  armature.frameRate=ObjectDataParser._getNumber(
+    rawData,DataParser.FRAME_RATE,self._data.frameRate)
+  armature.scale=scale
+  if type(get(rawData,DataParser.TYPE))=="string" then
+    armature.type=DataParser._getArmatureType(rawData[DataParser.TYPE])
+  else
+    armature.type=ObjectDataParser._getNumber(
+      rawData,DataParser.TYPE,Core.ArmatureType.Armature)
+  end
+  if armature.frameRate==0 then armature.frameRate=24 end
+  self._armature=armature
+
+  if get(rawData,DataParser.CANVAS)~=nil then
+    local rawCanvas=rawData[DataParser.CANVAS]
+    local canvas=Pool.borrowObject(CanvasData)
+    canvas.hasBackground=get(rawCanvas,DataParser.COLOR)~=nil
+    canvas.color=ObjectDataParser._getNumber(rawCanvas,DataParser.COLOR,0)
+    canvas.x=ObjectDataParser._getNumber(rawCanvas,DataParser.X,0)*armature.scale
+    canvas.y=ObjectDataParser._getNumber(rawCanvas,DataParser.Y,0)*armature.scale
+    canvas.width=ObjectDataParser._getNumber(
+      rawCanvas,DataParser.WIDTH,0)*armature.scale
+    canvas.height=ObjectDataParser._getNumber(
+      rawCanvas,DataParser.HEIGHT,0)*armature.scale
+    armature.canvas=canvas
+  end
+
+  if get(rawData,DataParser.AABB)~=nil then
+    local aabb=rawData[DataParser.AABB]
+    armature.aabb.x=ObjectDataParser._getNumber(
+      aabb,DataParser.X,0)*armature.scale
+    armature.aabb.y=ObjectDataParser._getNumber(
+      aabb,DataParser.Y,0)*armature.scale
+    armature.aabb.width=ObjectDataParser._getNumber(
+      aabb,DataParser.WIDTH,0)*armature.scale
+    armature.aabb.height=ObjectDataParser._getNumber(
+      aabb,DataParser.HEIGHT,0)*armature.scale
+  end
+
+  if get(rawData,DataParser.BONE)~=nil then
+    for _,rawBone in ipairs(rawData[DataParser.BONE]) do
+      local parentName=ObjectDataParser._getString(
+        rawBone,DataParser.PARENT,"")
+      local bone=self:_parseBone(rawBone)
+      if #parentName>0 then
+        local parent=armature:getBone(parentName)
+        if parent~=nil then
+          bone.parent=parent
+        else
+          if self._cacheBones[parentName]==nil then
+            self._cacheBones[parentName]={}
+          end
+          local pending=self._cacheBones[parentName]
+          pending[#pending+1]=bone
+        end
+      end
+      local waiting=self._cacheBones[bone.name]
+      if waiting~=nil then
+        for _,child in ipairs(waiting) do child.parent=bone end
+        self._cacheBones[bone.name]=nil
+      end
+      armature:addBone(bone)
+      self._rawBones[#self._rawBones+1]=bone
+    end
+  end
+
+  if get(rawData,DataParser.IK)~=nil then
+    for _,rawIK in ipairs(rawData[DataParser.IK]) do
+      local constraint=self:_parseIKConstraint(rawIK)
+      if constraint~=nil then armature:addConstraint(constraint) end
+    end
+  end
+  armature:sortBones()
+
+  if get(rawData,DataParser.SLOT)~=nil then
+    for i,rawSlot in ipairs(rawData[DataParser.SLOT]) do
+      armature:addSlot(self:_parseSlot(rawSlot,i-1))
+    end
+  end
+  if get(rawData,DataParser.SKIN)~=nil then
+    for _,rawSkin in ipairs(rawData[DataParser.SKIN]) do
+      armature:addSkin(self:_parseSkin(rawSkin))
+    end
+  end
+  if get(rawData,DataParser.PATH_CONSTRAINT)~=nil then
+    for _,rawPath in ipairs(rawData[DataParser.PATH_CONSTRAINT]) do
+      local constraint=self:_parsePathConstraint(rawPath)
+      if constraint~=nil then armature:addConstraint(constraint) end
+    end
+  end
+
+  -- The upstream source uses getMesh(skinName, "", shareName) with a
+  -- TODO about slot selection. Retain that behavior even if it misses a mesh.
+  for i,rawMesh in ipairs(self._cacheRawMeshes) do
+    local shareName=ObjectDataParser._getString(
+      rawMesh,DataParser.SHARE,"")
+    if #shareName>0 then
+      local skinName=ObjectDataParser._getString(
+        rawMesh,DataParser.SKIN,DataParser.DEFAULT_NAME)
+      if #skinName==0 then skinName=DataParser.DEFAULT_NAME end
+      local shared=armature:getMesh(skinName,"",shareName)
+      if shared~=nil then
+        self._cacheMeshes[i].geometry:shareFrom(shared.geometry)
+      end
+    end
+  end
+
+  if get(rawData,DataParser.ANIMATION)~=nil then
+    for _,rawAnimation in ipairs(rawData[DataParser.ANIMATION]) do
+      -- Original call, not a replacement: _parseAnimation will be ported
+      -- from ObjectDataParser.ts before animated skeletons can load.
+      local animation=self:_parseAnimation(rawAnimation)
+      armature:addAnimation(animation)
+    end
+  end
+
+  if get(rawData,DataParser.DEFAULT_ACTIONS)~=nil then
+    local actions=self:_parseActionData(
+      rawData[DataParser.DEFAULT_ACTIONS],Core.ActionType.Play,nil,nil)
+    for _,action in ipairs(actions) do
+      armature:addAction(action,true)
+      if action.type==Core.ActionType.Play then
+        local animation=armature:getAnimation(action.name)
+        if animation~=nil then armature.defaultAnimation=animation end
+      end
+    end
+  end
+  if get(rawData,DataParser.ACTIONS)~=nil then
+    local actions=self:_parseActionData(
+      rawData[DataParser.ACTIONS],Core.ActionType.Play,nil,nil)
+    for _,action in ipairs(actions) do
+      armature:addAction(action,false)
+    end
+  end
+
+  clear(self._rawBones)
+  clear(self._cacheRawMeshes)
+  clear(self._cacheMeshes)
+  self._armature=nil
+  for key in pairs(self._weightSlotPose) do
+    self._weightSlotPose[key]=nil
+  end
+  for key in pairs(self._weightBonePoses) do
+    self._weightBonePoses[key]=nil
+  end
+  for key in pairs(self._cacheBones) do
+    self._cacheBones[key]=nil
+  end
+  for key in pairs(self._slotChildActions) do
+    self._slotChildActions[key]=nil
+  end
+  return armature
+end
+
+function ObjectDataParser:parseDragonBonesData(rawData,scale)
+  if scale==nil then scale=1 end
+  assert(rawData~=nil,"Data error.")
+  local version=ObjectDataParser._getString(
+    rawData,DataParser.VERSION,"")
+  local compatible=ObjectDataParser._getString(
+    rawData,DataParser.COMPATIBLE_VERSION,"")
+  local supported=false
+  for _,candidate in ipairs(DataParser.DATA_VERSIONS) do
+    if version==candidate or compatible==candidate then
+      supported=true
+      break
+    end
+  end
+  if not supported then
+    io.stderr:write(
+      "Nonsupport data version: "..version..
+      "\nPlease convert DragonBones data to support version.\n"..
+      "Read more: https://github.com/DragonBones/Tools/\n")
+    return nil
+  end
+
+  local data=Pool.borrowObject(DragonBonesData)
+  data.version=version
+  data.name=ObjectDataParser._getString(rawData,DataParser.NAME,"")
+  data.frameRate=ObjectDataParser._getNumber(
+    rawData,DataParser.FRAME_RATE,24)
+  if data.frameRate==0 then data.frameRate=24 end
+
+  if get(rawData,DataParser.ARMATURE)~=nil then
+    self._data=data
+    self:_parseArray(rawData)
+    for _,rawArmature in ipairs(rawData[DataParser.ARMATURE]) do
+      data:addArmature(self:_parseArmature(rawArmature,scale))
+    end
+    if data.binary==nil then self:_modifyArray() end
+    if get(rawData,DataParser.STAGE)~=nil then
+      data.stage=data:getArmature(ObjectDataParser._getString(
+        rawData,DataParser.STAGE,""))
+    elseif #data.armatureNames>0 then
+      data.stage=data:getArmature(data.armatureNames[1])
+    end
+    self._data=nil
+  end
+
+  if get(rawData,DataParser.TEXTURE_ATLAS)~=nil then
+    self._rawTextureAtlases=rawData[DataParser.TEXTURE_ATLAS]
+  end
+  return data
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
