@@ -131,7 +131,13 @@ function ArmatureDisplay:drawDebug(graphics,inheritedAlpha)
       graphics.rectangle("line",-slot.width*0.5,-slot.height*0.5,
         slot.width,slot.height)
     elseif slot.type==Core.BoundingBoxType.Ellipse then
-      graphics.ellipse("line",0,0,slot.width*0.5,slot.height*0.5)
+      -- Pinned PixiArmatureDisplay.dbUpdate calls PIXI.Graphics.drawEllipse
+      -- with (-width/2, -height/2, width, height). PIXI v5 interprets
+      -- the first pair as the CENTER and the second as the HALF-EXTENTS.
+      -- LÖVE's ellipse uses the same center/radii contract; using 0,0 and
+      -- width/2,height/2 instead changes both placement and extent.
+      graphics.ellipse("line",-slot.width*0.5,-slot.height*0.5,
+        slot.width,slot.height)
     elseif slot.type==Core.BoundingBoxType.Polygon and #slot.vertices>=4 then
       -- PIXI.Graphics.closePath closes the last edge to the first point.
       graphics.polygon("line",slot.vertices)
