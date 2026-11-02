@@ -85,6 +85,8 @@ jobs:
         run: lua5.4 tests/original_basefactory_cache.lua
       - name: Verify original BaseFactory bone slot and constraint construction
         run: lua5.4 tests/original_basefactory_build.lua
+      - name: Verify original BaseFactory display skin and animation replacements
+        run: lua5.4 tests/original_basefactory_replacements.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
