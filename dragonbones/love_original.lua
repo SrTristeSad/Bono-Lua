@@ -317,9 +317,21 @@ end
 
 local LoveFactory={}
 LoveFactory.__index=function(self,key)
+  if key=="soundEventManager" then
+    return self._dragonBones.eventManager
+  end
   return rawget(LoveFactory,key) or BaseFactory.__index(self,key)
 end
-setmetatable(LoveFactory,{__index=BaseFactory})
+-- PixiFactory.factory is a lazily created class-level singleton, separate
+-- from the shared DragonBones runtime. LÖVE has no PIXI.Ticker.shared;
+-- callers drive time explicitly through LoveFactory.advanceTime.
+setmetatable(LoveFactory,{__index=function(_,key)
+  if key=="factory" then
+    if LoveFactory._factory==nil then LoveFactory._factory=LoveFactory.new() end
+    return LoveFactory._factory
+  end
+  return BaseFactory[key]
+end})
 
 local function makeDispatcher()
   local listeners={}
@@ -354,12 +366,65 @@ local function makeDispatcher()
   return dispatcher
 end
 
+-- PixiFactory shares one DragonBones instance and its sound dispatcher
+-- across all factory instances. Only atlas/data caches belong to each
+-- individual BaseFactory instance.
 function LoveFactory.new(dataParser)
   local f=BaseFactory.new(dataParser)
   setmetatable(f,LoveFactory)
-  f._eventManager=makeDispatcher()
-  f._dragonBones=DragonBones.new(f._eventManager)
+  if LoveFactory._dragonBonesInstance==nil then
+    local eventManager=makeDispatcher()
+    LoveFactory._dragonBonesInstance=DragonBones.new(eventManager)
+  end
+  f._dragonBones=LoveFactory._dragonBonesInstance
+  f._eventManager=f._dragonBones.eventManager
   return f
+end
+
+-- Original PixiFactory static advanceTime(passedTime): its shared runtime
+-- is updated in seconds, without the Pixi ticker's frame conversion.
+function LoveFactory.advanceTime(passedTime)
+  if LoveFactory._dragonBonesInstance==nil then
+    error("LÖVE backend: create a Factory before advanceTime")
+  end
+  LoveFactory._dragonBonesInstance:advanceTime(passedTime)
+end
+
+-- PixiFactory.newInstance() reuses the static factory; the source's
+-- useSharedTicker option has no LÖVE equivalent and is intentionally absent.
+function LoveFactory.newInstance()
+  return LoveFactory.factory
+end
+
+-- PixiFactory.buildArmatureDisplay: builds from the original BaseFactory
+-- and adds the resulting Armature to the shared DragonBones WorldClock.
+function LoveFactory:buildArmatureDisplay(armatureName,
+    dragonBonesName,skinName,textureAtlasName)
+  local armature=self:buildArmature(
+    armatureName,dragonBonesName or "",skinName or "",textureAtlasName or "")
+  if armature~=nil then
+    self._dragonBones.clock:add(armature)
+    return armature.display
+  end
+  return nil
+end
+
+-- PixiFactory.getTextureDisplay returns a stand-alone PIXI.Sprite.
+-- The corresponding LÖVE backend display is an Image/Quad node bearing
+-- the same atlas crop and rotation, with drawing in drawTextureDisplay.
+function LoveFactory:getTextureDisplay(textureName,textureAtlasName)
+  local textureData=self:_getTextureData(textureAtlasName or "",textureName)
+  if textureData==nil or textureData.parent==nil
+      or textureData.parent.image==nil then return nil end
+  local texture=textureData.parent.image
+  local region=textureData.region
+  local render=node("image")
+  render.texture=texture
+  render.quad=love.graphics.newQuad(region.x,region.y,region.width,
+    region.height,texture:getWidth(),texture:getHeight())
+  render.rotated=textureData.rotated
+  render.packedWidth=region.width
+  return render
 end
 function LoveFactory:_buildTextureAtlasData(atlasData,textureAtlas)
   if atlasData==nil then
@@ -466,6 +531,23 @@ local function drawArmature(armature, inheritedAlpha)
 end
 function LoveFactory:drawArmature(armature)
   return drawArmature(armature)
+end
+
+-- LÖVE has no retained PIXI.Sprite scene graph. Draw the stand-alone
+-- display returned by getTextureDisplay using the same adapter matrix and
+-- atlas-rotation path as normal PixiSlot image displays.
+function LoveFactory:drawTextureDisplay(display)
+  if display==nil or display.visible==false or display.texture==nil then
+    return
+  end
+  local graphics=assert(love and love.graphics,
+    "LoveFactory.drawTextureDisplay requires LÖVE graphics")
+  graphics.push("all")
+  applyRenderTransform(graphics,display)
+  graphics.setBlendMode(display.bm)
+  graphics.setColor(display.r,display.g,display.b,display.alpha)
+  graphics.draw(display.texture,display.quad,0,0)
+  graphics.pop()
 end
 
 return {Factory=LoveFactory,Slot=LoveSlot,TextureAtlasData=LoveAtlas,
