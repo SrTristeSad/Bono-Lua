@@ -61,6 +61,8 @@ jobs:
         run: lua5.4 tests/original_animation_state.lua
       - name: Verify five original BaseTimelineState.ts classes
         run: lua5.4 tests/original_base_timeline.lua
+      - name: Verify all 16 original concrete TimelineState.ts classes
+        run: lua5.4 tests/original_concrete_timeline.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
       - name: Verify original DragonBones Lua ports on LuaJIT
