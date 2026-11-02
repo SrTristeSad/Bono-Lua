@@ -583,6 +583,15 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Diferenças e pendências:** a comparação cobre apenas 22 casos determinísticos e usa tolerância relativa de `1e-10` para valores finitos; ainda não cobre `NaN`, infinidades, conversão `toString`, demais métodos/classes, nem o sistema gráfico Pixi. Continuam faltando três blends avançados, máscaras, buffers binários compartilhados mutáveis, testes diferenciais mais amplos e o editor original. Testes aprovados não representam percentual de fidelidade nem equivalência 1:1 global.
 
+
+### Lote: PixiArmatureDisplay.dbUpdate — contrato original do contorno elíptico (etapa 50)
+
+**Referência fixa e divergência real:** DragonBones/DragonBonesJS, MIT, commit `64b6c69ae35777c2404be68c9192e2c56906079e`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts::dbUpdate`. Para `BoundingBoxType.Ellipse`, o original passa `drawEllipse(-width * 0.5, -height * 0.5, width, height)`. A API **PIXI.Graphics v5** interpreta os dois primeiros argumentos como **centro** e os dois últimos como **raios (meias dimensões)**, conforme [documentação da API PixiJS 5.0](https://pixijs.download/v5.0.0/docs/PIXI.Graphics.html). A adaptação existente usava `ellipse("line", 0, 0, width/2, height/2)`, provocando uma diferença funcional visível de centro e extensão; a versão corrigida conserva exatamente os quatro argumentos da chamada original, convertendo apenas o nome e o modo da função para `love.graphics.ellipse`.
+
+**Escopo alterado:** `dragonbones/love_original_display.lua` (somente ramo elipse de `ArmatureDisplay:drawDebug`), `tests/original_love_image_backend.lua` (verifica os quatro parâmetros originais e deslocamento por pivô/transform da elipse) e `tests/love_original_runtime.lua` (verifica pixels magenta na extremidade deslocada da elipse via GPU LÖVE real, desativação do overlay e interior transparente). A mudança não altera `dragonbones/original/`, algoritmos de animação, colisão, Pixi bounds, máscaras ou protótipos legados.
+
+**Validação:** branch `port-original-pixi-debug-ellipse-contract`, PR de integração desta etapa a registrar. CI Lua 5.4, LuaJIT e LÖVE GPU em execução ou pendente até confirmação. Não confundir a geometria do overlay de depuração com as funções de colisão do runtime original. Não há prova diferencial de pixels Pixi/LÖVE; seguem pendentes três blends avançados, máscaras, buffers compartilhados mutáveis, outros métodos de renderização e editor original. A equivalência global 1:1 permanece não comprovada.
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.

@@ -407,6 +407,65 @@ function Test.run()
   debugRig:advanceTime(0)
   colorAt(debugShot(),10,8,0,0,0,0)
   colorAt(debugShot(),3,8,0,0,0,0)
+  -- Pixi v5 Graphics.drawEllipse takes a center and half extents, unlike
+  -- the common rectangle-style width/height interpretation. Verify real
+  -- pixels for the original dbUpdate(-width/2,-height/2,width,height).
+  local ovalRaw={
+    version="5.5",
+    name="GPU-Debug-Ellipse",
+    frameRate=24,
+    armature={
+      {
+        name="rig",
+        bone={{name="root",length=0,transform={x=24,y=16}}},
+        slot={{name="oval",parent="root",displayIndex=0}},
+        skin={
+          {
+            name="default",
+            slot={
+              {
+                name="oval",
+                display={
+                  {
+                    name="oval",type="boundingBox",subType="ellipse",
+                    width=8,height=4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  local ovalFactory=Love.Factory.new()
+  ovalFactory:parseDragonBonesData(ovalRaw,"oval")
+  local ovalRig=assert(ovalFactory:buildArmature("rig","oval"))
+  local function ovalShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    ovalFactory:drawArmature(ovalRig)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  ovalRig:advanceTime(0)
+  colorAt(ovalShot(),13,14,0,0,0,0)
+  ovalRig.display.debugDraw=true
+  ovalRig:advanceTime(0)
+  -- Local center (-4,-2), radii (8,4), world center (20,14),
+  -- so the left edge at x=12 is visible. The previous incorrect
+  -- (0,0,4,2) ellipse could never reach that pixel.
+  local ellipsePixels=ovalShot()
+  local er,eg,eb,ea=ellipsePixels:getPixel(13,14)
+  assert(er>0.35 and eg<0.12 and eb>0.35 and ea>0.35,
+    ("Pixi debug ellipse left boundary expected magenta at 13,14, got %.2f %.2f %.2f %.2f")
+      :format(er,eg,eb,ea))
+  colorAt(ellipsePixels,20,14,0,0,0,0) -- center is not on the outline
+  ovalRig.display.debugDraw=false
+  ovalRig:advanceTime(0)
+  colorAt(ovalShot(),13,14,0,0,0,0)
   print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, Z-order, proxy events, Pixi debug bones/bounds and clock.")
 
 
