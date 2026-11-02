@@ -398,7 +398,7 @@ A etapa **permite finalmente ler o fixture JSON original com animações** (`tes
 
 **Limites importantes, ainda sem equivalência 1:1 do motor:** ler JSON animado para `DragonBonesData` não comprova animar/renderizar no backend LÖVE. Não há ainda teste diferencial real executado JS vs Lua, integração da fábrica original (`BaseFactory.ts`), leitor binário `BinaryDataParser.ts` nem backing `ArrayBuffer` mutável compartilhado. Alguns TODOs estão presentes no próprio TypeScript canônico; as rotinas de frames FFD ponderados ainda exigem mais cenários comparativos, e os casos gerais adversariais precisam auditoria. O projeto original do editor gráfico não é parte do runtime fixado. Não declarar importação e renderização 1:1 completas com base só nos testes unitários.
 
-PR/CI/SHA da integração serão inseridos depois da validação.
+Branch `port-original-animation-ffd-parser` integrada à `main` pelo [PR #33](https://github.com/SrTristeSad/Bono-Lua/pull/33), commit de merge [`decef77`](https://github.com/SrTristeSad/Bono-Lua/commit/decef77df98a2ad3c0c7843dc8bce89d2bccd489). CI do PR: **27/27 cenários e 105 verificações** em Lua 5.4 e LuaJIT; regressões anteriores e LÖVE também aprovados. Total acumulado dos portes originais: **876 cenários** (849 anteriores + 27), além de 22 testes do protótipo. Importação do JSON animado de teste é funcional, mas execução e renderização via factory original, backing ArrayBuffer mutável e diferencial JS ainda permanecem pendentes.
 
 ## Código que já existia antes deste porte
 
