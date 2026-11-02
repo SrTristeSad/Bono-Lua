@@ -10,7 +10,7 @@ Buffer.__index=Buffer
 function Shared.new(raw)
   local bytes=raw or ""
   assert(type(bytes)=="string","SharedBinaryBuffer expects raw bytes")
-  return setmetatable({_bytes=bytes,_patches={},_dirty=false},Buffer)
+  return setmetatable({_bytes=bytes,_patches={},_snapshot=bytes},Buffer)
 end
 function Buffer:length() return #self._bytes end
 function Buffer:byte(offset)
@@ -21,7 +21,9 @@ end
 function Buffer:setByte(offset,value)
   assert(offset>=0 and offset<#self._bytes,"SharedBinaryBuffer write out of range")
   self._patches[offset]=value%256
-  self._dirty=true
+  -- A later binary read must observe this write. Earlier Lua string
+  -- snapshots remain unchanged, as they are immutable.
+  self._snapshot=nil
 end
 function Buffer:readBytes(offset,count)
   local chars={}
@@ -36,10 +38,29 @@ function Buffer:writeBytes(offset,bytes)
   for i=1,#bytes do self:setByte(offset+i-1,bytes:byte(i)) end
 end
 function Buffer:bytes()
-  if not self._dirty then return self._bytes end
+  -- Original ArrayBuffer views share mutable memory. Lua exposes its
+  -- contents as immutable byte strings: materialize only after a write.
+  -- Repeated reads of an unchanged large DBDT should be O(1), not O(N).
+  if self._snapshot~=nil then return self._snapshot end
+  local positions={}
+  for offset in pairs(self._patches) do
+    positions[#positions+1]=offset
+  end
+  table.sort(positions)
   local chunks={}
-  for i=0,#self._bytes-1 do chunks[i+1]=string.char(self:byte(i)) end
-  return table.concat(chunks)
+  local nextByte=1
+  for _,offset in ipairs(positions) do
+    local index=offset+1
+    if nextByte<index then
+      chunks[#chunks+1]=self._bytes:sub(nextByte,index-1)
+    end
+    chunks[#chunks+1]=string.char(self._patches[offset])
+    nextByte=index+1
+  end
+  chunks[#chunks+1]=self._bytes:sub(nextByte)
+  local bytes=table.concat(chunks)
+  self._snapshot=bytes
+  return bytes
 end
 
 local function truncNumber(value)
