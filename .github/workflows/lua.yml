@@ -91,6 +91,20 @@ jobs:
         run: lua5.4 tests/original_love_image_backend.lua
       - name: Install LuaJIT (LÖVE runtime)
         run: sudo apt-get install -y luajit
+      # Test infrastructure runs the TRACKED JS output of the fixed upstream
+      # commit; product code, game runtime and editor remain exclusively Lua.
+      - name: Differential Matrix against pinned DragonBonesJS
+        run: |
+          set -eu
+          mkdir -p artifacts/upstream
+          curl --fail --location --retry 3 --connect-timeout 15 --max-time 120 \
+            "https://raw.githubusercontent.com/DragonBones/DragonBonesJS/64b6c69ae35777c2404be68c9192e2c56906079e/Pixi/5.x/out/dragonBones.js" \
+            -o artifacts/upstream/dragonBones-pixi5.js
+          node tests/differential_matrix_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/matrix_cases.tsv artifacts/upstream/matrix_expected.tsv
+          lua5.4 tests/original_matrix_differential.lua
+          luajit tests/original_matrix_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
