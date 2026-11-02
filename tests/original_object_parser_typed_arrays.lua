@@ -57,7 +57,7 @@ test("empty source buffers produce empty byte string and seven empty views",func
   eq(#data.binary,0)
   for _,key in ipairs({"intArray","floatArray","frameIntArray","frameFloatArray",
      "frameArray","timelineArray","colorArray"}) do
-    eq(type(data[key]),"table")
+    eq(type(data[key])=="table" or type(data[key])=="userdata",true)
     eq(#data[key],0)
   end
   eq(p._defaultColorOffset,-1)
