@@ -663,7 +663,8 @@ test("PixiFactory texture display supports rotated atlas frame in LÖVE",functio
   eq(display.packedWidth,2)
   f:drawTextureDisplay(display)
   local matrix=state.matrices[1]
-  near(matrix[1],0)
+  eq(matrix[1],"row")
+  near(matrix[2],0)
   near(matrix[3],1)
   near(matrix[5],2)
   near(matrix[6],-1)
