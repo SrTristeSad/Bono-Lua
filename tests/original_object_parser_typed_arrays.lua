@@ -2,8 +2,8 @@
 -- DragonBonesJS source (commit 64b6c69ae35777c2404be68c9192e2c56906079e).
 -- Original: DragonBones/src/dragonBones/parser/ObjectDataParser.ts 2215-2292.
 -- Lua-only tests run under Lua 5.4 and LuaJIT. The result is a packed
--- little-endian byte string with typed-view numeric snapshots, not a JS
--- mutable ArrayBuffer; differences are tracked in PORTING_STATUS.
+-- little-endian byte string with seven views sharing one mutable Lua
+-- byte-backed buffer; current bytes are exposed by DragonBonesData.binary.
 package.path="./?.lua;./?/init.lua;"..package.path
 local Parser=require("dragonbones.original.parser.ObjectDataParser")
 local DBData=require("dragonbones.original.model.DragonBonesData")
@@ -254,15 +254,16 @@ test("finalizing after _parseArray uses newly cleared source buffers",function()
   eq(original,fromBytes(1,0,2,0))
   eq(data.binary,fromBytes(3,0,4,0))
 end)
-test("binary and numeric views are snapshots not mutable shared ArrayBuffer",function()
+test("mutating typed views updates shared ArrayBuffer bytes",function()
   local p,data=fixture()
   p._intArray={2,3}
   p:_modifyArray()
   local bytes=data.binary
   data.intArray[1]=9
-  eq(bytes,data.binary)
-  eq(data.binary,fromBytes(2,0,3,0))
-  eq(p._intArray[1],2)
+  eq(bytes,fromBytes(2,0,3,0)) -- Lua's copied strings retain old bytes.
+  eq(data.binary,fromBytes(9,0,3,0))
+  eq(data.intArray[1],9)
+  eq(p._intArray[1],2) -- Source JS parser staging array is separate.
 end)
 test("source fifth alignment condition is a no-op after timeline padding",function()
   local p,data=fixture()
