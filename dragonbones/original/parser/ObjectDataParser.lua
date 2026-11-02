@@ -846,6 +846,145 @@ function ObjectDataParser:_parseArray(_rawData)
   clear(self._colorArray)
 end
 
+-- ObjectDataParser.ts _modifyArray (source lines 2215-2292).
+-- The source constructs one ArrayBuffer with seven typed views. Lua has no
+-- standard shared mutable ArrayBuffer; a byte string plus seven numeric
+-- typed-view snapshots preserves the original byte layout at finalization.
+-- See PORTING_STATUS for the explicit post-finalization aliasing limitation.
+local function truncNumber(value)
+  if type(value)=="boolean" then value=value and 1 or 0 end
+  if value==nil or value==JsonNull then return 0 end
+  if type(value)~="number" then
+    if type(value)=="string" then
+      if value:match("^%s*$") then return 0 end
+      value=tonumber(value) or 0
+    else return 0 end
+  end
+  if value~=value or value==math.huge or value==-math.huge then return 0 end
+  if value<0 then return math.ceil(value) end
+  return math.floor(value)
+end
+local function uint16(value)
+  return truncNumber(value)%65536
+end
+local function pack16(value,isUnsigned)
+  local n=uint16(value)
+  local decoded=n
+  if not isUnsigned and n>=32768 then decoded=n-65536 end
+  return string.char(n%256,math.floor(n/256)),decoded
+end
+local function roundTiesEven(value)
+  local lower=math.floor(value)
+  local fractional=value-lower
+  if fractional>0.5 or (fractional==0.5 and lower%2~=0) then
+    return lower+1
+  end
+  return lower
+end
+local function float32Bits(value)
+  if type(value)=="boolean" then value=value and 1 or 0 end
+  if value==nil or value==JsonNull then value=0 end
+  if type(value)~="number" then value=tonumber(value) or 0 end
+  local sign=(value<0 or (value==0 and 1/value==-math.huge)) and 1 or 0
+  local signBits=sign*2147483648
+  if value~=value then
+    return 2143289344,0/0 -- canonical quiet NaN (payload is unspecified in JS).
+  end
+  if value==math.huge or value==-math.huge then
+    return signBits+2139095040,sign==1 and -math.huge or math.huge
+  end
+  local magnitude=math.abs(value)
+  if magnitude==0 then return signBits,sign==1 and -0.0 or 0.0 end
+  local exponentBits,mantissa,quantized
+  if magnitude<2^-126 then
+    mantissa=roundTiesEven(magnitude/2^-149)
+    if mantissa==0 then
+      quantized=0
+      exponentBits=0
+    elseif mantissa>=8388608 then
+      exponentBits=1
+      mantissa=0
+      quantized=2^-126
+    else
+      exponentBits=0
+      quantized=mantissa*2^-149
+    end
+  else
+    local exponent=math.floor(math.log(magnitude)/math.log(2))
+    local power=2^exponent
+    local normalized=magnitude/power
+    while normalized<1 do exponent=exponent-1;normalized=normalized*2 end
+    while normalized>=2 do exponent=exponent+1;normalized=normalized/2 end
+    mantissa=roundTiesEven((normalized-1)*8388608)
+    if mantissa==8388608 then
+      exponent=exponent+1
+      mantissa=0
+    end
+    if exponent>127 then
+      return signBits+2139095040,sign==1 and -math.huge or math.huge
+    end
+    exponentBits=exponent+127
+    quantized=(1+mantissa/8388608)*2^exponent
+  end
+  local bits=signBits+exponentBits*8388608+mantissa
+  return bits,sign==1 and -quantized or quantized
+end
+local function pack32(value)
+  local bits,decoded=float32Bits(value)
+  local a=bits%256
+  bits=math.floor(bits/256)
+  local b=bits%256
+  bits=math.floor(bits/256)
+  local c=bits%256
+  local d=math.floor(bits/256)
+  return string.char(a,b,c,d),decoded
+end
+local function appendTyped(source,kind,segments)
+  local result={}
+  for i=1,#source do
+    local bytes,decoded
+    if kind=="float32" then
+      bytes,decoded=pack32(source[i])
+    else
+      bytes,decoded=pack16(source[i],kind=="uint16")
+    end
+    result[i]=decoded
+    segments[#segments+1]=bytes
+  end
+  return result
+end
+function ObjectDataParser:_modifyArray()
+  -- Original parity checks use element counts, not byte lengths. Preserve
+  -- the upstream fifth condition (timeline length controls color padding).
+  if #self._intArray%2~=0 then
+    self._intArray[#self._intArray+1]=0
+  end
+  if #self._frameIntArray%2~=0 then
+    self._frameIntArray[#self._frameIntArray+1]=0
+  end
+  if #self._frameArray%2~=0 then
+    self._frameArray[#self._frameArray+1]=0
+  end
+  if #self._timelineArray%2~=0 then
+    self._timelineArray[#self._timelineArray+1]=0
+  end
+  if #self._timelineArray%2~=0 then
+    self._colorArray[#self._colorArray+1]=0
+  end
+
+  local data=self._data
+  local segments={}
+  data.intArray=appendTyped(self._intArray,"int16",segments)
+  data.floatArray=appendTyped(self._floatArray,"float32",segments)
+  data.frameIntArray=appendTyped(self._frameIntArray,"int16",segments)
+  data.frameFloatArray=appendTyped(self._frameFloatArray,"float32",segments)
+  data.frameArray=appendTyped(self._frameArray,"int16",segments)
+  data.timelineArray=appendTyped(self._timelineArray,"uint16",segments)
+  data.colorArray=appendTyped(self._colorArray,"int16",segments)
+  data.binary=table.concat(segments)
+  self._defaultColorOffset=-1
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
