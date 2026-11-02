@@ -28,7 +28,8 @@ local function test(name,fn)
 end
 local state={}
 local function fakeLove()
-  state={draws={},quads={},meshes={},colors={},blends={},matrices={},push=0,pop=0}
+  state={draws={},quads={},meshes={},colors={},blends={},matrices={},
+    debugOps={},push=0,pop=0}
   _G.love={
     graphics={
       newQuad=function(x,y,w,h,iw,ih)
@@ -60,6 +61,24 @@ local function fakeLove()
       end,
       draw=function(image,quad,x,y)
         state.draws[#state.draws+1]={image=image,quad=quad,x=x,y=y}
+      end,
+      setLineWidth=function(w)
+        state.debugOps[#state.debugOps+1]={"lineWidth",w}
+      end,
+      line=function(...)
+        state.debugOps[#state.debugOps+1]={"line",...}
+      end,
+      circle=function(...)
+        state.debugOps[#state.debugOps+1]={"circle",...}
+      end,
+      rectangle=function(...)
+        state.debugOps[#state.debugOps+1]={"rectangle",...}
+      end,
+      ellipse=function(...)
+        state.debugOps[#state.debugOps+1]={"ellipse",...}
+      end,
+      polygon=function(...)
+        state.debugOps[#state.debugOps+1]={"polygon",...}
       end
     },
     math={
@@ -1123,14 +1142,141 @@ test("PixiArmatureDisplay destroy invokes the same armature disposal contract",f
   local ok=pcall(function()return display.animation end)
   eq(ok,false) -- Original getter dereferences a detached armature.
 end)
-test("PixiArmatureDisplay surfaces unsupported debug draw instead of faking it",function()
+-- Pinned PixiArmatureDisplay.dbUpdate draws cyan bone segments and circles
+-- and magenta bounding boxes above the Armature's display children.
+local function debugRig()
+  local raw={version="5.5",name="Debug",frameRate=24,armature={{
+    name="rig",bone={{name="root",length=8,transform={x=4,y=5}}},
+    slot={
+      {name="rect",parent="root",displayIndex=0},
+      {name="oval",parent="root",displayIndex=0},
+      {name="poly",parent="root",displayIndex=0}
+    },
+    skin={{name="default",slot={
+      {name="rect",display={{name="rect",type="boundingBox",subType="rectangle",width=6,height=4}}},
+      {name="oval",display={{name="oval",type="boundingBox",subType="ellipse",width=8,height=4}}},
+      {name="poly",display={{name="poly",type="boundingBox",subType="polygon",
+        vertices={0,0,4,0,2,4}}}}
+    }}}
+  }}}
+  local f,_,_,rig=build(raw)
+  return f,rig
+end
+test("Pixi debugDraw is disabled by default without allocating overlays",function()
   local f,_,_,rig=build()
+  rig:advanceTime(0)
+  eq(rig.display._debugDraw,false)
+  eq(rig.display._debugDrawer,nil)
+  f:drawArmature(rig)
+  eq(#state.debugOps,0)
+end)
+test("Pixi debugDraw renders cyan bone with original world transform",function()
+  local f,rig=debugRig()
   rig.display.debugDraw=true
-  local ok,err=pcall(function()rig.display:dbUpdate()end)
-  eq(ok,false)
-  eq(tostring(err):find("debugDraw is not ported",1,true)~=nil,true)
+  rig:advanceTime(0)
+  local drawer=assert(rig.display._debugDrawer)
+  eq(rig.display._debugDraw,true)
+  eq(#drawer.bones,1)
+  near(drawer.bones[1][1],4)
+  near(drawer.bones[1][2],5)
+  near(drawer.bones[1][3],12)
+  near(drawer.bones[1][4],5)
+  f:drawArmature(rig)
+  local foundLine,foundCircle=false,false
+  for _,op in ipairs(state.debugOps) do
+    if op[1]=="line" then
+      near(op[2],4);near(op[3],5)
+      near(op[4],12);near(op[5],5)
+      foundLine=true
+    elseif op[1]=="circle" then
+      eq(op[2],"fill")
+      near(op[3],4);near(op[4],5);near(op[5],3)
+      foundCircle=true
+    end
+  end
+  eq(foundLine,true)
+  eq(foundCircle,true)
+  eq(#state.draws,0) -- boundingBox displays are not texture Sprites
+end)
+test("Pixi debugDraw maps all three original bounding box geometries",function()
+  local f,rig=debugRig()
+  rig.display.debugDraw=true
+  rig:advanceTime(0)
+  local slots=rig.display._debugDrawer.slots
+  eq(#slots,3)
+  eq(slots[1].name,"rect")
+  eq(slots[1].type,Core.BoundingBoxType.Rectangle)
+  eq(slots[1].width,6)
+  eq(slots[1].height,4)
+  eq(slots[2].type,Core.BoundingBoxType.Ellipse)
+  eq(slots[3].type,Core.BoundingBoxType.Polygon)
+  eq(#slots[3].vertices,6)
+  f:drawArmature(rig)
+  local shape={}
+  for _,op in ipairs(state.debugOps) do
+    if op[1]=="rectangle" or op[1]=="ellipse" or op[1]=="polygon" then
+      shape[#shape+1]=op
+    end
+  end
+  eq(#shape,3)
+  eq(shape[1][1],"rectangle");eq(shape[1][2],"line")
+  near(shape[1][3],-3);near(shape[1][4],-2)
+  near(shape[1][5],6);near(shape[1][6],4)
+  eq(shape[2][1],"ellipse");eq(shape[2][2],"line")
+  near(shape[2][5],4);near(shape[2][6],2)
+  eq(shape[3][1],"polygon");eq(shape[3][2],"line")
+  eq(#shape[3][3],6)
+end)
+test("Pixi debugDraw slot transform includes position and pivot",function()
+  local f,rig=debugRig()
+  local slot=rig:getSlot("rect")
+  slot._pivotX=2
+  slot._pivotY=1
+  rig.display.debugDraw=true
+  rig:advanceTime(0)
+  local shape=rig.display._debugDrawer.slots[1]
+  near(shape.a,1);near(shape.b,0)
+  near(shape.c,0);near(shape.d,1)
+  near(shape.tx,2);near(shape.ty,4)
+  f:drawArmature(rig)
+  eq(#state.matrices,3)
+  near(state.matrices[1][5],2)
+  near(state.matrices[1][9],4)
+end)
+test("Pixi debugDraw global and local switches preserve cached overlay",function()
+  local f,rig=debugRig()
+  Core.debugDraw=true
+  rig:advanceTime(0)
+  eq(rig.display._debugDraw,true)
+  local same=rig.display._debugDrawer
+  Core.debugDraw=false
+  rig:advanceTime(0)
+  eq(rig.display._debugDraw,false)
+  eq(rig.display._debugDrawer,same)
+  f:drawArmature(rig)
+  eq(#state.debugOps,0)
+  rig.display.debugDraw=true
+  rig:advanceTime(0)
+  eq(rig.display._debugDraw,true)
+  eq(rig.display._debugDrawer,same)
+  f:drawArmature(rig)
+  eq(#state.debugOps>0,true)
   rig.display.debugDraw=false
-  rig.display:dbUpdate()
+  rig:advanceTime(0)
+  eq(rig.display._debugDraw,false)
+end)
+test("Pixi debugDraw overlay clears only after deferred disposal",function()
+  local f,rig=debugRig()
+  local display=rig.display
+  display.debugDraw=true
+  rig:advanceTime(0)
+  eq(display._debugDrawer~=nil,true)
+  display:dispose()
+  eq(display._debugDrawer~=nil,true)
+  f.dragonBones:advanceTime(0)
+  eq(display._debugDrawer,nil)
+  eq(display._debugDraw,false)
+  eq(display.armature,nil)
 end)
 
 print(("Original runtime LÖVE image adapter: %d passed, %d failed, %d assertions")
