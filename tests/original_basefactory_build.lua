@@ -66,12 +66,12 @@ local function sampleRaw(withSlots)
       {name="empty",parent="root",displayIndex=-1}}
     arm.skin={{
       name="default",slot={{
-        name="body",display={{
+        name="body",display={
           {name="face",type="image",path="face"},
           {name="mesh",type="mesh",path="mesh",
             vertices={0,0,1,0,1,1},triangles={0,1,2},
             uvs={0,0,1,0,1,1}}
-        }}
+        }
       }}
     },{
       name="blue",slot={{
