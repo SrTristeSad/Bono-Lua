@@ -424,7 +424,7 @@ test("actual bundled fixture parses bone-slot-skin hierarchy with model classes"
 end)
 test("top-level DragonBones entry exists but animation parser remains absent",function()
   local p=setup()
-  eq(p.parseDragonBonesData,nil)
+  eq(type(p.parseDragonBonesData),"function")
   eq(type(p._parseGeometry),"function")
   eq(type(p._modifyArray),"function")
   eq(p._parseAnimation,nil)
