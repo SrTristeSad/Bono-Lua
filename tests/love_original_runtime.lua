@@ -125,10 +125,14 @@ function Test.run()
   local childSlot=assert(outer:getSlot("child"))
   local inner=assert(childSlot.childArmature)
   assert(inner:getSlot("body")~=nil)
-  local function nestedShot()
+  local function nestedShot(whiteBackground)
     love.graphics.push("all")
     love.graphics.setCanvas(target)
-    love.graphics.clear(0,0,0,0)
+    if whiteBackground then
+      love.graphics.clear(1,1,1,1)
+    else
+      love.graphics.clear(0,0,0,0)
+    end
     love.graphics.translate(8,8)
     nestedFactory:drawArmature(outer)
     love.graphics.setCanvas()
@@ -160,6 +164,36 @@ function Test.run()
   colorAt(meshShot(),15,9,0,0,1,1)
   meshArmature.replacedTexture=nil
   colorAt(meshShot(),15,9,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, nested Armatures and replacedTexture pixels.")
+  -- PixiSlot rounds tint channels to 8-bit values, but passes alpha
+  -- through without byte rounding. LÖVE must draw the resulting tint.
+  local imageSlot=assert(armature:getSlot("body"))
+  imageSlot._colorTransform.redMultiplier=0.5
+  imageSlot._colorDirty=true
+  imageSlot:update(-1)
+  colorAt(shot(),9,9,128/255,0,0,1)
+  imageSlot._colorTransform.redMultiplier=1
+  imageSlot._colorDirty=true
+  imageSlot:update(-1)
+  colorAt(shot(),9,9,1,0,0,1)
+  meshSlot._colorTransform.redMultiplier=0.5
+  meshSlot._colorDirty=true
+  meshSlot:update(-1)
+  colorAt(meshShot(),15,9,128/255,0,0,1)
+  meshSlot._colorTransform.redMultiplier=1
+  meshSlot._colorDirty=true
+  meshSlot:update(-1)
+
+  -- Pixi's child Armature display is an alpha-bearing container. Render
+  -- its two half-opacity stages over an opaque canvas to check 1/4 alpha.
+  local nestedImageSlot=assert(inner:getSlot("body"))
+  childSlot._colorTransform.alphaMultiplier=0.5
+  childSlot._colorDirty=true
+  childSlot:update(-1)
+  nestedImageSlot._colorTransform.alphaMultiplier=0.5
+  nestedImageSlot._colorDirty=true
+  nestedImageSlot:update(-1)
+  colorAt(nestedShot(true),17,15,1,0.75,0.75,1)
+  print("Original DragonBones LÖVE GPU passed: images, meshes, atlas replacement, tint and nested alpha.")
+
 end
 return Test
