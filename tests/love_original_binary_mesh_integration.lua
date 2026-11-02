@@ -132,16 +132,42 @@ function Test.run()
   assert(binaryData.binary==blob)
   assert(#binaryData.floatArray==#jsonData.floatArray)
   assert(binaryArmature.animation:getState("shift")==nil)
+  local jsonAnimation=assert(jsonArmature.armatureData:getAnimation("shift"))
+  local binAnimation=assert(binaryArmature.armatureData:getAnimation("shift"))
+  assert(jsonAnimation:getBoneTimelines("root")[1].type==Core.TimelineType.BoneTranslate)
+  assert(binAnimation:getBoneTimelines("root")[1].type==Core.TimelineType.BoneTranslate)
+  assert(jsonAnimation:getSlotTimelines("body")[1].type==Core.TimelineType.SlotDeform)
+  assert(binAnimation:getSlotTimelines("body")[1].type==Core.TimelineType.SlotDeform)
 
   jsonArmature.animation:play("shift")
   binaryArmature.animation:play("shift")
+  local firstPixels,lastPixels
   for i,seconds in ipairs({0,3/12,3/12,3/12}) do
     jsonArmature:advanceTime(seconds)
     binaryArmature:advanceTime(seconds)
     local a=shot(jsonFactory,jsonArmature)
     local b=shot(binaryFactory,binaryArmature)
     pixelsEqual(a,b,"animation frame "..i)
+    if i==1 then firstPixels=b end
+    if i==4 then lastPixels=b end
   end
+  -- Comparisons alone would also accept two broken static or empty rigs.
+  -- Require both animated rigs to have genuinely visible, MOVING mesh pixels.
+  local changed,firstColored,lastColored=0,0,0
+  for y=0,27 do for x=0,35 do
+    local r0,g0,b0,a0=firstPixels:getPixel(x,y)
+    local r1,g1,b1,a1=lastPixels:getPixel(x,y)
+    if a0>0.2 and r0>0.5 then firstColored=firstColored+1 end
+    if a1>0.2 and r1>0.5 then lastColored=lastColored+1 end
+    if math.abs(a0-a1)>0.1 then changed=changed+1 end
+  end end
+  assert(firstColored>0 and lastColored>0 and changed>=4,
+    "Original JSON/DBDT animated GPU meshes remained empty or static")
+  assert(binaryArmature:getBone("root").globalTransformMatrix.tx>1,
+    "Original DBDT bone translation timeline did not move the root")
+  local deform=slot:getDisplayFrameAt(0).deformVertices
+  assert(#deform>=6 and deform[1]>0.5,
+    "Original DBDT SlotDeform timeline did not deform the mesh")
   assert(slot.displayIndex==0)
   local base=binaryData.binary
   -- A live typed-view mutation of the parsed DBDT reaches the original
