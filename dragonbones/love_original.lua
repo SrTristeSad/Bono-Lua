@@ -501,6 +501,14 @@ local function synchronizeRenderTexture(slot)
     if render.mesh~=nil and slot._geometryData~=nil then
       slot:_updateMesh()
     end
+    -- Restore the display's position after the unavailable-texture branch
+    -- reset it to zero. Skinned and surface meshes deliberately retain the
+    -- identity transform established by PixiSlot._updateFrame.
+    if render.texture~=nil and (slot._geometryData==nil or
+        (slot._geometryData.weight==nil and
+         slot._parent._boneData.type==DragonBones.BoneType.Bone)) then
+      slot:_updateTransform()
+    end
     -- LÖVE binds its resource when drawing; Pixi updates its retained
     -- Sprite during Slot.update. Re-apply the original visibility predicate
     -- after reattaching an image so an earlier hidden frame can reappear.
