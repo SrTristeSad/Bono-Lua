@@ -346,7 +346,68 @@ function Test.run()
   assert(display.armature==nil)
   factory.dragonBones:advanceTime(0) -- deferred Armature pool cleanup
   assert(#display._renderSlots==0)
-  print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, display Z-order, PixiArmatureDisplay event proxy and clock.")
+  -- PixiArmatureDisplay.dbUpdate debug Sprite: cyan line/circle for bones,
+  -- magenta outline for a bounding box, drawn above the regular children.
+  local debugRaw={
+    version="5.5",
+    name="GPU-Debug",
+    frameRate=24,
+    armature={
+      {
+        name="rig",
+        bone={{name="root",length=6,transform={x=8,y=8}}},
+        slot={{name="hitbox",parent="root",displayIndex=0}},
+        skin={
+          {
+            name="default",
+            slot={
+              {
+                name="hitbox",
+                display={
+                  {
+                    name="hitbox",type="boundingBox",subType="rectangle",
+                    width=10,height=8
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  local debugFactory=Love.Factory.new()
+  debugFactory:parseDragonBonesData(debugRaw,"debug")
+  local debugRig=assert(debugFactory:buildArmature("rig","debug"))
+  local function debugShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    debugFactory:drawArmature(debugRig)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  debugRig:advanceTime(0)
+  colorAt(debugShot(),10,8,0,0,0,0)
+  debugRig.display.debugDraw=true
+  debugRig:advanceTime(0)
+  local debugPixels=debugShot()
+  -- The cyan bone line and joint circle overlap here. LÖVE's alpha
+  -- blending on a transparent canvas compounds the alpha (0.7 then 0.7),
+  -- so test the visible debug color rather than demanding a single pass.
+  local cr,cg,cb,ca=debugPixels:getPixel(10,8)
+  assert(cr<0.08 and cg>0.65 and cb>0.65 and ca>0.65,
+    "Pixi debugDraw cyan bone/joint must be visible on LÖVE GPU")
+  local mr,mg,mb,ma=debugPixels:getPixel(3,8)
+  assert(mr>0.6 and mg<0.08 and mb>0.6 and ma>0.6,
+    "Pixi debugDraw magenta bounding box must be visible on LÖVE GPU")
+  colorAt(debugPixels,0,0,0,0,0,0)
+  debugRig.display.debugDraw=false
+  debugRig:advanceTime(0)
+  colorAt(debugShot(),10,8,0,0,0,0)
+  colorAt(debugShot(),3,8,0,0,0,0)
+  print("Original DragonBones LÖVE GPU passed: images, FFD, atlas, Z-order, proxy events, Pixi debug bones/bounds and clock.")
 
 
 end
