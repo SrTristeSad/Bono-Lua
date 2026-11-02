@@ -594,6 +594,17 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 **Limites e pendências:** não confundir geometria do overlay com funções originais de colisão. O teste GPU e a conferência da assinatura Pixi v5 **não são uma comparação de pixels executando Pixi e LÖVE em paralelo**. Ainda faltam três blends avançados, máscaras, buffers compartilhados mutáveis, outros métodos de renderização, testes diferenciais extensos e o editor original. A equivalência 1:1 global permanece **não comprovada**.
 
+
+### Etapa 51 — execução diferencial do Transform.ts original (JS x Lua)
+
+**Fonte original fixada:** `DragonBones/DragonBonesJS` MIT, commit `64b6c69ae35777c2404be68c9192e2c56906079e`, `DragonBones/src/dragonBones/geom/Transform.ts`, usando o artefato original versionado em `Pixi/5.x/out/dragonBones.js`, obtido pela CI a partir do commit imutável. O JavaScript original só é executado como **oráculo de testes**, não faz parte do motor, da aplicação ou do editor Bono-Lua.
+
+**Escopo:** nova suíte de comparação diferencial, com **44 casos compartilhados** em `tests/fixtures/transform_cases.tsv`, executados contra `dragonBones.Transform` de fato pelo script de teste `tests/differential_transform_original.js` e depois contra `dragonbones/original/geom/Transform.lua` por `tests/original_transform_differential.lua` em Lua 5.4 e LuaJIT. Testa `normalizeRadian` (múltiplos de π, valores pequenos, negativos e grandes), `toMatrix` (rotação, skew, escalas nulas/negativas), `fromMatrix` (sinal de escalas anteriores, matriz nula, degenerações, quadrantes e shear), além de `add`, `minus`, `copyFrom`, `identity` e retornos. Compara os resultados numéricos com tolerância relativa `1e-10` e os valores não finitos (incluindo `NaN` e `Infinity`) por classe. O harness foi integrado ao job `lua-tests` da CI, reaproveitando o bundle original fixado já baixado para `Matrix`.
+
+**Arquivos alterados:** `tests/fixtures/transform_cases.tsv`, `tests/differential_transform_original.js`, `tests/original_transform_differential.lua`, `.github/workflows/lua.yml` e este documento. **Nenhum algoritmo ou arquivo de produção foi alterado** antes de uma divergência observada, e os protótipos legados estão intocados. A execução de um oráculo JS em testes não altera a exigência de produto exclusivamente Lua.
+
+**Validação inicial:** branch `port-original-transform-differential`, PR e CI a confirmar. Ainda não há equivalência comprovada para os métodos/entradas fora dos casos examinados, em particular `toString` e todas as variantes numéricas do ECMAScript. Não há equivalência visual Pixi/LÖVE demonstrada. Permanecem faltando três blends avançados, máscaras, buffers binários compartilhados mutáveis, comparações diferenciais extensivas das demais classes e a fonte/porte do editor. **Não declarar fidelidade 1:1 global nem percentual de conclusão.**
+
 ## Código que já existia antes deste porte
 
 Arquivos como dragonbones/matrix.lua, parser.lua, animation.lua e atlas.lua eram uma implementação própria simplificada. **Não são portes fiéis**; permanecem funcionando para não quebrar a demonstração LÖVE, mas não contam como módulos originais reconstruídos. Só substituir essas rotas quando o porte fiel estiver completo, verificado e integrado.
