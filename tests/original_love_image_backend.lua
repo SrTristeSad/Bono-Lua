@@ -195,7 +195,7 @@ test("atlas rotated texture applies packed de-rotation matrix",function()
   near(m[2],0)
   near(m[3],1)
   near(m[6],-1)
-  near(m[9],0)
+  near(m[9],2) -- rotated packed region moves local origin by its width.
 end)
 test("unsupported geometry mesh rejects instead of silently rendering an image",function()
   fakeLove()
