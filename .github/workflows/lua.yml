@@ -175,6 +175,10 @@ jobs:
         run: |
           LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ORIGINAL_RENDER_TEST=1 \
             timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Verify default love . uses original DragonBones Lua runtime
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ORIGINAL_APP_TEST=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
       - name: Verify screenshot output
         run: |
           mkdir -p artifacts

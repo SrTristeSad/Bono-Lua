@@ -2,7 +2,7 @@
 
 **Linguagem do projeto: Lua.** O [DragonBonesJS](https://github.com/DragonBones/DragonBonesJS) é apenas a **referência técnica** para o porte, não uma dependência de execução.
 
-A branch principal (`main`) contém agora uma base escrita inteiramente em Lua, no lugar do protótipo JavaScript anterior. O histórico do protótipo continua acessível nos commits antigos do Git. **Não é ainda uma cópia funcional completa do DragonBones**: este é o primeiro núcleo executável do porte.
+A aplicação `love .` usa diretamente o porte original em `dragonbones/original/`, com `dragonbones.love_original.Factory` como adaptação gráfica ao LÖVE. **O protótipo Lua antigo continua no repositório, mas não é mais a rota executada pela demonstração principal.** O porte ainda não é uma cópia funcional completa do DragonBones: há recursos pendentes, explicitados em `docs/PORTING_STATUS.md`.
 
 
 ## Direção obrigatória: porte fiel do original
@@ -13,13 +13,7 @@ O trabalho verificável de porte original está em `dragonbones/original/`, incl
 
 ## Como executar
 
-Requisitos para testes: **Lua 5.4** (nenhum pacote Lua externo).
-
-```sh
-lua tests/run.lua
-```
-
-Para abrir a visualização 2D com sprites de atlas, instale [LÖVE 11.x](https://love2d.org/) e execute:
+Para abrir o **runtime original portado para Lua**, instale [LÖVE 11.x](https://love2d.org/) e execute:
 
 ```sh
 love .
@@ -42,7 +36,7 @@ assets/
 
 Depois execute `love .`. O programa lê os três arquivos locais automaticamente e usa a primeira armadura e o primeiro clip. Para voltar ao exemplo integrado, mova ou renomeie `assets/project_ske.json`.
 
-O atlas atual renderiza **displays de imagem normais e rotacionados em 90°**, com recorte, pivô e transformação pelos ossos. Malhas, múltiplos atlas, eventos, máscaras e outros tipos avançados de display ainda não estão implementados. A renderização de PNG externos exige o LÖVE, mas todo o código do projeto está em Lua.
+A aplicação principal agora utiliza `ObjectDataParser`, `BaseFactory`, `Armature`, `Animation` e `Slot` do porte original, com a GPU LÖVE no lugar de PixiJS. Há suporte e testes no backend original para malhas, FFD, atlas, relógio, eventos e Z-order; **isso não comprova compatibilidade com todas as exportações reais**. Máscaras e alguns blend modes avançados continuam ausentes. Não há dependência JavaScript no produto.
 
 ## Troca de desenhos durante a animação
 
@@ -56,7 +50,9 @@ O motor Lua já interpreta as timelines **`animation[].slot[].displayFrame`** e 
 
 Na demonstração `swap`, a peça do braço muda entre os dois sprites de exemplo, desaparece e retorna. O CI verifica os quadros por testes de Lua e compara pixels renderizados pelo LÖVE, inclusive ocultação e looping.
 
-## Núcleo Lua incluído
+## Protótipo antigo (preservado, mas não utilizado por `love .`)
+
+Os módulos simplificados em `dragonbones/*.lua` descritos abaixo são históricos. **Eles não são o motor original nem a implementação da janela principal atual.** O motor atualmente executado fica em `dragonbones/original/` e seu adaptador LÖVE em `dragonbones/love_original.lua`.
 
 - Leitor JSON estrito e independente de JavaScript.
 - Parser dos dados DragonBones JSON 5.x: armaduras, ossos, hierarquia, slots, skins e timelines básicas.
@@ -70,7 +66,7 @@ Na demonstração `swap`, a peça do braço muda entre os dois sprites de exempl
 
 ## Limites atuais
 
-Faltam os recursos do motor original: malhas ponderadas e deformação FFD, IK, constraints de caminho, skins dinâmicas, animação de cor/ordem Z dos slots, interpolação completa de todos os canais, eventos, suporte binário DBBIN, editor clássico completo e exportação. **Não confundir esta etapa com uma implementação 1:1 concluída.**
+O runtime original portado possui verificações específicas de malhas, FFD, IK, slots, Z-order, animação, eventos, parser JSON/binário e renderização LÖVE. Porém **não existe comprovação de equivalência global 1:1**: buffers binários ainda não implementam `ArrayBuffer` compartilhado mutável; máscaras e os modos Pixi `Difference`, `HardLight` e `Overlay` permanecem pendentes; o editor original precisa de fonte e licença verificadas; mais exportações reais e comportamentos devem ser comparados. Os módulos legados têm limites diferentes e não devem ser confundidos com o porte.
 
 A camada gráfica LÖVE é um host externo, assim como qualquer motor Lua usa bibliotecas nativas para obter janela, GPU e áudio; o código da aplicação e da lógica de animação continua em Lua.
 
