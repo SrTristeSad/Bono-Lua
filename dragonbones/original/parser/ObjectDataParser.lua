@@ -678,6 +678,174 @@ function ObjectDataParser:_parsePolygonBoundingBox(raw)
   return bounding
 end
 
+-- ObjectDataParser.ts: _parseGeometry (lines 2065-2201) and
+-- _parseArray (lines 2203-2213). Preserve original array offsets as
+-- zero-based values; all Lua array reads and writes add one.
+local function zeroAt(array,offset)
+  return array[offset+1]
+end
+local function zeroPut(array,offset,value)
+  array[offset+1]=value
+end
+local function extend(array,length)
+  -- JS sets Array.length before assigning indexed elements; typed arrays
+  -- later coerce unset holes to 0. Initialize those holes at reservation.
+  for index=#array+1,length do array[index]=0 end
+end
+local function indexOf(array,value)
+  for index,item in ipairs(array) do
+    if item==value then return index-1 end
+  end
+  return -1
+end
+
+function ObjectDataParser:_parseGeometry(rawData,geometry)
+  local rawVertices=rawData[DataParser.VERTICES]
+  local vertexCount=math.floor(#rawVertices/2)
+  local triangleCount=0
+  local geometryOffset=#self._intArray
+  local verticesOffset=#self._floatArray
+  local intArray=self._intArray
+  local floatArray=self._floatArray
+  local offsets=Core.BinaryOffset
+  geometry.offset=geometryOffset
+  geometry.data=self._data
+
+  extend(intArray,#intArray+4)
+  zeroPut(intArray,geometryOffset+offsets.GeometryVertexCount,vertexCount)
+  zeroPut(intArray,geometryOffset+offsets.GeometryFloatOffset,verticesOffset)
+  zeroPut(intArray,geometryOffset+offsets.GeometryWeightOffset,-1)
+
+  extend(floatArray,#floatArray+vertexCount*2)
+  for i=0,vertexCount*2-1 do
+    zeroPut(floatArray,verticesOffset+i,rawVertices[i+1])
+  end
+
+  if get(rawData,DataParser.TRIANGLES)~=nil then
+    local triangles=rawData[DataParser.TRIANGLES]
+    triangleCount=math.floor(#triangles/3)
+    extend(intArray,#intArray+triangleCount*3)
+    for i=0,triangleCount*3-1 do
+      zeroPut(intArray,geometryOffset+offsets.GeometryVertexIndices+i,
+        triangles[i+1])
+    end
+  end
+  zeroPut(intArray,geometryOffset+offsets.GeometryTriangleCount,triangleCount)
+
+  if get(rawData,DataParser.UVS)~=nil then
+    local uvs=rawData[DataParser.UVS]
+    local uvOffset=verticesOffset+vertexCount*2
+    extend(floatArray,#floatArray+vertexCount*2)
+    for i=0,vertexCount*2-1 do
+      zeroPut(floatArray,uvOffset+i,uvs[i+1])
+    end
+  end
+
+  if get(rawData,DataParser.WEIGHTS)~=nil then
+    local rawWeights=rawData[DataParser.WEIGHTS]
+    -- Kept verbatim: upstream evaluates floor(length-vertexCount) / 2,
+    -- rather than floor((length-vertexCount) / 2).
+    local weightCount=math.floor(#rawWeights-vertexCount)/2
+    local weightOffset=#intArray
+    local floatOffset=#floatArray
+    local weightBoneCount=0
+    local sortedBones=self._armature.sortedBones
+    local weight=Pool.borrowObject(DisplayModels.WeightData)
+    weight.count=weightCount
+    weight.offset=weightOffset
+
+    extend(intArray,#intArray+2+weightBoneCount+vertexCount+weightCount)
+    zeroPut(intArray,weightOffset+offsets.WeigthFloatOffset,floatOffset)
+
+    if get(rawData,DataParser.BONE_POSE)~=nil then
+      local slotPose=rawData[DataParser.SLOT_POSE]
+      local bonePoses=rawData[DataParser.BONE_POSE]
+      local indices={}
+      weightBoneCount=math.floor(#bonePoses/7)
+      for i=0,weightBoneCount-1 do
+        local rawIndex=bonePoses[i*7+1]
+        local bone=self._rawBones[rawIndex+1]
+        weight:addBone(bone)
+        indices[i+1]=rawIndex
+        zeroPut(intArray,weightOffset+offsets.WeigthBoneIndices+i,
+          indexOf(sortedBones,bone))
+      end
+      extend(floatArray,#floatArray+weightCount*3)
+      self._helpMatrixA:copyFromArray(slotPose,0)
+      local iW=0
+      local iB=weightOffset+offsets.WeigthBoneIndices+weightBoneCount
+      local iV=floatOffset
+      for i=0,vertexCount-1 do
+        local iD=i*2
+        local vertexBoneCount=rawWeights[iW+1]
+        zeroPut(intArray,iB,vertexBoneCount)
+        iB=iB+1
+        iW=iW+1
+        local x=zeroAt(floatArray,verticesOffset+iD)
+        local y=zeroAt(floatArray,verticesOffset+iD+1)
+        self._helpMatrixA:transformPoint(x,y,self._helpPoint)
+        x,y=self._helpPoint.x,self._helpPoint.y
+        for _=1,vertexBoneCount do
+          local rawBoneIndex=rawWeights[iW+1]
+          iW=iW+1
+          local boneIndex=indexOf(indices,rawBoneIndex)
+          self._helpMatrixB:copyFromArray(bonePoses,boneIndex*7+1)
+          self._helpMatrixB:invert()
+          self._helpMatrixB:transformPoint(x,y,self._helpPoint)
+          zeroPut(intArray,iB,boneIndex)
+          iB=iB+1
+          zeroPut(floatArray,iV,rawWeights[iW+1]);iV=iV+1
+          zeroPut(floatArray,iV,self._helpPoint.x);iV=iV+1
+          zeroPut(floatArray,iV,self._helpPoint.y);iV=iV+1
+          iW=iW+1
+        end
+      end
+    else
+      local rawBones=rawData[DataParser.BONES]
+      weightBoneCount=#rawBones
+      for i=0,weightBoneCount-1 do
+        local bone=self._rawBones[rawBones[i+1]+1]
+        weight:addBone(bone)
+        zeroPut(intArray,weightOffset+offsets.WeigthBoneIndices+i,
+          indexOf(sortedBones,bone))
+      end
+      extend(floatArray,#floatArray+weightCount*3)
+      -- The upstream loops over weightCount here, not vertexCount.
+      local iW,iV=0,0
+      local iB=weightOffset+offsets.WeigthBoneIndices+weightBoneCount
+      local iF=floatOffset
+      for _=1,weightCount do
+        local vertexBoneCount=rawWeights[iW+1]
+        iW=iW+1
+        zeroPut(intArray,iB,vertexBoneCount)
+        iB=iB+1
+        for _=1,vertexBoneCount do
+          local boneIndex=rawWeights[iW+1];iW=iW+1
+          local boneWeight=rawWeights[iW+1];iW=iW+1
+          local x=rawVertices[iV+1];iV=iV+1
+          local y=rawVertices[iV+1];iV=iV+1
+          zeroPut(intArray,iB,indexOf(rawBones,boneIndex));iB=iB+1
+          zeroPut(floatArray,iF,boneWeight);iF=iF+1
+          zeroPut(floatArray,iF,x);iF=iF+1
+          zeroPut(floatArray,iF,y);iF=iF+1
+        end
+      end
+    end
+    geometry.weight=weight
+  end
+end
+
+function ObjectDataParser:_parseArray(_rawData)
+  -- Preserve the identities of the seven original reusable JS arrays.
+  clear(self._intArray)
+  clear(self._floatArray)
+  clear(self._frameIntArray)
+  clear(self._frameFloatArray)
+  clear(self._frameArray)
+  clear(self._timelineArray)
+  clear(self._colorArray)
+end
+
 local instance=nil
 function ObjectDataParser.getInstance()
   if instance==nil then instance=ObjectDataParser.new() end
