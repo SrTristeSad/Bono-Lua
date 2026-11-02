@@ -141,6 +141,25 @@ function Test.run()
   colorAt(nestedShot(),17,15,0,0,0,0)
   childSlot.visible=true
   colorAt(nestedShot(),17,15,1,0,0,1)
-  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD and nested Armature pixels.")
+  -- Original Armature.replacedTexture combined with the PixiSlot atlas
+  -- clone path; verify GPU pixels for normal images and deforming meshes.
+  local swappedPixels=love.image.newImageData(8,4)
+  for y=0,3 do
+    for x=0,7 do
+      if x<4 then swappedPixels:setPixel(x,y,0,0,1,1)
+      else swappedPixels:setPixel(x,y,1,1,0,1) end
+    end
+  end
+  local swappedImage=love.graphics.newImage(swappedPixels)
+  swappedImage:setFilter("nearest","nearest")
+  armature.replacedTexture=swappedImage
+  colorAt(shot(),9,9,0,0,1,1)
+  armature.replacedTexture=nil
+  colorAt(shot(),9,9,1,0,0,1)
+  meshArmature.replacedTexture=swappedImage
+  colorAt(meshShot(),15,9,0,0,1,1)
+  meshArmature.replacedTexture=nil
+  colorAt(meshShot(),15,9,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, nested Armatures and replacedTexture pixels.")
 end
 return Test
