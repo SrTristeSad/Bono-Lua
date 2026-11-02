@@ -101,12 +101,46 @@ end
 function LoveSlot:_onUpdateDisplay()
   self._renderDisplay=self._display or self._rawDisplay
 end
-function LoveSlot:_addDisplay() end
+-- PixiSlot._addDisplay/_replaceDisplay/_removeDisplay/_updateZOrder use the
+-- PixiArmatureDisplay container's ordered child list. LÖVE has no retained
+-- scene graph; preserve its display order as ordered Slot references. This
+-- list belongs to the backend, not to the original Armature slot algorithm.
+local function displaySlots(self)
+  return self._armature.display._renderSlots
+end
+local function findDisplayIndex(items,slot)
+  for i,entry in ipairs(items) do
+    if entry==slot then return i end
+  end
+  return nil
+end
+function LoveSlot:_addDisplay()
+  local slots=displaySlots(self)
+  slots[#slots+1]=self
+end
 function LoveSlot:_replaceDisplay(_previous)
+  -- Pixi swaps the old and new DisplayObject at the same child index.
+  -- Our entry is the owning Slot, so its position survives the swap.
   self._textureScale=1
 end
-function LoveSlot:_removeDisplay() end
-function LoveSlot:_updateZOrder() end
+function LoveSlot:_removeDisplay()
+  local slots=displaySlots(self)
+  local index=findDisplayIndex(slots,self)
+  if index~=nil then table.remove(slots,index) end
+end
+function LoveSlot:_updateZOrder()
+  local slots=displaySlots(self)
+  local index=findDisplayIndex(slots,self)
+  assert(index~=nil,"LÖVE backend: unattached slot display")
+  -- Pixi.Container.addChildAt uses zero-based indices and rejects indices
+  -- outside the children count. The native runtime produces 0..count-1.
+  local target=self._zOrder+1
+  assert(target>=1 and target<=#slots,
+    "LÖVE backend: display zOrder out of range")
+  if index==target then return end
+  table.remove(slots,index)
+  table.insert(slots,target,self)
+end
 function LoveSlot:_updateVisible()
   local render=self._renderDisplay
   if render then
@@ -480,7 +514,7 @@ end
 function LoveFactory:_buildArmature(pkg)
   local armature=BaseObject.borrowObject(Armature)
   local proxy=makeDispatcher()
-  local display={armature=armature}
+  local display={armature=armature,_renderSlots={}}
   armature:init(pkg.armature,proxy,display,self._dragonBones)
   return armature
 end
@@ -557,7 +591,10 @@ local function drawArmature(armature, inheritedAlpha)
   inheritedAlpha=inheritedAlpha or 1
   local graphics=assert(love and love.graphics,
     "LoveFactory.drawArmature requires LÖVE graphics")
-  for _,slot in ipairs(armature:getSlots()) do
+  -- Pixi iterates the display container's children, not the Armature's
+  -- logical slot list: z-index sorting and runtime display replacements
+  -- must not silently change its retained visual order.
+  for _,slot in ipairs(armature.display._renderSlots) do
     synchronizeRenderTexture(slot)
     local render=slot._renderDisplay
     if slot._display~=nil and render~=nil and render.visible then
