@@ -231,7 +231,39 @@ function Test.run()
   Love.Factory.advanceTime(4/12)
   colorAt(clockShot(),9,9,0,1,0,1)
   clockArmature.clock=nil
-  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, replacedTexture, tint, nested alpha, PixiFactory displays and clock.")
+  -- PixiSlot._updateFrame: removing a texture atlas must stop rendering;
+  -- restoring it must rebind both the GPU resource and slot matrix.
+  local spriteAtlas=assert(factory:getTextureAtlasData("pack"))[1]
+  local sourceImage=spriteAtlas.image
+  spriteAtlas.image=nil
+  colorAt(shot(),9,9,0,0,0,0)
+  spriteAtlas.image=sourceImage
+  colorAt(shot(),9,9,1,0,0,1)
+  local meshAtlas=assert(meshFactory:getTextureAtlasData("mesh"))[1]
+  local meshImage=meshAtlas.image
+  meshAtlas.image=nil
+  colorAt(meshShot(),15,9,0,0,0,0)
+  meshAtlas.image=meshImage
+  colorAt(meshShot(),15,9,1,0,0,1)
+  -- First-time GPU attachment after an Armature was built without an image.
+  local lateFactory=Love.Factory.new()
+  lateFactory:parseDragonBonesData(raw,"late")
+  local lateAtlas=lateFactory:parseTextureAtlasData(atlas,nil,"late")
+  local lateArmature=assert(lateFactory:buildArmature("rig","late"))
+  local function lateShot()
+    love.graphics.push("all")
+    love.graphics.setCanvas(target)
+    love.graphics.clear(0,0,0,0)
+    love.graphics.translate(8,8)
+    lateFactory:drawArmature(lateArmature)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    return target:newImageData()
+  end
+  colorAt(lateShot(),9,9,0,0,0,0)
+  lateAtlas.image=image
+  colorAt(lateShot(),9,9,1,0,0,1)
+  print("Original DragonBones LÖVE GPU passed: images, mesh/FFD, atlas attachment/restore, tint, nested alpha, PixiFactory displays and clock.")
 
 
 end
