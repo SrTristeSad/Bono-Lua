@@ -2,11 +2,19 @@
 -- Copyright (c) 2012-2025 DragonBones team and other contributors.
 -- MIT license: see LICENSE-DRAGONBONES.
 -- Original: DragonBones/src/dragonBones/model/DragonBonesData.ts
--- Typed arrays remain unbound references (nil until populated by a parser).
--- Lua arrays are one-indexed; the binary parser port must address that offset.
+-- Original ArrayBuffer is a shared mutable byte store with 1-based Lua views.
+-- Reading binary returns current bytes as an immutable Lua string snapshot.
 local BaseObject=require("dragonbones.original.core.BaseObject")
 local DragonBonesData={}
-DragonBonesData.__index=DragonBonesData
+-- Original binary is one mutable ArrayBuffer. Expose current bytes on
+-- access while retaining the legacy Lua raw-byte-string read contract.
+DragonBonesData.__index=function(self,key)
+  if key=="binary" then
+    local buffer=rawget(self,"_binaryBuffer")
+    if buffer~=nil then return buffer:toString() end
+  end
+  return rawget(DragonBonesData,key) or BaseObject[key]
+end
 setmetatable(DragonBonesData,{__index=BaseObject})
 
 function DragonBonesData.toString()
@@ -40,6 +48,7 @@ function DragonBonesData:_onClear()
   for i=#self.armatureNames,1,-1 do self.armatureNames[i]=nil end
 
   self.binary=nil
+  self._binaryBuffer=nil
   self.intArray=nil
   self.floatArray=nil
   self.frameIntArray=nil
