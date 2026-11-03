@@ -16,6 +16,12 @@ function love.load()
     love.event.quit(ok and 0 or 1)
     return
   end
+  if os.getenv("BONO_LUA_ORIGINAL_IK_GPU_TEST")=="1" then
+    local ok,err=pcall(require("tests.love_original_ik_runtime").run)
+    if not ok then io.stderr:write("Original DragonBones IK GPU integration failed: "..tostring(err).."\n") end
+    love.event.quit(ok and 0 or 1)
+    return
+  end
   if os.getenv("BONO_LUA_WEIGHTED_DBBIN_MESH_TEST")=="1" then
     local ok,err=pcall(require("tests.love_original_weighted_dbbin_mesh").run)
     if not ok then io.stderr:write("Original weighted DBDT mesh GPU test failed: "..tostring(err).."\n") end

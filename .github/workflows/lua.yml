@@ -156,6 +156,15 @@ jobs:
             artifacts/upstream/weighted_mesh_expected.tsv
           lua5.4 tests/original_weighted_mesh_differential.lua
           luajit tests/original_weighted_mesh_differential.lua
+      - name: Differential single- and two-bone IK against pinned DragonBonesJS
+        run: |
+          set -eu
+          node tests/differential_ik_solver_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/ik_solver_cases.tsv \
+            artifacts/upstream/ik_solver_expected.tsv
+          lua5.4 tests/original_ik_solver_differential.lua
+          luajit tests/original_ik_solver_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
@@ -207,6 +216,10 @@ jobs:
       - name: Verify two-bone weighted DBDT FFD on LÖVE GPU
         run: |
           LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_WEIGHTED_DBBIN_MESH_TEST=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Verify original animated 1/2-bone IK on LÖVE GPU
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ORIGINAL_IK_GPU_TEST=1 \
             timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
       - name: Verify screenshot output
         run: |
