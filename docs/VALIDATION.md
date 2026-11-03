@@ -283,4 +283,6 @@ Regressões após extrair representações para JSArray/JSMap: config_differenti
 
 Limites: parent é contrato, não ArmatureData/BoneData/SlotData portados; sortBones, cache de dez componentes, playback/armaduras/GPU e precisão temporal automática real não foram exercitados. Referências null/undefined normalizadas nil; holes/undefined por valor/length, sem descritores/protótipos/proxies. A aridade é a da função original; não prova reflexão/redefinição genérica de Function.length.
 
-Artefatos regeneráveis: animationdata-cases.tsv, animationdata-original.tsv e saídas/JSON por VM. CI executa as oito suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.
+Artefatos regeneráveis: animationdata-cases.tsv, animationdata-original.tsv e saídas/JSON por VM. CI executa as oito suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #70, código 2b612757c2bfee0011db97cc3abea1a7de19625d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41650945111 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram oito suítes passed; novo lote 39 cenários/1.084 operações/11.924 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #70 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
