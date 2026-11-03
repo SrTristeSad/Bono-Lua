@@ -147,6 +147,15 @@ jobs:
             artifacts/upstream/shared_binary_expected.tsv
           lua5.4 tests/original_shared_binary_differential.lua
           luajit tests/original_shared_binary_differential.lua
+      - name: Differential weighted FFD mesh against pinned DragonBonesJS
+        run: |
+          set -eu
+          node tests/differential_weighted_mesh_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/original_weighted_mesh.json \
+            artifacts/upstream/weighted_mesh_expected.tsv
+          lua5.4 tests/original_weighted_mesh_differential.lua
+          luajit tests/original_weighted_mesh_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
@@ -194,6 +203,10 @@ jobs:
       - name: Verify original animated DBDT mesh and FFD parity on GPU
         run: |
           LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_ORIGINAL_BINARY_MESH_TEST=1 \
+            timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
+      - name: Verify two-bone weighted DBDT FFD on LÖVE GPU
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 BONO_LUA_WEIGHTED_DBBIN_MESH_TEST=1 \
             timeout 40s xvfb-run -a -s "-screen 0 1024x768x24" love .
       - name: Verify screenshot output
         run: |
