@@ -88,6 +88,7 @@ jobs:
           node tests/binaryarrays_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/curveframes_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/specialframes_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/deformframes_differential.js ../DragonBonesJS ${{ matrix.vm }}
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

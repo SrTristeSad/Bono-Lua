@@ -163,3 +163,10 @@ ActionFrame já exportado passa a ser consumido por merge/serializer reais, sem 
 Base main 117237f/PR #83/CI pós-merge 41738114130 e backup cd4206a8 conferidos. Oito métodos lidos integralmente em TS/Lua, reaproveitando arquitetura e corrigindo reservas/holes/ordem de leituras ausentes no backup. Rotação mantém fórmula e estado parcial, com helper privado compartilhado sem método upstream novo. Cor preserva detecção por enumerabilidade, registros explícitos versus cache default e atribuição do cache antes de erro de reserva. ZOrder mantém validação de Array.length e preenchimento reverso, sem consertar loops inválidos do upstream. Sem stubs para as duas deformações ou timelines ausentes.
 
 Teste usa os corpos genuínos e modelos reais, incluindo ações e bytes da finalização já portados. Infinitos revelaram sinal negativo de NaN no armazenamento nativo versus NaN canônico do adaptador, já fora da equivalência binária declarada. Normalizar apenas essas células no snapshot de observação, de ambos os lados, documentando a diferença e sem mudar produto/expectativas dos demais bytes. 39/47 métodos, 8 pendentes, 21 suítes na CI; deformações exigem auditoria própria com geometrias/pesos/poses reais.
+
+
+## Deformações antes das timelines
+
+Base main 147bc53/PR #84/CI pós-merge 41740725798 e backup cd4206a8 conferidos. Dois métodos e helpers antigos lidos; preservar algoritmo, corrigir reservas com zeros/#array e null/undefined do backup. Componentes e header compartilham helpers privados sem métodos upstream adicionais. Contexto de teste usa Geometry/Weight/AnimationData/TimelineData/Matrix reais, com poses e índices vindos de _parseMesh/_parseGeometry; não simular timeline ausente.
+
+Manter TODO do genérico ponderado, diferenças VERTICES/VALUE, delta=true, ordem reserva/cópia/header e offsets relativos. Não aplicar pesos novos nem corrigir dados inconsistentes automaticamente. Parser 41/47, seis pendentes; 22 suítes na CI. Normalização de NaN Float32 só no snapshot permanece a do contrato anterior, sem alterar produto ou outros testes.
