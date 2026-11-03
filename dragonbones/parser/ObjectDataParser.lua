@@ -734,6 +734,96 @@ function ObjectDataParser:_parseSlotColorFrame(rawData,frameStart,frameCount)
   return offset
 end
 
+local function deformComponent(raw,index,offset)
+  if raw==nil or rawequal(raw,V.NULL) then return 0.0 end
+  if index<offset or index-offset>=V.number(V.get(raw,"length")) then return 0.0 end
+  return V.at(raw,index-offset)
+end
+
+local function deformHeader(self,geometry,frameFloatOffset)
+  local start=self._frameIntArray.length
+  local b=Core.BinaryOffset
+  self._frameIntArray.length=self._frameIntArray.length+5
+  workPut(self._frameIntArray,start+b.DeformVertexOffset,geometry.offset)
+  workPut(self._frameIntArray,start+b.DeformCount,self._frameFloatArray.length-frameFloatOffset)
+  workPut(self._frameIntArray,start+b.DeformValueCount,self._frameFloatArray.length-frameFloatOffset)
+  workPut(self._frameIntArray,start+b.DeformValueOffset,0)
+  workPut(self._frameIntArray,start+b.DeformFloatOffset,frameFloatOffset-self._animation.frameFloatOffset)
+  workPut(self._timelineArray,self._timeline.offset+b.TimelineFrameValueCount,start-self._animation.frameIntOffset)
+end
+
+function ObjectDataParser:_parseSlotDeformFrame(rawData,frameStart,frameCount)
+  local floatStart=self._frameFloatArray.length
+  local frameOffset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local rawVertices
+  if V.has(rawData,DataParser.VERTICES) then rawVertices=V.get(rawData,DataParser.VERTICES) end
+  local offset=ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0)
+  local geometry=self._mesh.geometry
+  local vertexCount=V.number(workAt(self._intArray,geometry.offset+Core.BinaryOffset.GeometryVertexCount))
+  local meshName=self._mesh.parent.name.."_"..self._slot.name.."_"..self._mesh.name
+  local weight=geometry.weight
+  local iB,iV=0,0
+  if weight~=nil then
+    local pose=self._weightSlotPose[meshName]
+    self._helpMatrixA:copyFromArray(matrixArray(pose),0)
+    self._frameFloatArray.length=self._frameFloatArray.length+weight.count*2
+    iB=weight.offset+Core.BinaryOffset.WeigthBoneIndices+weight.bones.length
+  else self._frameFloatArray.length=self._frameFloatArray.length+vertexCount*2 end
+  local i=0
+  while i<vertexCount*2 do
+    local x=deformComponent(rawVertices,i,offset)
+    local y=deformComponent(rawVertices,i+1,offset)
+    if weight~=nil then
+      local bonePoses=self._weightBonePoses[meshName]
+      local boneCount=V.number(workAt(self._intArray,iB));iB=iB+1
+      self._helpMatrixA:transformPoint(V.number(x),V.number(y),self._helpPoint,true)
+      x,y=self._helpPoint.x,self._helpPoint.y
+      local j=0
+      while j<boneCount do
+        local boneIndex=V.number(workAt(self._intArray,iB));iB=iB+1
+        self._helpMatrixB:copyFromArray(matrixArray(bonePoses),boneIndex*7+1)
+        self._helpMatrixB:invert()
+        self._helpMatrixB:transformPoint(x,y,self._helpPoint,true)
+        workPut(self._frameFloatArray,floatStart+iV,self._helpPoint.x);iV=iV+1
+        workPut(self._frameFloatArray,floatStart+iV,self._helpPoint.y);iV=iV+1
+        j=j+1
+      end
+    else
+      workPut(self._frameFloatArray,floatStart+i,x)
+      workPut(self._frameFloatArray,floatStart+i+1,y)
+    end
+    i=i+2
+  end
+  if frameStart==0 then deformHeader(self,geometry,floatStart) end
+  return frameOffset
+end
+
+function ObjectDataParser:_parseDeformFrame(rawData,frameStart,frameCount)
+  local floatStart=self._frameFloatArray.length
+  local frameOffset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local rawVertices
+  if V.has(rawData,DataParser.VERTICES) then rawVertices=V.get(rawData,DataParser.VERTICES)
+  elseif V.has(rawData,DataParser.VALUE) then rawVertices=V.get(rawData,DataParser.VALUE) end
+  local offset=ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0)
+  local geometry=self._geometry
+  local vertexCount=V.number(workAt(self._intArray,geometry.offset+Core.BinaryOffset.GeometryVertexCount))
+  if geometry.weight~=nil then
+    -- Literal TODO in the pinned original; do not invent weighted output.
+  else
+    self._frameFloatArray.length=self._frameFloatArray.length+vertexCount*2
+    local i=0
+    while i<vertexCount*2 do
+      local x=deformComponent(rawVertices,i,offset)
+      local y=deformComponent(rawVertices,i+1,offset)
+      workPut(self._frameFloatArray,floatStart+i,x)
+      workPut(self._frameFloatArray,floatStart+i+1,y)
+      i=i+2
+    end
+  end
+  if frameStart==0 then deformHeader(self,geometry,floatStart) end
+  return frameOffset
+end
+
 function ObjectDataParser:_parseIKConstraintFrame(rawData,frameStart,frameCount)
   local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
   local start=self._frameIntArray.length

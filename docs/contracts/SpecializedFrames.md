@@ -28,3 +28,5 @@ Prova: tests/specialframes_differential.{js,lua}, 203 cenários/7.577 operaçõe
 O adaptador canonicaliza NaN numérico; sinal/payload arbitrários não são equivalência declarada. Infinitos podem produzir NaN negativo no host JS. Só essas células Float32 têm sinal/payload normalizado em snapshot separado de observação, em ambos os lados; memória/views originais não são modificadas pelo teste. Todos os demais bytes e valores/zero assinado são comparados exatamente. Não se estende essa normalização a dados inteiros ou finitos.
 
 Pendentes: _parseSlotDeformFrame/_parseDeformFrame, três métodos de timelines, _parseAnimation/_parseArmature/parseDragonBonesData. Estado total: 39/47 métodos, 8 ausentes. Não importa JSON/DBDT completos nem executa deformação, blending, animação ou renderização.
+
+Unidade posterior: os dois serializers de deformação já constam em [DeformFrames.md](DeformFrames.md), preservando inclusive o TODO ponderado do genérico. Estado atual 41/47; seis métodos ausentes. O limite histórico acima é sucedido por essa unidade, sem implementar runtime.

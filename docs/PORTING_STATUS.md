@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-specialized-frames`, sobre `main@117237f`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-deform-frames`, sobre `main@147bc53`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -327,3 +327,14 @@ Mantidos reservas/holes antes de leituras, comprimento/erros parciais, rotação
 203 cenários/7.577 operações/159.117 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 39 exceções esperadas. Contadores confirmam oito corpos genuínos, com modelos/payloads/ações/pool/Transform/_modifyArray reais; 21 suítes na CI. Valores binary64 e bytes não NaN exatos. Somente células Float32 NaN têm sinal/payload normalizado no snapshot de observação; o adaptador continua sem promessa desses bits arbitrários. Ver contracts/SpecializedFrames.md e VALIDATION.md; consultar PR para evidência remota/SHA/merge.
 
 Pendentes: _parseSlotDeformFrame/_parseDeformFrame, _parseTimeline/_parseBoneTimeline/_parseSlotTimeline, _parseAnimation/_parseArmature/parseDragonBonesData. Sem importação completa JSON/DBDT, playback/renderização/deformação/solver. Próximo recorte: deformações com pesos/poses reais, depois timelines e demais dependências completas.
+
+
+## Serializers de deformações — estado atual
+
+Base main 147bc53a4c87788e44138f6e0b90d3ebf4c72dd7, PR #84/CI pós-merge 41740725798 e backup cd4206a8 conferidos. _parseSlotDeformFrame/_parseDeformFrame lidos integralmente em TS/Lua do backup. **41/47 métodos; seis pendentes.** Este total sucede os checkpoints históricos.
+
+SlotDeform usa Geometry/WeightData reais, poses slot/bone, Matrix.copyFromArray/invert/transformPoint(delta=true), reservas e índices indiretos originais. O genérico sem pesos copia deltas, enquanto seu ramo ponderado preserva o TODO literal upstream (não produz floats novos). Slot usa só VERTICES; genérico admite fallback VALUE por presença. Headers só no frame zero, contando comprimento final e offsets relativos de AnimationData/TimelineData reais. Erros deixam reservas/valores/header parcialmente escritos.
+
+117 cenários/5.773 operações/127.006 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 26 exceções esperadas; 143 chamadas genuínas slot/131 genéricas. Geometrias/meshes/skins/bones/weights/matrizes/modelos de animação/timeline/pool/bytes reais; contexto semeado em teste, sem entrypoint/timeline falso. 22 suítes na CI. Somente NaN Float32 normalizado no snapshot conforme limite anterior; demais números/bytes exatos. Ver contracts/DeformFrames.md e VALIDATION.md; consultar PR para SHA/CI/merge.
+
+Pendentes: _parseTimeline/_parseBoneTimeline/_parseSlotTimeline/_parseAnimation/_parseArmature/parseDragonBonesData. Serializar dados de deformação não implementa aplicação de deltas no runtime, playback, solver ou renderização. Próximo recorte: timelines com callbacks/modelos reais, depois animação/armadura/entrypoint.
