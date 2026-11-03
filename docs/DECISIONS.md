@@ -149,3 +149,10 @@ Auditoria TS/Lua dos sete métodos e Matrix real. Mantidas peculiaridades de pes
 Base main a9e34b0/PR #80/CI pós-merge 41729413783 e backup cd4206a8 conferidos. Adaptador do backup auditado antes do reaproveitamento: corrigidos undefined float, conversão JSValue, overflow Float32 extremo sem loop infinito, metadados/estado privado de proxies, coerção antes de rejeitar índice e validação de comprimento em bytes. Sem introduzir getter string em DragonBonesData.binary: mantém objeto Buffer mutável; snapshots explícitos por bytes(), evitando quebrar identidade compartilhada.
 
 Um único buffer para sete views; alinhamento/cópias/publicação e reset final originais. Não corrigir a condição duplicada timeline→color do upstream. Teste nativo exato, não mock de typed arrays. Falhas de setter são instrumentação de teste em DragonBonesData real; sem hooks de produto. Adaptador não conta como classe extra do upstream. Dezenove suítes; parser 22/47, 25 ausentes. Limites de plataforma/reflexão documentados, sem claim de DBDT/runtime completo.
+
+
+## Curvas e frames antes das timelines
+
+Base main bc67313/PR #81/CI pós-merge 41735155177 e backup cd4206a8 conferidos. Lidos os nove corpos TS e Lua do backup integralmente. Reutilizada arquitetura, corrigindo diferenças do backup em reservas/holes e leitura antecipada dos valores. _parseSingleValueFrame e _parseDoubleValueFrame leem raw somente depois do frame/tween/reserva, inclusive falhas no segundo valor e tipo desconhecido. _samplingEasingCurve mantém último probe de bisseção e ambos os ramos; não normaliza curvas ou conserta algoritmos patológicos do upstream. Math.round preserva -0, ties para +infinito e inteiros grandes.
+
+ActionFrame já exportado passa a ser consumido por merge/serializer reais, sem transformá-lo em modelo poolável. Ações ficam em ArmatureData.actions; frames guardam índices, não cópias. Mantidas ordem de chaves e efeitos parciais. Sem stubs para timelines/animação ausentes. Parser 31/47, 16 pendentes; testes com 16 arquivos genuínos emitidos, modelos e finalização binária reais, 20 suítes na CI.

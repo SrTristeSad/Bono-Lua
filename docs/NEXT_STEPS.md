@@ -6,28 +6,28 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preser
 
 ## Base desta unidade
 
-- main a9e34b08379183d4c59f4909a3d48cdd7327e33f, PR #80, CI pós-merge 41729413783 aprovada.
+- main bc673135a8a92f1008f17e0cd7dbb2a14d0bf36f, PR #81, CI pós-merge 41735155177 aprovada.
 - Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb conferido.
-- Branch port/parser-shared-binary; conferir PR/SHA/CI/merge atuais. Main acompanha checkpoints testados por autorização do proprietário.
+- Branch port/parser-curves-frames; conferir PR/SHA/CI/merge atuais. Main acompanha checkpoints testados por autorização do proprietário.
 
 ## Unidade implementada
 
-_modifyArray e SharedBinaryBuffer auditados contra fonte fixada/backup. Total 22/47 métodos; 25 ausentes, incluindo _parseArmature, animações/timelines e parseDragonBonesData. Sete views tipadas compartilham um Buffer mutável por identidade; snapshots explícitos por bytes(). Índices Lua base 1, offsets públicos de bytes base 0, little endian. Sem getter string em DragonBonesData.binary.
+Nove métodos TS e Lua do backup auditados: _getCurvePoint/_samplingEasingCurve/_parseFrame/_parseTweenFrame/_parseSingleValueFrame/_parseDoubleValueFrame/_parseActionFrame/_parseActionDataInFrame/_mergeActionFrame. Total 31/47 métodos; 16 ausentes, incluindo frames especializados/timelines/_parseAnimation/_parseArmature/parseDragonBonesData.
 
-163 cenários/6.272 operações/70.166 colunas por VM Lua 5.4/LuaJIT, zero tolerância. Oráculo executa _modifyArray genuíno com typed arrays nativas e modelos reais. 128 paridades; conversões Int16/Uint16/Float32, ties-even/subnormais/overflow/-0/NaN; holes, memória/bytes/aliases/snapshots, sobreposição, repeated finalize/reset/pool, falhas de cópia e publicação, geometrias/pesos reais. 32 erros esperados.
+328 cenários/3.594 operações/71.880 colunas por VM Lua 5.4/LuaJIT, zero tolerância; 21 exceções esperadas. Contadores confirmam os nove métodos genuínos, 16 arquivos emitidos; modelos/ações/payloads/pool/finalização tipada reais. Inclui curvas nos dois formatos/segmentos/NaNs/holes, último probe, Step/Int/Float, Math.round (-0/ties/inteiros grandes), defaults/coerções/escala, reservas/erros parciais/overflow, merge/inserção/ordem de ações e serialização de offsets/bytes.
 
-Mantido teste duplicado de timeline antes de color: color ímpar não recebe padding. Escritas fora dos limites ainda fazem coerção; cópia e publicação conservam efeitos parciais e só resetam defaultColorOffset no fim. Mutantes de padding color/undefined float rejeitados nas linhas 1943/4213; código restaurado e lote final refeito. Dezenove suítes na CI. Contrato contracts/SharedBinaryBuffer.md.
+O backup lia valores cedo e preenchia reservas; não copiar essas diferenças. _parseSingle/Double leem valores depois do frame/tween/reserva; Step não aplica escala e tipo desconhecido não lê raw. Ações entram primeiro na armadura; frames agregam offsets base 0, inicial zero e identidade original. ActionFrame não é poolável. Mutantes de limiar da curva/leitura antecipada/zero negativo rejeitados; produto restaurado e testes finais refeitos. Vinte suítes na CI. Contrato contracts/CurveFrames.md.
 
 ## Próximo recorte
 
 1. Conferir main/backup/PR/CI e ler estado/progresso/mapa/validação/decisões/diferenças.
-2. Auditar curvas/frames e dependências originais de animação/timelines; ler TS e Lua reais do backup antes de portar cada corpo. Não fornecer métodos falsos para dependências ausentes.
-3. Implementar unidade coerente com testes diferenciais usando modelos reais já disponíveis; depois avançar _parseAnimation/_parseArmature/entrypoint com dependências completas.
+2. Auditar serializers de frames especializados e dependências integrais: ZOrder, BoneAll/Translate/Rotate/Scale, SlotDisplay/Color, IK e deformações. Ler TS e Lua reais do backup antes de portar cada corpo; não fornecer métodos falsos para dependências ausentes.
+3. Avançar _parseTimeline/_parseBoneTimeline/_parseSlotTimeline e depois _parseAnimation/_parseArmature/entrypoint com dependências completas e testes diferenciais integrados.
 4. Atualizar inventário/docs, publicar PR, validar CI e integrar checkpoint autorizado.
 
 ## Pendências
 
-25 métodos de ObjectDataParser; texto JSON/importação completa de armaduras/animações/DBDT, BinaryDataParser, locales especiais de DataParser, coerções/reflexão/proxies genéricos (incluindo coeficientes de matriz fora do tipo numérico), Big Endian e payloads NaN arbitrários. Runtime Armature/Bone/Slot/Surface, solvers, deformação, playback/blending, factories, backend/LÖVE/GPU e contratos de engines. SkinData.NULL é truthy e distinto de raw JSValue.NULL. Loops ES5 indexados/UTF-16 (surrogates WTF-8 no Lua) preservados. sortBones/clipping mantêm possíveis esperas originais; WorldClock ainda usa os.time com resolução de segundos.
+16 métodos de ObjectDataParser; texto JSON/importação completa de armaduras/animações/DBDT, BinaryDataParser, locales especiais de DataParser, coerções/reflexão/proxies genéricos, controles de frame fora do contrato numérico TS, coeficientes de matriz fora do tipo numérico, Big Endian/payloads NaN arbitrários. Runtime Armature/Bone/Slot/Surface, solvers, deformação, playback/blending, factories, backend/LÖVE/GPU e contratos de engines. SkinData.NULL é truthy e distinto de raw JSValue.NULL. Loops ES5 indexados/UTF-16 (surrogates WTF-8 no Lua) preservados. Curvas/sortBones/clipping mantêm possíveis esperas originais; WorldClock ainda usa os.time com resolução de segundos.
 
 ## Reprodução
 
@@ -36,7 +36,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
