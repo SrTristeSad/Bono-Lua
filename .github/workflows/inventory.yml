@@ -1,7 +1,7 @@
 name: Pinned upstream inventory
 on:
   push:
-    branches: [rebuild/integral-20261103]
+    branches: [main, rebuild/integral-20261103, 'port/**']
   pull_request:
     branches: [main]
 permissions:
@@ -66,7 +66,9 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
       - name: Compare Lua classes against pinned original TypeScript
         working-directory: Bono-Lua
-        run: node tests/geom_differential.js ../DragonBonesJS ${{ matrix.vm }}
+        run: |
+          node tests/geom_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/math_differential.js ../DragonBonesJS ${{ matrix.vm }}
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

@@ -7,6 +7,8 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/geom/Point.ts | dragonbones/geom/Point.lua | Implementado, validado isoladamente nos testes diferenciais |
 | DragonBones/src/dragonBones/geom/Rectangle.ts | dragonbones/geom/Rectangle.lua | Implementado, validado isoladamente nos testes diferenciais |
 | DragonBones/src/dragonBones/geom/ColorTransform.ts | dragonbones/geom/ColorTransform.lua | Implementado, validado isoladamente nos testes diferenciais |
+| DragonBones/src/dragonBones/geom/Matrix.ts | dragonbones/geom/Matrix.lua | Implementado, validado isoladamente nos testes diferenciais |
+| DragonBones/src/dragonBones/geom/Transform.ts | dragonbones/geom/Transform.lua | Implementado, validado isoladamente nos testes diferenciais |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |
@@ -14,3 +16,5 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | builds/*.js | Ferramentas de distribuição do upstream | Catalogadas; necessidade de correspondência Lua a auditar |
 
 Os caminhos reservados de integrações não afirmam que APIs JavaScript existem em Lua. A separação por engine/versão evita colidir classes com nomes idênticos.
+
+JSNumberString.lua é adaptação de representação numérica da linguagem para os dois toString originais; não é uma classe adicional de runtime upstream.
