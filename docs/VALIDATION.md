@@ -146,3 +146,31 @@ Não validado: modelos reais/armaduras/parse/animação/GPU, protótipos arbitr�
 Código `21cf986f7e23740f712672ce2e3f341d39b21bec`, [PR #65](https://github.com/SrTristeSad/Bono-Lua/pull/65). [CI 41581131475](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41581131475) concluída com sucesso nos três jobs: inventory 125735978049, geometry (lua5.4) 125735977933 e geometry (luajit) 125735978036. Os jobs executam as regressões geométricas e o novo oráculo de BaseObject.
 Três artefatos confirmados, associados ao mesmo head_sha: pinned-inventory-evidence, geometry-differential-lua5.4 e geometry-differential-luajit (estes contêm também baseobject-cases/original/actual/result).
 A integração só pode ser afirmada após confirmação do merge e da main; não antecipada aqui.
+
+## Unidade CanvasData / TextureAtlasData / TextureData
+
+Estado inicial confirmado pela API: main 92c0105, PR #65 integrado, CI pós-merge 41581381619 aprovada; backup cd4206a8 preservado. Os dois TS completos e os dois Lua reais do backup foram lidos antes de reaproveitar código. Dependências reais BaseObject e Rectangle também consultadas; Map é tipo TS sem implementação de runtime faltante.
+
+### Execuções locais finais reais
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/models_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/models_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**Por comando:** 18 cenários, 639 operações, 5.751 colunas de transcrição; tolerância zero; passed. Colunas contêm snapshots serializados de vários campos/mapas e resultados, não contagem de módulos ou porcentagem de cobertura.
+
+Compilação do oráculo: namespace completo do núcleo TS fixado, com opções do tsconfig original (saída em memória, sem reescrever fonte). Só os quatro JS correspondentes a BaseObject, Rectangle, CanvasData e TextureAtlasData são executados no contexto VM. A checagem sintática e execução não são uma declaração de build integral de todos os backends. Subclasses locais dos dois modelos abstratos fornecem apenas toString/createTexture e falha controlada; não reimplementam limpeza/cópia/pool nem simulam renderização.
+
+Números são comparados por bytes IEEE-754 binary64 em little-endian, preservando zero negativo, extremos/subnormais e infinitos; NaNs usam marcador canônico. Lua 5.4 usa string.pack, LuaJIT usa ffi apenas no transporte de teste, sem dependência ffi no produto. Strings/booleans/undefined são distinguidos por tipo. Referências JS parent ausentes/null e lookup sem resultado normalizam para nil; essa normalização não é tolerância numérica nem prova de distinção universal null/undefined.
+
+Cobertura: construtores crus versus borrow inicializado; todos os campos de Canvas e propriedades extras preservadas; toString estático; limpeza/retorno/duplicatas/limites; região por identidade; criação/cópia/reutilização/descarte de frame; mapa por identidade; copyFrom com parent da origem; add duplicado com parent preexistente; lookup ausente/presente; descarte antes da cópia; cópia em si mesmo; ordem numérica/inserção e exclusão/reinserção por escrita pública; falha de createTexture com estado parcial e nova tentativa; quatro sequências de 80 operações determinísticas; valores numéricos especiais.
+
+Falhas observadas e resolvidas antes da aprovação:
+
+- O driver inicial transpila arquivos isoladamente e não resolve o namespace BaseObject. Passou a compilar o namespace genuíno junto, sem aliases globais de simulação. Também corrigido um conflito de nome de variável do driver.
+- Na operação copy dest src, pairs no porte antigo reatribuía objetos de pool a chaves diferentes das do original. Adaptada a ordem do mapa mantendo algoritmo e expectativas; os testes finais passaram nas duas VMs.
+
+Artefatos regeneráveis em artifacts/: models-cases.tsv, models-original.tsv, transcrição e JSON por VM. CI inclui esses resultados e as três suítes anteriores (geometria, matemática e BaseObject). CI/PR/merge desta unidade ainda devem ser confirmados no SHA publicado antes de declarar aprovação remota.
+
+Não comprovado: renderer/backend concreto, parsing/armaduras/animação, coerções/reflexão genérica JS ou chaves herdadas especiais de Object.prototype. As classes de dados não são um backend gráfico completo. A próxima dependência escolhida para o core é WorldClock, com auditoria explícita da origem do tempo.

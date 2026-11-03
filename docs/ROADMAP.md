@@ -5,7 +5,7 @@
 | 00 | Backup remoto e reconstrução isolada | Concluída |
 | 01 | Inventário integral, contratos e dependências | Arquivos, contratos declarados e dependências estáticas catalogados; fronteiras externas registradas |
 | 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Cinco classes implementadas e comparadas isoladamente; integração e auditoria exaustiva pendentes |
-| 03 | Core, modelos e ciclo de vida | Iniciada: BaseObject comparado isoladamente; modelos pendentes |
+| 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, CanvasData e dados de atlas/textura comparados; demais modelos pendentes |
 | 04 | Parsers JSON/DBDT | Pendente |
 | 05 | Armature, Bone, Slot, Surface, TransformObject | Pendente |
 | 06 | IKConstraint e PathConstraint | Pendente |

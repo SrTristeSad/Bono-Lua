@@ -36,6 +36,18 @@
       "status": "Validado isoladamente nos cenários diferenciais; integração com modelos pendente",
       "tests": "tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.",
       "differences": "Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/model/CanvasData.ts": {
+      "destination": "dragonbones/model/CanvasData.lua",
+      "status": "Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente",
+      "tests": "tests/models_differential.js: 18 cenários, 639 operações e 5.751 colunas por VM (Lua 5.4 e LuaJIT), com BaseObject/Rectangle reais. Ver VALIDATION.md.",
+      "differences": "Metatables/new; nil para referências JS ausentes/null; ordem de chaves JS preservada no atlas com metadados privados. Backend gráfico não implementado; classes abstratas testadas com adaptadores somente no teste. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/model/TextureAtlasData.ts": {
+      "destination": "dragonbones/model/TextureAtlasData.lua",
+      "status": "Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente",
+      "tests": "tests/models_differential.js: 18 cenários, 639 operações e 5.751 colunas por VM (Lua 5.4 e LuaJIT), com BaseObject/Rectangle reais. Ver VALIDATION.md.",
+      "differences": "Metatables/new; nil para referências JS ausentes/null; ordem de chaves JS preservada no atlas com metadados privados. Backend gráfico não implementado; classes abstratas testadas com adaptadores somente no teste. Ver DIFFERENCES.md."
     }
   }
 }
