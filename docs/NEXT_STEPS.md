@@ -12,7 +12,7 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preser
 
 ## Unidade implementada
 
-_modifyArray e SharedBinaryBuffer auditados contra fonte fixada/backup. Total 22/47 métodos; 25 ausentes, incluindo _parseArmature, animações/timelines e parseDragonBonesData. Sete views tipadas compartilham um Buffer mutável por identidade; snapshots explícitos por bytes(). Índices Lua base 1, offsets públicos de bytes base 0, little endian. Sem getter string em DragonBonesData.binary.
+_modifyArray e SharedBinaryBuffer auditados contra fonte fixada/backup. Total 24/47 métodos após a unidade de curvas; 23 ausentes, incluindo _parseArmature, animações/timelines e parseDragonBonesData. Sete views tipadas compartilham um Buffer mutável por identidade; snapshots explícitos por bytes(). Índices Lua base 1, offsets públicos de bytes base 0, little endian. Sem getter string em DragonBonesData.binary.
 
 163 cenários/6.272 operações/70.166 colunas por VM Lua 5.4/LuaJIT, zero tolerância. Oráculo executa _modifyArray genuíno com typed arrays nativas e modelos reais. 128 paridades; conversões Int16/Uint16/Float32, ties-even/subnormais/overflow/-0/NaN; holes, memória/bytes/aliases/snapshots, sobreposição, repeated finalize/reset/pool, falhas de cópia e publicação, geometrias/pesos reais. 32 erros esperados.
 
