@@ -2,33 +2,33 @@
 
 ## Objetivo permanente
 
-Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura, algoritmos e comportamentos. Destino único SrTristeSad/Bono-Lua. Não declarar completude com pendências.
+Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura/algoritmos/comportamentos. Destino SrTristeSad/Bono-Lua. Não declarar completude com pendências.
 
 ## Base desta unidade
 
-- main 771b932f065cce3570c8073a8529a2b130ed0f1e, PR #77 integrado, CI pós-merge 41693321632 aprovada.
+- main ff2db0ed4c5a54850354a2c5a0fbeb9a20935ed9, PR #78, CI pós-merge 41696197476 aprovada.
 - Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb conferido.
-- Branch port/parser-object-atlas; consultar PR/SHA/CI/merge atuais. Main acompanha checkpoints testados por autorização do proprietário.
+- Branch port/parser-structural-primitives; conferir PR/SHA/CI/merge atuais. Main acompanha checkpoints testados por autorização do proprietário.
 
 ## Unidade implementada
 
-ObjectDataParser parcial: três helpers, parseTextureAtlasData, getInstance, 38 inicializadores e ActionFrame. Recortes TS/Lua do backup auditados; arquivo inteiro enumerado estruturalmente (47 métodos/39 propriedades), sem afirmar auditoria semântica dos 42 métodos restantes. Não há parseDragonBonesData nem stubs. Lista em contracts/ObjectDataParserAtlas.md.
+Nove corpos TS/Lua do backup auditados e portados: _parseTransform/_parseColorTransform/_parsePivot/_parseIKConstraint/_parsePathConstraint/_parseSlot/_parseActionData/_parseBoundingBox/_parsePolygonBoundingBox. ObjectDataParser totaliza 14/47 métodos; 33 ainda ausentes. Não há bone/display/skin/armature/entrypoint fictício. Dependências reais de geometria/animação motivaram delimitação do recorte.
 
-JSValue adapta objetos já decodificados, NULL/UNDEFINED explícitos, arrays marcados base 1/length e coerções primitivas; não decodifica JSON ou buffers. Helpers preservam presença, bools/NaN/zero, null versus undefined/defaults, String/Number e arrays vazios. Atlas/texturas/retângulos/pool reais; backend factory apenas no teste. Regiões não são multiplicadas pela escala. Fila privada injetada só no teste, pós-incremento antes da recursão, estado parcial e releitura do campo vivo preservados.
+55 cenários/2.465 operações/27.115 colunas em Lua 5.4/LuaJIT, binary64 exato/NaN canonicalizado/sinal do zero exato. Modelos e pool reais; observação de todas as alocações, inclusive órfãs. Events anterior passou nas duas VMs após UserData migrar arrays para JSArray/length e preservar payloads esparsos. Adaptador interno ArmatureData._isNullReference conserva ramos parent/defaultSkin undefined versus null. Mutantes de parent~=nil e AABB width=max foram rejeitados nas linhas 306/192; produto restaurado e testes finais refeitos.
 
-39 cenários/2.572 operações/28.292 colunas em Lua 5.4/LuaJIT; binary64 exato, NaN canonicalizado e sinal do zero exato. Inclui factory e conversão falhando após alocação, duplicatas/órfãos, frame, filas esparsas/null/undefined, comprimento capturado e mudança da fila em callback, singleton/ActionFrame. Mutantes de undefined como default e escala nas coordenadas rejeitados nas linhas 131/2.176; produto restaurado e testes finais refeitos. Dezesseis suítes na CI.
+JSValue.iterator segue emit TS2.4/ES5, indexação/length vivo de arrays/array-like e unidades UTF-16 de strings. Surrogates isolados são WTF-8 em Lua; transporte de saída do teste é UTF-16LE, fixtures de entrada UTF-8 e arrays do realm da VM (instanceof Array). Não confundir com iterator ES2015. Ver contracts/StructuralParser.md. Dezessete suítes na CI.
 
 ## Próximo recorte
 
 1. Conferir main/backup/PRs/CI e ler estado/progresso/mapa/validação/decisões/diferenças.
-2. Auditar os corpos TS/Lua estruturais de _parseArmature/_parseBone/_parseIKConstraint/_parsePathConstraint/_parseSlot/_parseSkin/_parseDisplay e dependências transitivas.
-3. Portar blocos completos comparáveis com modelos reais; helpers de transform/color/ações e curvas devem seguir os originais quando necessários. Não fornecer entrypoint parseDragonBonesData sem suas dependências reais.
-4. Manter granularidade de métodos: os 42 restantes estão ausentes; arquivo mapeado não significa parser completo. Depois do estrutural, animações/timelines/geometria e buffers exigem provas próprias.
+2. Auditar _parseGeometry integral TS/Lua e dependências (pesos, poses, matrizes, offsets, _rawBones e _data reais); não substituir geometria por stub.
+3. Portar dependências completas para Surface/Mesh/Path; depois _parseBone, _parseMesh/_parsePath/_parseDisplay/_parseSkin. _parseArmature depende também de animações, cache e estado: mapear antes de expor entrypoint.
+4. Typed arrays/buffers compartilhados e compactação exigem implementação/provas próprias. Marcar métodos ausentes sem devolver resultados fabricados.
 5. Atualizar inventário/docs, publicar PR, validar CI e integrar checkpoint autorizado.
 
 ## Pendências
 
-Texto JSON, parsing completo de armaduras/animações/DBDT, typed arrays/ArrayBuffer compartilhados, coerções JS/protótipos genéricos, locales especiais de DataParser. Runtime Armature/Bone/Slot/Surface, solvers, deformação, playback/blending, factories e backend/LÖVE/GPU continuam pendentes. SkinData.NULL é truthy; raw JSValue.NULL é outro marcador. sortBones e clipping mantêm possíveis esperas/não terminação originais; nenhum fallback novo. WorldClock ainda usa os.time com resolução de segundos, sem prova de precisão automática em ms.
+33 métodos de ObjectDataParser; texto JSON/importação completa de armaduras/animações/DBDT, typed arrays/ArrayBuffer, locales especiais de DataParser, coerções/reflexão/proxies genéricos. Runtime Armature/Bone/Slot/Surface, solvers, deformação, playback/blending, factories, backend/LÖVE/GPU e contratos de engines. SkinData.NULL é truthy e distinto do raw JSValue.NULL. sortBones/clipping mantêm possíveis esperas/não terminação originais. WorldClock usa os.time com resolução de segundos, sem precisão automática em ms comprovada.
 
 ## Reprodução
 
@@ -37,10 +37,10 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
 ```
 
-Upstream no commit fixado. Consultar PR para evidência remota/SHA/merge/CI; não antecipar resultados futuros.
+Upstream fixado. Consultar PR para evidências remotas/SHA/merge/CI, sem antecipar resultados futuros.

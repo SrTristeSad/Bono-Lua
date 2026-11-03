@@ -5,6 +5,8 @@
 -- Classes: UserData, ActionData. Lua's BaseObject.new(Class) replaces TS new.
 local BaseObject = require("dragonbones.core.BaseObject")
 
+local JSArray = require("dragonbones.core.JSArray")
+
 local ActionType = require("dragonbones.core.Enums").ActionType
 
 local UserData = {}
@@ -17,35 +19,41 @@ end
 
 function UserData.new()
   local self = BaseObject.new(UserData)
-  self.ints = {}
-  self.floats = {}
-  self.strings = {}
+  self.ints = JSArray.new()
+  self.floats = JSArray.new()
+  self.strings = JSArray.new()
   return self
 end
 
 function UserData:_onClear()
   -- TS sets array.length = 0, preserving the arrays' identity.
-  for i = #self.ints, 1, -1 do self.ints[i] = nil end
-  for i = #self.floats, 1, -1 do self.floats[i] = nil end
-  for i = #self.strings, 1, -1 do self.strings[i] = nil end
+  self.ints.length = 0
+  self.floats.length = 0
+  self.strings.length = 0
 end
 
 function UserData:addInt(value)
-  self.ints[#self.ints + 1] = value
+  local length = self.ints.length
+  self.ints[length + 1] = value
+  self.ints.length = length + 1
 end
 
 function UserData:addFloat(value)
-  self.floats[#self.floats + 1] = value
+  local length = self.floats.length
+  self.floats[length + 1] = value
+  self.floats.length = length + 1
 end
 
 function UserData:addString(value)
-  self.strings[#self.strings + 1] = value
+  local length = self.strings.length
+  self.strings[length + 1] = value
+  self.strings.length = length + 1
 end
 
 -- The original array positions are zero-based. Invalid positions return 0/"".
 function UserData:getInt(index)
   index = index == nil and 0 or index
-  if index >= 0 and index < #self.ints then
+  if index >= 0 and index < self.ints.length then
     -- JS fractional property keys are not array positions. Test before +1:
     -- a tiny positive fraction can round to 1 when shifted in binary64.
     if index ~= math.floor(index) then return nil end
@@ -56,7 +64,7 @@ end
 
 function UserData:getFloat(index)
   index = index == nil and 0 or index
-  if index >= 0 and index < #self.floats then
+  if index >= 0 and index < self.floats.length then
     -- JS fractional property keys are not array positions. Test before +1:
     -- a tiny positive fraction can round to 1 when shifted in binary64.
     if index ~= math.floor(index) then return nil end
@@ -67,7 +75,7 @@ end
 
 function UserData:getString(index)
   index = index == nil and 0 or index
-  if index >= 0 and index < #self.strings then
+  if index >= 0 and index < self.strings.length then
     -- JS fractional property keys are not array positions. Test before +1:
     -- a tiny positive fraction can round to 1 when shifted in binary64.
     if index ~= math.floor(index) then return nil end
