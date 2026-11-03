@@ -8,7 +8,7 @@ Reconstruir o DragonBonesJS oficial em Lua, preservando arquitetura, algoritmos 
 
 - Main: ab660cc740ae3d430ef283ea2eb07c78de58d658; PR #64 integrado; CI pós-merge 41579955766 aprovada.
 - Backup anterior: backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb; preservado.
-- Unidade atual: branch port/core-baseobject criada dessa main. Para o checkpoint publicado, PR e merge desta unidade, conferir GitHub antes de continuar; não antecipar SHA futuro.
+- Unidade atual: branch port/core-baseobject criada dessa main. Checkpoint de código confirmado: `21cf986f7e23740f712672ce2e3f341d39b21bec`, PR #65; CI 41581131475 aprovada nos três jobs, artefatos conferidos. Para merge e commits documentais posteriores, consultar GitHub; não antecipar SHA futuro.
 - O proprietário autorizou manter a main atualizada com checkpoints testados; isso não significa motor completo. CI pertinente deve passar antes de integrar.
 
 ## Trabalho efetivo

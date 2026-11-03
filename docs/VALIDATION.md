@@ -137,6 +137,12 @@ Cobertura: limite padrão 3000 com 3002 objetos; colisões/alterações de strin
 
 Um teste adicional acusou em LuaJIT o estado incorreto `-0:8;2:8` em vez de `-0:8;2:1.5` após erro global fracionário: a chave textual "-0" foi erroneamente tratada como índice. Corrigida a classificação para nomes canônicos, mantido o cenário e ambas as execuções finais aprovadas. Não foram alteradas as expectativas para aceitar a falha.
 
-Evidência gerada em artifacts/: baseobject-cases.tsv, baseobject-original.tsv, saída Lua e JSON por VM. CI executa o novo teste e as duas suítes geométricas anteriores, publicando os arquivos. Resultados do PR/merge ainda precisam ser confirmados pelo SHA antes de declarar aprovação da CI desta unidade.
+Evidência gerada em artifacts/: baseobject-cases.tsv, baseobject-original.tsv, saída Lua e JSON por VM. CI executa o novo teste e as duas suítes geométricas anteriores, publicando os arquivos. Resultado da CI do checkpoint confirmado abaixo; merge e CI pós-merge devem ser consultados pelo SHA efetivamente integrado.
 
 Não validado: modelos reais/armaduras/parse/animação/GPU, protótipos arbitrários de mapas JavaScript ou construtores fora do contrato estático do runtime. Exceções comparam categoria e efeitos, não mensagens/stack traces de host idênticos.
+
+### CI confirmada de BaseObject
+
+Código `21cf986f7e23740f712672ce2e3f341d39b21bec`, [PR #65](https://github.com/SrTristeSad/Bono-Lua/pull/65). [CI 41581131475](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41581131475) concluída com sucesso nos três jobs: inventory 125735978049, geometry (lua5.4) 125735977933 e geometry (luajit) 125735978036. Os jobs executam as regressões geométricas e o novo oráculo de BaseObject.
+Três artefatos confirmados, associados ao mesmo head_sha: pinned-inventory-evidence, geometry-differential-lua5.4 e geometry-differential-luajit (estes contêm também baseobject-cases/original/actual/result).
+A integração só pode ser afirmada após confirmação do merge e da main; não antecipada aqui.
