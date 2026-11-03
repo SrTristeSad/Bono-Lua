@@ -72,3 +72,11 @@ Conferidos main bc74a1a, PR #68, CI pós-merge 41635078122 e backup cd4206a8. Li
 O uso de # no backup só representa máscaras densas. Acrescentado comprimento lógico privado da tabela boneMask, exposto como length, para preservar crescimento/truncamento, posições sem valor e identidade. Um experimento temporário restaurou # em copyFrom e foi rejeitado na cópia esparsa (linha 61); restaurado o código correto e refeitas as execuções finais. Propriedades nomeadas são preservadas pelo truncamento.
 
 A primeira execução do driver confundiu delete JS com escrita nil além do fim e aumentou length; corrigido somente o transporte para rawset(...,nil). Expectativas do original, cenários e comparação numérica foram mantidos. Holes/undefined explícito normalizam por valor/comprimento; nenhuma afirmação de descritores/proxies ou animação integrada. Próxima unidade requer auditar AnimationData e a dependência ArmatureData antes de escolher recorte sem stubs de produto.
+
+## AnimationData e auditoria de ArmatureData
+
+Conferidos main b45b575, PR #69/CI pós-merge 41646190037, backup cd4206a8 e fonte limpa/fixada. Lidos integralmente os TS e os Lua reais de AnimationData/ArmatureData. O primeiro só lê arrays/nomes do parent; portar suas três classes é possível sem instanciar ArmatureData nem fornecer stub de produto. A fronteira é registro somente de teste, com integração real explicitamente pendente. O segundo exige GeometryData de DisplayData para SurfaceData e tem sort/cache/skins/dados globais a auditar em conjunto nas próximas unidades.
+
+Extraídos JSArray/JSMap das representações já comparadas de AnimationConfig/TextureAtlasData, para reutilizar length e ordem com manutenção comum. Reexecutadas ambas as suítes nas duas VMs, sem relaxar expectativas. Preservado o erro/estado parcial de campos numéricos undefined em raw new por conversão localizada a NaN; falha real observada no novo cenário antes da correção.
+
+Preservada a peculiaridade original cacheFrames.length=aridade 1, inclusive cacheFrameCount zero. Experimento que restaurou math.min(1,cacheFrameCount) do backup falhou na linha 155 do lote de 38 cenários; outro com == em appendUnique falhou na linha 56. Código restaurado e lote final ampliado (39 cenários) aprovado nas duas VMs. Não preencher cachedFrames inteiro, não mudar TODO do upstream e não tratar probes como ArmatureData real.

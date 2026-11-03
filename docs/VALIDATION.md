@@ -258,3 +258,29 @@ Normalização explícita: holes/undefined de máscara comparados por valor e le
 Artefatos regeneráveis: config-cases.tsv, config-original.tsv, config-<vm>-actual.tsv e config-<vm>-result.json. CI executa as sete suítes e preserva evidências por VM. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #69, código 52b1ded46b858d3bfd941c399e182bc0a3239d3d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41645915590 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram sete suítes passed, incluindo AnimationConfig com 30 cenários/1.293 operações/10.344 colunas/21 campos escalares. Três artefatos conferidos no mesmo SHA. Consultar PR #69 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## AnimationData e dados de timelines
+
+Originais completos AnimationData.ts/ArmatureData.ts e versões Lua reais do backup lidos; fonte fixada confirmada limpa. O novo oráculo compila o namespace genuíno, executando somente os JS emitidos de BaseObject e AnimationData (três classes). Const enums resolvidos pelo compilador; nenhuma classe ArmatureData ou versão reescrita dos algoritmos no oráculo. Contrato de leitura do parent exercitado por registros locais/getters de nome somente no teste.
+
+Execuções finais reais em ambas as VMs:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/animationdata_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/animationdata_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**39 cenários, 1.084 operações e 11.924 colunas por VM; passed.** Tolerância zero, bytes binary64 (NaN canonicalizado). Cada operação observa retornos/categorias de erro, campos escalares e referências, identidades/valores/length de mapas/listas/cache, arrays retornados e aliases, campos herdados de timelines, pools/LIFO/limites/flags/avisos, callbacks/leituras de nome e hooks pendentes. Colunas agregam campos; não são porcentagem de equivalência.
+
+Cobertura: raw new versus borrow e defaults; herança de TimelineData/AnimationTimelineData; getters ausentes/existentes; adição única nas quatro coleções com __eq adversário; retorno de listas em ordem própria JS, nomes numéricos/canônicos/-0, exclusão/reinserção; listas que crescem durante callbacks, chaves excluídas/adicionadas durante enumeração, lista esparsa que gera erro e devolução com falha parcial/retry. Referências actionTimeline/zOrderTimeline podem repetir objetos já contidos em mapas, preservando avisos/flags.
+
+Cache: positivo evita nova execução mesmo com parent nulo; scale/rate/duration fracionários, negativos/zero/NaN/infinitos, contagens zero/inválidas, limite 2^32-1 com parent vazio sem alocar bilhões de valores, arredondamento e número extra de frame. Apenas slot JS 0 inicializado false por cacheFrames.length=1, inclusive contagem zero que reestende cachedFrames; valores preservados/truncados ao recache e índices -1 com nomes repetidos/antigos. Leitura bones antes de slots, falha em getter de nome e hole no parent preservam efeitos parciais. Cinco sequências determinísticas de 100 operações e números extremos/subnormais/zeros assinados complementam os cenários.
+
+Falha real adicional: raw new seguido de cache gerava erro Lua antes de o original atualizar cacheFrameRate para NaN e lançar RangeError de tamanho. Corrigida somente a interpretação numérica de campos sem inicializador e assegurada propagação NaN de Math.max. Caso mantido no lote final.
+Experimentos temporários no lote anterior de 38 cenários: clamp math.min(1,cacheFrameCount) do backup rejeitado em row 155 cache d 1 (faltava false/length=1 quando count=0); == rejeitado em row 56 add d Bone same b. Produto restaurado e comandos finais de 39 cenários refeitos nas duas VMs.
+
+Regressões após extrair representações para JSArray/JSMap: config_differential aprovou 30 cenários/1.293 operações/10.344 colunas e models_differential aprovou 18 cenários/639 operações/5.751 colunas em cada VM. Nenhuma expectativa/tolerância alterada nessas suítes.
+
+Limites: parent é contrato, não ArmatureData/BoneData/SlotData portados; sortBones, cache de dez componentes, playback/armaduras/GPU e precisão temporal automática real não foram exercitados. Referências null/undefined normalizadas nil; holes/undefined por valor/length, sem descritores/protótipos/proxies. A aridade é a da função original; não prova reflexão/redefinição genérica de Function.length.
+
+Artefatos regeneráveis: animationdata-cases.tsv, animationdata-original.tsv e saídas/JSON por VM. CI executa as oito suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.

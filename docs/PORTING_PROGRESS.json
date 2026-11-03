@@ -91,7 +91,13 @@
       "destination": "dragonbones/model/AnimationConfig.lua",
       "status": "Configuração comparada com BaseObject/enums reais; consumo por Animation/AnimationState e runtime completo pendente",
       "tests": "tests/config_differential.js: 30 cenários, 1.293 operações, 10.344 colunas e 21 campos escalares por VM Lua 5.4/LuaJIT, bytes binary64 exatos. Ver VALIDATION.md.",
-      "differences": "Metatables/new; boneMask com entradas base 1 e length lógico, preservando posições sem valor e identidade. Enums importados diretamente de core/Enums. Holes/undefined normalizados por valor/comprimento, sem equivalência de descritores/proxies. Ver DIFFERENCES.md."
+      "differences": "Metatables/new; boneMask com entradas base 1 e length lógico, preservando posições sem valor e identidade. Enums importados diretamente de core/Enums. Holes/undefined normalizados por valor/comprimento, sem equivalência de descritores/proxies. Ver DIFFERENCES.md. A representação de array foi extraída sem mudança para core/JSArray.lua e a suíte original foi reexecutada nas duas VMs."
+    },
+    "DragonBones/src/dragonBones/model/AnimationData.ts": {
+      "destination": "dragonbones/model/AnimationData.lua",
+      "status": "AnimationData/TimelineData/AnimationTimelineData comparados com pool/enums reais; parent por contrato em teste, integração ArmatureData/playback pendente",
+      "tests": "tests/animationdata_differential.js: 39 cenários, 1.084 operações e 11.924 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Regressões config/models também aprovadas após extração de JSArray/JSMap. Ver VALIDATION.md.",
+      "differences": "Mapas próprios em ordem JS, rawequal para indexOf, arrays lógicos base 1/length, campos numéricos undefined como NaN e Math.max propagando NaN. Preservada peculiaridade cacheFrames.length (aridade 1), inclusive quando contagem é zero. Contrato parent.sortedBones/sortedSlots documentado; sem classe ArmatureData fictícia. Ver DIFFERENCES.md."
     }
   }
 }
