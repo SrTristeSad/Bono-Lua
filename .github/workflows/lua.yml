@@ -147,6 +147,15 @@ jobs:
             artifacts/upstream/shared_binary_expected.tsv
           lua5.4 tests/original_shared_binary_differential.lua
           luajit tests/original_shared_binary_differential.lua
+      - name: Differential weighted FFD mesh against pinned DragonBonesJS
+        run: |
+          set -eu
+          node tests/differential_weighted_mesh_original.js \
+            artifacts/upstream/dragonBones-pixi5.js \
+            tests/fixtures/original_weighted_mesh.json \
+            artifacts/upstream/weighted_mesh_expected.tsv
+          lua5.4 tests/original_weighted_mesh_differential.lua
+          luajit tests/original_weighted_mesh_differential.lua
       - name: Verify original DragonBones Lua ports on LuaJIT
         run: |
           set -eu
