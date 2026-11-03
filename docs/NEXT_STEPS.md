@@ -50,3 +50,5 @@ node tests/worldclock_differential.js ../DragonBonesJS luajit
 ```
 
 O checkout ../DragonBonesJS deve estar no commit fixado. A memória da conversa não substitui código, SHAs e evidências no GitHub.
+
+Checkpoint remoto: PR #67, commit 58d31973c4678e7c8ab7eea7ce64a7740ad00fd0. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41586314646 aprovada: inventory, geometry (lua5.4) e geometry (luajit). As cinco suítes passaram; WorldClock confirmou 28 cenários/1.633 operações/11.431 colunas em cada VM. Artefatos publicados por VM e inventário. Consultar PR #67 para SHA final e CI pós-merge; este registro não antecipa merge.
