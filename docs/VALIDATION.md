@@ -179,3 +179,34 @@ Não comprovado: renderer/backend concreto, parsing/armaduras/animação, coerç
 
 Código `eef0e925c11bb80295c539b16e23654de2522b0f`, [PR #66](https://github.com/SrTristeSad/Bono-Lua/pull/66). [CI 41583478829](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41583478829) aprovada nos três jobs: inventory 125743437769, geometry (lua5.4) 125743437741 e geometry (luajit) 125743437620. As duas VMs executaram as quatro suítes, incluindo o novo teste de modelos.
 Artefatos geometry-differential-lua5.4, geometry-differential-luajit e pinned-inventory-evidence confirmados com o mesmo head_sha; incluem os arquivos models-cases/original/actual/result. A integração e a CI pós-merge devem ser verificadas separadamente no GitHub.
+
+## Unidade WorldClock / IAnimatable
+
+Base confirmada e9ed0c9, PR #66 e CI pós-merge 41583759197 aprovados. Lidos WorldClock.ts e IAnimatable.ts completos no commit fixado, Lua real de cd4206a8 e documentos de status/dependências antes de modificar.
+
+### Execuções locais finais reais
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/worldclock_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/worldclock_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+Resultado final de cada comando: **28 cenários, 1.633 operações, 11.431 colunas, tolerância zero, passed**. A comparação serializa números por bytes binary64 (NaN canonicalizado); compara campos time/timeScale/_systemTime, proprietários, comprimento/posições da lista, chamadas e sua ordem, fonte de tempo lida, retornos/categorias de erro e estado parcial. Não é porcentagem de equivalência.
+
+O oráculo executa WorldClock.ts genuíno em VM com Date determinístico (milissegundos); o Lua usa a mesma fonte convertida por *0.001 para segundos. Nenhuma lógica de agendamento foi reimplementada em JS. IAnimatable é contrato sem código emitido; probes só fornecem callback e clock como campo simples ou setter recíproco. Relógios aninhados são WorldClock reais nas duas linguagens.
+
+Cobertura: defaults, NaN e zeros assinados, escala positiva/zero/negativa/não finita, tempo automático e relógio andando para trás, leitura temporal mesmo no avanço zero, add duplicado, remove/clear, contains por ancestralidade, getter/setter clock, mutação durante callbacks, compactação em duas passagens, adição tardia, callbacks que falham, origem de tempo que falha, reentrância e efeitos parciais de arrays com undefined/comprimento inválido. Oito sequências de 100 operações determinísticas complementam os cenários. Ciclos só são inspecionados em consultas finitas e quebrados antes de avançar; não foi adicionado detector de ciclos ao motor.
+
+Falhas reais observadas antes da aprovação:
+
+- add c b ignorava um segundo animatable porque __eq Lua dizia que dois objetos distintos eram iguais. Corrigido com rawequal onde o TS usa identidade estrita.
+- Após avanço reentrante encolher a lista, clear c retornava void, mas o original lançava erro no slot undefined. Corrigidos comprimento lógico e iteração por índice. O cenário de comprimento negativo preserva RangeError lógico do próprio upstream, em vez de inventar clamp/guard de semântica diferente.
+
+Preflight adicional do driver Lua substitui apenas os.time/love.timer por primitivas de teste e confirma que o default usa época de os.time, sem selecionar o timer monotônico de LÖVE. Não demonstra precisão real em milissegundos.
+
+**Limitação conhecida de plataforma:** stock Lua oferece os.time em segundos. Os testes comprovam o algoritmo com fonte determinística, não equivalência da fonte automática real. _now é fronteira de host em segundos de época, configurável antes de criar relógios. Não se usa os.clock nem âncora híbrida inventada para alegar um Date equivalente.
+
+Evidências em artifacts/: worldclock-cases.tsv, worldclock-original.tsv, saída e JSON por VM. A CI executa esta e todas as quatro suítes anteriores e publica seus artefatos. CI inicial confirmada abaixo; merge e execução pós-merge devem ser consultados no PR.
+IAnimatable fica em docs/contracts/IAnimatable.md; o inventário aponta o contrato, sem contar uma classe de runtime inexistente. Armature real, eventos/core completos e GPU continuam pendentes.
+
+Checkpoint remoto: PR #67, commit 58d31973c4678e7c8ab7eea7ce64a7740ad00fd0. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41586314646 aprovada: inventory, geometry (lua5.4) e geometry (luajit). As cinco suítes passaram; WorldClock confirmou 28 cenários/1.633 operações/11.431 colunas em cada VM. Artefatos publicados por VM e inventário. Consultar PR #67 para SHA final e CI pós-merge; este registro não antecipa merge.

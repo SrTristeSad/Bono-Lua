@@ -34,6 +34,7 @@ function category(p) {
   return 'Configuração';
 }
 function destination(p, cat) {
+  if (progress.files[p]) return progress.files[p].destination;
   if (p.startsWith('DragonBones/src/')) return p.replace('DragonBones/src/dragonBones/', 'dragonbones/').replace(/\.ts$/, '.lua');
   if (cat.startsWith('Integração')) return 'integrations/'+p.replace(/\.(ts|js)$/, '.lua');
   return '—';
@@ -120,7 +121,7 @@ for (const u of units) {
   for (const ref of u.references) for (const owner of owners.get(ref) || []) if (owner !== u.p) deps.add(owner);
   md += '\n### `'+u.p+'`\n\n'+
     '- Origem/commit: `'+u.p+'` @ `'+PIN+'`.\n'+
-    '- Destino: '+u.target+'. '+(state ? 'Implementação presente nesta reconstrução.' : 'Ausente nesta reconstrução antes de iniciar o porte.')+'\n'+
+    '- Destino: '+u.target+'. '+(state ? (state.kind === 'contract' ? 'Contrato documentado; interface sem algoritmo executável.' : 'Implementação presente nesta reconstrução.') : 'Ausente nesta reconstrução antes de iniciar o porte.')+'\n'+
     '- Estado: '+(state ? state.status+'; testes: '+state.tests+'; diferenças: '+state.differences : 'pendente; testes: não executados; diferenças: ainda não auditadas.')+'\n'+
     '- Dependências candidatas: '+([...deps].sort().map(x=>'`'+x+'`').join(', ') || 'nenhuma declaração autoral identificada')+'.\n'+
     '- Importações externas: '+([...u.externals].sort().join(', ') || 'nenhuma importação explícita; APIs globais ainda exigem auditoria')+'.\n';

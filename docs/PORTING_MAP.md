@@ -12,6 +12,8 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/core/BaseObject.ts | dragonbones/core/BaseObject.lua | Implementado, comparado isoladamente com o original executado |
 | DragonBones/src/dragonBones/model/CanvasData.ts | dragonbones/model/CanvasData.lua | Modelo e integração com pool comparados |
 | DragonBones/src/dragonBones/model/TextureAtlasData.ts (duas classes) | dragonbones/model/TextureAtlasData.lua | Dados de atlas/textura e integração com pool comparados; backend gráfico pendente |
+| DragonBones/src/dragonBones/animation/WorldClock.ts | dragonbones/animation/WorldClock.lua | Algoritmo comparado; precisão do relógio automático do host pendente |
+| DragonBones/src/dragonBones/animation/IAnimatable.ts | docs/contracts/IAnimatable.md | Contrato de tipos documentado e exercitado; sem classe fictícia |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

@@ -53,3 +53,15 @@ Limites explícitos: não emula Object.prototype para chaves como __proto__/cons
 
 18 cenários/639 operações passaram nas duas VMs. A ordem de pares do backup falhou no copy dest src; corrigida a representação de mapa, o caso e as identidades passaram sem alterar expectativas.
 Limitações conhecidas: o mapa Lua não emula propriedades herdadas de Object.prototype (ex.: nomes constructor/__proto__/toString), nem getters/proxies/protótipos arbitrários ou distinção universal null/undefined. A integração gráfica e a equivalência irrestrita continuam pendentes.
+
+## WorldClock / IAnimatable
+
+- IAnimatable é somente interface TS. O contrato Lua é documentado, não simulado como classe; void vira nil e clock nulo vira nil.
+- Objetos e marcadores usam rawequal onde o original exige ===/!==/indexOf por identidade. __eq de um animatable Lua não pode fazê-lo substituir outro nem confundi-lo com o marcador null.
+- _animatebles conserva a grafia original. A tabela usa índices Lua 1-based, marcador privado para null, nil para leitura de undefined e campo length para o comprimento lógico JS. Não usar #/ipairs para perder posições sem valor após callbacks reentrantes. Escritas internas além do fim atualizam length; resize inválido lança erro antes de mudar o comprimento, como Array.length.
+- clear mantém o algoritmo original de atribuir clock=null. Campos simples podem continuar na lista mesmo sem proprietário; setters recíprocos podem remover entradas. O loop usa comprimento corrente como for..of, sem antecipar remoção/compactação.
+- Fonte _now retorna segundos de época e representa new Date().getTime()/Date.now() * 0.001. O default usa os.time()+0.0: época correta, mas resolução de segundos. O uso automático de love.timer monotônico do backup foi removido, pois troca a origem observável do tempo.
+- **Divergência conhecida:** resolução do tempo automático no host Lua padrão ainda inferior ao Date em milissegundos. Hosts podem fornecer _now com resolução adequada, antes de criar relógios. Não se afirmou equivalência da fonte real com base no provider determinístico de teste.
+- Os testes distinguem null de posições undefined na lista por seus marcadores/índices, mas não refletem descritores de propriedade de arrays, coerções JS arbitrárias ou manipulação direta do array privado. Null de clock vira nil. NaNs usam um marcador canônico; demais números são comparados por bytes.
+
+Ciclos não recebem detecção nova: os testes inspecionam somente consultas finitas e desfazem ciclos antes de avançar. Não afirmam suportar travessias que já não terminam no original. Armature e animação reais ainda não estão envolvidos nesses testes.
