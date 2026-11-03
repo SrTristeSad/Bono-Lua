@@ -731,7 +731,7 @@ Duas armaduras genuínas são construídas independentemente por BaseFactory: um
 
 **Resultado técnico:** esta etapa aumenta a comprovação de fidelidade e da integração do IK original, **não altera fórmulas nem introduz solver próprio**. O teste não comprova todos os casos patológicos, IK de personagens exportados de terceiros ou equivalência global 1:1. A análise inicial não identificou defeito nas equações originais portadas nos casos selecionados.
 
-**PR, merge e CI:** registro pendente até confirmação da CI na revisão final; não declarar sucesso antes de verificar `lua-tests` e `love-render` e seus SHAs de execução.
+**Resultados confirmados:** [PR #62](https://github.com/SrTristeSad/Bono-Lua/pull/62), CI do PR [#41568610096](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41568610096), `lua-tests` e `love-render` aprovados. A CI executou o solver verdadeiro DragonBonesJS e confirmou `Original DragonBonesJS IKConstraint differential: 56 solver cases passed` nas VMs Lua 5.4 e LuaJIT. O log da GPU confirmou `Original live IK GPU: single- and two-bone chains, animated target, visible motion, real Armature and Slot.`. Merge [`16e53741d997f109313fd8dc87acfdb063980eba`](https://github.com/SrTristeSad/Bono-Lua/commit/16e53741d997f109313fd8dc87acfdb063980eba). A CI [pós-merge #41568707732](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41568707732) confirmou os dois jobs verdes no commit integrado. **Nenhum solver ou algoritmo de IK original foi alterado:** o resultado é validação diferencial e regressão gráfica novas, não declaração de completude do motor.
 
 ## Código que já existia antes deste porte
 
