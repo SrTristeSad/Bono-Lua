@@ -104,3 +104,11 @@ Confirmados main 57e7d48, PR #72/CI pós-merge 41673223815, backup cd4206a8 e fo
 Append usa comprimento lógico JSArray e preserva os dois passos de push para manter RangeError/estado parcial no limite uint32. Experimento sem esse passo foi rejeitado em row 107; um reset de tipo inventado foi rejeitado em row 30. Código restaurado e execuções finais refeitas nas duas VMs sem mudar expectativas/tolerâncias. Sem solver ou constantes/classes provisórias.
 
 A suíte nova integra constraints concretas com modelos reais de armadura/bones/slot/path display, removendo a dependência de probes para essa fronteira. SkinData/DragonBonesData ainda exigem seus próprios portes e comparações; a próxima unidade precisa tratar null explícito em listas de displays distintamente de holes/undefined.
+
+## SkinData
+
+Confirmados main 2e25e30, PR #73/CI pós-merge 41677323508, backup cd4206a8 e fonte limpa/fixada. Lidos TS completo e Lua real do backup. Preservado marcador explícito de null do porte anterior, com rawequal, length lógico e ordem de JSMap; não converter hole/undefined em null nem interromper em ipairs. addDisplay diferencia nil explícito de argumento omitido por aridade de varargs, mantendo falha depois da criação da lista.
+
+Mantidos parent antes do push e leitura tardia da lista, ownership duplicado/compartilhado e novas chaves sobrevivendo à enumeração/retorno ao pool no comportamento do original executado. Experimentos com ipairs e omissão tratada como null foram rejeitados nas linhas 65/77; produto restaurado e testes finais refeitos sem alterar expectativas/tolerâncias. Nenhuma reparação extra de referências nem filtro de tipo em getMesh.
+
+A nova suíte substitui a fronteira de skin por modelos reais, incluindo cadeia de falha peso/display/skin/armadura e ações/UserData. Consumidores futuros precisam reconhecer SkinData.NULL explicitamente; instrução registrada para manter a representação. DragonBonesData será a próxima unidade para remover a fronteira de armazenamento global.

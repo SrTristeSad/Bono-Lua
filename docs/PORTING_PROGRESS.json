@@ -107,8 +107,8 @@
     },
     "DragonBones/src/dragonBones/model/ArmatureData.ts": {
       "destination": "dragonbones/model/ArmatureData.lua",
-      "status": "Quatro classes comparadas com AnimationData e IKConstraintData/PathConstraintData reais; SkinData/DragonBonesData por contrato em teste; runtime Armature pendente",
-      "tests": "tests/armaturedata_differential.js: 34 cenários, 1.079 operações e 15.106 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Ordenação acíclica, ciclo de vida, cache de animações e dez componentes por frame comparados. Ver VALIDATION.md. Ordenação/limpeza com constraints reais em tests/constraintdata_differential.js: 23 cenários/817 operações/7.353 colunas por VM.",
+      "status": "Quatro classes comparadas com AnimationData, constraints e SkinData reais; armazenamento global DragonBonesData por contrato; runtime Armature pendente",
+      "tests": "tests/armaturedata_differential.js: 34 cenários, 1.079 operações e 15.106 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Ordenação acíclica, ciclo de vida, cache de animações e dez componentes por frame comparados. Ver VALIDATION.md. Ordenação/limpeza com constraints reais em tests/constraintdata_differential.js: 23 cenários/817 operações/7.353 colunas por VM. Skin/getMesh/ownership reais em tests/skindata_differential.js: 29 cenários/814 operações/8.140 colunas por VM.",
       "differences": "JSArray/JSMap para length/ordem, rawequal para identidade. Estado privado diferencia undefined/null em defaultSkin/defaultAnimation e BoneData.parent, externamente nil. Offsets de frame públicos base 0, índice validado antes de +1. Contratos remanescentes em contracts/ArmatureDataReferences.md; sem stubs de produto."
     },
     "DragonBones/src/dragonBones/model/ConstraintData.ts": {
@@ -116,6 +116,12 @@
       "status": "Base abstrata, IKConstraintData e PathConstraintData comparados e integrados com ArmatureData/bones/slots/path display reais; solver de runtime pendente",
       "tests": "tests/constraintdata_differential.js: 23 cenários, 817 operações e 7.353 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Inclui referências não proprietárias, arrays esparsos/aliases, overflow de push e ordenação/limpeza com constraints reais. Ver VALIDATION.md.",
       "differences": "JSArray base 1/length; AddBone preserva capitalização e passos de Array.push (inclusive escrita não índice seguida de RangeError no limite). _onClear de Path mantém type=IK como na fonte. Base abstrata sem chave concreta fictícia; refs null/undefined normalizadas nil. Não implementa solver."
+    },
+    "DragonBones/src/dragonBones/model/SkinData.ts": {
+      "destination": "dragonbones/model/SkinData.lua",
+      "status": "SkinData comparado e integrado com ArmatureData/displays/geometria/pesos/ações reais; runtime de skins/renderização pendente",
+      "tests": "tests/skindata_differential.js: 29 cenários, 814 operações e 8.140 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Null explícito versus holes, ordem/mutações, parent, ownership e falhas parciais comparados. Ver VALIDATION.md.",
+      "differences": "JSArray/JSMap base 1/length/ordem, SkinData.NULL por rawequal para null em listas; nil explícito no add é null e argumento omitido é undefined com erro. Map/list identity, push overflow e parent assignment order preservados. Uso de listas em contracts/SkinDataLists.md; sem emulação genérica de proxies/descritores."
     }
   }
 }
