@@ -466,9 +466,9 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente |
-| `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
+| `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
+| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | docs/contracts/IEventDispatcher.md | Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente |
 | `DragonBones/src/dragonBones/factory/BaseFactory.ts` | Código-fonte do núcleo | dragonbones/factory/BaseFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/geom/ColorTransform.ts` | Código-fonte do núcleo | dragonbones/geom/ColorTransform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
@@ -485,7 +485,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/model/DragonBonesData.ts` | Código-fonte do núcleo | dragonbones/model/DragonBonesData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/SkinData.ts` | Código-fonte do núcleo | dragonbones/model/SkinData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente |
-| `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
 | `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/ObjectDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -3100,8 +3100,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/core/DragonBones.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/core/DragonBones.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/core/DragonBones.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/core/DragonBones.lua. Implementação presente nesta reconstrução.
+- Estado: Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente; testes: tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.; diferenças: Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md.
 - Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Egret/Demos/template/runtime/native_require.js`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3436,8 +3436,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/event/EventObject.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/event/EventObject.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/event/EventObject.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/event/EventObject.lua. Implementação presente nesta reconstrução.
+- Estado: Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente; testes: tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.; diferenças: Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3472,8 +3472,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/event/IEventDispatcher.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/event/IEventDispatcher.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/event/IEventDispatcher.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: docs/contracts/IEventDispatcher.md. Contrato documentado; interface sem algoritmo executável.
+- Estado: Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente; testes: events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica.; diferenças: Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício.
 - Dependências candidatas: `DragonBones/src/dragonBones/event/EventObject.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -4273,8 +4273,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/model/UserData.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/model/UserData.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/model/UserData.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/model/UserData.lua. Implementação presente nesta reconstrução.
+- Estado: Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente; testes: tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.; diferenças: Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

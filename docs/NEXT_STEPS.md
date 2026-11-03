@@ -2,53 +2,53 @@
 
 ## Objetivo permanente
 
-Reconstruir em Lua o DragonBonesJS oficial fixado em 64b6c69ae35777c2404be68c9192e2c56906079e, preservando arquitetura, algoritmos e comportamentos. Destino único SrTristeSad/Bono-Lua. Equivalência precisa de execução diferencial; não declarar 100% com pendências.
+Reconstruir em Lua o DragonBonesJS oficial fixado em 64b6c69ae35777c2404be68c9192e2c56906079e, preservando arquitetura, algoritmos e comportamentos. Destino único SrTristeSad/Bono-Lua. Comparação diferencial exigida; não declarar 100% com pendências.
 
-## Estado confirmado ao iniciar
+## Estado confirmado ao iniciar esta unidade
 
-- Main e9ed0c9903e21dc749b034c138d0974c59518f3c; PR #66 integrado; CI pós-merge 41583759197 aprovada.
-- Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, intacto.
-- Branch desta unidade port/animation-worldclock. Consultar checkpoint/PR/merge e CI posteriores no GitHub; não antecipar SHA futuro.
-- Main recebe checkpoints testados conforme autorização do proprietário. Não confundir isso com runtime completo.
+- Main 341df09f87faea5b5ab23fd22b21895d9c0ed9e7, PR #67 integrado; CI pós-merge 41586449745 aprovada.
+- Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, preservado.
+- Branch port/core-events. Consultar PR/merge e CI posteriores no GitHub antes de editar; não antecipar SHA futuro.
+- Main acompanha checkpoints testados conforme autorização do proprietário. Isso não significa runtime completo.
 
-## Trabalho atual
+## Unidade atual
 
-WorldClock em dragonbones/animation/WorldClock.lua e IAnimatable em docs/contracts/IAnimatable.md. A interface não vira uma classe fictícia.
-Execuções locais: 28 cenários, 1.633 operações e 11.431 colunas por VM (Lua 5.4.8/LuaJIT), binary64 exato com NaN canonicalizado, fonte Date determinística. Campos, lista/length/null/undefined, hierarquia, callbacks, ordem e efeitos parciais de erro comparados.
-Corrigidos __eq interferindo na identidade e ipairs encerrando clear antes de undefined criado por reentrância; length lógico e erros de resize preservam o original.
-**Pendência conhecida:** default _now usa os.time em segundos de época, resolução de segundos. A fonte real do modo automático não está comprovada equivalente a Date em milissegundos. _now recebe função que devolve segundos de época com resolução adequada; não usar timer monotônico de LÖVE como se tivesse a mesma origem. O teste preflight confere essa distinção de origem, sem alegar precisão real de milissegundos.
-Cinco classes geométricas, BaseObject e três modelos de dados já estão presentes; integração de Armature/renderização continua pendente.
+DragonBones.lua e Enums.lua no core, EventObject.lua, UserData.lua (UserData/ActionData), contrato IEventDispatcher/EventStringType documentado. Enums separados só para evitar ciclo de require; core reexporta a mesma fonte. Shims exclusivos JS documentados como fronteiras de linguagem, não plataformas implementadas.
+Testes reais: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM Lua 5.4/LuaJIT. Números binary64 exatos com NaN canonicalizado. Pool/clock/core/eventos/modelos reais; Armature/dispatcher/animatable são probes somente de teste. Comparados despacho, filas crescentes, reentrância, reciclagem adiada, identidade, falhas e payloads.
+Falha real: índice subnormal de UserData arredondava ao primeiro elemento ao somar 1. Integralidade verificada antes do deslocamento; caso mantido. Experimento com == do backup nas filas foi rejeitado pelo teste; rawequal preservado e arquivo restaurado antes dos testes finais.
+
+## Pendências explícitas
+
+- Armature, três métodos de listeners de IEventDispatcher e backend real ainda não implementados/validados. Probes não contam como runtime.
+- WorldClock._now padrão usa os.time em segundos de época com resolução de segundos. Provider determinístico não demonstra equivalência do relógio automático real a Date em milissegundos. Host pode fornecer fonte adequada; não substituir por timer monotônico com outra origem.
+- Arrays de UserData são densos Lua/base 1, getters públicos base 0. Propriedades arbitrárias/esparsas/proxies JS, distinção universal null/undefined e reflexão genérica não são equivalência declarada.
+- Parsers, armaduras, constraints, timelines/blending, factories e GPU continuam pendentes.
 
 ## Próxima unidade
 
-1. Conferir main, backup, PRs e CI; ler status/mapa/validação/decisões/inventário e os códigos reais antes de editar.
-2. Ler core/DragonBones.ts inteiro (incluindo enums e shims JS), event/EventObject.ts, model/UserData.ts e event/IEventDispatcher.ts no commit fixado, comparando com o Lua real do backup.
-3. Determinar a carga dos módulos/enums Lua para respeitar dependências e a referência original sem constantes fictícias. Portar fila/retorno de objetos e despacho de eventos com WorldClock/BaseObject reais e comparação diferencial. Probes de Armature/dispatcher apenas no teste não contam como produto portado.
-4. Manter explícito o bloqueio da fonte de tempo automática: não declarar resolvido por injetar tempo determinístico nos testes.
-5. Atualizar progresso/relatórios, testar, publicar PR, confirmar CI e integrar checkpoint autorizado. Parsers/armaduras/constraints/animação/factories/GPU e auditoria integral permanecem pendentes.
+1. Conferir main, backup, PRs e CI; ler status, mapa, decisões, diferenças e validação atuais.
+2. Auditar model/AnimationConfig.ts completo e Lua real do backup. Conferir dependências estáticas e executáveis; BaseObject/enums agora estão disponíveis. Preparar comparação de defaults, copyFrom, arrays/aliases e pool sem usar testes antigos como evidência atual.
+3. Escolher modelos seguintes conforme dependências reais; preparar Armature gradualmente sem classes/constantes provisórias de produto.
+4. Atualizar progresso e inventário, testar, publicar PR, verificar CI e integrar checkpoint autorizado. Manter a pendência de precisão do tempo explícita.
 
 ## Reprodução
 
 ```sh
 git fetch origin
-git switch port/animation-worldclock
+git switch main
 git log -1 --format=fuller
-git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/animation-worldclock
+git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/core-events
 npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
-node tests/geom_differential.js ../DragonBonesJS lua5.4
-node tests/math_differential.js ../DragonBonesJS lua5.4
-node tests/baseobject_differential.js ../DragonBonesJS lua5.4
-node tests/models_differential.js ../DragonBonesJS lua5.4
-node tests/worldclock_differential.js ../DragonBonesJS lua5.4
-node tests/geom_differential.js ../DragonBonesJS luajit
-node tests/math_differential.js ../DragonBonesJS luajit
-node tests/baseobject_differential.js ../DragonBonesJS luajit
-node tests/models_differential.js ../DragonBonesJS luajit
-node tests/worldclock_differential.js ../DragonBonesJS luajit
+for vm in lua5.4 luajit; do
+  node tests/geom_differential.js ../DragonBonesJS "$vm"
+  node tests/math_differential.js ../DragonBonesJS "$vm"
+  node tests/baseobject_differential.js ../DragonBonesJS "$vm"
+  node tests/models_differential.js ../DragonBonesJS "$vm"
+  node tests/worldclock_differential.js ../DragonBonesJS "$vm"
+  node tests/events_differential.js ../DragonBonesJS "$vm"
+done
 ```
 
-O checkout ../DragonBonesJS deve estar no commit fixado. A memória da conversa não substitui código, SHAs e evidências no GitHub.
-
-Checkpoint remoto: PR #67, commit 58d31973c4678e7c8ab7eea7ce64a7740ad00fd0. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41586314646 aprovada: inventory, geometry (lua5.4) e geometry (luajit). As cinco suítes passaram; WorldClock confirmou 28 cenários/1.633 operações/11.431 colunas em cada VM. Artefatos publicados por VM e inventário. Consultar PR #67 para SHA final e CI pós-merge; este registro não antecipa merge.
+O checkout ../DragonBonesJS precisa estar no commit fixado. Consultar o PR do checkpoint para o SHA final e a CI pós-merge, sem confiar em memória da conversa.

@@ -14,6 +14,10 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/TextureAtlasData.ts (duas classes) | dragonbones/model/TextureAtlasData.lua | Dados de atlas/textura e integração com pool comparados; backend gráfico pendente |
 | DragonBones/src/dragonBones/animation/WorldClock.ts | dragonbones/animation/WorldClock.lua | Algoritmo comparado; precisão do relógio automático do host pendente |
 | DragonBones/src/dragonBones/animation/IAnimatable.ts | docs/contracts/IAnimatable.md | Contrato de tipos documentado e exercitado; sem classe fictícia |
+| DragonBones/src/dragonBones/core/DragonBones.ts | dragonbones/core/DragonBones.lua e core/Enums.lua | Núcleo de filas e 98 valores de enums comparados; shims JS documentados |
+| DragonBones/src/dragonBones/event/EventObject.ts | dragonbones/event/EventObject.lua | Objeto de evento e conversão de ações comparados com pool real |
+| DragonBones/src/dragonBones/model/UserData.ts (duas classes) | dragonbones/model/UserData.lua | UserData/ActionData e reciclagem de payload comparados |
+| DragonBones/src/dragonBones/event/IEventDispatcher.ts | docs/contracts/IEventDispatcher.md | Contrato documentado; listeners/backend real pendentes |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

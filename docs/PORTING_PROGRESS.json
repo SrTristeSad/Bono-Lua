@@ -61,6 +61,31 @@
       "status": "Contrato documentado e exercitado; interface TS sem classe de runtime para portar",
       "tests": "WorldClock real e probes simples/recíprocos implementam advanceTime e clock no diferencial. Armature ainda pendente.",
       "differences": "void para nil; clock nulo para nil; métodos chamados com self em Lua. Não criada implementação fictícia da interface."
+    },
+    "DragonBones/src/dragonBones/core/DragonBones.ts": {
+      "destination": "dragonbones/core/DragonBones.lua",
+      "status": "Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente",
+      "tests": "tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.",
+      "differences": "Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/event/EventObject.ts": {
+      "destination": "dragonbones/event/EventObject.lua",
+      "status": "Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente",
+      "tests": "tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.",
+      "differences": "Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/model/UserData.ts": {
+      "destination": "dragonbones/model/UserData.lua",
+      "status": "Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente",
+      "tests": "tests/events_differential.js: 25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM (Lua 5.4/LuaJIT), comparação binary64 exata. Ver VALIDATION.md.",
+      "differences": "Enums em core/Enums.lua sem ciclo de require; métodos com self; arrays densos Lua base 1, getters públicos com índice base 0; referências null/undefined normalizadas nil; identidade estrita por rawequal. Shims JS de DragonBones.ts são fronteiras documentadas, sem simulação de globais. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/event/IEventDispatcher.ts": {
+      "destination": "docs/contracts/IEventDispatcher.md",
+      "kind": "contract",
+      "status": "Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente",
+      "tests": "events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica.",
+      "differences": "Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício."
     }
   }
 }

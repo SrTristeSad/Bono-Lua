@@ -210,3 +210,24 @@ Evidências em artifacts/: worldclock-cases.tsv, worldclock-original.tsv, saída
 IAnimatable fica em docs/contracts/IAnimatable.md; o inventário aponta o contrato, sem contar uma classe de runtime inexistente. Armature real, eventos/core completos e GPU continuam pendentes.
 
 Checkpoint remoto: PR #67, commit 58d31973c4678e7c8ab7eea7ce64a7740ad00fd0. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41586314646 aprovada: inventory, geometry (lua5.4) e geometry (luajit). As cinco suítes passaram; WorldClock confirmou 28 cenários/1.633 operações/11.431 colunas em cada VM. Artefatos publicados por VM e inventário. Consultar PR #67 para SHA final e CI pós-merge; este registro não antecipa merge.
+
+## Núcleo DragonBones, EventObject, UserData/ActionData e enums
+
+Fontes fixadas: core/DragonBones.ts, event/EventObject.ts, model/UserData.ts e contrato event/IEventDispatcher.ts no commit único. BaseObject/WorldClock genuínos também são executados. O compilador recebe o namespace original; o teste executa somente os cinco arquivos pertinentes e ativa preserveConstEnums para inspecionar os valores originais, sem reescrever algoritmos. Host Date determinístico; console.info/warn observados.
+
+Comandos locais reais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/events_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/events_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+Resultado final por VM: **25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums; passed**. Tolerância zero; números por bytes binary64 e NaN canonicalizado. Referências objeto JS null/undefined normalizadas nil. Cada operação observa retorno/erro, estáticos e getters, time do clock, filas, campos/aliases de objetos e arrays, pools/ordem/flags, armatures live/disposed, chamadas, hooks pendentes, mensagens e avisos. Seis sequências de 100 operações determinísticas complementam cenários direcionados.
+
+Cobertura: deduplicação estrita, esvaziamento e crescimento de filas por callbacks, eventos de som local/global e mudança de tipo durante despacho, armature descartada, manager ausente, erros locais/globais/de clock/de retorno ao pool, reentrância, descarte no avanço seguinte e limites de pool. Modelos: new versus borrow, todos os campos/reset, payload devolvido por ActionData mas não por EventObject, getters/add de UserData com defaults/limites/índices fracionários/NaN/infinitos, arrays preservados por identidade e conversão de ações Play/Frame/Sound/desconhecida, consultas bone/slot, campos antigos e falhas parciais de lookup.
+
+Falha observada: getInt u 5e-324 retornava binary64 -0 (primeiro elemento) em vez de undefined devido ao arredondamento index+1. Corrigida verificação de integralidade antes do deslocamento; os três getters e índices próximos de 1 mantidos no teste. Experimento temporário restaurando == nas filas falhou em bufferObject q (esperado p,q; obtido p), confirmando o teste de __eq; arquivo restaurado antes das execuções finais.
+
+Probes de Armature/dispatcher/animatable só implementam fronteiras ainda não portadas e falhas programadas. O núcleo, pool, relógio, eventos e os dois modelos são reais nos dois lados. Não é validação de Armature, listener registry, áudio/GPU, shims de plataforma JS ou precisão temporal automática real.
+
+Artefatos regenerados: events-cases.tsv, events-original.tsv, events-enums-original.tsv e saídas/valores de enums/JSON por VM. CI executa as seis suítes e publica evidências. CI remota/PR/merge deste checkpoint ainda devem ser confirmados no SHA publicado.
