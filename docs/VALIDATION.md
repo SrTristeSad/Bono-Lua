@@ -286,3 +286,28 @@ Limites: parent é contrato, não ArmatureData/BoneData/SlotData portados; sortB
 Artefatos regeneráveis: animationdata-cases.tsv, animationdata-original.tsv e saídas/JSON por VM. CI executa as oito suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #70, código 2b612757c2bfee0011db97cc3abea1a7de19625d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41650945111 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram oito suítes passed; novo lote 39 cenários/1.084 operações/11.924 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #70 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## DisplayData, GeometryData e WeightData
+
+Originais DisplayData.ts completo e Lua real do backup lidos. O oráculo compila o namespace genuíno e executa os arquivos emitidos de BaseObject, Point, Rectangle, Matrix, Transform, UserData, TextureAtlasData e DisplayData. Const enums resolvidos pelo compilador. Não há versão reescrita dos algoritmos no JS, backend ou implementação fictícia de modelos externos.
+
+Execuções finais reais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/displaydata_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/displaydata_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**33 cenários, 1.117 operações e 10.053 colunas por VM; passed.** Tolerância zero, bytes binary64/NaN canonicalizado. Cada operação compara retorno/categoria de erro, todos os campos declarados por classe, referências, identidades de primitivos/geometry/arrays, comprimento e valores, pools/hash/flags/LIFO/limites/avisos, callbacks/hook pendentes e efeitos parciais. Colunas agregam campos, sem porcentagem de equivalência.
+
+Cobertura das oito classes: raw new versus borrow e defaults, base abstrata preservando type e falhando ao pedir chave de pool, construtor de GeometryData sem BaseObject; clear repetido, retorno/reuso, identidades de Point/Transform/GeometryData, herança/ordem de resets. Compartilhamento em si mesmo, peso próprio/compartilhado, shareFrom preservando data/inheritDeform e não devolvendo peso anterior; falha de retorno antes dos resets de GeometryData. Getters com dados Int16 e offsets válidos/omitidos/negativos/fracionários/subnormais/limites/NaN/infinitos, arredondamento efetivo com BinaryOffset, readonly e data/intArray ausentes.
+
+Display: textura real não proprietária em imagem/malha, pivot/transform, skin/armature opacos não devolvidos; ações reais com UserData, duplicatas, crescimento/encolhimento de lista durante retorno e erro em posição undefined; falhas antes dos resets específicos de ArmatureDisplay, após type/flags de Mesh/Path e antes de type em BoundingBox. WeightData preserva duplicatas/holes e não devolve bones; curvas com números extremos/zeros/NaN, length 2^32-1 sem materializar bilhões de entradas, comprimentos inválidos e propriedades extras persistentes. Cinco sequências determinísticas de 100 operações complementam os cenários dirigidos.
+
+Falha real: linha 106 get g vertexCount em offset sem inicialização devolvia erro Lua em vez de undefined. Corrigida interpretação numérica localizada e validação antes do deslocamento para base 1. Experimento removendo a validação foi rejeitado na linha 124 (subnormal virava posição 1); outro substituindo o loop de actions por ipairs foi rejeitado na linha 254 (esperado erro por undefined; obtido void). Produto restaurado e comandos finais refeitos nas duas VMs, sem alterar expectativas/tolerâncias.
+
+Limites: registros locais só representam referências externas/Int16Array já decodificado/returnToPool de boundingBox. Não validam BoneData/SkinData/ArmatureData/DragonBonesData/BoundingBoxData reais, parser de bytes, coerções/propriedades genéricas de typed arrays, hit testing, renderização, deformação ou playback. TextureData cru é classe real usada como referência não proprietária, sem subclasse gráfica. Referências null/undefined normalizam nil; holes/undefined por valor/length, sem descritores/proxies/Array.prototype. Precisão temporal automática real permanece pendente.
+
+Artefatos regeneráveis: displaydata-cases.tsv, displaydata-original.tsv e saídas/JSON por VM. CI executa as nove suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
