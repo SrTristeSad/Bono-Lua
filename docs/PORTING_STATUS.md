@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-geometry-skins`, sobre `main@a2a3fe7`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-shared-binary`, sobre `main@a9e34b0`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -294,3 +294,14 @@ Skin preserva placeholders null para raw falsy/undefined, índice de display par
 Arrays ainda são trabalho numérico sem tipos; teste vincula referências a DragonBonesData para consultar GeometryData antes de haver _modifyArray. Não produz ArrayBuffer/Int16Array/Float32Array, arquivo JSON/DBDT ou renderização. Coeficientes de poses seguem o contrato numérico (incluindo holes); coerções JS genéricas de coeficientes não numéricos não são equivalência afirmada.
 
 Mutantes de trocar weightCount por vertexCount e mover floor na expressão foram rejeitados (linhas 331/890); produto restaurado e execuções finais refeitas. Dezoito suítes na CI; consultar PR para SHA/CI/merge confirmados. Próximo recorte: _modifyArray e armazenamento binário compartilhado/typed views, com prova de alinhamento/coerção/bytes antes de entrypoints e animações restantes.
+
+
+## Finalização binária compartilhada do parser — estado atual
+
+Base main a9e34b08379183d4c59f4909a3d48cdd7327e33f, PR #80 e CI pós-merge 41729413783 conferidos. Auditados _modifyArray fixado e adaptador Lua do backup. **22/47 métodos; 25 pendentes.** Esta seção sucede os limites de buffers das unidades históricas acima.
+
+SharedBinaryBuffer representa memória mutável única com sete views Int16/Uint16/Float32. Índices Lua base 1; offsets públicos de bytes base 0; representação little endian e snapshots explícitos por bytes(). DragonBonesData continua soltando referências ao retornar ao pool, sem destruir buffers retidos por outros aliases. Alinhamento mantém o teste duplicado de timelineArray e colorArray ímpar sem padding. Cópia/publicação/defaultColorOffset e efeitos parciais seguem a ordem original.
+
+163 cenários/6.272 operações/70.166 colunas por VM Lua 5.4/LuaJIT, zero tolerância; 32 erros originais esperados. Oráculo usa _modifyArray genuíno e typed arrays nativas, sem reconstrução manual do algoritmo. Paridades, bytes exatos, Float32 ties-even/subnormais/overflow/-0/NaN, coerções, holes, aliases/snapshots, views sobrepostas, falhas de cópia e de publicação, geometria/pesos e pool reais. Dezenove suítes na CI. Consultar PR para evidência remota/SHA/merge confirmados.
+
+Não implementa BinaryDataParser, entrypoint JSON/armaduras/animação, reflexão/proxies JS genéricos, payloads NaN arbitrários nem hosts big endian. Runtime/renderização continuam pendentes. Próximo recorte: curvas/frames e suas dependências para animações/timelines, antes de entrypoint completo.

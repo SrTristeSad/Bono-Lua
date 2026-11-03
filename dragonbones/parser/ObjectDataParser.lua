@@ -1,10 +1,11 @@
 -- Partial port: ObjectDataParser.ts, pinned DragonBonesJS
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Implemented: initializers, helpers, atlas, structural dependencies and singleton.
--- Armature/animation entrypoints and binary finalization remain absent.
+-- Implemented: initializers, helpers, atlas, structures, geometry and binary views.
+-- Armature/animation entrypoints remain absent; see docs/NEXT_STEPS.md.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
+local Shared=require('dragonbones.parser.SharedBinaryBuffer')
 local Textures=require('dragonbones.model.TextureAtlasData')
 local JSArray=require('dragonbones.core.JSArray')
 local JSMap=require('dragonbones.core.JSMap')
@@ -572,6 +573,43 @@ function ObjectDataParser:_parseArray(_rawData)
   clearWork(self._frameArray)
   clearWork(self._timelineArray)
   clearWork(self._colorArray)
+end
+
+-- Original _modifyArray: align working arrays, allocate one buffer, copy,
+-- then publish all seven views. Public view offsets remain zero-based bytes.
+function ObjectDataParser:_modifyArray()
+  local function pad(array)
+    local n=array.length
+    if n%2~=0 then array[n+1]=0;array.length=n+1 end
+  end
+  pad(self._intArray)
+  pad(self._frameIntArray)
+  pad(self._frameArray)
+  pad(self._timelineArray)
+  -- The pinned source checks the already aligned timeline a second time.
+  -- In particular, it does not pad an odd color array.
+  if self._timelineArray.length%2~=0 then
+    local n=self._colorArray.length;self._colorArray[n+1]=0;self._colorArray.length=n+1
+  end
+  local names={"intArray","floatArray","frameIntArray","frameFloatArray","frameArray","timelineArray","colorArray"}
+  local kinds={"int16","float32","int16","float32","int16","uint16","int16"}
+  local lengths,total={},0
+  for i,name in ipairs(names) do
+    lengths[i]=self["_"..name].length*(kinds[i]=="float32" and 4 or 2)
+    total=total+lengths[i]
+  end
+  local binary=Shared.new(string.rep("\0",total))
+  local views,offset={},0
+  for i=1,7 do
+    views[i]=Shared.view(binary,offset,lengths[i],kinds[i]);offset=offset+lengths[i]
+  end
+  for i,name in ipairs(names) do
+    local source=self["_"..name];local length=source.length
+    for j=1,length do views[i][j]=source[j] end
+  end
+  self._data.binary=binary
+  for i,name in ipairs(names) do self._data[name]=views[i] end
+  self._defaultColorOffset=-1
 end
 
 function ObjectDataParser:_parseBone(raw)

@@ -142,3 +142,10 @@ Auditoria identificou geometria/surface/mesh/path e animação como dependência
 ## Geometria antes da finalização binária
 
 Auditoria TS/Lua dos sete métodos e Matrix real. Mantidas peculiaridades de pesos (posição de floor, reserva inicial, loop weightCount, cabeçalho indefinido) mesmo quando parecem dados incompletos. Não aproveitar a adaptação antiga do backup que preenchia reservas com zero: isso altera estados observáveis antes de _modifyArray. Slots/bones/skins/displays usam modelos reais e caches/refs/estado parcial originais. Matrix ajustada somente para propagar undefined→NaN necessário a poses incompletas; regressão anterior preservada. Mutantes de loop/floor foram rejeitados, produto restaurado e testes finais refeitos. Próxima unidade: _modifyArray com buffer/views compartilhados e provas de bytes, sem declarar parser completo por este lote.
+
+
+## _modifyArray antes de animações/entrypoints
+
+Base main a9e34b0/PR #80/CI pós-merge 41729413783 e backup cd4206a8 conferidos. Adaptador do backup auditado antes do reaproveitamento: corrigidos undefined float, conversão JSValue, overflow Float32 extremo sem loop infinito, metadados/estado privado de proxies, coerção antes de rejeitar índice e validação de comprimento em bytes. Sem introduzir getter string em DragonBonesData.binary: mantém objeto Buffer mutável; snapshots explícitos por bytes(), evitando quebrar identidade compartilhada.
+
+Um único buffer para sete views; alinhamento/cópias/publicação e reset final originais. Não corrigir a condição duplicada timeline→color do upstream. Teste nativo exato, não mock de typed arrays. Falhas de setter são instrumentação de teste em DragonBonesData real; sem hooks de produto. Adaptador não conta como classe extra do upstream. Dezenove suítes; parser 22/47, 25 ausentes. Limites de plataforma/reflexão documentados, sem claim de DBDT/runtime completo.
