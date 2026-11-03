@@ -134,6 +134,12 @@
       "status": "Quatro classes (base abstrata, retângulo, elipse e polígono) e interseções locais comparadas; ownership integrado a displays/skins/armaduras/globais reais; hit testing de Slot/runtime pendente",
       "tests": "tests/boundingbox_differential.js: 125 cenários, 3.616 operações e 57.856 colunas por VM Lua 5.4/LuaJIT. Binary64 exato salvo normais atan2 não nulas (8*epsilon*max(1,abs(expected))); 300 comparações aproximadas por VM, incluindo valores preservados de chamadas anteriores. Ver VALIDATION.md.",
       "differences": "Outcodes com flags aritméticas portáveis; atan2 via math.atan2 ou math.atan(y,x). Vertices JSArray base 1/length; campos undefined e holes participam da aritmética como NaN. Preservadas peculiaridades retângulo pointB.y=xB, EllipseData.toString, deslocamentos do polígono e dependência dos outputs opcionais. Ver contracts/BoundingBoxQueries.md."
+    },
+    "DragonBones/src/dragonBones/parser/DataParser.ts": {
+      "destination": "dragonbones/parser/DataParser.lua",
+      "status": "Base abstrata: 132 constantes e dez conversões comparadas, com aplicações em modelos reais; assinatura sem corpo documentada; importação JSON/binária e locales especiais pendentes",
+      "tests": "tests/dataparser_differential.js: 11.206 operações e 44.824 colunas por VM Lua 5.4/LuaJIT, tolerância zero; 132 constantes, dez métodos, duas assinaturas abstratas ausentes e 90 aplicações em modelos reais. Todas as combinações ASCII de caixa dos tokens, versões compartilhadas/esparsas e Unicode Kelvin. Ver VALIDATION.md.",
+      "differences": "DATA_VERSIONS usa JSArray base 1/length, compartilhado na herança estática. Matching ASCII independente do locale C, com Kelvin→k; não implementa lower Unicode genérico. Os três helpers toLocaleLowerCase seguem casing não túrquico en-US testado; outros locales do host exigem adaptação e não têm equivalência afirmada. Não cria corpos abstratos nem parser parcial fictício. Ver contracts/DataParserBase.md."
     }
   }
 }
