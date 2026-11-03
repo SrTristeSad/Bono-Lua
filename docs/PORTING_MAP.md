@@ -1,10 +1,13 @@
 # Correspondência de arquivos
 
-A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável.
+A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por módulo vem de PORTING_PROGRESS.json. Dependências resolvidas e fronteiras externas: DEPENDENCIES.md.
 
 | Origem | Destino proposto | Situação |
 | --- | --- | --- |
-| DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Ausente; inventariado |
+| DragonBones/src/dragonBones/geom/Point.ts | dragonbones/geom/Point.lua | Implementado, validado isoladamente nos testes diferenciais |
+| DragonBones/src/dragonBones/geom/Rectangle.ts | dragonbones/geom/Rectangle.lua | Implementado, validado isoladamente nos testes diferenciais |
+| DragonBones/src/dragonBones/geom/ColorTransform.ts | dragonbones/geom/ColorTransform.lua | Implementado, validado isoladamente nos testes diferenciais |
+| Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |
 | Demos, recursos e arquivos gerados | Classificados individualmente no inventário | Não contados como runtime |

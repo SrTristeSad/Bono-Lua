@@ -2,9 +2,9 @@
 
 | Etapa | Objetivo | Estado |
 | --- | --- | --- |
-| 00 | Backup remoto e reconstrução isolada | Preparada |
-| 01 | Inventário integral, contratos e dependências | Estrutura catalogada; auditoria semântica pendente |
-| 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Pendente |
+| 00 | Backup remoto e reconstrução isolada | Concluída |
+| 01 | Inventário integral, contratos e dependências | Arquivos, contratos declarados e dependências estáticas catalogados; fronteiras externas registradas |
+| 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Iniciada: Point/Rectangle/ColorTransform comparados; Matrix/Transform pendentes |
 | 03 | Core, modelos e ciclo de vida | Pendente |
 | 04 | Parsers JSON/DBDT | Pendente |
 | 05 | Armature, Bone, Slot, Surface, TransformObject | Pendente |

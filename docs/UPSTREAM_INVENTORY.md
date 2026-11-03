@@ -2,1215 +2,1215 @@
 
 Fonte: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`. Gerado de blobs Git por `node tools/inventory.js ../DragonBonesJS`.
 
-Todos os 1203 arquivos rastreados estão abaixo. 182 arquivos autorais TS/JS são examinados por AST, incluindo demonstrações e ferramentas. Declarações distribuídas e bundles não são novos módulos de runtime.
+Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS são examinados por AST, incluindo demonstrações e ferramentas. Declarações distribuídas e bundles não são novos módulos de runtime.
 
-**Estado:** inventariado estruturalmente; implementação, validação diferencial e auditoria semântica pendentes. Dependências são candidatos por referência a identificadores: não representam grafo resolvido por type checker. Nomes duplicados podem incluir candidatos de outros backends. Referências externas e dependências dinâmicas exigem revisão manual.
+**Estado:** inventário de arquivos e declarações disponível; a situação por módulo vem de PORTING_PROGRESS.json. Dependências candidatas abaixo são heurísticas históricas; a resolução por símbolos e contextos isolados está em DEPENDENCIES.md. Referências externas não resolvidas e contratos dinâmicos permanecem explícitos para validação nas etapas de integração. Nenhuma contagem comprova equivalência integral.
 
 | Origem | Categoria | Destino previsto | Estado |
 | --- | --- | --- | --- |
-| `.gitignore` | Configuração | — | Inventariado; pendente de auditoria |
-| `.npmignore` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/libs/creator.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.lua | Inventariado; pendente de auditoria |
-| `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosAsset.lua | Inventariado; pendente de auditoria |
-| `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosFactory.lua | Inventariado; pendente de auditoria |
-| `Cocos/1.x/src/dragonBones/cocos/CocosSlot.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosSlot.lua | Inventariado; pendente de auditoria |
-| `Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Cocos/1.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/1.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/.gitignore` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/01.HelloDragonBones.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/01.HelloDragonBones.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/02.AnimationBase.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/02.AnimationBase.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/03.DragonBonesEvent.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/03.DragonBonesEvent.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/04.AnimationLayer.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/04.AnimationLayer.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/05.BoneOffset.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/05.BoneOffset.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/06.InverseKinematics.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/06.InverseKinematics.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/07.BoundingBox.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/07.BoundingBox.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/08.MultiTextureAltas.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/08.MultiTextureAltas.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/09.ReplaceSlotDisplay.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/09.ReplaceSlotDisplay.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/10.ReplaceSkin.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/10.ReplaceSkin.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/11.ReplaceAnimation.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/11.ReplaceAnimation.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/12.CoreElement.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/12.CoreElement.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/13.EyeTracking.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/13.EyeTracking.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/14.PerformanceTest.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/14.PerformanceTest.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/Test.fire` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Scene/Test.fire.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/AnimationBase.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/AnimationBase.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/AnimationLayer.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/AnimationLayer.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/BoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/BoneOffset.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/BoundingBox.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/BoundingBox.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/CoreElement.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/CoreElement.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/DragHelper.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/DragHelper.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/DragonBonesEvent.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/DragonBonesEvent.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/EyeTracking.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/EyeTracking.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/HelloDragonBones.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/InverseKinematics.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/InverseKinematics.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/MultiTextureAltas.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/MultiTextureAltas.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/PerformanceTest.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceAnimation.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceSkin.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceSkin.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/Test.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/Script/Test.ts.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/background.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/background.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_sd_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_sd_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/effect/effect_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.dbbin.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_00.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_01.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_02.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_03.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/shizuku/shizuku_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/test/test_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/body/body_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/creator.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/declaration/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/jsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/assets/dragonBones.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/assets/dragonBones.js.meta` | Configuração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/editor/polyfills.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/main.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/packages/dragonbones/scene.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/project.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/settings/builder.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/settings/builder.panel.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/settings/project.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/template-banner.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/template.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/Demos/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Cocos/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `DragonBones/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `DragonBones/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/Animation.ts` | Código-fonte do núcleo | dragonbones/animation/Animation.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/AnimationState.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | dragonbones/animation/IAnimatable.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/Constraint.ts` | Código-fonte do núcleo | dragonbones/armature/Constraint.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | dragonbones/armature/IArmatureProxy.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/factory/BaseFactory.ts` | Código-fonte do núcleo | dragonbones/factory/BaseFactory.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/geom/ColorTransform.ts` | Código-fonte do núcleo | dragonbones/geom/ColorTransform.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/geom/Point.ts` | Código-fonte do núcleo | dragonbones/geom/Point.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/geom/Rectangle.ts` | Código-fonte do núcleo | dragonbones/geom/Rectangle.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/geom/Transform.ts` | Código-fonte do núcleo | dragonbones/geom/Transform.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/AnimationConfig.ts` | Código-fonte do núcleo | dragonbones/model/AnimationConfig.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/AnimationData.ts` | Código-fonte do núcleo | dragonbones/model/AnimationData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/ArmatureData.ts` | Código-fonte do núcleo | dragonbones/model/ArmatureData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/BoundingBoxData.ts` | Código-fonte do núcleo | dragonbones/model/BoundingBoxData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/CanvasData.ts` | Código-fonte do núcleo | dragonbones/model/CanvasData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/ConstraintData.ts` | Código-fonte do núcleo | dragonbones/model/ConstraintData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/DisplayData.ts` | Código-fonte do núcleo | dragonbones/model/DisplayData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/DragonBonesData.ts` | Código-fonte do núcleo | dragonbones/model/DragonBonesData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/SkinData.ts` | Código-fonte do núcleo | dragonbones/model/SkinData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Inventariado; pendente de auditoria |
-| `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/ObjectDataParser.lua | Inventariado; pendente de auditoria |
-| `DragonBones/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `DragonBones/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/scripts/modify.js` | Configuração | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Egret/4.x/src/dragonBones/egret/EgretFactory.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretFactory.lua | Inventariado; pendente de auditoria |
-| `Egret/4.x/src/dragonBones/egret/EgretSlot.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretSlot.lua | Inventariado; pendente de auditoria |
-| `Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Egret/4.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Egret/4.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/.wing/launch.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/.wing/settings.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/.wing/tasks.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/egretProperties.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/Dragon_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/Dragon_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/Dragon_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit1/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/resource/you_xin/suit2/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/DragHelper.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/Main.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/AnimationBase.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/AnimationLayer.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/BoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/BoundingBox.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/CoreElement.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/DragonBonesEvent.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/EyeTracking.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/InverseKinematics.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/MultiTextureAltas.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/ReplaceSkin.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/src/demo/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/template/runtime/native_loader.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/template/runtime/native_require.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/template/runtime/runtime_loader.js` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/template/web/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/Demos/wingProperties.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Egret/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Hilo/1.x/src/dragonBones/hilo/HiloFactory.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloFactory.lua | Inventariado; pendente de auditoria |
-| `Hilo/1.x/src/dragonBones/hilo/HiloSlot.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloSlot.lua | Inventariado; pendente de auditoria |
-| `Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Hilo/1.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Hilo/1.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/libs/hilo/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/AnimationBaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/BaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/out/SetBoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/animation_base_test_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/animation_base_test_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/animation_base_test_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/core_element/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/dragon_boy_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/dragon_boy_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/dragon_boy_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/dragon_boy_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/logo.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/main_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/main_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/main_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/replace_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/replace_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/resource/assets/replace_slot_display/replace_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/AnimationBaseTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/BaseTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/src/SetBoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Hilo/Demos/tslint.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `LICENSE` | Documentação | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/src/dragonBones/phaser/PhaserArmatureDisplay.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Phaser/2.x/src/dragonBones/phaser/PhaserFactory.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserFactory.lua | Inventariado; pendente de auditoria |
-| `Phaser/2.x/src/dragonBones/phaser/PhaserSlot.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserSlot.lua | Inventariado; pendente de auditoria |
-| `Phaser/2.x/src/dragonBones/phaser/PhaserSlotDisplay.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserSlotDisplay.lua | Inventariado; pendente de auditoria |
-| `Phaser/2.x/src/dragonBones/phaser/PhaserTextureAtlasData.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Phaser/2.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/2.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/package-lock.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/Factory.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/Factory.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/Slot.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/SlotImage.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotImage.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/plugin/FileTypes.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.lua | Inventariado; pendente de auditoria |
-| `Phaser/3.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/types/phaser-plugin.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/3.x/types/phaser.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/dragonBones/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/dragonBones/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/dragonBones/phaser-plugin.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/phaser/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/phaser/phaser.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/libs/phaser/phaser.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/AnimationBase.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/AnimationLayer.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/BoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/BoundingBox.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/CoreElement.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/DragHelper.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/InverseKinematics.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/Demos/tslint.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Phaser/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; pendente de auditoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; pendente de auditoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Pixi/4.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/4.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/libs/pixi.js-legacy.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/package-lock.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; pendente de auditoria |
-| `Pixi/5.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; pendente de auditoria |
-| `Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Pixi/5.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/5.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/libs/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/libs/pixi.js.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/out/dragonBones.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/package-lock.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.lua | Inventariado; pendente de auditoria |
-| `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; pendente de auditoria |
-| `Pixi/8.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; pendente de auditoria |
-| `Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `Pixi/8.x/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/8.x/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/libs/pixi/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/libs/pixi/pixi.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/AnimationBaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/AnimationCopy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/BaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/EyeTracking.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/MultiTextureAltas.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/ReplaceSkin.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/out/SetBoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/resource/readme.txt` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/AnimationBase.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/AnimationLayer.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/BaseDemo.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/BoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/BoundingBox.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/CoreElement.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/DragHelper.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/EyeTracking.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/InverseKinematics.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/MultiTextureAltas.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/ReplaceSkin.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/4.x/tslint.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/libs/pixi/8.9.2/pixi.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/libs/pixi/8.9.2/pixi.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/BaseDemo copy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/DebugDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/EyeTracking.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/HelloDragonBones copy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/MultiTextureAltas.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/ReplaceSkin.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/resource/readme.txt` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/AnimationBase.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/AnimationLayer.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/BaseDemo.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/BoneOffset.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/BoundingBox.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/CoreElement.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/DebugDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/DragHelper.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/EyeTracking.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/InverseKinematics.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/MultiTextureAltas.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/PerformanceTest.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/ReplaceSkin.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/8.x/tslint.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; pendente de auditoria |
-| `Pixi/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `README-zh_CN.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.lua | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeFactory.lua | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/src/dragonBones/three/ThreeSlot.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeSlot.lua | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.lua | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/tsconfig.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Current/tslint.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/index.html` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/libs/three/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/package.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/tsconfig.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/Demos/tslint.json` | Demonstração | — | Inventariado; pendente de auditoria |
-| `ThreeJS/README.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `builds/build_base.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/build_egret.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/build_hilo.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/build_phaser.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/build_pixi.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/cli.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `builds/index.js` | Configuração (ferramenta de build executável) | — | Inventariado; pendente de auditoria |
-| `docs/DragonBones_4.5_data_format_zh.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `docs/DragonBones_4.7_release_notes_zh.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `docs/DragonBones_5.0_data_format_zh.md` | Documentação | — | Inventariado; pendente de auditoria |
-| `package.json` | Configuração | — | Inventariado; pendente de auditoria |
-| `package.json.js` | Configuração | — | Inventariado; pendente de auditoria |
+| `.gitignore` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `.npmignore` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/libs/creator.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosAsset.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/src/dragonBones/cocos/CocosSlot.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.ts` | Integração com motor gráfico | integrations/Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/1.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/.gitignore` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/01.HelloDragonBones.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/01.HelloDragonBones.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/02.AnimationBase.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/02.AnimationBase.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/03.DragonBonesEvent.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/03.DragonBonesEvent.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/04.AnimationLayer.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/04.AnimationLayer.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/05.BoneOffset.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/05.BoneOffset.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/06.InverseKinematics.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/06.InverseKinematics.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/07.BoundingBox.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/07.BoundingBox.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/08.MultiTextureAltas.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/08.MultiTextureAltas.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/09.ReplaceSlotDisplay.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/09.ReplaceSlotDisplay.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/10.ReplaceSkin.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/10.ReplaceSkin.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/11.ReplaceAnimation.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/11.ReplaceAnimation.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/12.CoreElement.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/12.CoreElement.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/13.EyeTracking.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/13.EyeTracking.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/14.PerformanceTest.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/14.PerformanceTest.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/Test.fire` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Scene/Test.fire.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/AnimationBase.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/AnimationBase.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/AnimationLayer.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/AnimationLayer.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/BoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/BoneOffset.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/BoundingBox.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/BoundingBox.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/CoreElement.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/CoreElement.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/DragHelper.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/DragHelper.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/DragonBonesEvent.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/DragonBonesEvent.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/EyeTracking.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/EyeTracking.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/HelloDragonBones.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/InverseKinematics.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/InverseKinematics.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/MultiTextureAltas.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/MultiTextureAltas.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/PerformanceTest.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceAnimation.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceSkin.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceSkin.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/Test.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/Script/Test.ts.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/background.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/background.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bounding_box_tester/bounding_box_tester_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/bullet_01/bullet_01_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_sd_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_sd_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/effect/effect_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/floor_board/floor_board_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1002_101d_show/mecha_1002_101d_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d/mecha_1004d_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1004d_show/mecha_1004d_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.dbbin.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1406/mecha_1406_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_1502b/mecha_1502b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/mecha_2903/mecha_2903_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/progress_bar/progress_bar_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_00.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_01.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_02.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku.1024/texture_03.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/shizuku/shizuku_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/skin_1502b/skin_1502b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/test/test_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1000/weapon_1000_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/weapon_1004_show/weapon_1004_show_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/body/body_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a/2010600a_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2010600a_1/2010600a_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003/20208003_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_1/20208003_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_2/20208003_2_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20208003_3/20208003_3_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20405006/20405006_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20509005/20509005_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016/20703016_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20703016_1/20703016_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100c/2080100c_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e/2080100e_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080100e_1/2080100e_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/20803005/20803005_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b/2080500b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit1/2080500b_1/2080500b_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010/20106010_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20106010_1/20106010_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006/20208006_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_1/20208006_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_2/20208006_2_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20208006_3/20208006_3_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b/2040600b_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2040600b_1/2040600b_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20509007/20509007_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020/20703020_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20703020_1/20703020_1_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/20801015/20801015_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_ske.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.json.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/assets/resources/you_xin/suit2/2080b003/2080b003_tex.png.meta` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/creator.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/declaration/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/jsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/assets/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/assets/dragonBones.js.meta` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js` | Integração de editor ou carregador de plataforma | integrations/Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js` | Integração de editor ou carregador de plataforma | integrations/Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/editor/polyfills.js` | Integração de editor ou carregador de plataforma | integrations/Cocos/Demos/packages/dragonbones/editor/polyfills.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/main.js` | Integração de editor ou carregador de plataforma | integrations/Cocos/Demos/packages/dragonbones/main.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/packages/dragonbones/scene.js` | Integração de editor ou carregador de plataforma | integrations/Cocos/Demos/packages/dragonbones/scene.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/project.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/settings/builder.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/settings/builder.panel.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/settings/project.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/template-banner.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/template.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/Demos/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Cocos/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/Animation.ts` | Código-fonte do núcleo | dragonbones/animation/Animation.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/AnimationState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | dragonbones/animation/IAnimatable.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Constraint.ts` | Código-fonte do núcleo | dragonbones/armature/Constraint.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | dragonbones/armature/IArmatureProxy.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/factory/BaseFactory.ts` | Código-fonte do núcleo | dragonbones/factory/BaseFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/geom/ColorTransform.ts` | Código-fonte do núcleo | dragonbones/geom/ColorTransform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
+| `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/geom/Point.ts` | Código-fonte do núcleo | dragonbones/geom/Point.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
+| `DragonBones/src/dragonBones/geom/Rectangle.ts` | Código-fonte do núcleo | dragonbones/geom/Rectangle.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
+| `DragonBones/src/dragonBones/geom/Transform.ts` | Código-fonte do núcleo | dragonbones/geom/Transform.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/AnimationConfig.ts` | Código-fonte do núcleo | dragonbones/model/AnimationConfig.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/AnimationData.ts` | Código-fonte do núcleo | dragonbones/model/AnimationData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/ArmatureData.ts` | Código-fonte do núcleo | dragonbones/model/ArmatureData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/BoundingBoxData.ts` | Código-fonte do núcleo | dragonbones/model/BoundingBoxData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/CanvasData.ts` | Código-fonte do núcleo | dragonbones/model/CanvasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/ConstraintData.ts` | Código-fonte do núcleo | dragonbones/model/ConstraintData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/DisplayData.ts` | Código-fonte do núcleo | dragonbones/model/DisplayData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/DragonBonesData.ts` | Código-fonte do núcleo | dragonbones/model/DragonBonesData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/SkinData.ts` | Código-fonte do núcleo | dragonbones/model/SkinData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/ObjectDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/scripts/modify.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/src/dragonBones/egret/EgretFactory.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/src/dragonBones/egret/EgretSlot.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.ts` | Integração com motor gráfico | integrations/Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/4.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/.wing/launch.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/.wing/settings.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/.wing/tasks.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/egretProperties.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/Dragon_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/Dragon_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/Dragon_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit1/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/resource/you_xin/suit2/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/DragHelper.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/Main.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/AnimationBase.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/AnimationLayer.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/BoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/BoundingBox.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/CoreElement.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/DragonBonesEvent.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/EyeTracking.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/InverseKinematics.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/MultiTextureAltas.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/ReplaceSkin.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/src/demo/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/template/runtime/native_loader.js` | Integração de editor ou carregador de plataforma | integrations/Egret/Demos/template/runtime/native_loader.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/template/runtime/native_require.js` | Integração de editor ou carregador de plataforma | integrations/Egret/Demos/template/runtime/native_require.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/template/runtime/runtime_loader.js` | Integração de editor ou carregador de plataforma | integrations/Egret/Demos/template/runtime/runtime_loader.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/template/web/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/Demos/wingProperties.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Egret/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/src/dragonBones/hilo/HiloFactory.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/src/dragonBones/hilo/HiloSlot.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.ts` | Integração com motor gráfico | integrations/Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/1.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/libs/hilo/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/AnimationBaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/BaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/out/SetBoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/animation_base_test_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/animation_base_test_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/animation_base_test_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/core_element/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/dragon_boy_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/dragon_boy_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/dragon_boy_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/dragon_boy_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/logo.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/main_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/main_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/main_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/replace_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/replace_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/resource/assets/replace_slot_display/replace_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/AnimationBaseTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/BaseTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/src/SetBoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Hilo/Demos/tslint.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `LICENSE` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/src/dragonBones/phaser/PhaserArmatureDisplay.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/src/dragonBones/phaser/PhaserFactory.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/src/dragonBones/phaser/PhaserSlot.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/src/dragonBones/phaser/PhaserSlotDisplay.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserSlotDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/src/dragonBones/phaser/PhaserTextureAtlasData.ts` | Integração com motor gráfico | integrations/Phaser/2.x/src/dragonBones/phaser/PhaserTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/2.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/package-lock.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/Factory.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/Factory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/SlotImage.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotImage.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/plugin/FileTypes.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts` | Integração com motor gráfico | integrations/Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/types/phaser-plugin.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/3.x/types/phaser.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/dragonBones/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/dragonBones/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/dragonBones/phaser-plugin.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/phaser/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/phaser/phaser.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/libs/phaser/phaser.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/AnimationBase.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/AnimationLayer.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/BoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/BoundingBox.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/CoreElement.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/DragHelper.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/InverseKinematics.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/Demos/tslint.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Phaser/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/libs/pixi.js-legacy.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/package-lock.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/5.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/libs/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/libs/pixi.js.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/out/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/out/dragonBones.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/package-lock.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/8.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/libs/pixi/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/libs/pixi/pixi.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/AnimationBaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/AnimationCopy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/BaseTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/EyeTracking.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/MultiTextureAltas.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/ReplaceSkin.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/out/SetBoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/resource/readme.txt` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/AnimationBase.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/AnimationLayer.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/BaseDemo.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/BoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/BoundingBox.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/CoreElement.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/DragHelper.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/EyeTracking.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/InverseKinematics.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/MultiTextureAltas.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/ReplaceSkin.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/4.x/tslint.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.d.ts` | Interface ou declaração de tipos | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/libs/dragonBones/dragonBones.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/libs/pixi/8.9.2/pixi.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/libs/pixi/8.9.2/pixi.js.map` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/AnimationBase.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/AnimationLayer.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/BaseDemo copy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/BaseDemo.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/BoneOffset.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/BoundingBox.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/CoreElement.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/DebugDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/DragHelper.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/DragonBonesEvent.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/EyeTracking.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/HelloDragonBones copy.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/HelloDragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/InverseKinematics.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/MultiTextureAltas.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/PerformanceTest.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/ReplaceAnimation.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/ReplaceSkin.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/out/ReplaceSlotDisplay.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/resource/readme.txt` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/AnimationBase.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/AnimationLayer.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/BaseDemo.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/BoneOffset.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/BoundingBox.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/CoreElement.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/DebugDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/DragHelper.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/DragonBonesEvent.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/EyeTracking.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/InverseKinematics.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/MultiTextureAltas.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/PerformanceTest.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/ReplaceAnimation.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/ReplaceSkin.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/8.x/tslint.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/background.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bounding_box_tester/bounding_box_tester_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bullet_01/bullet_01_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bullet_01/bullet_01_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/bullet_01/bullet_01_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/effect/effect_sd_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/effect/effect_sd_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/effect/effect_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/effect/effect_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/effect/effect_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/floor_board/floor_board_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/floor_board/floor_board_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/floor_board/floor_board_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1002_101d_show/mecha_1002_101d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d/mecha_1004d_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1004d_show/mecha_1004d_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1406/mecha_1406_ske.dbbin` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1406/mecha_1406_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1406/mecha_1406_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1406/mecha_1406_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_1502b/mecha_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_2903/mecha_2903_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_2903/mecha_2903_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/mecha_2903/mecha_2903_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/progress_bar/progress_bar_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/progress_bar/progress_bar_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/progress_bar/progress_bar_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_00.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_01.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_02.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/shizuku/shizuku.1024/texture_03.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/shizuku/shizuku_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/skin_1502b/skin_1502b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/skin_1502b/skin_1502b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/skin_1502b/skin_1502b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1000/weapon_1000_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1000/weapon_1000_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1000/weapon_1000_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/weapon_1004_show/weapon_1004_show_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/body/body_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/body/body_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/body/body_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a/2010600a_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2010600a_1/2010600a_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003/20208003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_1/20208003_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_2/20208003_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20208003_3/20208003_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20405006/20405006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20509005/20509005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016/20703016_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20703016_1/20703016_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100c/2080100c_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e/2080100e_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080100e_1/2080100e_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/20803005/20803005_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b/2080500b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit1/2080500b_1/2080500b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010/20106010_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20106010_1/20106010_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006/20208006_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_1/20208006_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_2/20208006_2_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20208006_3/20208006_3_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b/2040600b_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2040600b_1/2040600b_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20509007/20509007_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020/20703020_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20703020_1/20703020_1_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/20801015/20801015_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_ske.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.json` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/Demos/resource/you_xin/suit2/2080b003/2080b003_tex.png` | Recurso gráfico ou dados | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `README-zh_CN.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/libs/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/src/dragonBones/three/ThreeSlot.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.ts` | Integração com motor gráfico | integrations/ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Current/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/index.html` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/libs/dragonBones/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/libs/three/.gitkeep` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/package.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/src/BaseDemo.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/src/HelloDragonBones.ts` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/tsconfig.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/Demos/tslint.json` | Demonstração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `ThreeJS/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/build_base.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/build_egret.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/build_hilo.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/build_phaser.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/build_pixi.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/cli.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `builds/index.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `docs/DragonBones_4.5_data_format_zh.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `docs/DragonBones_4.7_release_notes_zh.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `docs/DragonBones_5.0_data_format_zh.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `package.json.js` | Configuração (ferramenta de build executável) | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 
 ## Contratos por arquivo autoral
 
@@ -1221,8 +1221,24 @@ Métodos e propriedades incluem membros privados, estáticos, construtores, gett
 - Origem/commit: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts`, `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+#### NamespaceVariable `{
+        ccclass,
+        property,
+        executeInEditMode,
+        disallowMultiple,
+        playOnFocus,
+        menu,
+        help,
+    }`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `{         ccclass,         property,         executeInEditMode,         disallowMultiple,         playOnFocus,         menu,         help,     }` | propriedade | `{ ccclass, property, executeInEditMode, disallowMultiple, playOnFocus, menu, help, } = cc._decorator` | 36 |
 
 #### ClassDeclaration `CocosArmatureComponent`
 
@@ -1258,8 +1274,28 @@ Herança: extends cc.Component; implements IArmatureProxy.
 - Origem/commit: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Cocos/1.x/src/dragonBones/cocos/CocosAsset.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 27: `_Scene.Sandbox._globalsVerifier_loadPluginScript.ignoreNames['dragonBones'] = true;`
+
+#### NamespaceVariable `_Scene`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `_Scene` | propriedade | `_Scene: any` | 25 |
+
+#### NamespaceVariable `{ ccclass, property }`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `{ ccclass, property }` | propriedade | `{ ccclass, property } = cc._decorator` | 31 |
 
 #### ClassDeclaration `DragonBonesAsset`
 
@@ -1276,8 +1312,18 @@ Herança: extends cc.Asset.
 - Origem/commit: `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Cocos/1.x/src/dragonBones/cocos/CocosFactory.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosSlot.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/factory/BaseFactory.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosSlot.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosTextureAtlasData.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/factory/BaseFactory.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+#### NamespaceVariable `{
+        ccclass,
+    }`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `{         ccclass,     }` | propriedade | `{ ccclass, } = cc._decorator` | 24 |
 
 #### ClassDeclaration `ClockHandler`
 
@@ -1378,7 +1424,7 @@ Herança: extends TextureData.
 - Origem/commit: `Cocos/Demos/assets/Script/AnimationBase.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationBase`
@@ -1397,7 +1443,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/AnimationLayer.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/AnimationLayer.ts`, `Phaser/Demos/src/AnimationLayer.ts`, `Pixi/Demos/4.x/src/AnimationLayer.ts`, `Pixi/Demos/8.x/src/AnimationLayer.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/AnimationLayer.ts`, `Phaser/Demos/src/AnimationLayer.ts`, `Pixi/Demos/4.x/src/AnimationLayer.ts`, `Pixi/Demos/8.x/src/AnimationLayer.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationLayer`
@@ -1415,7 +1461,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/BoneOffset.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/BoneOffset.ts`, `Phaser/Demos/src/BoneOffset.ts`, `Pixi/Demos/4.x/src/BoneOffset.ts`, `Pixi/Demos/8.x/src/BoneOffset.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/BoneOffset.ts`, `Phaser/Demos/src/BoneOffset.ts`, `Pixi/Demos/4.x/src/BoneOffset.ts`, `Pixi/Demos/8.x/src/BoneOffset.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BoneOffset`
@@ -1433,7 +1479,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/BoundingBox.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
 - Importações externas: "./DragHelper".
 
 #### ClassDeclaration `BoundingBox`
@@ -1460,7 +1506,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/CoreElement.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/CoreElement.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/CoreElement.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
 - Importações externas: "./DragHelper".
 
 #### ClassDeclaration `Game`
@@ -1557,7 +1603,7 @@ Herança: nenhuma explícita.
 - Origem/commit: `Cocos/Demos/assets/Script/DragHelper.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragHelper`
@@ -1580,7 +1626,7 @@ Herança: nenhuma explícita.
 - Origem/commit: `Cocos/Demos/assets/Script/DragonBonesEvent.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/DragonBonesEvent.ts`, `Phaser/Demos/src/DragonBonesEvent.ts`, `Pixi/Demos/4.x/src/DragonBonesEvent.ts`, `Pixi/Demos/8.x/src/DragonBonesEvent.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/DragonBonesEvent.ts`, `Phaser/Demos/src/DragonBonesEvent.ts`, `Pixi/Demos/4.x/src/DragonBonesEvent.ts`, `Pixi/Demos/8.x/src/DragonBonesEvent.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragonBonesEvent`
@@ -1599,7 +1645,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/EyeTracking.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Egret/Demos/src/demo/EyeTracking.ts`, `Pixi/Demos/4.x/src/EyeTracking.ts`, `Pixi/Demos/8.x/src/EyeTracking.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/demo/EyeTracking.ts`, `Pixi/Demos/4.x/src/EyeTracking.ts`, `Pixi/Demos/8.x/src/EyeTracking.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EyeTracking`
@@ -1621,7 +1667,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/HelloDragonBones.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Egret/Demos/src/demo/HelloDragonBones.ts`, `Hilo/Demos/src/HelloDragonBones.ts`, `Phaser/Demos/src/HelloDragonBones.ts`, `Pixi/Demos/4.x/src/HelloDragonBones.ts`, `Pixi/Demos/8.x/src/HelloDragonBones.ts`, `ThreeJS/Demos/src/HelloDragonBones.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/demo/HelloDragonBones.ts`, `Hilo/Demos/src/HelloDragonBones.ts`, `Phaser/Demos/src/HelloDragonBones.ts`, `Pixi/Demos/4.x/src/HelloDragonBones.ts`, `Pixi/Demos/8.x/src/HelloDragonBones.ts`, `ThreeJS/Demos/src/HelloDragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `HelloDragonBones`
@@ -1637,7 +1683,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/InverseKinematics.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`.
 - Importações externas: "./DragHelper".
 
 #### ClassDeclaration `InverseKinematics`
@@ -1668,7 +1714,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/MultiTextureAltas.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Egret/Demos/src/demo/MultiTextureAltas.ts`, `Pixi/Demos/4.x/src/MultiTextureAltas.ts`, `Pixi/Demos/8.x/src/MultiTextureAltas.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/demo/MultiTextureAltas.ts`, `Pixi/Demos/4.x/src/MultiTextureAltas.ts`, `Pixi/Demos/8.x/src/MultiTextureAltas.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `MultiTextureAltas`
@@ -1689,7 +1735,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/PerformanceTest.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `PerformanceTest`
@@ -1716,7 +1762,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/ReplaceAnimation.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSlotDisplay`
@@ -1737,7 +1783,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/ReplaceSkin.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSkin`
@@ -1759,7 +1805,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosArmatureComponent.ts`, `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSlotDisplay`
@@ -1781,7 +1827,7 @@ Herança: extends cc.Component.
 - Origem/commit: `Cocos/Demos/assets/Script/Test.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosFactory.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Test`
@@ -1791,6 +1837,330 @@ Herança: extends cc.Component.
 | Membro | Tipo | Assinatura original | Linha |
 | --- | --- | --- | --- |
 | `start` | método | `start()` | 3 |
+
+### `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`
+
+- Origem/commit: `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`.
+- Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `"use strict";`
+- Linha 66: `module.exports = DragonBonesAsset;`
+
+#### NamespaceVariable `__extends`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `__extends` | propriedade | `__extends = (this && this.__extends) \|\| (function () { var extendStatics = Object.setPrototypeOf \|\| ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) \|\| function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; }; return function (d, b) { extendStatics(d, b); function __() { this.constructor = d; } d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __()); }; })()` | 2 |
+
+#### FunctionDeclaration `___`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `___` | método | `function __()` | 8 |
+
+#### NamespaceVariable `__decorate`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `__decorate` | propriedade | `__decorate = (this && this.__decorate) \|\| function (decorators, target, key, desc) { var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d; if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) \|\| r; return c > 3 && r && Object.defineProperty(target, key, r), r; }` | 12 |
+
+#### NamespaceVariable `_a`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `_a` | propriedade | `_a = cc._decorator` | 41 |
+
+#### NamespaceVariable `ccclass`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `ccclass` | propriedade | `ccclass = _a.ccclass` | 41 |
+
+#### NamespaceVariable `property`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `property` | propriedade | `property = _a.property` | 41 |
+
+#### NamespaceVariable `DragonBonesAsset`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `DragonBonesAsset` | propriedade | `DragonBonesAsset = /** @class */ (function (_super) { __extends(DragonBonesAsset, _super); function DragonBonesAsset() { var _this = _super !== null && _super.apply(this, arguments) \|\| this; _this.dragonBonesData = ""; _this.textureAtlases = []; _this.textures = []; return _this; } __decorate([ property ], DragonBonesAsset.prototype, "dragonBonesData", void 0); __decorate([ property([cc.String]) ], DragonBonesAsset.prototype, "textureAtlases", void 0); __decorate([ property ], DragonBonesAsset.prototype, "textures", void 0); DragonBonesAsset = __decorate([ ccclass("DragonBones.DragonBonesAsset") ], DragonBonesAsset); return DragonBonesAsset; }(cc.Asset))` | 42 |
+
+#### FunctionDeclaration `DragonBonesAsset`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `DragonBonesAsset` | método | `function DragonBonesAsset()` | 44 |
+
+### `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`
+
+- Origem/commit: `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/main.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/4.x/scripts/modify.js`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
+- Importações externas: './dragonbones-asset', './polyfills', 'fire-fs', 'fire-path', 'util'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 2: `require('./polyfills');`
+- Linha 85: `module.exports = DragonBonesMeta;`
+
+#### NamespaceVariable `fs`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `fs` | propriedade | `fs = require('fire-fs')` | 4 |
+
+#### NamespaceVariable `ps`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `ps` | propriedade | `ps = require('fire-path')` | 5 |
+
+#### NamespaceVariable `{ promisify }`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `{ promisify }` | propriedade | `{ promisify } = require('util')` | 6 |
+
+#### NamespaceVariable `DragonBonesAsset`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `DragonBonesAsset` | propriedade | `DragonBonesAsset = Editor.isMainProcess ? require('./dragonbones-asset') : dragonBones.DragonBonesAsset` | 8 |
+
+#### NamespaceVariable `DRAGONBONES_ENCODING`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `DRAGONBONES_ENCODING` | propriedade | `DRAGONBONES_ENCODING = 'utf8'` | 10 |
+
+#### FunctionDeclaration `searchAtlas`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `searchAtlas` | método | `function searchAtlas (skeletonPath)` | 12 |
+
+#### FunctionDeclaration `next`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `next` | método | `function next (index)` | 13 |
+
+#### FunctionDeclaration `loadAtlas`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `loadAtlas` | método | `async function loadAtlas (skeletonPath)` | 26 |
+
+#### ClassDeclaration `DragonBonesMeta`
+
+Herança: extends Editor.metas['custom-asset'].
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `version` | método | `static version ()` | 37 |
+| `defaultType` | método | `static defaultType ()` | 38 |
+| `validate` | método | `static validate (assetPath)` | 40 |
+| `postImport` | método | `postImport (assetPath, cb)` | 52 |
+
+### `Cocos/Demos/packages/dragonbones/editor/polyfills.js`
+
+- Origem/commit: `Cocos/Demos/packages/dragonbones/editor/polyfills.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Cocos/Demos/packages/dragonbones/editor/polyfills.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: nenhuma declaração autoral identificada.
+- Importações externas: 'util'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `'use strict';`
+- Linha 6: `util.promisify = function (handle) { return function (...args) { return new Promise(function (resolve, reject) { handle(...args, (err, res) => { if (err) { reject(err); } else { resolve(res); } }); }); }; };`
+
+#### NamespaceVariable `util`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `util` | propriedade | `util = require('util')` | 3 |
+
+#### FunctionAssignment `util.promisify`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `util.promisify` | método | `function (handle)` | 6 |
+
+### `Cocos/Demos/packages/dragonbones/main.js`
+
+- Origem/commit: `Cocos/Demos/packages/dragonbones/main.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Cocos/Demos/packages/dragonbones/main.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`.
+- Importações externas: './editor/dragonbones-asset', './editor/dragonbones-meta', 'path'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `'use strict';`
+- Linha 13: `module.exports = { load () { origin = { assets: { dragonbones: Editor.assets.dragonbones, }, metas: { dragonbones: Editor.metas.dragonbones, }, }; Editor.assets.dragonbones = newAsset; Editor.metas.dragonbones = newMeta; newMeta['asset-icon'] = origin.metas.dragonbones['asset-icon']; Editor.assetdb.register( '.json', false, newMeta); Editor.assetdb.mount(MOUNT_PATH, 'DragonBones', { hidden: false }); }, unload () { Editor.assets.dragonbones = origin.assets.dragonbones; Editor.metas.dragonbones = origin.metas.dragonbones; Editor.assetdb.unregister(newMeta); Editor.assetdb.unmount(MOUNT_PATH); cc.js.unregisterClass(newAsset); Editor.Ipc.sendToWins('dragonbones:unloaded'); } };`
+
+#### NamespaceVariable `ps`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `ps` | propriedade | `ps = require('path')` | 5 |
+
+#### NamespaceVariable `newAsset`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `newAsset` | propriedade | `newAsset = require('./editor/dragonbones-asset')` | 6 |
+
+#### NamespaceVariable `newMeta`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `newMeta` | propriedade | `newMeta = require('./editor/dragonbones-meta')` | 7 |
+
+#### NamespaceVariable `MOUNT_PATH`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `MOUNT_PATH` | propriedade | `MOUNT_PATH = ps.join(__dirname, 'assets')` | 9 |
+
+#### NamespaceVariable `origin`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `origin` | propriedade | `origin = null` | 11 |
+
+#### ObjectMemberFunction `load`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `load` | método | `load ()` | 14 |
+
+#### ObjectMemberFunction `unload`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `unload` | método | `unload ()` | 34 |
+
+### `Cocos/Demos/packages/dragonbones/scene.js`
+
+- Origem/commit: `Cocos/Demos/packages/dragonbones/scene.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Cocos/Demos/packages/dragonbones/scene.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/1.x/src/dragonBones/cocos/CocosAsset.ts`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-asset.js`, `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `Cocos/Demos/packages/dragonbones/main.js`.
+- Importações externas: './editor/dragonbones-meta', 'electron'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `'use strict';`
+- Linha 40: `load();`
+
+#### NamespaceVariable `{ ipcRenderer }`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `{ ipcRenderer }` | propriedade | `{ ipcRenderer } = require('electron')` | 5 |
+
+#### NamespaceVariable `newAsset`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `newAsset` | propriedade | `newAsset = dragonBones.DragonBonesAsset` | 7 |
+
+#### NamespaceVariable `newMeta`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `newMeta` | propriedade | `newMeta = require('./editor/dragonbones-meta')` | 8 |
+
+#### NamespaceVariable `origin`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `origin` | propriedade | `origin = null` | 10 |
+
+#### FunctionDeclaration `load`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `load` | método | `function load ()` | 12 |
+
+#### FunctionDeclaration `unload`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `unload` | método | `function unload ()` | 33 |
 
 ### `DragonBones/src/dragonBones/animation/Animation.ts`
 
@@ -2382,7 +2752,7 @@ Herança: extends BaseObject; implements IAnimatable.
 - Origem/commit: `DragonBones/src/dragonBones/armature/Bone.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/armature/Bone.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Bone`
@@ -2518,7 +2888,7 @@ Herança: extends IEventDispatcher.
 - Origem/commit: `DragonBones/src/dragonBones/armature/Slot.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/armature/Slot.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/ColorTransform.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/ColorTransform.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DisplayFrame`
@@ -2674,7 +3044,7 @@ Herança: extends Bone.
 - Origem/commit: `DragonBones/src/dragonBones/armature/TransformObject.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/armature/TransformObject.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `TransformObject`
@@ -2732,8 +3102,18 @@ Herança: nenhuma explícita.
 - Origem/commit: `DragonBones/src/dragonBones/core/DragonBones.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/core/DragonBones.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Egret/Demos/template/runtime/native_require.js`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 357: `console.warn = function () { };`
+- Linha 361: `console.assert = function () { };`
+- Linha 365: `Date.now = function now() { return new Date().getTime(); };`
+- Linha 390: `module.exports = dragonBones;`
+- Linha 393: `define(["dragonBones"], function () { return dragonBones; });`
+- Linha 396: `exports = dragonBones;`
+- Linha 399: `global.dragonBones = dragonBones;`
 
 #### EnumDeclaration `BinaryOffset`
 
@@ -2981,6 +3361,38 @@ Herança: nenhuma explícita.
 | `_objects` | propriedade | `private readonly _objects: Array<BaseObject> = [];` | 295 |
 | `_eventManager` | propriedade | `private _eventManager: IEventDispatcher = null as any;` | 296 |
 
+#### FunctionAssignment `console.warn`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `console.warn` | método | `function ()` | 357 |
+
+#### FunctionAssignment `console.assert`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `console.assert` | método | `function ()` | 361 |
+
+#### FunctionAssignment `Date.now`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `Date.now` | método | `function now()` | 365 |
+
+#### NamespaceFunction `__extends`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `__extends` | método | `function (t: any, e: any)` | 370 |
+
 #### FunctionDeclaration `r`
 
 Herança: nenhuma explícita.
@@ -2988,6 +3400,38 @@ Herança: nenhuma explícita.
 | Membro | Tipo | Assinatura original | Linha |
 | --- | --- | --- | --- |
 | `r` | método | `function r(this: any)` | 371 |
+
+#### NamespaceVariable `global`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `global` | propriedade | `global = window as any` | 383 |
+
+#### NamespaceVariable `exports`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `exports` | propriedade | `exports: any` | 386 |
+
+#### NamespaceVariable `module`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `module` | propriedade | `module: any` | 387 |
+
+#### NamespaceVariable `define`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `define` | propriedade | `define: any` | 388 |
 
 ### `DragonBones/src/dragonBones/event/EventObject.ts`
 
@@ -3049,7 +3493,7 @@ Herança: nenhuma explícita.
 - Origem/commit: `DragonBones/src/dragonBones/factory/BaseFactory.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/factory/BaseFactory.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/parser/BinaryDataParser.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `DragonBones/src/dragonBones/parser/ObjectDataParser.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/parser/BinaryDataParser.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `DragonBones/src/dragonBones/parser/ObjectDataParser.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BaseFactory`
@@ -3114,8 +3558,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/geom/ColorTransform.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/geom/ColorTransform.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/geom/ColorTransform.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/geom/ColorTransform.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração pendente; testes: tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.; diferenças: Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md.
 - Dependências candidatas: nenhuma declaração autoral identificada.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3170,8 +3614,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/geom/Point.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/geom/Point.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/geom/Point.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/geom/Point.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração pendente; testes: tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.; diferenças: Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md.
 - Dependências candidatas: nenhuma declaração autoral identificada.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3190,8 +3634,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/geom/Rectangle.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/geom/Rectangle.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/geom/Rectangle.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/geom/Rectangle.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração pendente; testes: tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.; diferenças: Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md.
 - Dependências candidatas: nenhuma declaração autoral identificada.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3621,7 +4065,7 @@ Herança: extends ConstraintData.
 - Origem/commit: `DragonBones/src/dragonBones/model/DisplayData.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/model/DisplayData.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `GeometryData`
@@ -4059,7 +4503,7 @@ Herança: nenhuma explícita.
 - Origem/commit: `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/parser/ObjectDataParser.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/ColorTransform.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/CanvasData.ts`, `DragonBones/src/dragonBones/model/ConstraintData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/ColorTransform.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `DragonBones/src/dragonBones/model/CanvasData.ts`, `DragonBones/src/dragonBones/model/ConstraintData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/SkinData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `DragonBones/src/dragonBones/model/UserData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### EnumDeclaration `FrameValueType`
@@ -4174,12 +4618,40 @@ Herança: nenhuma explícita.
 | `frameStart` | propriedade | `public frameStart: number = 0;` | 2433 |
 | `actions` | propriedade | `public readonly actions: Array<number> = [];` | 2434 |
 
+### `Egret/4.x/scripts/modify.js`
+
+- Origem/commit: `Egret/4.x/scripts/modify.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `builds/build_base.js`, `package.json.js`.
+- Importações externas: "fs".
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 3: `fs.writeFileSync( filePath, fs.readFileSync(filePath).toString().replace("declare var __extends: any;", "") );`
+
+#### NamespaceVariable `fs`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `fs` | propriedade | `fs = require("fs")` | 1 |
+
+#### NamespaceVariable `filePath`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `filePath` | propriedade | `filePath = "./out/dragonBones.d.ts"` | 2 |
+
 ### `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`
 
 - Origem/commit: `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`.
+- Dependências candidatas: `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EgretEvent`
@@ -4225,6 +4697,14 @@ Herança: extends egret.DisplayObjectContainer; implements IArmatureProxy.
 - Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/factory/BaseFactory.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretSlot.ts`, `Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
+#### NamespaceVariable `isV5`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `isV5` | propriedade | `isV5 = Number(egret.Capabilities.engineVersion.substr(0, 3)) >= 5.1` | 28 |
+
 #### ClassDeclaration `EgretFactory`
 
 Herança: extends BaseFactory.
@@ -4250,7 +4730,7 @@ Herança: extends BaseFactory.
 - Origem/commit: `Egret/4.x/src/dragonBones/egret/EgretSlot.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Egret/4.x/src/dragonBones/egret/EgretSlot.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
+- Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/4.x/src/dragonBones/egret/EgretTextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EgretSlot`
@@ -4342,6 +4822,14 @@ Herança: extends egret.DisplayObjectContainer.
 | `_background` | propriedade | `protected readonly _background: egret.Bitmap = new egret.Bitmap();` | 5 |
 | `_resources` | propriedade | `protected readonly _resources: string[] = [];` | 6 |
 | `_resourceMap` | propriedade | `protected readonly _resourceMap: any = {};` | 7 |
+
+#### FunctionAssignment `RES.getRes`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `RES.getRes` | método | `(name: string) =>` | 40 |
 
 ### `Egret/Demos/src/DragHelper.ts`
 
@@ -4473,7 +4961,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Egret/Demos/src/demo/CoreElement.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Game`
@@ -4496,6 +4984,14 @@ Herança: extends BaseDemo.
 | `_right` | propriedade | `private _right: boolean = false;` | 12 |
 | `_player` | propriedade | `private _player: Mecha;` | 13 |
 | `_bullets` | propriedade | `private readonly _bullets: Array<Bullet> = [];` | 14 |
+
+#### FunctionAssignment `egret.sys.TouchHandler.prototype.onTouchMove`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret.sys.TouchHandler.prototype.onTouchMove` | método | `function (this: any, x: number, y: number, touchPointID: number): void` | 42 |
 
 #### ClassDeclaration `Mecha`
 
@@ -4609,6 +5105,14 @@ Herança: extends BaseDemo.
 | `_animationNames` | propriedade | `private readonly _animationNames: string[] = [ "PARAM_ANGLE_X", "PARAM_ANGLE_Y", "PARAM_ANGLE_Z", "PARAM_EYE_BALL_X", "PARAM_EYE_BALL_Y", "PARAM_BODY_X", "PARAM_BODY_Y", "PARAM_BODY_Z", "PARAM_BODY_ANGLE_X", "PARAM_BODY_ANGLE_Y", "PARAM_BODY_ANGLE_Z", "PARAM_BREATH", ];` | 4 |
 | `_armatureDisplay` | propriedade | `private _armatureDisplay: dragonBones.EgretArmatureDisplay;` | 18 |
 
+#### FunctionAssignment `egret.sys.TouchHandler.prototype.onTouchMove`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret.sys.TouchHandler.prototype.onTouchMove` | método | `function (this: any, x: number, y: number, touchPointID: number): void` | 56 |
+
 ### `Egret/Demos/src/demo/HelloDragonBones.ts`
 
 - Origem/commit: `Egret/Demos/src/demo/HelloDragonBones.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
@@ -4631,7 +5135,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Egret/Demos/src/demo/InverseKinematics.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `InverseKinematics`
@@ -4657,6 +5161,14 @@ Herança: extends BaseDemo.
 | `_circleBone` | propriedade | `private _circleBone: dragonBones.Bone;` | 11 |
 | `_floorBoardBone` | propriedade | `private _floorBoardBone: dragonBones.Bone;` | 12 |
 | `_aimState` | propriedade | `private _aimState: dragonBones.AnimationState;` | 13 |
+
+#### FunctionAssignment `egret.sys.TouchHandler.prototype.onTouchMove`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret.sys.TouchHandler.prototype.onTouchMove` | método | `function (this: any, x: number, y: number, touchPointID: number): void` | 57 |
 
 ### `Egret/Demos/src/demo/MultiTextureAltas.ts`
 
@@ -4734,7 +5246,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Egret/Demos/src/demo/ReplaceSkin.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/4.x/src/dragonBones/egret/EgretArmatureDisplay.ts`, `Egret/4.x/src/dragonBones/egret/EgretFactory.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`, `ThreeJS/Demos/src/BaseDemo.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSkin`
@@ -4776,6 +5288,111 @@ Herança: extends BaseDemo.
 | `_factory` | propriedade | `private readonly _factory: dragonBones.EgretFactory = dragonBones.EgretFactory.factory;` | 6 |
 | `_armatureDisplay` | propriedade | `private _armatureDisplay: dragonBones.EgretArmatureDisplay;` | 7 |
 | `_logoText` | propriedade | `private _logoText: egret.TextField;` | 8 |
+
+### `Egret/Demos/template/runtime/native_loader.js`
+
+- Origem/commit: `Egret/Demos/template/runtime/native_loader.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Egret/Demos/template/runtime/native_loader.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: nenhuma declaração autoral identificada.
+- Importações externas: "launcher/native_require.js".
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `require("launcher/native_require.js");`
+- Linha 3: `egret_native.egtMain = function () { egret_native.nativeType = "native"; egret_native.egretInit(); egret_native.egretStart(); };`
+
+#### FunctionAssignment `egret_native.egtMain`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret_native.egtMain` | método | `function ()` | 3 |
+
+### `Egret/Demos/template/runtime/native_require.js`
+
+- Origem/commit: `Egret/Demos/template/runtime/native_require.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Egret/Demos/template/runtime/native_require.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: nenhuma declaração autoral identificada.
+- Importações externas: src.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 31: `egret_native.setSearchPaths([""]);`
+- Linha 33: `egret_native.requireFiles = function () { for (var key in game_file_list) { var src = game_file_list[key]; require(src); } };`
+- Linha 40: `egret_native.egretInit = function () { egret_native.requireFiles(); egret.TextField.default_fontFamily = "/system/fonts/DroidSansFallback.ttf"; //egret.dom为空实现 egret.dom = {}; egret.dom.drawAsCanvas = function () { }; };`
+- Linha 49: `egret_native.egretStart = function () { var option = { //以下为自动修改，请勿修改 //----auto option start---- entryClassName: "Main", frameRate: 60, scaleMode: "noBorder", contentWidth: 1136, contentHeight: 640, showPaintRect: false, showFPS: false, fpsStyles: "x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9", showLog: false, logFilter: "", maxTouches: 2, textureScaleFactor: 1 //----auto option end---- }; egret.native.NativePlayer.option = option; egret.runEgret(); egret_native.Label.createLabel(egret.TextField.default_fontFamily, 20, "", 0); egret_native.EGTView.preSetOffScreenBufferEnable(true); };`
+
+#### NamespaceVariable `game_file_list`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `game_file_list` | propriedade | `game_file_list = [ //以下为自动修改，请勿修改 //----auto game_file_list start---- "libs/modules/egret/egret.js", "libs/modules/egret/egret.native.js", "libs/modules/dragonBones/dragonBones.js", "libs/modules/res/res.js", "bin-debug/BaseDemo.js", "bin-debug/demo/DragonBonesEvent.js", "bin-debug/Main.js", "bin-debug/demo/AnimationBase.js", "bin-debug/demo/AnimationLayer.js", "bin-debug/demo/BoneOffset.js", "bin-debug/demo/BoundingBox.js", "bin-debug/demo/CoreElement.js", "bin-debug/demo/ReplaceSlotDisplay.js", "bin-debug/demo/HelloDragonBones.js", "bin-debug/demo/InverseKinematics.js", "bin-debug/demo/MyTest.js", "bin-debug/demo/PathDemo.js", "bin-debug/demo/PerformanceTest.js", "bin-debug/demo/ReplaceAnimation.js", "bin-debug/demo/ReplaceSkin.js", "bin-debug/DragHelper.js", //----auto game_file_list end---- ]` | 2 |
+
+#### NamespaceVariable `window`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `window` | propriedade | `window = this` | 29 |
+
+#### FunctionAssignment `egret_native.requireFiles`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret_native.requireFiles` | método | `function ()` | 33 |
+
+#### FunctionAssignment `egret_native.egretInit`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret_native.egretInit` | método | `function ()` | 40 |
+
+#### FunctionAssignment `egret.dom.drawAsCanvas`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret.dom.drawAsCanvas` | método | `function ()` | 45 |
+
+#### FunctionAssignment `egret_native.egretStart`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret_native.egretStart` | método | `function ()` | 49 |
+
+### `Egret/Demos/template/runtime/runtime_loader.js`
+
+- Origem/commit: `Egret/Demos/template/runtime/runtime_loader.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: integrations/Egret/Demos/template/runtime/runtime_loader.lua. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: nenhuma declaração autoral identificada.
+- Importações externas: "launcher/native_require.js".
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 1: `require("launcher/native_require.js");`
+- Linha 3: `egret_native.egtMain = function () { egret_native.nativeType = "runtime"; egret_native.egretInit(); egret_native.egretStart(); };`
+
+#### FunctionAssignment `egret_native.egtMain`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `egret_native.egtMain` | método | `function ()` | 3 |
 
 ### `Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.ts`
 
@@ -4835,12 +5452,20 @@ Herança: extends BaseFactory.
 | `_dragonBonesInstance` | propriedade | `private static _dragonBonesInstance: DragonBones = null as any;` | 36 |
 | `_factory` | propriedade | `private static _factory: HiloFactory = null as any;` | 37 |
 
+#### FunctionAssignment `(dragonBonesInstance as any).tick`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `(dragonBonesInstance as any).tick` | método | `(passedTime: number) =>` | 42 |
+
 ### `Hilo/1.x/src/dragonBones/hilo/HiloSlot.ts`
 
 - Origem/commit: `Hilo/1.x/src/dragonBones/hilo/HiloSlot.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Hilo/1.x/src/dragonBones/hilo/HiloSlot.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.ts`, `Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
+- Dependências candidatas: `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Hilo/1.x/src/dragonBones/hilo/HiloArmatureDisplay.ts`, `Hilo/1.x/src/dragonBones/hilo/HiloTextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `HiloSlot`
@@ -4942,6 +5567,14 @@ Herança: extends Hilo.Container.
 | `_ticker` | propriedade | `protected readonly _ticker: Hilo.Ticker = new Hilo.Ticker(60);` | 8 |
 | `_resources` | propriedade | `protected readonly _resources: string[] = [];` | 10 |
 | `_hiloResources` | propriedade | `protected readonly _hiloResources: dragonBones.Map<any> = {};` | 11 |
+
+#### FunctionAssignment `imageElement.onload`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `imageElement.onload` | método | `() =>` | 75 |
 
 ### `Hilo/Demos/src/HelloDragonBones.ts`
 
@@ -5252,7 +5885,7 @@ Herança: extends DisplayContainer; implements IArmatureProxy.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/display/DisplayContainer.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/geom/Point.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `DragonBones/src/dragonBones/geom/Point.ts`, `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DisplayContainer`
@@ -5311,8 +5944,12 @@ Herança: extends dragonBones.Slot.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/display/SlotImage.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotImage.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 9: `util.extendSkew(SlotImage);`
 
 #### ClassDeclaration `SlotImage`
 
@@ -5327,8 +5964,12 @@ Herança: extends Phaser.GameObjects.Image.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 46: `util.extendSkew(SlotMesh);`
 
 #### ClassDeclaration `SlotMesh`
 
@@ -5348,8 +5989,12 @@ Herança: extends Phaser.GameObjects.Mesh.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 9: `util.extendSkew(SlotSprite);`
 
 #### ClassDeclaration `SlotSprite`
 
@@ -5395,7 +6040,7 @@ Herança: extends dragonBones.TextureData.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`, `builds/cli.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `TextureTintPipeline`
@@ -5415,7 +6060,7 @@ Herança: extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Phaser/3.x/src/dragonBones/phaser/plugin/FileTypes.ts`, `builds/cli.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragonBonesFile`
@@ -5432,7 +6077,7 @@ Herança: extends Phaser.Loader.MultiFile.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesPlugin.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `Phaser/3.x/src/dragonBones/phaser/Factory.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotImage.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.ts`, `Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.ts`, `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.ts`, `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `Phaser/3.x/src/dragonBones/phaser/Factory.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotImage.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotMesh.ts`, `Phaser/3.x/src/dragonBones/phaser/display/SlotSprite.ts`, `Phaser/3.x/src/dragonBones/phaser/pipeline/TextureTintPipeline.ts`, `Phaser/3.x/src/dragonBones/phaser/plugin/DragonBonesFile.ts`, `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts`, `builds/cli.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragonBonesScenePlugin`
@@ -5455,6 +6100,30 @@ Herança: extends Phaser.Plugins.ScenePlugin.
 | `_dbInst` | propriedade | `protected _dbInst: dragonBones.DragonBones;` | 3 |
 | `_factory` | propriedade | `protected _factory: Factory;` | 4 |
 
+#### NamespaceFunction `CreateDragonBonesRegisterHandler`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `CreateDragonBonesRegisterHandler` | método | `function(dragonBonesName: string, textureScale = 1.0): DragonBonesData` | 97 |
+
+#### NamespaceFunction `CreateArmatureRegisterHandler`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `CreateArmatureRegisterHandler` | método | `function(armature: string, dragonBones?: string, skinName?: string, atlasTextureName?: string): display.ArmatureDisplay` | 101 |
+
+#### NamespaceFunction `DragonBoneFileRegisterHandler`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `DragonBoneFileRegisterHandler` | método | `function(dragonbonesName: string \| object, textureURL?: string, atlasURL?: string, boneURL?: string, textureXhrSettings?: XHRSettingsObject, atlasXhrSettings?: XHRSettingsObject, boneXhrSettings?: XHRSettingsObject)` | 105 |
+
 ### `Phaser/3.x/src/dragonBones/phaser/plugin/FileTypes.ts`
 
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/plugin/FileTypes.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
@@ -5471,12 +6140,36 @@ Herança: nenhuma explícita.
 | --- | --- | --- | --- |
 | `constructor` | método | `new (... args: any[]): Phaser.Loader.File;` | 3 |
 
+#### NamespaceVariable `FileTypes`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `FileTypes` | propriedade | `FileTypes = { IMAGE: "imageFile", JSON: "jsonFile", BINARY: "binaryFile", map: { imageFile: Phaser.Loader.FileTypes.ImageFile, jsonFile: Phaser.Loader.FileTypes.JSONFile, binaryFile: Phaser.Loader.FileTypes.BinaryFile }, setType: (type: string, clazz: FileTypeClass): void => { FileTypes.map[type] = clazz; }, getType: (type: string): FileTypeClass => { return FileTypes.map[type]; } }` | 6 |
+
+#### ObjectMemberFunction `setType`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `setType` | método | `(type: string, clazz: FileTypeClass): void =>` | 17 |
+
+#### ObjectMemberFunction `getType`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `getType` | método | `(type: string): FileTypeClass =>` | 21 |
+
 ### `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts`
 
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/util/EventDispatcher.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EventDispatcher`
@@ -5495,17 +6188,71 @@ Herança: extends Phaser.Events.EventEmitter; implements IEventDispatcher.
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
-Sem classes/interfaces/enums/funções nomeadas declaradas. Revisar instruções de topo, exports e callbacks no arquivo original.
+#### NamespaceVariable `Skew`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `Skew` | propriedade | `Skew = { getSkewX(): number { return this._skewX \|\| 0; }, setSkewX(v: number) { this._skewX = v; }, getSkewY(): number { return this._skewY \|\| 0; }, setSkewY(v: number) { this._skewY = v; }, setSkew(sx: number, sy?: number): void { sy = sy === void 0 ? sx : sy; this._skewX = sx; this._skewY = sy; } }` | 2 |
+
+#### ObjectMemberFunction `getSkewX`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `getSkewX` | método | `getSkewX(): number` | 3 |
+
+#### ObjectMemberFunction `setSkewX`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `setSkewX` | método | `setSkewX(v: number)` | 6 |
+
+#### ObjectMemberFunction `getSkewY`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `getSkewY` | método | `getSkewY(): number` | 9 |
+
+#### ObjectMemberFunction `setSkewY`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `setSkewY` | método | `setSkewY(v: number)` | 12 |
+
+#### ObjectMemberFunction `setSkew`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `setSkew` | método | `setSkew(sx: number, sy?: number): void` | 15 |
+
+#### NamespaceFunction `extendSkew`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `extendSkew` | método | `function(clazz: any): void` | 22 |
 
 ### `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`
 
 - Origem/commit: `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/polyfills.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `TransformMatrix`
@@ -5525,7 +6272,7 @@ Herança: extends Phaser.GameObjects.Components.TransformMatrix.
 - Origem/commit: `Phaser/Demos/src/AnimationBase.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationBase`
@@ -5549,7 +6296,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/AnimationLayer.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationLayer.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationLayer.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/AnimationLayer.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationLayer.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationLayer.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationLayer.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/AnimationLayer.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationLayer.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationLayer`
@@ -5569,7 +6316,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/BaseDemo.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Egret/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BaseDemo`
@@ -5588,7 +6335,7 @@ Herança: extends Phaser.Scene.
 - Origem/commit: `Phaser/Demos/src/BoneOffset.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoneOffset.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/BoneOffset.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoneOffset.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BoneOffset.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoneOffset.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/BoneOffset.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoneOffset.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BoneOffset.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BoneOffset`
@@ -5608,7 +6355,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/BoundingBox.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BoundingBox`
@@ -5638,7 +6385,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/CoreElement.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/util/TransformMatrix.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Game`
@@ -5766,7 +6513,7 @@ Herança: nenhuma explícita.
 - Origem/commit: `Phaser/Demos/src/DragonBonesEvent.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragonBonesEvent.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/DragonBonesEvent.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragonBonesEvent.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragonBonesEvent.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragonBonesEvent.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/DragonBonesEvent.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragonBonesEvent.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragonBonesEvent.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragonBonesEvent`
@@ -5786,7 +6533,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/HelloDragonBones.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/HelloDragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/HelloDragonBones.ts`, `Hilo/Demos/src/HelloDragonBones.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/HelloDragonBones.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/HelloDragonBones.ts`, `ThreeJS/Demos/src/BaseDemo.ts`, `ThreeJS/Demos/src/HelloDragonBones.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/HelloDragonBones.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/HelloDragonBones.ts`, `Hilo/Demos/src/HelloDragonBones.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/HelloDragonBones.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/HelloDragonBones.ts`, `ThreeJS/Demos/src/BaseDemo.ts`, `ThreeJS/Demos/src/HelloDragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `HelloDragonBones`
@@ -5804,7 +6551,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/InverseKinematics.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `InverseKinematics`
@@ -5837,7 +6584,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/PerformanceTest.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `PerformanceTest`
@@ -5867,7 +6614,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/ReplaceAnimation.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceAnimation.ts`, `Hilo/Demos/src/ReplaceAnimation.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceAnimation.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceAnimation.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceAnimation.ts`, `Hilo/Demos/src/ReplaceAnimation.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceAnimation.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceAnimation.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceAnimation`
@@ -5890,7 +6637,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Phaser/Demos/src/ReplaceSlotDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/Factory.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Cocos/Demos/packages/dragonbones/editor/polyfills.js`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/Factory.ts`, `Phaser/3.x/src/dragonBones/phaser/display/ArmatureDisplay.ts`, `Phaser/3.x/src/dragonBones/phaser/util/SkewComponent.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSlotDisplay`
@@ -6192,7 +6939,7 @@ Herança: extends PIXI.Container; implements IArmatureProxy.
 - Origem/commit: `Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/Pixi/8.x/src/dragonBones/pixi/PixiDBBinParser.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `PixiDBBinParser`
@@ -6308,7 +7055,7 @@ Herança: extends TextureData.
 - Origem/commit: `Pixi/Demos/4.x/src/AnimationBase.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/AnimationBase.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationBase`
@@ -6348,7 +7095,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/BaseDemo.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BaseDemo`
@@ -6423,7 +7170,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/CoreElement.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/CoreElement.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Game`
@@ -6565,7 +7312,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/EyeTracking.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/EyeTracking.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/EyeTracking.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/EyeTracking.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/EyeTracking.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/EyeTracking.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/EyeTracking.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EyeTracking`
@@ -6606,7 +7353,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/InverseKinematics.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/InverseKinematics.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `InverseKinematics`
@@ -6660,7 +7407,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/PerformanceTest.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/PerformanceTest.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `PerformanceTest`
@@ -6709,7 +7456,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/ReplaceSkin.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSkin.ts`, `ThreeJS/Demos/src/BaseDemo.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSkin`
@@ -6733,7 +7480,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSlotDisplay`
@@ -6757,7 +7504,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/AnimationBase.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/AnimationBase.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/AnimationBase.ts`, `Phaser/Demos/src/AnimationBase.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/AnimationBase.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `AnimationBase`
@@ -6850,7 +7597,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/BoundingBox.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BoundingBox`
@@ -6878,7 +7625,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/CoreElement.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/CoreElement.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/CoreElement.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/CoreElement.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/CoreElement.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `Game`
@@ -6993,7 +7740,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/DragHelper.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/DragHelper.ts`, `Phaser/Demos/src/DragHelper.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `DragHelper`
@@ -7037,7 +7784,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/EyeTracking.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/EyeTracking.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/EyeTracking.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/EyeTracking.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/EyeTracking.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/EyeTracking.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/EyeTracking.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `EyeTracking`
@@ -7078,7 +7825,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/InverseKinematics.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/DragHelper.ts`, `Cocos/Demos/assets/Script/InverseKinematics.ts`, `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/DragHelper.ts`, `Egret/Demos/src/demo/InverseKinematics.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/DragHelper.ts`, `Phaser/Demos/src/InverseKinematics.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/DragHelper.ts`, `Pixi/Demos/4.x/src/InverseKinematics.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/DragHelper.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `InverseKinematics`
@@ -7132,7 +7879,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/PerformanceTest.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/PerformanceTest.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/PerformanceTest.ts`, `Hilo/Demos/src/PerformanceTest.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/PerformanceTest.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/PerformanceTest.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `PerformanceTest`
@@ -7181,7 +7928,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/ReplaceSkin.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceSkin.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSkin.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSkin.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSkin`
@@ -7205,7 +7952,7 @@ Herança: extends BaseDemo.
 - Origem/commit: `Pixi/Demos/8.x/src/ReplaceSlotDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
+- Dependências candidatas: `Cocos/Demos/assets/Script/ReplaceAnimation.ts`, `Cocos/Demos/assets/Script/ReplaceSlotDisplay.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Egret/Demos/src/demo/ReplaceSlotDisplay.ts`, `Hilo/Demos/src/ReplaceSlotDisplay.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/ReplaceSlotDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/ReplaceSlotDisplay.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Demos/src/BaseDemo.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ReplaceSlotDisplay`
@@ -7294,7 +8041,7 @@ Herança: extends BaseFactory.
 - Origem/commit: `ThreeJS/Current/src/dragonBones/three/ThreeSlot.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: integrations/ThreeJS/Current/src/dragonBones/three/ThreeSlot.lua. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.ts`.
+- Dependências candidatas: `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeArmatureDisplay.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeTextureAtlasData.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `ThreeSlot`
@@ -7360,7 +8107,7 @@ Herança: extends TextureData.
 - Origem/commit: `ThreeJS/Demos/src/BaseDemo.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts`.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/Demos/src/BaseDemo.ts`, `Phaser/Demos/src/BaseDemo.ts`, `Pixi/Demos/4.x/src/BaseDemo.ts`, `Pixi/Demos/8.x/src/BaseDemo.ts`, `ThreeJS/Current/src/dragonBones/three/ThreeFactory.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
 #### ClassDeclaration `BaseDemo`
@@ -7382,6 +8129,14 @@ Herança: extends THREE.Group.
 | `_background` | propriedade | `private readonly _background: THREE.Sprite = new THREE.Sprite();` | 7 |
 | `_resources` | propriedade | `protected readonly _resources: string[] = [BaseDemo.BACKGROUND_URL];` | 8 |
 | `_loadedResources` | propriedade | `protected readonly _loadedResources: dragonBones.Map<any \| ArrayBuffer \| THREE.Texture> = {};` | 9 |
+
+#### FunctionAssignment `THREE.DefaultLoadingManager.onLoad`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `THREE.DefaultLoadingManager.onLoad` | método | `() =>` | 65 |
 
 ### `ThreeJS/Demos/src/HelloDragonBones.ts`
 
@@ -7405,8 +8160,101 @@ Herança: extends BaseDemo.
 - Origem/commit: `builds/build_base.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: nenhuma declaração autoral identificada.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `Egret/4.x/scripts/modify.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `package.json.js`.
 - Importações externas: 'async', 'child_process', 'copy', 'del', 'download', 'fs', 'lodash', 'path'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 184: `module.exports = BuildBase;`
+
+#### NamespaceVariable `_`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `_` | propriedade | `_ = require('lodash')` | 6 |
+
+#### NamespaceVariable `fs`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `fs` | propriedade | `fs = require('fs')` | 7 |
+
+#### NamespaceVariable `async`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `async` | propriedade | `async = require('async')` | 8 |
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 9 |
+
+#### NamespaceVariable `copy`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `copy` | propriedade | `copy = require('copy')` | 10 |
+
+#### NamespaceVariable `del`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `del` | propriedade | `del = require('del')` | 11 |
+
+#### NamespaceVariable `download`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `download` | propriedade | `download = require('download')` | 12 |
+
+#### NamespaceVariable `exec`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `exec` | propriedade | `exec = require('child_process').exec` | 13 |
+
+#### NamespaceVariable `tscPath`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `tscPath` | propriedade | `tscPath = require.resolve('typescript/bin/tsc')` | 15 |
+
+#### NamespaceVariable `cacheFolder`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `cacheFolder` | propriedade | `cacheFolder = path.join(__dirname, '../.cache')` | 16 |
+
+#### NamespaceVariable `registryMap`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `registryMap` | propriedade | `registryMap = { npm: 'https://registry.npmjs.org/', cnpm: 'http://r.cnpmjs.org/', taobao: 'https://registry.npm.taobao.org/' }` | 18 |
 
 #### ClassDeclaration `BuildBase`
 
@@ -7425,13 +8273,74 @@ Herança: nenhuma explícita.
 | `downloadUrl` | método | `get downloadUrl ()` | 170 |
 | `copyDeclear` | método | `copyDeclear (callback)` | 179 |
 
+#### ObjectMemberFunction `check`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `check` | método | `(callback) =>` | 115 |
+
 ### `builds/build_egret.js`
 
 - Origem/commit: `builds/build_egret.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `builds/build_base.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_base.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `builds/index.js`, `package.json.js`.
 - Importações externas: './build_base', 'async', 'copy', 'debug', 'path', 'semver'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 64: `module.exports = BuildEgret;`
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 6 |
+
+#### NamespaceVariable `async`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `async` | propriedade | `async = require('async')` | 7 |
+
+#### NamespaceVariable `semver`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `semver` | propriedade | `semver = require('semver')` | 8 |
+
+#### NamespaceVariable `copy`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `copy` | propriedade | `copy = require('copy')` | 9 |
+
+#### NamespaceVariable `debug`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `debug` | propriedade | `debug = require('debug')` | 10 |
+
+#### NamespaceVariable `BuildBase`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildBase` | propriedade | `BuildBase = require('./build_base')` | 12 |
 
 #### ClassDeclaration `BuildEgret`
 
@@ -7450,8 +8359,61 @@ Herança: extends BuildBase.
 - Origem/commit: `builds/build_hilo.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `builds/build_base.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`, `builds/index.js`, `package.json.js`.
 - Importações externas: './build_base', 'async', 'copy', 'debug', 'path', 'semver'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 65: `module.exports = BuildHilo;`
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 6 |
+
+#### NamespaceVariable `async`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `async` | propriedade | `async = require('async')` | 7 |
+
+#### NamespaceVariable `semver`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `semver` | propriedade | `semver = require('semver')` | 8 |
+
+#### NamespaceVariable `copy`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `copy` | propriedade | `copy = require('copy')` | 9 |
+
+#### NamespaceVariable `debug`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `debug` | propriedade | `debug = require('debug')` | 10 |
+
+#### NamespaceVariable `BuildBase`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildBase` | propriedade | `BuildBase = require('./build_base')` | 12 |
 
 #### ClassDeclaration `BuildHilo`
 
@@ -7470,8 +8432,61 @@ Herança: extends BuildBase.
 - Origem/commit: `builds/build_phaser.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `builds/build_base.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_pixi.js`, `builds/cli.js`, `builds/index.js`, `package.json.js`.
 - Importações externas: './build_base', 'async', 'copy', 'debug', 'path', 'semver'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 72: `module.exports = BuildPhaser;`
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 6 |
+
+#### NamespaceVariable `async`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `async` | propriedade | `async = require('async')` | 7 |
+
+#### NamespaceVariable `semver`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `semver` | propriedade | `semver = require('semver')` | 8 |
+
+#### NamespaceVariable `copy`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `copy` | propriedade | `copy = require('copy')` | 9 |
+
+#### NamespaceVariable `debug`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `debug` | propriedade | `debug = require('debug')` | 10 |
+
+#### NamespaceVariable `BuildBase`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildBase` | propriedade | `BuildBase = require('./build_base')` | 12 |
 
 #### ClassDeclaration `BuildPhaser`
 
@@ -7490,8 +8505,61 @@ Herança: extends BuildBase.
 - Origem/commit: `builds/build_pixi.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `builds/build_base.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/cli.js`, `builds/index.js`, `package.json.js`.
 - Importações externas: './build_base', 'async', 'copy', 'debug', 'path', 'semver'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 65: `module.exports = BuildPixi;`
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 6 |
+
+#### NamespaceVariable `async`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `async` | propriedade | `async = require('async')` | 7 |
+
+#### NamespaceVariable `semver`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `semver` | propriedade | `semver = require('semver')` | 8 |
+
+#### NamespaceVariable `copy`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `copy` | propriedade | `copy = require('copy')` | 9 |
+
+#### NamespaceVariable `debug`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `debug` | propriedade | `debug = require('debug')` | 10 |
+
+#### NamespaceVariable `BuildBase`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildBase` | propriedade | `BuildBase = require('./build_base')` | 12 |
 
 #### ClassDeclaration `BuildPixi`
 
@@ -7510,17 +8578,197 @@ Herança: extends BuildBase.
 - Origem/commit: `builds/cli.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/index.js`, `package.json.js`.
 - Importações externas: './index', 'debug', 'lodash', 'minimist', 'path', 'semver'.
 
-Sem classes/interfaces/enums/funções nomeadas declaradas. Revisar instruções de topo, exports e callbacks no arquivo original.
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 2: `'use strict';`
+- Linha 11: `debug.enable('dragonbones*');`
+- Linha 15: `outFolder = path.join(process.cwd(), outFolder);`
+- Linha 23: `debug('dragonbones')('invalid version !!!');`
+- Linha 24: `process.exit(0);`
+- Linha 36: `new BuildTools.BuildEgret(config).build((err) => { err && debug('dragonbones')(err); });`
+- Linha 41: `new BuildTools.BuildHilo(config).build((err) => { err && debug('dragonbones')(err); });`
+- Linha 47: `new BuildTools.BuildPhaser(config).build((err) => { err && debug('dragonbones')(err); });`
+- Linha 52: `new BuildTools.BuildPixi(config).build((err) => { err && debug('dragonbones')(err); });`
+- Linha 57: `debug('dragonbones')('only support egret, hilo, phaser and pixi');`
+- Linha 58: `process.exit(0);`
+
+#### NamespaceVariable `_`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `_` | propriedade | `_ = require('lodash')` | 4 |
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 5 |
+
+#### NamespaceVariable `semver`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `semver` | propriedade | `semver = require('semver')` | 6 |
+
+#### NamespaceVariable `debug`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `debug` | propriedade | `debug = require('debug')` | 7 |
+
+#### NamespaceVariable `argv`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `argv` | propriedade | `argv = require('minimist')(process.argv.slice(2))` | 8 |
+
+#### NamespaceVariable `BuildTools`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildTools` | propriedade | `BuildTools = require('./index')` | 10 |
+
+#### NamespaceVariable `outFolder`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `outFolder` | propriedade | `outFolder = argv.o \|\| 'dragonbones-out'` | 13 |
+
+#### NamespaceVariable `libInfo`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `libInfo` | propriedade | `libInfo = _.split(argv['_'][0], '@')` | 18 |
+
+#### NamespaceVariable `libName`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `libName` | propriedade | `libName = libInfo[0]` | 19 |
+
+#### NamespaceVariable `libVersion`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `libVersion` | propriedade | `libVersion = libInfo[1]` | 20 |
+
+#### NamespaceVariable `config`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `config` | propriedade | `config = { outFolder: outFolder, version: libVersion, registry: argv.r \|\| 'npm' }` | 28 |
 
 ### `builds/index.js`
 
 - Origem/commit: `builds/index.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
 - Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
-- Dependências candidatas: `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`.
+- Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`.
 - Importações externas: './build_egret', './build_hilo', './build_phaser', './build_pixi'.
 
-Sem classes/interfaces/enums/funções nomeadas declaradas. Revisar instruções de topo, exports e callbacks no arquivo original.
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 11: `module.exports = { BuildEgret: BuildEgret, BuildHilo: BuildHilo, BuildPhaser: BuildPhaser, BuildPixi: BuildPixi };`
+
+#### NamespaceVariable `BuildEgret`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildEgret` | propriedade | `BuildEgret = require('./build_egret')` | 6 |
+
+#### NamespaceVariable `BuildHilo`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildHilo` | propriedade | `BuildHilo = require('./build_hilo')` | 7 |
+
+#### NamespaceVariable `BuildPhaser`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildPhaser` | propriedade | `BuildPhaser = require('./build_phaser')` | 8 |
+
+#### NamespaceVariable `BuildPixi`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `BuildPixi` | propriedade | `BuildPixi = require('./build_pixi')` | 9 |
+
+### `package.json.js`
+
+- Origem/commit: `package.json.js` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
+- Destino: —. Ausente nesta reconstrução antes de iniciar o porte.
+- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Dependências candidatas: `Cocos/Demos/packages/dragonbones/editor/dragonbones-meta.js`, `Egret/4.x/scripts/modify.js`, `builds/build_base.js`, `builds/build_egret.js`, `builds/build_hilo.js`, `builds/build_phaser.js`, `builds/build_pixi.js`, `builds/cli.js`.
+- Importações externas: 'fs', 'path'.
+
+Execução no escopo de arquivo/namespace (não executada pelo inventário):
+
+- Linha 4: `'use strict';`
+- Linha 61: `fs.writeFileSync(targetFile, JSON.stringify(packageConfig, null, 2), { encoding: 'utf8', flags: 'w', mode: 0o666 });`
+
+#### NamespaceVariable `packageConfig`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `packageConfig` | propriedade | `packageConfig = { // basic name: 'dragonbones-runtime', version: '5.6.200', description: 'the tools to build dragonbones file for diffrent framework', homepage: 'https://github.com/DragonBones/DragonBonesJS', license: 'MIT', /** * repository */ repository: { type: 'git', url: 'https://github.com/DragonBones/DragonBonesJS.git' }, bugs: { url: 'https://github.com/DragonBones/DragonBonesJS/issues' }, /** * keywords */ keywords: ['dragonbones', 'egret', 'hilo', 'phaser', 'pixi', 'bones'], /** * enter point */ main: './builds/index.js', /** * cli */ bin: { 'dbr': './builds/cli.js' }, /** * dependencies */ dependencies: { 'typescript': '^2.4.2', 'uglify-js': '^3.0.26', 'lodash': '^4.17.4', 'async': '^2.6.0', 'minimist': '^1.2.0', 'copy': '^0.3.1', 'del': '^3.0.0', 'download': '^6.2.5', 'semver': '^5.4.1', 'debug': '^3.1.0' } }` | 6 |
+
+#### NamespaceVariable `fs`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `fs` | propriedade | `fs = require('fs')` | 58 |
+
+#### NamespaceVariable `path`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `path` | propriedade | `path = require('path')` | 59 |
+
+#### NamespaceVariable `targetFile`
+
+Herança: nenhuma explícita.
+
+| Membro | Tipo | Assinatura original | Linha |
+| --- | --- | --- | --- |
+| `targetFile` | propriedade | `targetFile = path.join(__dirname, './package.json')` | 60 |
