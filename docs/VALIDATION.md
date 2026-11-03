@@ -388,3 +388,6 @@ Experimentos reversíveis: substituir loop de limpeza por ipairs falhou em row 6
 Limites: não comprova seleção/renderização de skins no runtime, parser/binário/typed buffers, solver/deformação/playback/GPU ou precisão temporal automática real. DragonBonesData global e BoundingBoxData reais permanecem pendentes. Fora de listas, refs null/undefined normalizam nil; mapas não emulam Object.prototype e descritores/proxies/coerções JS genéricos não são equivalência declarada. Consumidores futuros devem reconhecer o marcador truthy SkinData.NULL.
 
 Artefatos regeneráveis: skindata-cases.tsv, skindata-original.tsv e saídas/JSON por VM. CI executa as doze suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.
+
+
+Checkpoint remoto: PR #74, código c5e6490abc9e67b7a9fafb94c5838944b047bbc3. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41680927368 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs confirmaram doze suítes passed em ambas as VMs; SkinData: 29 cenários/814 operações/8.140 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #74 para SHA final, merge e CI pós-merge; este registro não antecipa merge.

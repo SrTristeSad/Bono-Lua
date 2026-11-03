@@ -209,3 +209,6 @@ Integração: ArmatureData.addSkin/getMesh/_onClear usa SkinData/displays/geomet
 Experimentos reversíveis: ipairs na limpeza de lista esparsa falhou em row 65 clear s (esperado erro, obtido void); tratar argumento omitido como null falhou em row 77 add s omitted omit. Produto restaurado e testes finais refeitos nas duas VMs, sem relaxar expectativas/tolerâncias.
 
 Limites: esta integração não implementa seleção/renderização de skin no runtime, parser/typed buffers, deformação, solver, playback ou GPU. DragonBonesData global e BoundingBoxData reais continuam pendentes, além da precisão temporal automática. Mapas não emulam Object.prototype; refs null/undefined para nil fora das listas; hole/undefined próprios normalizam por valor/length, sem descritores/proxies genéricos. CI/PR/merge deste checkpoint devem ser confirmados no SHA publicado.
+
+
+Checkpoint remoto: PR #74, código c5e6490abc9e67b7a9fafb94c5838944b047bbc3. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41680927368 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs confirmaram doze suítes passed em ambas as VMs; SkinData: 29 cenários/814 operações/8.140 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #74 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
