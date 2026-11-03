@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-animation-config`, sobre `main@bc74a1a`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-animation-data`, sobre `main@b45b575`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: auditar AnimationData.ts e a referência a ArmatureData antes de definir o próximo lote de modelos. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: auditar DisplayData.ts, especialmente GeometryData/WeightData, para preparar ArmatureData sem dependências de produto fictícias. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -124,7 +124,7 @@ Limites: Armature/dispatcher/animatable são probes de teste, não classes de pr
 
 Checkpoint remoto: PR #68, código 856b37a49ea10da7f4b43ba76da63c99dcb1a09a. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41634841014 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs de ambos os jobs confirmaram seis suítes passed, incluindo 25 cenários/1.147 operações/16.058 colunas/98 enums no lote de eventos; três artefatos publicados no mesmo SHA. Consultar PR #68 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
 
-## Unidade atual: AnimationConfig
+## Unidade anterior: AnimationConfig
 
 Main inicial bc74a1a5206fe41c13717200613e81f4f65035f9, PR #68 e CI pós-merge 41635078122 aprovados; backup cd4206a8 confirmado intacto. Lidos AnimationConfig.ts completo e Lua real do backup. Dependências executáveis: BaseObject e const enums já portados; AnimationState é referência documental, não dependência executada por esta classe. Destino dragonbones/model/AnimationConfig.lua; sem carregar o runtime DragonBones só para obter enums.
 
@@ -137,3 +137,17 @@ Experimento reversível que restaurou # no comprimento de copyFrom falhou na lin
 Limites: holes e undefined explícito comparados por valor/comprimento, sem equivalência de descritores/reflexão/proxies JS. Métodos nativos de Array não são API Lua; operações usam entradas base 1 e length. Consumo por Animation/AnimationState e armaduras reais não exercitado. Precisão automática de WorldClock e demais pendências do runtime continuam abertas. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #69, código 52b1ded46b858d3bfd941c399e182bc0a3239d3d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41645915590 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram sete suítes passed, incluindo AnimationConfig com 30 cenários/1.293 operações/10.344 colunas/21 campos escalares. Três artefatos conferidos no mesmo SHA. Consultar PR #69 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: AnimationData e dados de timelines
+
+Base main b45b575d6a61fec17068f78f700a22b1bf9799b0; PR #69/CI pós-merge 41646190037 aprovados, backup cd4206a8 intacto, fonte fixada limpa. Lidos AnimationData.ts e ArmatureData.ts completos, Lua real dos dois arquivos no backup e relatório de dependências. ArmatureData não é instanciado nem chamado por AnimationData: cacheFrames lê parent.sortedBones/sortedSlots e name. Essa fronteira está documentada em contracts/AnimationDataParent.md; registros existem somente no teste. A classe real e seus demais algoritmos continuam pendentes.
+
+Implementadas AnimationData, TimelineData e AnimationTimelineData em dragonbones/model/AnimationData.lua com BaseObject/Enums reais. Preservados construtores sem defaults antecipados, herança/limpeza, quatro mapas de listas de timelines, dois mapas de índices de cache, getters, deduplicação por identidade, ordem de reciclagem e estado parcial em falha. JSArray e JSMap extraídos de AnimationConfig/TextureAtlasData compartilham comprimento lógico e ordem própria JS, mantendo tabelas/identidades. Essas duas suítes de regressão passaram nas duas VMs após a extração.
+
+Execuções finais locais por VM Lua 5.4.8/LuaJIT: **39 cenários, 1.084 operações e 11.924 colunas**, sem tolerância (binary64, NaN canonicalizado). Comparados todos os campos declarados, identidades de mapas/listas, valores/length de arrays esparsos, pools/flags/avisos, retorno/categoria de erro, callbacks de devolução, ordem/erros de leitura de parent e efeitos parciais. Cinco sequências determinísticas de 100 operações complementam os casos dirigidos.
+
+Peculiaridade original preservada: cacheFrames usa this.cacheFrames.length, a aridade 1 da função, e escreve false apenas na posição JS 0. Mesmo se cacheFrameCount=0, essa escrita cresce cachedFrames para length=1, enquanto os índices dos bones/slots ficam vazios. Mutação temporária restaurando o clamp do backup falhou; == no lugar de rawequal também foi rejeitado. Código restaurado e testes finais refeitos. Um novo caso raw new revelou erro Lua precoce antes de o original gravar NaN e lançar RangeError; adaptados somente os números sem inicialização e a propagação de NaN de Math.max.
+
+Limites: parent é registro de contrato no teste, não ArmatureData real; não valida sortBones, cache de transformações, animação/playback ou GPU. Mapas não emulam Object.prototype; holes/undefined normalizam por valor/length, referências null/undefined por nil; descritores, proxies e modificação da aridade da função não são equivalência declarada. Precisão temporal automática real continua pendente. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #70, código 2b612757c2bfee0011db97cc3abea1a7de19625d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41650945111 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram oito suítes passed; novo lote 39 cenários/1.084 operações/11.924 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #70 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
