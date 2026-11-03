@@ -107,8 +107,8 @@
     },
     "DragonBones/src/dragonBones/model/ArmatureData.ts": {
       "destination": "dragonbones/model/ArmatureData.lua",
-      "status": "Quatro classes comparadas com AnimationData, constraints e SkinData reais; armazenamento global DragonBonesData por contrato; runtime Armature pendente",
-      "tests": "tests/armaturedata_differential.js: 34 cenários, 1.079 operações e 15.106 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Ordenação acíclica, ciclo de vida, cache de animações e dez componentes por frame comparados. Ver VALIDATION.md. Ordenação/limpeza com constraints reais em tests/constraintdata_differential.js: 23 cenários/817 operações/7.353 colunas por VM. Skin/getMesh/ownership reais em tests/skindata_differential.js: 29 cenários/814 operações/8.140 colunas por VM.",
+      "status": "Quatro classes comparadas com AnimationData, constraints e SkinData reais; armazenamento global DragonBonesData real integrado; runtime Armature pendente",
+      "tests": "tests/armaturedata_differential.js: 34 cenários, 1.079 operações e 15.106 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Ordenação acíclica, ciclo de vida, cache de animações e dez componentes por frame comparados. Ver VALIDATION.md. Ordenação/limpeza com constraints reais em tests/constraintdata_differential.js: 23 cenários/817 operações/7.353 colunas por VM. Skin/getMesh/ownership reais em tests/skindata_differential.js: 29 cenários/814 operações/8.140 colunas por VM. Integração global/cache em tests/dragonbonesdata_differential.js: 32 cenários/851 operações/11.063 colunas por VM.",
       "differences": "JSArray/JSMap para length/ordem, rawequal para identidade. Estado privado diferencia undefined/null em defaultSkin/defaultAnimation e BoneData.parent, externamente nil. Offsets de frame públicos base 0, índice validado antes de +1. Contratos remanescentes em contracts/ArmatureDataReferences.md; sem stubs de produto."
     },
     "DragonBones/src/dragonBones/model/ConstraintData.ts": {
@@ -122,6 +122,12 @@
       "status": "SkinData comparado e integrado com ArmatureData/displays/geometria/pesos/ações reais; runtime de skins/renderização pendente",
       "tests": "tests/skindata_differential.js: 29 cenários, 814 operações e 8.140 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Null explícito versus holes, ordem/mutações, parent, ownership e falhas parciais comparados. Ver VALIDATION.md.",
       "differences": "JSArray/JSMap base 1/length/ordem, SkinData.NULL por rawequal para null em listas; nil explícito no add é null e argumento omitido é undefined com erro. Map/list identity, push overflow e parent assignment order preservados. Uso de listas em contracts/SkinDataLists.md; sem emulação genérica de proxies/descritores."
+    },
+    "DragonBones/src/dragonBones/model/DragonBonesData.ts": {
+      "destination": "dragonbones/model/DragonBonesData.lua",
+      "status": "Modelo global integrado com ArmatureData/SkinData/displays/pesos/AnimationData e cache reais; parser e typed views completos pendentes",
+      "tests": "tests/dragonbonesdata_differential.js: 32 cenários, 851 operações e 11.063 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Ownership/falhas parciais, aliases, buffers por referência e cache com modelos reais. Ver VALIDATION.md.",
+      "differences": "JSArray base 1/length e JSMap em ordem JS; referências null/undefined normalizadas nil. Buffers são referências não proprietárias, sem cópia/decodificação. Teste fornece arrays já decodificados para leitura GeometryData; não implementa ArrayBuffer/typed views nem parser. Ver contracts/DragonBonesDataStorage.md."
     }
   }
 }

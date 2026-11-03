@@ -147,3 +147,8 @@ Referências null/undefined representam nil; holes/undefined comparam por valor 
 - O marcador é truthy no Lua. APIs consumidoras futuras das listas precisam testar rawequal(value,SkinData.NULL); não basta if value. Operações públicas e exemplo em contracts/SkinDataLists.md. Escritas nil em listas representam undefined/hole; para null explícito usar o marcador. Não modificar marcador ou burlar metadados com rawset indiscriminado.
 
 A nova suíte usa ArmatureData/SkinData/displays/GeometryData/WeightData/ActionData/UserData reais, sem registro substituindo skin. Setters/hooks são infraestrutura de observação em instâncias reais. Isso não é runtime de skins, renderização, hit testing ou playback. Object.prototype/proxies/descritores/coerções arbitrárias e buffers binários ainda não são equivalência declarada.
+
+
+## DragonBonesData
+
+Porta o contêiner global com JSArray base 1/length e JSMap em ordem própria de JS. Offsets de cache públicos continuam base 0 em ArmatureData. Retém referências a binary e sete views sem copiar/decodificar; _onClear apenas as remove, como TS. Não traz setBinaryBuffer/_binaryBuffer do backup: eles pertenciam à adaptação anterior de buffers/parser, não à classe upstream. A representação compartilhada de ArrayBuffer/typed arrays será implementada na fronteira binária, sem declarar equivalência por referências isoladas. stage não é proprietário; armaduras e userData são devolvidos na ordem original. parent/name/mapa/push mantêm leitura tardia e falhas parciais. Null/undefined de refs normalizam nil; arrays numéricos preservam length, holes por valor e extras, sem emulação genérica de descritores/proxies/Object.prototype.

@@ -391,3 +391,18 @@ Artefatos regeneráveis: skindata-cases.tsv, skindata-original.tsv e saídas/JSO
 
 
 Checkpoint remoto: PR #74, código c5e6490abc9e67b7a9fafb94c5838944b047bbc3. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41680927368 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs confirmaram doze suítes passed em ambas as VMs; SkinData: 29 cenários/814 operações/8.140 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #74 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+
+## DragonBonesData — contêiner global real
+
+Oráculo executa o emit genuíno de DragonBonesData junto de BaseObject, Point/Rectangle/Matrix/Transform/ColorTransform, UserData, DisplayData, AnimationData, ArmatureData e SkinData do commit fixado (12 arquivos). Não usa armazenamento global fictício. Lua usa as classes de produto reais; callbacks/setters só instrumentam instâncias nos testes.
+
+Resultado final em **Lua 5.4 e LuaJIT: 32 cenários, 851 operações, 11.063 colunas; passed**, tolerância zero, bytes binary64 com NaN canonicalizado. Cada operação compara retorno/categoria de erro, campos públicos, identidade/conteúdo/length dos três arrays e do mapa, buffers e aliases, pais/stage/userData, armaduras/skins/displays/geometria/pesos/animações reais, cache de dez componentes, pool/flags/limites/ordem, avisos e callbacks. Cinco sequências determinísticas de 80 operações complementam os casos dirigidos.
+
+Casos: new versus borrow, defaults, reuso, clear repetido, duplicatas (sem setter de parent), parent compartilhado sem detach, nome alterado/falha no setter antes de mapa e push, mapa com chaves numéricas/reinserção/aliases, callback que deleta chave futura ou adiciona chave que sobrevive ao clear/reuso, falha em armadura/userData e cadeia de falha peso→display→skin→armadura→global seguida de retry. stage não é devolvido. Arrays esparsos com length 2^32−1 são limpos preservando identidade e propriedades extras; push no limite deixa parent/mapa/propriedade não índice antes de RangeError. Cache real com prefixo esparso, offsets públicos zero-based e leituras fracionárias/negativas, NaN/infinitos/zero assinado/subnormal. AnimationData real recebe cache através da armadura global.
+
+Buffers: todos os oito campos são ligados por referência, incluindo alias entre views; clear remove referências sem alterar payload externo. O oráculo usa ArrayBuffer/Int16Array/Float32Array/Uint16Array genuínos. No Lua, o teste fornece valores já decodificados base 1 (fronteira, não classe de produto substituta), usados por GeometryData para contar vértices/triângulos; não testa coerção/alinhamento/endianness/mutação compartilhada de typed views ou parsing. Descritores/proxies/coerções genéricas JS e Object.prototype dos mapas ficam fora da equivalência declarada; refs null/undefined normalizam nil.
+
+Experimentos reversíveis executados: substituir armatureNames no clear foi rejeitado na linha 7; inserir mapa antes do setter parent foi rejeitado na linha 100. Código restaurado e execuções finais repetidas nas duas VMs. Erros observados no oráculo foram auditados: setter, overflow e três falhas injetadas de retorno; nenhum comando desconhecido mascarado como erro.
+
+Artefatos regeneráveis: dragonbonesdata-cases.tsv, dragonbonesdata-original.tsv, saídas e JSON por VM. CI executa as treze suítes e preserva evidências. Consultar PR do checkpoint para CI remota/merge no SHA publicado; testes de modelo não comprovam parser/solver/playback/GPU ou precisão temporal automática real.
