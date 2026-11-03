@@ -1,0 +1,6 @@
+{
+  "name": "bono-lua-port-audit",
+  "private": true,
+  "scripts": {"inventory": "node tools/inventory.js"},
+  "devDependencies": {"typescript": "2.4.2"}
+}

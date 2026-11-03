@@ -1,0 +1,38 @@
+name: Pinned upstream inventory
+on:
+  push:
+    branches: [rebuild/integral-20261103]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Bono-Lua
+      - uses: actions/checkout@v4
+        with:
+          repository: DragonBones/DragonBonesJS
+          ref: 64b6c69ae35777c2404be68c9192e2c56906079e
+          path: DragonBonesJS
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install audit parser
+        working-directory: Bono-Lua
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Reproduce exact inventory from pinned Git blobs
+        working-directory: Bono-Lua
+        run: |
+          mkdir -p artifacts
+          node tools/inventory.js ../DragonBonesJS --check | tee artifacts/inventory-result.json
+      - name: Preserve structural audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-inventory-evidence
+          path: Bono-Lua/artifacts/inventory-result.json
+          if-no-files-found: error
