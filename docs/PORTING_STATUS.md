@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-skin-data`, sobre `main@2e25e30`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-dragonbones-data`, sobre `main@0a156d2`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -212,3 +212,12 @@ Limites: esta integração não implementa seleção/renderização de skin no r
 
 
 Checkpoint remoto: PR #74, código c5e6490abc9e67b7a9fafb94c5838944b047bbc3. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41680927368 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs confirmaram doze suítes passed em ambas as VMs; SkinData: 29 cenários/814 operações/8.140 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #74 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+
+## DragonBonesData — integração do contêiner global
+
+Fonte TS completa e Lua do backup original/model/DragonBonesData.lua lidos. Implementação em dragonbones/model/DragonBonesData.lua usa BaseObject/JSArray/JSMap reais. Construtor não antecipa os defaults de _onClear; arrays/mapa mantêm identidade no clear/reuso. Armaduras são proprietárias, stage é só referência e userData é devolvido após o mapa de armaduras. addArmature verifica duplicata antes de parent, relê name depois do setter e grava mapa antes do push, inclusive estado parcial no overflow.
+
+Comparação com TS genuíno em Lua 5.4 e LuaJIT: **32 cenários, 851 operações e 11.063 colunas por VM**, tolerância zero, binary64/NaN canonicalizado. Modelos reais cobrem cadeia DragonBonesData→ArmatureData→SkinData→MeshDisplayData→WeightData, falha/retry, leitura de GeometryData.intArray e cache set/get com Matrix/Transform. AnimationData real integrado. Buffers/views de JS são reais no oráculo; valores já decodificados são fornecidos à fronteira Lua pelo teste. Não é implementação de typed arrays/ArrayBuffer, parser, playback ou renderização.
+
+Treze suítes na CI; consultar o PR deste checkpoint para SHA final, CI e merge confirmados. Próxima unidade: BoundingBoxData.ts; depois fronteiras binárias/parsers, mantendo o runtime e integrações gráficas explicitamente pendentes.

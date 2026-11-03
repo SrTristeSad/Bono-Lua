@@ -21,9 +21,10 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/AnimationConfig.ts | dragonbones/model/AnimationConfig.lua | Defaults, cópia, máscaras esparsas/aliases e pool comparados; consumo por Animation/AnimationState pendente |
 | DragonBones/src/dragonBones/model/AnimationData.ts (três classes) | dragonbones/model/AnimationData.lua | Dados/cache/timelines comparados; integração com ArmatureData/BoneData/SurfaceData/SlotData reais aprovada nos cenários, playback pendente |
 | DragonBones/src/dragonBones/model/DisplayData.ts (oito classes) | dragonbones/model/DisplayData.lua | Dados/geometria/pesos e ciclo de vida comparados; referências externas por contrato, sem backend gráfico |
-| DragonBones/src/dragonBones/model/ArmatureData.ts (quatro classes) | dragonbones/model/ArmatureData.lua | Ordenação/ciclo de vida/cache comparados com AnimationData e constraints reais; skin integrada; armazenamento global por contrato |
+| DragonBones/src/dragonBones/model/ArmatureData.ts (quatro classes) | dragonbones/model/ArmatureData.lua | Ordenação/ciclo de vida/cache comparados com AnimationData e constraints reais; skin integrada; armazenamento global DragonBonesData real integrado |
 | DragonBones/src/dragonBones/model/ConstraintData.ts (três classes) | dragonbones/model/ConstraintData.lua | Base abstrata/IK/Path data, pool e integração com armadura comparados; solver de runtime pendente |
 | DragonBones/src/dragonBones/model/SkinData.ts | dragonbones/model/SkinData.lua | Mapa/listas nullable, ownership e integração com ArmatureData/displays reais comparados; runtime/renderização pendentes |
+| DragonBones/src/dragonBones/model/DragonBonesData.ts | dragonbones/model/DragonBonesData.lua | Coleções/ownership e cache real comparados; buffers por referência, parser/typed views pendentes |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

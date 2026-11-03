@@ -112,3 +112,8 @@ Confirmados main 2e25e30, PR #73/CI pós-merge 41677323508, backup cd4206a8 e fo
 Mantidos parent antes do push e leitura tardia da lista, ownership duplicado/compartilhado e novas chaves sobrevivendo à enumeração/retorno ao pool no comportamento do original executado. Experimentos com ipairs e omissão tratada como null foram rejeitados nas linhas 65/77; produto restaurado e testes finais refeitos sem alterar expectativas/tolerâncias. Nenhuma reparação extra de referências nem filtro de tipo em getMesh.
 
 A nova suíte substitui a fronteira de skin por modelos reais, incluindo cadeia de falha peso/display/skin/armadura e ações/UserData. Consumidores futuros precisam reconhecer SkinData.NULL explicitamente; instrução registrada para manter a representação. DragonBonesData será a próxima unidade para remover a fronteira de armazenamento global.
+
+
+## Contêiner DragonBonesData
+
+Lidos TS integral fixado e Lua integral do backup em dragonbones/original/model/DragonBonesData.lua. Mantida API original, sem introduzir setter de buffer ausente no TS. Arrays públicos usam o adaptador lógico existente; mapa usa ordenação existente, substituindo pairs do backup. A suíte executa DragonBonesData real com cadeia real de ownership e cache; referências a buffers são não proprietárias e o teste marca explicitamente a fronteira já decodificada, sem fabricar parser ou typed views. Experimentos de substituir armatureNames e antecipar inserção no mapa falharam; produto restaurado e suíte final refeita em ambas VMs. Próxima unidade: BoundingBoxData, sem alterar decisões de runtime/renderização.

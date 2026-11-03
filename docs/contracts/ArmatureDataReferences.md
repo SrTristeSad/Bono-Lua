@@ -1,5 +1,7 @@
 # Fronteiras remanescentes de ArmatureData
 
+Atualização global: dragonbonesdata_differential exercita DragonBonesData real com ArmatureData/SkinData/displays/pesos reais, armazenamento de dez componentes e AnimationData. Os registros da suíte isolada antiga são históricos. Parser/typed buffers e runtime continuam pendentes.
+
 Atualização de SkinData: a suíte skindata_differential agora usa SkinData/displays reais em ArmatureData.addSkin/getMesh/_onClear. Os registros de skin da suíte isolada antiga permanecem apenas nessa prova anterior; a fronteira global DragonBonesData ainda está pendente.
 
 Atualização: constraintdata_differential agora exercita ArmatureData com IKConstraintData/PathConstraintData reais, além de bones/slots/path display reais. A suíte armaturedata isolada abaixo mantém seus registros anteriores; SkinData e DragonBonesData continuam como fronteiras, e os solvers de runtime estão pendentes.
