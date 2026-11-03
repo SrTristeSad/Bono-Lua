@@ -52,3 +52,5 @@ done
 ```
 
 O checkout ../DragonBonesJS precisa estar no commit fixado. Consultar o PR do checkpoint para o SHA final e a CI pós-merge, sem confiar em memória da conversa.
+
+Checkpoint remoto: PR #68, código 856b37a49ea10da7f4b43ba76da63c99dcb1a09a. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41634841014 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs de ambos os jobs confirmaram seis suítes passed, incluindo 25 cenários/1.147 operações/16.058 colunas/98 enums no lote de eventos; três artefatos publicados no mesmo SHA. Consultar PR #68 para SHA final, merge e CI pós-merge; este registro não antecipa merge.

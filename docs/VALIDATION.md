@@ -230,4 +230,6 @@ Falha observada: getInt u 5e-324 retornava binary64 -0 (primeiro elemento) em ve
 
 Probes de Armature/dispatcher/animatable só implementam fronteiras ainda não portadas e falhas programadas. O núcleo, pool, relógio, eventos e os dois modelos são reais nos dois lados. Não é validação de Armature, listener registry, áudio/GPU, shims de plataforma JS ou precisão temporal automática real.
 
-Artefatos regenerados: events-cases.tsv, events-original.tsv, events-enums-original.tsv e saídas/valores de enums/JSON por VM. CI executa as seis suítes e publica evidências. CI remota/PR/merge deste checkpoint ainda devem ser confirmados no SHA publicado.
+Artefatos regenerados: events-cases.tsv, events-original.tsv, events-enums-original.tsv e saídas/valores de enums/JSON por VM. CI executa as seis suítes e publica evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #68, código 856b37a49ea10da7f4b43ba76da63c99dcb1a09a. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41634841014 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs de ambos os jobs confirmaram seis suítes passed, incluindo 25 cenários/1.147 operações/16.058 colunas/98 enums no lote de eventos; três artefatos publicados no mesmo SHA. Consultar PR #68 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
