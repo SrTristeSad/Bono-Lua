@@ -80,6 +80,78 @@ function ObjectDataParser.new()
   return self
 end
 
+
+-- Original ObjectDataParser.ts: cubic Bezier point and easing-curve sampling.
+-- Curve indices below are the zero-based DragonBonesJS indices; V.at maps
+-- decoded arrays to Lua's one-based storage without changing the algorithm.
+function ObjectDataParser:_getCurvePoint(x1,y1,x2,y2,x3,y3,x4,y4,t,result)
+  local l_t=1.0-t
+  local powA=l_t*l_t
+  local powB=t*t
+  local kA=l_t*powA
+  local kB=3.0*t*powA
+  local kC=3.0*l_t*powB
+  local kD=t*powB
+  result.x=kA*x1+kB*x2+kC*x3+kD*x4
+  result.y=kA*y1+kB*y2+kC*y3+kD*y4
+end
+
+function ObjectDataParser:_samplingEasingCurve(curve,samples)
+  local curveCount=V.number(V.get(curve,'length'))
+  local sampleCount=samples.length
+  local function numberAt(index) return V.number(V.at(curve,index)) end
+  if curveCount%3==1 then
+    local stepIndex=-2
+    for i=0,sampleCount-1 do
+      local t=(i+1)/(sampleCount+1)
+      while (stepIndex+6<curveCount and numberAt(stepIndex+6) or 1)<t do
+        stepIndex=stepIndex+6
+      end
+      local isInCurve=stepIndex>=0 and stepIndex+6<curveCount
+      local x1=isInCurve and numberAt(stepIndex) or 0.0
+      local y1=isInCurve and numberAt(stepIndex+1) or 0.0
+      local x2=numberAt(stepIndex+2)
+      local y2=numberAt(stepIndex+3)
+      local x3=numberAt(stepIndex+4)
+      local y3=numberAt(stepIndex+5)
+      local x4=isInCurve and numberAt(stepIndex+6) or 1.0
+      local y4=isInCurve and numberAt(stepIndex+7) or 1.0
+      local lower,higher=0.0,1.0
+      while higher-lower>0.0001 do
+        local percentage=(higher+lower)*0.5
+        self:_getCurvePoint(x1,y1,x2,y2,x3,y3,x4,y4,percentage,self._helpPoint)
+        if t-self._helpPoint.x>0.0 then lower=percentage
+        else higher=percentage end
+      end
+      samples[i+1]=self._helpPoint.y
+    end
+    return true
+  else
+    local stepIndex=0
+    for i=0,sampleCount-1 do
+      local t=(i+1)/(sampleCount+1)
+      while numberAt(stepIndex+6)<t do stepIndex=stepIndex+6 end
+      local x1=numberAt(stepIndex)
+      local y1=numberAt(stepIndex+1)
+      local x2=numberAt(stepIndex+2)
+      local y2=numberAt(stepIndex+3)
+      local x3=numberAt(stepIndex+4)
+      local y3=numberAt(stepIndex+5)
+      local x4=numberAt(stepIndex+6)
+      local y4=numberAt(stepIndex+7)
+      local lower,higher=0.0,1.0
+      while higher-lower>0.0001 do
+        local percentage=(higher+lower)*0.5
+        self:_getCurvePoint(x1,y1,x2,y2,x3,y3,x4,y4,percentage,self._helpPoint)
+        if t-self._helpPoint.x>0.0 then lower=percentage
+        else higher=percentage end
+      end
+      samples[i+1]=self._helpPoint.y
+    end
+    return false
+  end
+end
+
 function ObjectDataParser:parseTextureAtlasData(...)
  local raw,atlas,scale=...
  if select('#',...)==0 then raw=V.UNDEFINED end
