@@ -338,3 +338,28 @@ Limites: ConstraintData/SkinData/DragonBonesData são registros de fronteira som
 Artefatos regeneráveis: armaturedata-cases.tsv, armaturedata-original.tsv e saídas/JSON por VM. CI executa as dez suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #72, código 5e77b9bf9454c3ea3e0b52190e8025adc252cea9. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41672562343 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram dez suítes passed; novo lote 34 cenários/1.079 operações/15.106 colunas, incluindo cache com ArmatureData/BoneData/SurfaceData/SlotData reais. Três artefatos conferidos no mesmo SHA. Consultar PR #72 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## ConstraintData/IKConstraintData/PathConstraintData
+
+ConstraintData.ts completo e Lua real do backup lidos. Oráculo compila namespace genuíno e executa os arquivos emitidos de BaseObject, Point/Rectangle/Matrix/Transform/ColorTransform, UserData, DisplayData, AnimationData, ArmatureData e ConstraintData. Todos os modelos instanciados na suíte são reais; nenhum registro substitui constraint, bone/slot ou path display.
+
+Execuções finais reais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/constraintdata_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/constraintdata_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**23 cenários, 817 operações e 7.353 colunas por VM; passed.** Tolerância zero, binary64/NaN canonicalizado. Depois de cada operação: retorno/erro, todos os campos declarados das três classes, refs/identidades/listas/length, propriedade não índice no overflow, extras, pool/hash/flags/LIFO/limites/avisos, chamadas/hooks e estado parcial. Colunas agregam campos, não são porcentagem de equivalência.
+
+Cobertura: base abstrata sem chave concreta, raw new versus borrow e defaults, herança e ordem de limpeza, Path.type mantendo IK como a fonte, modos/valores, AddBone exato versus addBone inexistente, duplicatas, lista esparsa, aliases e limpeza preservando identidade/propriedades extras. Números extremos, NaN/infinitos/subnormais/zeros assinados nos campos, comprimentos inválidos e limite uint32: push escreve a propriedade não índice antes de RangeError e ela permanece após clear. Cinco sequências determinísticas de 80 operações.
+
+Propriedade: root/target/bone, pathSlot/pathDisplayData e lista de bones não são devolvidos/resetados. Referidos reais permanecem intactos e hooks que lançariam erro se fossem devolvidos continuam pendentes, inclusive GeometryData/WeightData do PathDisplayData. Integração com ArmatureData.sortBones/_onClear, root/target reais, retorno das duas classes de constraint, aviso de nome duplicado e falha de retorno com estado parcial/retry. Grafos acíclicos e timeout externo 10s só na infraestrutura.
+
+Experimentos reversíveis: acrescentar type=ConstraintType.Path após super._onClear foi rejeitado em row 30 clear raw; remover a definição final do novo length de AddBone foi rejeitado em row 107 append p bone (esperado RangeError, obtido void). Produto restaurado e comandos finais refeitos em Lua 5.4/LuaJIT, sem relaxar expectativas.
+
+Limites: não executa IKConstraint/PathConstraint ou qualquer solver de runtime, deformação, parsing/playback/GPU ou tempo automático real. SkinData/DragonBonesData reais seguem pendentes em outras fronteiras. Null/undefined de refs para nil; holes/undefined por valor/length, sem descritores/proxies/coerções genéricas de JS.
+
+Artefatos regeneráveis: constraintdata-cases.tsv, constraintdata-original.tsv e saídas/JSON por VM. CI executa as onze suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #73, código db0c8806dfb903427ff51c47cfae58733571a391. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41676866452 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram onze suítes passed; novo lote 23 cenários/817 operações/7.353 colunas com integração de constraints reais. Três artefatos conferidos no mesmo SHA. Consultar PR #73 para SHA final, merge e CI pós-merge; este registro não antecipa merge.

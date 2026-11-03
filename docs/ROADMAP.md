@@ -5,7 +5,7 @@
 | 00 | Backup remoto e reconstrução isolada | Concluída |
 | 01 | Inventário integral, contratos e dependências | Arquivos, contratos declarados e dependências estáticas catalogados; fronteiras externas registradas |
 | 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Cinco classes implementadas e comparadas isoladamente; integração e auditoria exaustiva pendentes |
-| 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, núcleo DragonBones/enums, UserData/ActionData, AnimationConfig, AnimationData/TimelineData/AnimationTimelineData, ArmatureData/BoneData/SurfaceData/SlotData e dados de Canvas/atlas/textura/display/geometria/pesos comparados; cache AnimationData integrado com modelos reais; skins/constraints/armazenamento global ainda por contrato |
+| 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, núcleo DragonBones/enums, UserData/ActionData, AnimationConfig, AnimationData/TimelineData/AnimationTimelineData, ArmatureData/BoneData/SurfaceData/SlotData e dados de Canvas/atlas/textura/display/geometria/pesos comparados; cache AnimationData integrado com modelos reais; ConstraintData/IKConstraintData/PathConstraintData comparados com integração real; skins/armazenamento global ainda por contrato |
 | 04 | Parsers JSON/DBDT | Pendente |
 | 05 | Armature, Bone, Slot, Surface, TransformObject | Pendente |
 | 06 | IKConstraint e PathConstraint | Pendente |

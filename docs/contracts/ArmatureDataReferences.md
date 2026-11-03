@@ -1,5 +1,7 @@
 # Fronteiras remanescentes de ArmatureData
 
+Atualização: constraintdata_differential agora exercita ArmatureData com IKConstraintData/PathConstraintData reais, além de bones/slots/path display reais. A suíte armaturedata isolada abaixo mantém seus registros anteriores; SkinData e DragonBonesData continuam como fronteiras, e os solvers de runtime estão pendentes.
+
 Fonte: model/ArmatureData.ts em DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. As quatro classes desse arquivo são código de produto; esta tabela identifica referências externas ainda exercitadas por contratos, sem substituí-las por classes fictícias.
 
 | Referência | Uso no algoritmo | Limite atual |

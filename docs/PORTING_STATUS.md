@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-armature-data`, sobre `main@13ae3b1`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-constraint-data`, sobre `main@57e7d48`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: ConstraintData.ts e seus três modelos, após leitura do Lua real do backup; depois SkinData/DragonBonesData para substituir as fronteiras remanescentes por integração real. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: SkinData.ts após leitura do Lua real, preservando null explícito versus hole em listas; depois DragonBonesData para completar o armazenamento global real. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -166,7 +166,7 @@ Fronteiras: SkinData/ArmatureData/BoneData/DragonBonesData e BoundingBoxData ain
 
 Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
 
-## Unidade atual: ArmatureData, BoneData, SurfaceData e SlotData
+## Unidade anterior: ArmatureData, BoneData, SurfaceData e SlotData
 
 Base main 13ae3b1be3ed91e57a7215c01dd782d5b1df9b50, PR #71/CI pós-merge 41664512405 aprovados, backup cd4206a8 e fonte limpa/fixada conferidos. Relidos ArmatureData.ts completo e Lua real do backup; lidos também ConstraintData/SkinData/DragonBonesData TS para delimitar fronteiras. Destino dragonbones/model/ArmatureData.lua, quatro classes com BaseObject/Enums, Rectangle/Transform/ColorTransform e GeometryData reais.
 
@@ -181,3 +181,17 @@ Experimentos reversíveis: trocar as condições de null por leitura ==nil foi r
 Limites: ConstraintData/SkinData/DragonBonesData reais ainda não portados; contratos remanescentes em contracts/ArmatureDataReferences.md. Cache integrado de modelos não prova runtime Armature, solver, playback, parsing/binário, GPU ou precisão temporal automática. Mapas não emulam Object.prototype; referências null/undefined normalizam nil externamente, decisões estritas específicas mantêm estado privado; holes/undefined por valor/length, sem descritores/proxies/reflexão genérica. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #72, código 5e77b9bf9454c3ea3e0b52190e8025adc252cea9. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41672562343 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram dez suítes passed; novo lote 34 cenários/1.079 operações/15.106 colunas, incluindo cache com ArmatureData/BoneData/SurfaceData/SlotData reais. Três artefatos conferidos no mesmo SHA. Consultar PR #72 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: ConstraintData, IKConstraintData e PathConstraintData
+
+Base main 57e7d48dc2c1e47cccc0fbd07db0b32297017c60, PR #72/CI pós-merge 41673223815 aprovados, backup cd4206a8 e fonte limpa/fixada conferidos. Lidos ConstraintData.ts completo e Lua real do backup; dependências executáveis BaseObject/Enums/JSArray disponíveis. Destino dragonbones/model/ConstraintData.lua, base abstrata e dois modelos concretos, sem criar solver de runtime.
+
+Preservados construtores sem defaults antecipados (Path só cria bones), ordem de limpeza da base/herança e chaves toString/pool. A limpeza de Path mantém type=ConstraintType.IK definido pela base, como a fonte, sem atribuir Path. AddBone conserva a capitalização, duplicatas, comprimento lógico e referências não proprietárias; lista, root/target/bone, pathSlot e pathDisplayData não devolvem modelos referidos. Append preserva os passos de push, incluindo propriedade não índice escrita antes de RangeError ao ultrapassar 2^32-1, e sua sobrevivência à limpeza do comprimento.
+
+Execuções finais locais em Lua 5.4.8/LuaJIT: **23 cenários, 817 operações, 7.353 colunas por VM**, sem tolerância (binary64, NaN canonicalizado). Todos os campos das três classes, defaults, aliases/identidades, length/entradas/propriedade não índice, hooks, pools/flags/avisos, erros e efeitos parciais comparados. Cinco sequências determinísticas de 80 operações complementam casos dirigidos.
+
+Integração: ArmatureData.sortBones e _onClear usam IKConstraintData e PathConstraintData reais com BoneData/SurfaceData/SlotData/PathDisplayData reais. Não há registro de constraint substituindo classes nesta suíte. Preservados avisos de duplicata, falha de retorno e ordenação acíclica. Experimentos adicionando reset de type=Path e removendo o passo final de length de push foram rejeitados nas linhas 30/107; código restaurado e testes finais refeitos nas duas VMs.
+
+Limites: são modelos de dados, não IKConstraint/PathConstraint executáveis ou deformação/playback. SkinData/DragonBonesData/Buffers/BoundingBoxData reais continuam pendentes, além do runtime/renderização e precisão temporal automática. Referências null/undefined normalizam nil; holes/undefined por valor/length; descritores/proxies/Array.prototype e reflexões genéricas não são equivalência declarada. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #73, código db0c8806dfb903427ff51c47cfae58733571a391. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41676866452 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram onze suítes passed; novo lote 23 cenários/817 operações/7.353 colunas com integração de constraints reais. Três artefatos conferidos no mesmo SHA. Consultar PR #73 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
