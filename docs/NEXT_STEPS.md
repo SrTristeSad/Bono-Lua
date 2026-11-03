@@ -10,7 +10,7 @@ Reconstruir o DragonBonesJS oficial em Lua com equivalência funcional integral 
 - Branch de trabalho: `rebuild/integral-20261103`; PR #63 em rascunho, sem merge.
 - Main e backup `backup/pre-integral-rebuild-20261103`: `cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb`.
 - Upstream: `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Para o checkpoint desta unidade, consultar o HEAD remoto e o PR #63 após a publicação; nunca inventar SHA futuro.
+- Checkpoint de código desta unidade confirmado no GitHub: `52ad145e74cb22f1d1bce38495e50d68bf2595a3`. [CI 41578753235](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41578753235) aprovada nos três jobs; conferir também o HEAD remoto para commits documentais posteriores.
 
 ## Trabalho atual
 

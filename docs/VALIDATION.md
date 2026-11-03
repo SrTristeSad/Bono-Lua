@@ -68,7 +68,7 @@ node tests/geom_differential.js ../DragonBonesJS lua5.4
 node tests/geom_differential.js ../DragonBonesJS luajit
 ```
 
-CI desta unidade: confirmar o SHA final e os jobs no PR #63 antes de afirmar aprovação. Os resultados acima são execuções locais reais. Testes de animação, parsers, armaduras e GPU continuam pendentes nesta branch.
+Os resultados acima são execuções locais reais. A CI confirmada abaixo repetiu as comparações em suas próprias VMs. Testes de animação, parsers, armaduras e GPU continuam pendentes nesta branch.
 
 ### Revisão do inventário nesta unidade
 
@@ -77,3 +77,14 @@ Contagens atuais: **1.203 arquivos, 192 unidades autorais TS/JS, 241 classes dec
 A análise não executou plugins, scripts de download nem geradores de package.json do upstream.
 
 Verificações finais locais da unidade: `node --check` dos dois geradores e do oráculo sem erros; `git diff --check` sem erros; `node tools/inventory.js ../DragonBonesJS --check` reproduziu 1.203/192/241; `node tools/dependencies.js ../DragonBonesJS --check` reproduziu 175 TS, 17 JS, 17 contextos e cinco entradas externas ausentes. Comandos de análise executados com NODE_PATH=../tooling/node_modules para o compilador fixado, equivalente ao npm ci da CI.
+
+### CI confirmada do primeiro lote
+
+- Código publicado: `52ad145e74cb22f1d1bce38495e50d68bf2595a3`; [PR #63](https://github.com/SrTristeSad/Bono-Lua/pull/63), rascunho sem merge.
+- [Execução 41578753235](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41578753235): concluída com sucesso.
+- `inventory`: job 125728353186 aprovado.
+- `geometry (lua5.4)`: job 125728352982 aprovado; log confirmou Lua 5.4.6, 1.384 operações, 8.288 campos, tolerância zero e resultado passed.
+- `geometry (luajit)`: job 125728352830 aprovado; log confirmou LuaJIT 2.1.1703358377 com as mesmas contagens e resultado passed.
+- Artefatos publicados e não expirados na consulta: geometry-differential-lua5.4 (13205072006), geometry-differential-luajit (13204038196), pinned-inventory-evidence (13205002243), todos associados ao mesmo head_sha.
+
+As versões da CI diferem das compiladas localmente; ambas as execuções locais e ambas as execuções CI passaram. Nenhum resultado de GPU ou equivalência integral é inferido desses jobs.

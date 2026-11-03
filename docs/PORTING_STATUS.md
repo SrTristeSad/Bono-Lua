@@ -54,3 +54,10 @@ Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PO
 ## Histórico anterior
 
 O backup contém o porte e os testes acumulados até a etapa antiga 61. Resultados antigos não são automaticamente atribuídos à reconstrução atual. Reaproveitar cada módulo exige ler o original, o Lua real e executar testes novamente.
+
+## Checkpoint do primeiro lote confirmado no GitHub
+
+Commit de código: `52ad145e74cb22f1d1bce38495e50d68bf2595a3`. PR #63 permanece em rascunho, sem merge.
+[CI 41578753235](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41578753235) aprovada: `inventory`, `geometry (lua5.4)` e `geometry (luajit)`.
+Logs conferidos: Lua 5.4.6 e LuaJIT 2.1.1703358377 da CI executaram cada um 1.384 operações / 8.288 campos com tolerância zero e `result: passed`.
+Artefatos confirmados: `pinned-inventory-evidence`, `geometry-differential-lua5.4`, `geometry-differential-luajit`; todos vinculados ao mesmo SHA. Somente as três classes deste lote foram validadas.
