@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-dragonbones-data`, sobre `main@0a156d2`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-bounding-box-data`, sobre `main@84c9b07`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: DragonBonesData.ts e Lua real do backup, para substituir a fronteira de armazenamento global por modelos reais; buffers/parsers ainda precisam de auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: parser/DataParser.ts e Lua real do backup, para preparar os contratos de importação; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -221,3 +221,16 @@ Fonte TS completa e Lua do backup original/model/DragonBonesData.lua lidos. Impl
 Comparação com TS genuíno em Lua 5.4 e LuaJIT: **32 cenários, 851 operações e 11.063 colunas por VM**, tolerância zero, binary64/NaN canonicalizado. Modelos reais cobrem cadeia DragonBonesData→ArmatureData→SkinData→MeshDisplayData→WeightData, falha/retry, leitura de GeometryData.intArray e cache set/get com Matrix/Transform. AnimationData real integrado. Buffers/views de JS são reais no oráculo; valores já decodificados são fornecidos à fronteira Lua pelo teste. Não é implementação de typed arrays/ArrayBuffer, parser, playback ou renderização.
 
 Treze suítes na CI; consultar o PR deste checkpoint para SHA final, CI e merge confirmados. Próxima unidade: BoundingBoxData.ts; depois fronteiras binárias/parsers, mantendo o runtime e integrações gráficas explicitamente pendentes.
+
+
+## BoundingBoxData — formas e consultas locais
+
+Base main 84c9b07c761da1123f0440010a3ec0615e1709a5, PR #75/CI pós-merge 41684809994 aprovados e backup cd4206a8 conferido. Lidos BoundingBoxData.ts completo e Lua integral original/model/BoundingBoxData.lua do backup. Destino dragonbones/model/BoundingBoxData.lua: BoundingBoxData abstrata, RectangleBoundingBoxData, EllipseBoundingBoxData e PolygonBoundingBoxData; outcodes e todos os métodos estáticos/de instância preservados.
+
+Resultado por VM Lua 5.4/LuaJIT: **125 cenários, 3.616 operações e 57.856 colunas**. Resultados exatos por bytes binary64/NaN canonicalizado, sinal do zero exato; somente normais não nulas derivadas de atan2 (inclusive aliases/valores preservados) admitem 8*epsilon*max(1,abs(expected)), com 300 comparações aproximadas por VM. Contagens, booleans, campos de modelos e componentes sem procedência de normal não recebem tolerância.
+
+Preservadas peculiaridades upstream: pointB.y=xB quando endpoint A está dentro do retângulo; nome estático EllipseData; elipse escreve normais de duas interseções somente dentro das branches dos outputs correspondentes; polígonos perturbam segmentos/arestas e param na primeira interseção se pointB ausente; containsPoint compara pX/pY com width/height, enquanto broad phase usa x+width/y+height. Nenhuma correção geométrica própria. Agrupamento pY*(widthH/heightH) segue TS, corrigindo a ordem aritmética do backup.
+
+Vertices usa JSArray lógico base 1/length; clear preserva identidade/extras e trata holes/length ímpar conforme aritmética undefined→NaN. Defaults não antecipados em new. Integração real DragonBonesData→ArmatureData→SkinData→BoundingBoxDisplayData→bounding box com falha/retry e pool. Falhas de setters dos outputs preservam escrita parcial/ordem, sem alterar receptor. Testes de mutação rejeitaram trocar a coordenada peculiar do retângulo e contar todas as interseções do polígono quando pointB está ausente; produto restaurado e testes finais refeitos.
+
+Quatorze suítes na CI; consultar PR do checkpoint para SHA/CI/merge confirmados. Não implementa Slot/transformações de hit testing do runtime, parser, typed buffers, solver, playback ou renderização/GPU. Próxima unidade: DataParser.ts e contratos básicos de dados do parser, antes de ObjectDataParser/BinaryDataParser.

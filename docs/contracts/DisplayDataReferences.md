@@ -1,6 +1,6 @@
 # Referências de DisplayData
 
-Atualização: ArmatureData/BoneData/SurfaceData/SlotData agora existem e SurfaceData exercita GeometryData real na suíte armaturedata_differential. A suíte displaydata_differential mantém seus probes isolados; SkinData/DragonBonesData/BoundingBoxData reais ainda pendem.
+Atualização: ArmatureData/BoneData/SurfaceData/SlotData, SkinData, DragonBonesData e BoundingBoxData agora são modelos reais. As suítes específicas exercitam suas integrações; boundingbox_differential cobre queries locais e ownership com BoundingBoxDisplayData. A suíte displaydata_differential mantém seus probes isolados como prova anterior, sem validar runtime/renderização.
 
 Fontes: model/DisplayData.ts e declaração intArray de model/DragonBonesData.ts em DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Este documento descreve fronteiras do arquivo; não cria interfaces upstream ou classes substitutas.
 
@@ -12,7 +12,7 @@ Fontes: model/DisplayData.ts e declaração intArray de model/DragonBonesData.ts
 | ImageDisplayData.texture / MeshDisplayData.texture | TextureData, referência não proprietária apagada na limpeza |
 | ArmatureDisplayData.actions | ActionData reais, devolvidos ao pool na limpeza; podem crescer durante a iteração |
 | ArmatureDisplayData.armature | ArmatureData, referência não proprietária apagada na limpeza |
-| BoundingBoxDisplayData.boundingBox | Contrato returnToPool proprietário; BoundingBoxData real ainda pendente |
+| BoundingBoxDisplayData.boundingBox | BoundingBoxData real proprietário, devolvido na limpeza; queries locais comparadas na suíte específica |
 | WeightData.bones | Referências BoneData não proprietárias; duplicatas permitidas, lista esvaziada sem devolver bones |
 
 shareFrom copia somente isShared=true, offset e weight. Não copia data nem inheritDeform e não devolve o weight anterior do destino. Compartilhamento não implementa contagem de referências nem sincroniza a vida útil de consumidores; preservar o comportamento original.

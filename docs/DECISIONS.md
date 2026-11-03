@@ -117,3 +117,8 @@ A nova suíte substitui a fronteira de skin por modelos reais, incluindo cadeia 
 ## Contêiner DragonBonesData
 
 Lidos TS integral fixado e Lua integral do backup em dragonbones/original/model/DragonBonesData.lua. Mantida API original, sem introduzir setter de buffer ausente no TS. Arrays públicos usam o adaptador lógico existente; mapa usa ordenação existente, substituindo pairs do backup. A suíte executa DragonBonesData real com cadeia real de ownership e cache; referências a buffers são não proprietárias e o teste marca explicitamente a fronteira já decodificada, sem fabricar parser ou typed views. Experimentos de substituir armatureNames e antecipar inserção no mapa falharam; produto restaurado e suíte final refeita em ambas VMs. Próxima unidade: BoundingBoxData, sem alterar decisões de runtime/renderização.
+
+
+## Bounding boxes locais
+
+Lidos BoundingBoxData.ts integral fixado e Lua integral do backup. Reaproveitada a tradução dos algoritmos, com imports atuais, JSArray para length e adaptação undefined→NaN; corrigido somente agrupamento aritmético da tradução antiga para seguir pY*=widthH/heightH do TS. Peculiaridades matemáticas da fonte preservadas, não corrigidas. Política de comparação de atan2 declarada antes da primeira execução; procedência de valores preservados ajustada no comparador após diagnóstico sem ampliar tolerância. Suíte real integra bounding boxes a BoundingBoxDisplayData/SkinData/ArmatureData/DragonBonesData, incluindo falhas parciais. Mutantes que corrigem coordenada peculiar do retângulo e removem parada sem pointB foram rejeitados. Produto restaurado e testes finais repetidos. Próxima unidade: DataParser.ts; não confundir dados de formas locais com hit testing completo do runtime.
