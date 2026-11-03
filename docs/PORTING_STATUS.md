@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/animation-worldclock`, sobre `main@e9ed0c9`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/core-events`, sobre `main@341df09`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: auditar core/DragonBones.ts, seus enums e contratos/dependências de EventObject/UserData antes de portar a fila de eventos. Demais core/modelos e runtime integrado continuam pendentes.
+Próxima unidade: auditar AnimationConfig.ts e suas dependências reais para prosseguir nos modelos. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -95,7 +95,7 @@ O teste executa os quatro originais TS correspondentes a BaseObject, Rectangle e
 Uma divergência real do backup foi observada: pairs alterava a ordem de reciclagem/cópia e as identidades reutilizadas. O mapa público continua uma tabela; metadados privados preservam índices canônicos primeiro, demais nomes por inserção, inclusive exclusão/reinserção. Algoritmos de cópia e limpeza permanecem os originais. Nenhuma expectativa foi alterada para aceitar a falha.
 CanvasData está integrado ao pool real; atlas/textura foram comparados com pool e retângulos reais. Renderização, parsers/armaduras e contratos de backends continuam pendentes, assim como chaves herdadas de Object.prototype e reflexão arbitrária. Checkpoint de código `eef0e925c11bb80295c539b16e23654de2522b0f`, PR #66; [CI 41583478829](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41583478829) confirmada aprovada nos três jobs, com logs e artefatos conferidos. PR #66 integrado em e9ed0c9; CI pós-merge 41583759197 confirmada aprovada.
 
-## Unidade atual: WorldClock e contrato IAnimatable
+## Unidade anterior: WorldClock e contrato IAnimatable
 
 Fonte: animation/WorldClock.ts e IAnimatable.ts no commit fixado; versões reais do Lua no backup cd4206a8 e estado remoto/docs consultados. Destino executável: dragonbones/animation/WorldClock.lua. Interface sem algoritmo: docs/contracts/IAnimatable.md, sem classe Lua fictícia.
 
@@ -109,3 +109,17 @@ Duas divergências do backup foram observadas e corrigidas sem alterar expectati
 Core/eventos, Armature real e runtime gráfico continuam pendentes. CI deste checkpoint deve ser confirmada antes de integrar.
 
 Checkpoint remoto: PR #67, commit 58d31973c4678e7c8ab7eea7ce64a7740ad00fd0. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41586314646 aprovada: inventory, geometry (lua5.4) e geometry (luajit). As cinco suítes passaram; WorldClock confirmou 28 cenários/1.633 operações/11.431 colunas em cada VM. Artefatos publicados por VM e inventário. Consultar PR #67 para SHA final e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: núcleo de eventos, enums e UserData/ActionData
+
+Base confirmada: main 341df09, PR #67 integrado, CI pós-merge 41586449745 aprovada; backup cd4206a8 preservado. Lidos core/DragonBones.ts, event/EventObject.ts, model/UserData.ts e event/IEventDispatcher.ts completos e os respectivos Lua reais do backup antes de adaptar.
+
+DragonBones.lua usa WorldClock e EventObject reais; EventObject/UserData usam BaseObject e Enums reais. Enums.lua contém os 98 valores originais, separados do core para evitar ciclo de require; o core reexporta as mesmas tabelas. Interface IEventDispatcher/EventStringType documentada sem criar dispatcher fictício. Empacotamento/shims exclusivos JS tratados como fronteira de linguagem em DIFFERENCES.md, não como runtime de plataforma implementado.
+
+Execuções locais finais em Lua 5.4.8 e LuaJIT: **25 cenários, 1.147 operações, 16.058 colunas e 98 valores de enums por VM**, aprovados sem tolerância. Comparados fila/identidade, eventos adicionados durante despacho, reciclagem no avanço seguinte, disposição de armature, despacho local/global de som, reentrância, falhas/estados parciais, construtores/limpeza/pool, payload proprietário de ActionData e não proprietário de EventObject, conversão/consultas bone/slot e arrays/índices de UserData.
+
+Uma falha real mostrou getInt(5e-324) retornando o primeiro elemento porque index+1 arredondava para 1 em Lua. Teste retido; índices fracionários dentro do intervalo agora produzem nil (undefined original), enquanto fora do intervalo retornam os defaults originais. Mutação controlada que restaurou == do backup nas filas falhou em bufferObject q (esperado p,q; observado p), confirmando a cobertura de identidade estrita. Código restaurado com rawequal e execuções finais refeitas.
+
+Limites: Armature/dispatcher/animatable são probes de teste, não classes de produto portadas; três métodos de listeners e backend real pendentes. Referências objeto null/undefined viram nil; arrays públicos seguem convenção densa Lua/base 1, sem equivalência de propriedades/proxies JS arbitrários. Resolução automática do relógio continua pendente; esta unidade usa fonte determinística. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #68, código 856b37a49ea10da7f4b43ba76da63c99dcb1a09a. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41634841014 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs de ambos os jobs confirmaram seis suítes passed, incluindo 25 cenários/1.147 operações/16.058 colunas/98 enums no lote de eventos; três artefatos publicados no mesmo SHA. Consultar PR #68 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
