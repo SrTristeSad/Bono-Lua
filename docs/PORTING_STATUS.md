@@ -714,6 +714,8 @@ Branch `integration-original-love-image-backend` integrada à `main` pelo [PR #3
 
 Duas armaduras genuínas são construídas independentemente por BaseFactory: uma a partir do JSON e outra a partir do DBDT. O teste verifica `WeightData`, os dois ossos, seis influências, dois tipos de timeline, deformVertices e deslocamento real do osso; compara todos os pixels da GPU em quatro amostras, exige imagem não vazia e mudanças reais de pixels. Uma escrita em `binaryData.floatArray` sobre o x local de uma influência de peso 0,5 precisa deslocar o primeiro vértice em **1 unidade**, demonstrando leitura dinâmica da memória compartilhada em `_updateMesh`.
 
+**Comparação adicional com o upstream executado:** `tests/fixtures/original_weighted_mesh.json` é a **mesma entrada** usada no LÖVE e por `tests/differential_weighted_mesh_original.js`, que carrega o bundle original DragonBonesJS fixado e executa `ObjectDataParser.parseDragonBonesData` de fato. `tests/original_weighted_mesh_differential.lua` compara **todos os bytes** gerados, os tamanhos das sete vistas tipadas, os nomes dos dois ossos e a contagem das seis influências em Lua 5.4 e LuaJIT. Isso elimina a possibilidade de duas rotas Lua igualmente equivocadas serem aceitas pelo teste de paridade gráfica; os metadados extras de exportação DBDT continuam exclusivamente no fixture gráfico.
+
 **Estado:** CI, PR e integração pendentes de verificação. Registro só deverá apontar resultado aprovado depois de conferir `lua-tests`, `love-render` e o teste de GPU. A cobertura de arquivos DBDT reais de terceiros, constraints IK de múltiplos ossos e equivalência integral continuam pendentes.
 
 ## Código que já existia antes deste porte
