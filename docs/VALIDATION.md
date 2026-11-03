@@ -360,4 +360,6 @@ Experimentos reversíveis: acrescentar type=ConstraintType.Path após super._onC
 
 Limites: não executa IKConstraint/PathConstraint ou qualquer solver de runtime, deformação, parsing/playback/GPU ou tempo automático real. SkinData/DragonBonesData reais seguem pendentes em outras fronteiras. Null/undefined de refs para nil; holes/undefined por valor/length, sem descritores/proxies/coerções genéricas de JS.
 
-Artefatos regeneráveis: constraintdata-cases.tsv, constraintdata-original.tsv e saídas/JSON por VM. CI executa as onze suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.
+Artefatos regeneráveis: constraintdata-cases.tsv, constraintdata-original.tsv e saídas/JSON por VM. CI executa as onze suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #73, código db0c8806dfb903427ff51c47cfae58733571a391. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41676866452 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram onze suítes passed; novo lote 23 cenários/817 operações/7.353 colunas com integração de constraints reais. Três artefatos conferidos no mesmo SHA. Consultar PR #73 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
