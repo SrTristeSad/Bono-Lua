@@ -1,7 +1,7 @@
 -- Partial port: ObjectDataParser.ts, pinned DragonBonesJS
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Implemented: atlas, structures, geometry, binary views, curves and generic frames.
+-- Implemented: atlas, structures, geometry, binary views, curves and frame serializers.
 -- Armature/animation entrypoints remain absent; see docs/NEXT_STEPS.md.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
@@ -572,6 +572,174 @@ function ObjectDataParser:_parseActionFrame(frame,frameStart,_frameCount)
   for i=0,count-1 do
     workPut(self._frameArray,offset+Core.BinaryOffset.FramePosition+2+i,workAt(frame.actions,i))
   end
+  return offset
+end
+
+function ObjectDataParser:_parseZOrderFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  if V.has(rawData,DataParser.Z_ORDER) then
+    local raw=V.get(rawData,DataParser.Z_ORDER)
+    local length=V.number(V.get(raw,"length"))
+    if length>0 then
+      local slotCount=self._armature.sortedSlots.length
+      local unchanged,zOrders=JSArray.new(),JSArray.new()
+      unchanged.length=slotCount-length/2
+      zOrders.length=slotCount
+      for i=1,unchanged.length do unchanged[i]=0 end
+      for i=1,slotCount do zOrders[i]=-1 end
+      local originalIndex,unchangedIndex=0,0
+      for i=0,length-1,2 do
+        local slotIndex=V.at(raw,i)
+        local zOffset=V.at(raw,i+1)
+        while originalIndex~=slotIndex do
+          workPut(unchanged,unchangedIndex,originalIndex)
+          unchangedIndex=unchangedIndex+1;originalIndex=originalIndex+1
+        end
+        local index
+        if type(zOffset)=="string" then
+          index=V.string(originalIndex)..zOffset
+          local n=tonumber(index)
+          if n and V.string(n)==index then index=n end
+        else index=originalIndex+V.number(zOffset) end
+        if type(index)=="number" and index>=0 and index<=4294967294 and index==math.floor(index) then
+          workPut(zOrders,index,originalIndex)
+        else zOrders[V.string(index)]=originalIndex end
+        originalIndex=originalIndex+1
+      end
+      while originalIndex<slotCount do
+        workPut(unchanged,unchangedIndex,originalIndex)
+        unchangedIndex=unchangedIndex+1;originalIndex=originalIndex+1
+      end
+      self._frameArray.length=self._frameArray.length+1+slotCount
+      workPut(self._frameArray,offset+1,slotCount)
+      for i=slotCount-1,0,-1 do
+        local value=workAt(zOrders,i)
+        if value==-1 then unchangedIndex=unchangedIndex-1;value=workAt(unchanged,unchangedIndex) end
+        workPut(self._frameArray,offset+2+i,V.truthy(value) and value or 0)
+      end
+      return offset
+    end
+  end
+  self._frameArray.length=self._frameArray.length+1
+  workPut(self._frameArray,offset+1,0)
+  return offset
+end
+
+local function frameRotation(self,rotation,frameStart)
+  if frameStart~=0 then
+    if self._prevClockwise==0 then
+      rotation=self._prevRotation+Transform.normalizeRadian(rotation-self._prevRotation)
+    else
+      local decrease
+      if self._prevClockwise>0 then decrease=rotation>=self._prevRotation
+      else decrease=rotation<=self._prevRotation end
+      if decrease then
+        self._prevClockwise=self._prevClockwise>0 and self._prevClockwise-1 or self._prevClockwise+1
+      end
+      rotation=self._prevRotation+rotation-self._prevRotation+Transform.PI_D*self._prevClockwise
+    end
+  end
+  return rotation
+end
+
+function ObjectDataParser:_parseBoneAllFrame(rawData,frameStart,frameCount)
+  self._helpTransform:identity()
+  if V.has(rawData,DataParser.TRANSFORM) then
+    self:_parseTransform(V.get(rawData,DataParser.TRANSFORM),self._helpTransform,1.0)
+  end
+  local rotation=frameRotation(self,self._helpTransform.rotation,frameStart)
+  self._prevClockwise=ObjectDataParser._getNumber(rawData,DataParser.TWEEN_ROTATE,0.0)
+  self._prevRotation=rotation
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local values=self._frameFloatArray;local start=values.length
+  values.length=values.length+6
+  workPut(values,start,self._helpTransform.x)
+  workPut(values,start+1,self._helpTransform.y)
+  workPut(values,start+2,rotation)
+  workPut(values,start+3,self._helpTransform.skew)
+  workPut(values,start+4,self._helpTransform.scaleX)
+  workPut(values,start+5,self._helpTransform.scaleY)
+  self:_parseActionDataInFrame(rawData,frameStart,self._bone,self._slot)
+  return offset
+end
+
+function ObjectDataParser:_parseBoneTranslateFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local values=self._frameFloatArray;local start=values.length;values.length=values.length+2
+  workPut(values,start,ObjectDataParser._getNumber(rawData,DataParser.X,0.0))
+  workPut(values,start+1,ObjectDataParser._getNumber(rawData,DataParser.Y,0.0))
+  return offset
+end
+
+function ObjectDataParser:_parseBoneRotateFrame(rawData,frameStart,frameCount)
+  local rotation=ObjectDataParser._getNumber(rawData,DataParser.ROTATE,0.0)*Transform.DEG_RAD
+  rotation=frameRotation(self,rotation,frameStart)
+  self._prevClockwise=ObjectDataParser._getNumber(rawData,DataParser.CLOCK_WISE,0)
+  self._prevRotation=rotation
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local values=self._frameFloatArray;local start=values.length;values.length=values.length+2
+  workPut(values,start,rotation)
+  workPut(values,start+1,ObjectDataParser._getNumber(rawData,DataParser.SKEW,0.0)*Transform.DEG_RAD)
+  return offset
+end
+
+function ObjectDataParser:_parseBoneScaleFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local values=self._frameFloatArray;local start=values.length;values.length=values.length+2
+  workPut(values,start,ObjectDataParser._getNumber(rawData,DataParser.X,1.0))
+  workPut(values,start+1,ObjectDataParser._getNumber(rawData,DataParser.Y,1.0))
+  return offset
+end
+
+function ObjectDataParser:_parseSlotDisplayFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  self._frameArray.length=self._frameArray.length+1
+  local key=V.has(rawData,DataParser.VALUE) and DataParser.VALUE or DataParser.DISPLAY_INDEX
+  workPut(self._frameArray,offset+1,ObjectDataParser._getNumber(rawData,key,0))
+  self:_parseActionDataInFrame(rawData,frameStart,self._slot.parent,self._slot)
+  return offset
+end
+
+function ObjectDataParser:_parseSlotColorFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local colorOffset=-1
+  if V.has(rawData,DataParser.VALUE) or V.has(rawData,DataParser.COLOR) then
+    local key=V.has(rawData,DataParser.VALUE) and DataParser.VALUE or DataParser.COLOR
+    local rawColor=V.get(rawData,key)
+    -- The original for-in skips null/undefined and boxes primitives.
+    local enumerable=type(rawColor)=="table" and next(rawColor)~=nil
+      or type(rawColor)=="string" and V.get(rawColor,"length")>0
+    if enumerable then
+      self:_parseColorTransform(rawColor,self._helpColorTransform)
+      colorOffset=self._colorArray.length
+      self._colorArray.length=self._colorArray.length+8
+      local c=self._helpColorTransform
+      local values={c.alphaMultiplier*100,c.redMultiplier*100,c.greenMultiplier*100,c.blueMultiplier*100,
+        c.alphaOffset,c.redOffset,c.greenOffset,c.blueOffset}
+      for i=1,8 do workPut(self._colorArray,colorOffset+i-1,roundFrame(values[i])) end
+    end
+  end
+  if colorOffset<0 then
+    if self._defaultColorOffset<0 then
+      colorOffset=self._colorArray.length;self._defaultColorOffset=colorOffset
+      self._colorArray.length=self._colorArray.length+8
+      local values={100,100,100,100,0,0,0,0}
+      for i=1,8 do workPut(self._colorArray,colorOffset+i-1,values[i]) end
+    end
+    colorOffset=self._defaultColorOffset
+  end
+  local start=self._frameIntArray.length
+  self._frameIntArray.length=self._frameIntArray.length+1
+  workPut(self._frameIntArray,start,colorOffset)
+  return offset
+end
+
+function ObjectDataParser:_parseIKConstraintFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+  local start=self._frameIntArray.length
+  self._frameIntArray.length=self._frameIntArray.length+2
+  workPut(self._frameIntArray,start,ObjectDataParser._getBoolean(rawData,DataParser.BEND_POSITIVE,true) and 1 or 0)
+  workPut(self._frameIntArray,start+1,roundFrame(ObjectDataParser._getNumber(rawData,DataParser.WEIGHT,1.0)*100.0))
   return offset
 end
 
