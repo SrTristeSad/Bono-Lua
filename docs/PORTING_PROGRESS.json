@@ -1,0 +1,23 @@
+{
+  "upstream_commit": "64b6c69ae35777c2404be68c9192e2c56906079e",
+  "files": {
+    "DragonBones/src/dragonBones/geom/Point.ts": {
+      "destination": "dragonbones/geom/Point.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
+      "tests": "tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.",
+      "differences": "Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/geom/Rectangle.ts": {
+      "destination": "dragonbones/geom/Rectangle.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
+      "tests": "tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.",
+      "differences": "Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/geom/ColorTransform.ts": {
+      "destination": "dragonbones/geom/ColorTransform.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
+      "tests": "tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.",
+      "differences": "Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md."
+    }
+  }
+}

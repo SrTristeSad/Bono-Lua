@@ -1,10 +1,2 @@
-*.love
-*.zip
-.DS_Store
-logs/
-
-# Local outputs and user-supplied DragonBones assets
+node_modules/
 artifacts/
-assets/project_ske.json
-assets/project_tex.json
-assets/project_tex.png

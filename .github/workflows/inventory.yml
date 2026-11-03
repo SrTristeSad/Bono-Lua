@@ -1,0 +1,76 @@
+name: Pinned upstream inventory
+on:
+  push:
+    branches: [rebuild/integral-20261103]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Bono-Lua
+      - uses: actions/checkout@v4
+        with:
+          repository: DragonBones/DragonBonesJS
+          ref: 64b6c69ae35777c2404be68c9192e2c56906079e
+          path: DragonBonesJS
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install audit parser
+        working-directory: Bono-Lua
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Reproduce exact inventory from pinned Git blobs
+        working-directory: Bono-Lua
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          node tools/inventory.js ../DragonBonesJS --check | tee artifacts/inventory-result.json
+          node tools/dependencies.js ../DragonBonesJS --check | tee artifacts/dependencies-result.json
+      - name: Preserve structural audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-inventory-evidence
+          path: |
+            Bono-Lua/artifacts/inventory-result.json
+            Bono-Lua/artifacts/dependencies-result.json
+          if-no-files-found: error
+  geometry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        vm: [lua5.4, luajit]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Bono-Lua
+      - uses: actions/checkout@v4
+        with:
+          repository: DragonBones/DragonBonesJS
+          ref: 64b6c69ae35777c2404be68c9192e2c56906079e
+          path: DragonBonesJS
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Lua VM and audit compiler
+        working-directory: Bono-Lua
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.vm }}
+          npm ci --ignore-scripts --no-audit --no-fund
+      - name: Compare Lua classes against pinned original TypeScript
+        working-directory: Bono-Lua
+        run: node tests/geom_differential.js ../DragonBonesJS ${{ matrix.vm }}
+      - name: Preserve inputs, original output, Lua output and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: geometry-differential-${{ matrix.vm }}
+          path: Bono-Lua/artifacts/
+          if-no-files-found: error
