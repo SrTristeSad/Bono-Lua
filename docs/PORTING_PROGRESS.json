@@ -86,6 +86,12 @@
       "status": "Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente",
       "tests": "events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica.",
       "differences": "Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício."
+    },
+    "DragonBones/src/dragonBones/model/AnimationConfig.ts": {
+      "destination": "dragonbones/model/AnimationConfig.lua",
+      "status": "Configuração comparada com BaseObject/enums reais; consumo por Animation/AnimationState e runtime completo pendente",
+      "tests": "tests/config_differential.js: 30 cenários, 1.293 operações, 10.344 colunas e 21 campos escalares por VM Lua 5.4/LuaJIT, bytes binary64 exatos. Ver VALIDATION.md.",
+      "differences": "Metatables/new; boneMask com entradas base 1 e length lógico, preservando posições sem valor e identidade. Enums importados diretamente de core/Enums. Holes/undefined normalizados por valor/comprimento, sem equivalência de descritores/proxies. Ver DIFFERENCES.md."
     }
   }
 }

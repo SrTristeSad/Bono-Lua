@@ -78,3 +78,14 @@ Ciclos não recebem detecção nova: os testes inspecionam somente consultas fin
 - IEventDispatcher é contrato documentado. Só dispatchDBEvent foi exercitado pelo núcleo com probes; has/add/removeDBEventListener, binding de thisObject e backend real continuam pendentes.
 
 Os testes executam os cinco arquivos TS genuínos pertinentes ao pool/clock/eventos/modelos/core. Todo o namespace é compilado para resolver referências, mas nenhuma classe não portada é simulada como código de produto.
+
+## AnimationConfig e boneMask
+
+- Classe Lua herda BaseObject e importa core/Enums diretamente; não carrega DragonBones/WorldClock para acessar constantes. Inicializa apenas boneMask no construtor; borrow e clear executam os defaults exatos, inclusive timeScale=-100.0 (a prosa @default 1.0 do upstream não substitui o código).
+- copyFrom mantém a sequência de atribuições e leituras do original. Todos os 21 campos são copiados; a máscara é copiada elemento a elemento para o mesmo array do destino, sem devolver self ou criar um array substituto. Exceções de leitura propagam com os efeitos parciais originais. Getters de origem são instrumentação somente do teste.
+- boneMask é tabela com entradas base 1 e propriedade length mantida por metatable/estado privado. Atribuir índice inteiro novo estende length; atribuir length valida 0..2^32-1 integral, remove somente índices acima do novo fim e preserva propriedades nomeadas. Crescer length não inventa strings nas posições vazias. #/ipairs/table.insert não substituem esse contrato em arrays esparsos, especialmente entre Lua 5.4 e LuaJIT.
+- Para adicionar, usar m[m.length+1]=nome; para dimensionar, m.length=n; ler/escrever entradas por índice Lua. Para o equivalente de delete JS sem estender o comprimento, rawset(m,index,nil). Outros rawset que acrescentem índices ou substituam length podem violar a representação e não são uso equivalente. Métodos do próprio AnimationConfig preservam length/identidade.
+- A comparação normaliza hole e undefined explícito como leitura nil, preservando comprimento e valores, não descritores/hasOwnProperty. Não emula propriedades herdadas de Array.prototype, Proxy JS ou coerção de tipos arbitrários para length. Comparados strings repetidas/vazias/UTF-8, máscaras vazias, autocópia e aliases de array injetados no teste (readonly TS não é um getter de runtime).
+- Campos extras da instância e da máscara permanecem após clear; somente campos/índices que o original limpa são modificados. Erros de comprimento inválido são comparados por categoria e efeitos, não por texto/stack JS.
+
+A classe está comparada com pool real; integração em Animation/AnimationState e reprodução de animações ainda estão pendentes.
