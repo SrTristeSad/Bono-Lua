@@ -455,9 +455,9 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/animation/Animation.ts` | Código-fonte do núcleo | dragonbones/animation/Animation.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/AnimationState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | dragonbones/animation/IAnimatable.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | docs/contracts/IAnimatable.md | Contrato documentado e exercitado; interface TS sem classe de runtime para portar |
 | `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente |
 | `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Constraint.ts` | Código-fonte do núcleo | dragonbones/armature/Constraint.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -465,7 +465,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente nos cenários diferenciais; integração com modelos pendente |
+| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente |
 | `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -2435,8 +2435,8 @@ Herança: extends TweenTimelineState.
 ### `DragonBones/src/dragonBones/animation/IAnimatable.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/animation/IAnimatable.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/animation/IAnimatable.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: docs/contracts/IAnimatable.md. Contrato documentado; interface sem algoritmo executável.
+- Estado: Contrato documentado e exercitado; interface TS sem classe de runtime para portar; testes: WorldClock real e probes simples/recíprocos implementam advanceTime e clock no diferencial. Armature ainda pendente.; diferenças: void para nil; clock nulo para nil; métodos chamados com self em Lua. Não criada implementação fictícia da interface.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/WorldClock.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -2644,8 +2644,8 @@ Herança: extends DoubleValueTimelineState.
 ### `DragonBones/src/dragonBones/animation/WorldClock.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/animation/WorldClock.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/animation/WorldClock.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/animation/WorldClock.lua. Implementação presente nesta reconstrução.
+- Estado: Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente; testes: tests/worldclock_differential.js: 28 cenários, 1.633 operações e 11.431 colunas por VM, Lua 5.4/LuaJIT, bytes binary64 exatos. Ver VALIDATION.md.; diferenças: Rawequal para identidade estrita; sentinel null e comprimento lógico de array; clock getter/setter; _now é adaptação em segundos de época. Stock Lua os.time tem resolução de segundos: automático real ainda não equivalente ao Date de milissegundos. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/IAnimatable.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3073,7 +3073,7 @@ Herança: extends BaseObject.
 
 - Origem/commit: `DragonBones/src/dragonBones/core/BaseObject.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: dragonbones/core/BaseObject.lua. Implementação presente nesta reconstrução.
-- Estado: Validado isoladamente nos cenários diferenciais; integração com modelos pendente; testes: tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.; diferenças: Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md.
+- Estado: Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente; testes: tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.; diferenças: Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

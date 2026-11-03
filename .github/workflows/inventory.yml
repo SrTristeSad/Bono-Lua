@@ -71,6 +71,7 @@ jobs:
           node tests/math_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/baseobject_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/models_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/worldclock_differential.js ../DragonBonesJS ${{ matrix.vm }}
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

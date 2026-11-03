@@ -33,7 +33,7 @@
     },
     "DragonBones/src/dragonBones/core/BaseObject.ts": {
       "destination": "dragonbones/core/BaseObject.lua",
-      "status": "Validado isoladamente nos cenários diferenciais; integração com modelos pendente",
+      "status": "Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente",
       "tests": "tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.",
       "differences": "Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md."
     },
@@ -48,6 +48,19 @@
       "status": "Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente",
       "tests": "tests/models_differential.js: 18 cenários, 639 operações e 5.751 colunas por VM (Lua 5.4 e LuaJIT), com BaseObject/Rectangle reais. Ver VALIDATION.md.",
       "differences": "Metatables/new; nil para referências JS ausentes/null; ordem de chaves JS preservada no atlas com metadados privados. Backend gráfico não implementado; classes abstratas testadas com adaptadores somente no teste. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/animation/WorldClock.ts": {
+      "destination": "dragonbones/animation/WorldClock.lua",
+      "status": "Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente",
+      "tests": "tests/worldclock_differential.js: 28 cenários, 1.633 operações e 11.431 colunas por VM, Lua 5.4/LuaJIT, bytes binary64 exatos. Ver VALIDATION.md.",
+      "differences": "Rawequal para identidade estrita; sentinel null e comprimento lógico de array; clock getter/setter; _now é adaptação em segundos de época. Stock Lua os.time tem resolução de segundos: automático real ainda não equivalente ao Date de milissegundos. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/animation/IAnimatable.ts": {
+      "destination": "docs/contracts/IAnimatable.md",
+      "kind": "contract",
+      "status": "Contrato documentado e exercitado; interface TS sem classe de runtime para portar",
+      "tests": "WorldClock real e probes simples/recíprocos implementam advanceTime e clock no diferencial. Armature ainda pendente.",
+      "differences": "void para nil; clock nulo para nil; métodos chamados com self em Lua. Não criada implementação fictícia da interface."
     }
   }
 }

@@ -9,7 +9,7 @@
 | 04 | Parsers JSON/DBDT | Pendente |
 | 05 | Armature, Bone, Slot, Surface, TransformObject | Pendente |
 | 06 | IKConstraint e PathConstraint | Pendente |
-| 07 | Animação, timelines, blending e eventos | Pendente |
+| 07 | Animação, timelines, blending e eventos | Fundação WorldClock comparada para preparar o core; precisão de host e restante pendentes |
 | 08 | BaseFactory e runtime | Pendente |
 | 09 | Adaptador gráfico Lua/LÖVE e comparação real | Pendente |
 | 10 | Auditoria de todas as integrações oficiais | Pendente |
