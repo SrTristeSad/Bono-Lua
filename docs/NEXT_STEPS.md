@@ -1,12 +1,14 @@
 # Continuidade
 
+- Último checkpoint publicado e confirmado: `eac7d2b83f09ff572bd751616ab4e7218373ddbf`; PR #63 (rascunho).
+- CI estrutural confirmada: [execução 41575623832](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41575623832), job `inventory` aprovado; artefato de evidência publicado.
 - Último commit de base confirmado: `cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb`.
 - Backup: `backup/pre-integral-rebuild-20261103` no mesmo SHA.
 - Trabalho: `rebuild/integral-20261103`. Para o último commit publicado desta branch, consultar `git ls-remote` e a página do PR; não registrar como confirmado um SHA ainda não criado.
 - Upstream fixado: `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Última etapa preparada: 00. Inventário estrutural de 01 gerado; auditoria semântica ainda pendente.
 - Arquivos em desenvolvimento: tools/inventory.js e documentos de rastreabilidade.
-- Testes executados: geração AST; conferir VALIDATION.md e CI do PR para verificações adicionais.
+- Testes executados: geração AST, comparação byte a byte local, `node --check`, CI estrutural do checkpoint aprovada.
 - Runtime traduzido/testado nesta branch: nenhum.
 - Divergências conhecidas: relações de dependência ainda candidatas, contratos de plataforma e código de topo pendentes de revisão.
 

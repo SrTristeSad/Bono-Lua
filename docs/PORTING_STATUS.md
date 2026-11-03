@@ -30,3 +30,7 @@ A preservação de implementações comprovadamente equivalentes poderá ser fei
 - Implementado nesta reconstrução: nenhum módulo.
 - Validado isoladamente/em integração: nenhum comportamento de runtime nesta reconstrução.
 - Equivalência integral: pendente, sem porcentagem atribuída.
+
+## Publicação e CI
+
+Checkpoint `eac7d2b83f09ff572bd751616ab4e7218373ddbf`, PR #63 em rascunho. [CI estrutural](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41575623832): job `inventory` aprovado e evidência publicada, conferidos pela API. Nenhum merge realizado. Etapa 01 continua semanticamente pendente.

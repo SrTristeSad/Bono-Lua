@@ -22,4 +22,12 @@ node tools/inventory.js ../DragonBonesJS --check
 
 A verificação lê blobs Git, verifica o HEAD e compara o inventário completo byte a byte. Ela prova reprodutibilidade estrutural, não equivalência de runtime.
 Lua 5.4, LuaJIT e LÖVE não estão instalados no ambiente local desta sessão. Testes de runtime/GPU não foram executados. Os resultados antigos ficam exclusivamente no backup.
-CI desta branch: verificar o SHA e os jobs no PR antes de afirmar aprovação.
+## CI confirmada do checkpoint
+
+PR: https://github.com/SrTristeSad/Bono-Lua/pull/63 (rascunho, sem merge).
+Commit da branch: `eac7d2b83f09ff572bd751616ab4e7218373ddbf`.
+Execução: https://github.com/SrTristeSad/Bono-Lua/actions/runs/41575623832. Job `inventory` (125718301492): `completed/success`.
+Confirmados: instalação via lockfile, comparação exata dos blobs fixados e publicação do artefato `pinned-inventory-evidence`.
+`node --check tools/inventory.js` também executado localmente com saída 0.
+A aprovação é exclusivamente estrutural; não cobre runtime Lua nem GPU.
+
