@@ -479,12 +479,12 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/model/AnimationData.ts` | Código-fonte do núcleo | dragonbones/model/AnimationData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/ArmatureData.ts` | Código-fonte do núcleo | dragonbones/model/ArmatureData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/BoundingBoxData.ts` | Código-fonte do núcleo | dragonbones/model/BoundingBoxData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/model/CanvasData.ts` | Código-fonte do núcleo | dragonbones/model/CanvasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/CanvasData.ts` | Código-fonte do núcleo | dragonbones/model/CanvasData.lua | Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente |
 | `DragonBones/src/dragonBones/model/ConstraintData.ts` | Código-fonte do núcleo | dragonbones/model/ConstraintData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/DisplayData.ts` | Código-fonte do núcleo | dragonbones/model/DisplayData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/DragonBonesData.ts` | Código-fonte do núcleo | dragonbones/model/DragonBonesData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/SkinData.ts` | Código-fonte do núcleo | dragonbones/model/SkinData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente |
 | `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -3985,8 +3985,8 @@ Herança: extends BoundingBoxData.
 ### `DragonBones/src/dragonBones/model/CanvasData.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/model/CanvasData.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/model/CanvasData.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/model/CanvasData.lua. Implementação presente nesta reconstrução.
+- Estado: Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente; testes: tests/models_differential.js: 18 cenários, 639 operações e 5.751 colunas por VM (Lua 5.4 e LuaJIT), com BaseObject/Rectangle reais. Ver VALIDATION.md.; diferenças: Metatables/new; nil para referências JS ausentes/null; ordem de chaves JS preservada no atlas com metadados privados. Backend gráfico não implementado; classes abstratas testadas com adaptadores somente no teste. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/BaseObject.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -4231,8 +4231,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/model/TextureAtlasData.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/model/TextureAtlasData.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/model/TextureAtlasData.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/model/TextureAtlasData.lua. Implementação presente nesta reconstrução.
+- Estado: Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente; testes: tests/models_differential.js: 18 cenários, 639 operações e 5.751 colunas por VM (Lua 5.4 e LuaJIT), com BaseObject/Rectangle reais. Ver VALIDATION.md.; diferenças: Metatables/new; nil para referências JS ausentes/null; ordem de chaves JS preservada no atlas com metadados privados. Backend gráfico não implementado; classes abstratas testadas com adaptadores somente no teste. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

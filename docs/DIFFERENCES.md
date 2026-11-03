@@ -41,3 +41,15 @@ Sem divergências nos cenários numéricos/string executados após corrigir o ze
 
 38 cenários/1.211 operações passaram exatamente nas duas VMs. A comparação usa subclasses de teste exclusivamente para observar chamadas _onClear e identidade. Integração com subclasses reais será validada ao portá-las.
 Limites explícitos: não emula Object.prototype para chaves como __proto__/constructor herdadas do objeto-mapa JS; não reproduz a reflexão genérica/PropertyDescriptors/Function.toString de classes sem o contrato estático do runtime; substituir mapas readonly ou manipular seus protótipos diretamente não foi coberto. Construtores cujo toString viola a assinatura string TS não foram tratados como equivalentes. Não declarar equivalência irrestrita de JavaScript a partir deste lote.
+
+## CanvasData, TextureAtlasData e TextureData
+
+- Construtores Lua preservam campos TS sem inicialização como nil/undefined observável; não executam _onClear antecipadamente. Borrow real executa a limpeza original. Canvas mantém os seis campos/reset exatos e não apaga propriedades extras alheias a _onClear.
+- Rectangle de region permanece por identidade durante cópia, limpeza e retorno ao pool. Frames existentes são reutilizados na cópia; criados/descartados conforme o teste de null original. TextureData.copyFrom mantém parent da origem, sem trocá-lo pelo atlas de destino.
+- textures é uma tabela pública comum, preservada por identidade. __newindex e metadados fracos registram inserção de nomes; os métodos do motor enumeram índices canônicos primeiro e as demais strings por inserção, como for..in. Atualização de valor mantém posição; exclusão/reinserção recebe nova posição. Escritas normais diretas são cobertas; rawset/substituição de metatable ou da tabela readonly não são equivalentes declarados.
+- A normalização do teste é explícita: parent JS undefined/null e resultado ausente de getTexture representam nil no Lua. Scalars não inicializados continuam distintos de false/0; frame/region/identidades são comparados. Não há tolerância numérica.
+- createTexture continua um contrato abstrato do backend. A implementação Lua falha explicitamente se chamada sem adaptação concreta; o teste usa apenas uma subclasse local que retorna TextureData pelo pool e permite injetar falha, sem simular gráficos.
+- O compilador do teste recebe o namespace TS completo para resolver BaseObject/Rectangle entre arquivos; só os quatro JS correspondentes são executados no oráculo. Não foram adicionados aliases globais ou versões reescritas das fórmulas para mascarar referências não resolvidas.
+
+18 cenários/639 operações passaram nas duas VMs. A ordem de pares do backup falhou no copy dest src; corrigida a representação de mapa, o caso e as identidades passaram sem alterar expectativas.
+Limitações conhecidas: o mapa Lua não emula propriedades herdadas de Object.prototype (ex.: nomes constructor/__proto__/toString), nem getters/proxies/protótipos arbitrários ou distinção universal null/undefined. A integração gráfica e a equivalência irrestrita continuam pendentes.
