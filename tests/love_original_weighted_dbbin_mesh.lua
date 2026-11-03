@@ -5,6 +5,7 @@
 -- animation/pose/timeline evaluation.
 local Love=require("dragonbones.love_original")
 local Core=require("dragonbones.original.core.DragonBones")
+local JSON=require("dragonbones.json")
 local Test={}
 
 local function u32(n)
@@ -98,32 +99,11 @@ local function pixelsEqual(a,b,label)
 end
 
 function Test.run()
-  local raw={version="5.5",name="GPU-Binary-Animated-Mesh",frameRate=12,
-    armature={{name="rig",bone={{name="root"},{name="tip",transform={x=4,y=0}}},
-      slot={{name="body",parent="root"}},
-      skin={{name="default",slot={{name="body",display={{
-        name="red",path="red",type="mesh",
-        vertices={0,0,4,0,0,4},uvs={0,0,1,0,0,1},
-        triangles={0,1,2},
-        weights={2,0,0.5,1,0.5, 2,0,0.5,1,0.5, 2,0,0.5,1,0.5},
-        slotPose={1,0,0,1,0,0},
-        bonePose={
-          0,1,0,0,1,0,0,
-          1,1,0,0,1,4,0
-        }
-      }}}}}},
-      animation={{name="shift",duration=12,playTimes=0,
-        bone={{name="tip",translateFrame={
-          {duration=6,x=0,y=0,tweenEasing=0},
-          {duration=6,x=6,y=0,tweenEasing=0}
-        }}},
-        ffd={{skin="default",slot="body",name="red",frame={
-          {duration=6,vertices={0,0,0,0,0,0},tweenEasing=0},
-          {duration=6,vertices={2,0,2,0,2,0},tweenEasing=0}
-        }}}
-      }}
-    }}
-  }
+  local fixture=assert(love.filesystem.read("tests/fixtures/original_weighted_mesh.json"),
+    "Missing shared original weighted mesh fixture")
+  local raw=JSON.decode(fixture)
+  assert(raw.armature[1].skin[1].slot[1].display[1].weights~=nil,
+    "Shared fixture lacks skinned mesh weights")
   local pixels=love.image.newImageData(4,4)
   for y=0,3 do for x=0,3 do pixels:setPixel(x,y,1,0,0,1) end end
   local image=love.graphics.newImage(pixels)
