@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-curves-frames`, sobre `main@bc67313`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-specialized-frames`, sobre `main@117237f`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -316,3 +316,14 @@ Bisseção preserva último ponto e limiar 0.0001; endpoints explícitos/omitido
 328 cenários/3.594 operações/71.880 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 21 exceções esperadas. Contadores do oráculo confirmam execução dos nove corpos genuínos. Modelos/ações/payloads/pool e finalização tipada reais; 20 suítes na CI. Ver contracts/CurveFrames.md e VALIDATION.md. Consultar PR para evidência remota/SHA/merge.
 
 Frames especializados, _parseTimeline/_parseBoneTimeline/_parseSlotTimeline, _parseAnimation, _parseArmature e entrypoint continuam pendentes. Isso não executa playback/blending/deformação ou renderização. Próximo recorte: serializers de frames especializados e dependências completas para timelines.
+
+
+## Frames especializados — estado atual
+
+Base main 117237f4b88b10e9dd3c25c452f01df2a1a95e53, PR #83/CI pós-merge 41738114130 e backup cd4206a8 conferidos. Oito corpos TS e Lua do backup auditados: _parseZOrderFrame, _parseBoneAllFrame, _parseBoneTranslateFrame, _parseBoneRotateFrame, _parseBoneScaleFrame, _parseSlotDisplayFrame, _parseSlotColorFrame, _parseIKConstraintFrame. **39/47 métodos; 8 pendentes.** Este total sucede os checkpoints históricos acima.
+
+Mantidos reservas/holes antes de leituras, comprimento/erros parciais, rotação acumulada com _prevClockwise/_prevRotation e normalização original, ações após valores, precedência de display/value e cor/value. Cor default usa cache com efeitos parciais e reset por _modifyArray; cor com qualquer propriedade enumerável aloca registro explícito. ZOrder usa slots reais, listas temporárias e preenchimento reverso originais; IK serializa bend/weight, sem solver de runtime.
+
+203 cenários/7.577 operações/159.117 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 39 exceções esperadas. Contadores confirmam oito corpos genuínos, com modelos/payloads/ações/pool/Transform/_modifyArray reais; 21 suítes na CI. Valores binary64 e bytes não NaN exatos. Somente células Float32 NaN têm sinal/payload normalizado no snapshot de observação; o adaptador continua sem promessa desses bits arbitrários. Ver contracts/SpecializedFrames.md e VALIDATION.md; consultar PR para evidência remota/SHA/merge.
+
+Pendentes: _parseSlotDeformFrame/_parseDeformFrame, _parseTimeline/_parseBoneTimeline/_parseSlotTimeline, _parseAnimation/_parseArmature/parseDragonBonesData. Sem importação completa JSON/DBDT, playback/renderização/deformação/solver. Próximo recorte: deformações com pesos/poses reais, depois timelines e demais dependências completas.
