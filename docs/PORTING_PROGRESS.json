@@ -18,6 +18,18 @@
       "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
       "tests": "tests/geom_differential.js: 1.384 operações e 8.288 campos nas três classes, Lua 5.4.8 e LuaJIT; tolerância zero. Ver VALIDATION.md.",
       "differences": "Classes TS para tabelas/metatables; new() em Lua; nil como argumento omitido. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/geom/Matrix.ts": {
+      "destination": "dragonbones/geom/Matrix.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
+      "tests": "tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.",
+      "differences": "Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/geom/Transform.ts": {
+      "destination": "dragonbones/geom/Transform.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
+      "tests": "tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.",
+      "differences": "Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md."
     }
   }
 }

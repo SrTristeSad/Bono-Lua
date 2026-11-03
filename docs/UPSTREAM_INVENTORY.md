@@ -471,10 +471,10 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/factory/BaseFactory.ts` | Código-fonte do núcleo | dragonbones/factory/BaseFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/geom/ColorTransform.ts` | Código-fonte do núcleo | dragonbones/geom/ColorTransform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
-| `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Point.ts` | Código-fonte do núcleo | dragonbones/geom/Point.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Rectangle.ts` | Código-fonte do núcleo | dragonbones/geom/Rectangle.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
-| `DragonBones/src/dragonBones/geom/Transform.ts` | Código-fonte do núcleo | dragonbones/geom/Transform.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/geom/Transform.ts` | Código-fonte do núcleo | dragonbones/geom/Transform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/model/AnimationConfig.ts` | Código-fonte do núcleo | dragonbones/model/AnimationConfig.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/AnimationData.ts` | Código-fonte do núcleo | dragonbones/model/AnimationData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/ArmatureData.ts` | Código-fonte do núcleo | dragonbones/model/ArmatureData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -3584,8 +3584,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/geom/Matrix.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/geom/Matrix.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/geom/Matrix.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/geom/Matrix.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração pendente; testes: tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.; diferenças: Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md.
 - Dependências candidatas: nenhuma declaração autoral identificada.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3656,8 +3656,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/geom/Transform.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/geom/Transform.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/geom/Transform.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/geom/Transform.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração pendente; testes: tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.; diferenças: Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/geom/Matrix.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
