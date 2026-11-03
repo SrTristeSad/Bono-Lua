@@ -6,32 +6,33 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e, prese
 
 ## Base confirmada desta unidade
 
-- Main 975b0312d984313e7645fcc8d0d10026e49205d7, PR #70 integrado; CI pós-merge 41651358553 aprovada.
+- Main 13ae3b1be3ed91e57a7215c01dd782d5b1df9b50, PR #71 integrado; CI pós-merge 41664512405 aprovada.
 - Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, preservado.
-- Branch port/model-display-data. Consultar PR/merge e CI posteriores antes de editar; não antecipar SHA futuro.
+- Branch port/model-armature-data. Consultar PR/merge e CI posteriores antes de editar; não antecipar SHA futuro.
 - Main acompanha checkpoints testados por autorização do proprietário. Não significa runtime completo.
 
 ## Unidade atual
 
-Oito classes de DisplayData.ts em dragonbones/model/DisplayData.lua: GeometryData, DisplayData abstrata, ImageDisplayData, ArmatureDisplayData, MeshDisplayData, BoundingBoxDisplayData, PathDisplayData e WeightData. Original completo e Lua real do backup lidos. Executáveis reais BaseObject/Enums, Transform/Point e JSArray; testes também usam ActionData/UserData e TextureData reais.
-Resultado final: 33 cenários, 1.117 operações, 10.053 colunas por VM Lua 5.4/LuaJIT, binary64 exato com NaN canonicalizado. Campos/identidades/compartilhamento/arrays/pools/ordem/falhas comparados. GeometryData não é poolável; base DisplayData não recebe chave concreta fictícia. Referências externas descritas em docs/contracts/DisplayDataReferences.md.
-Falha real row 106: getter com offset sem inicialização lançava erro Lua em vez de undefined. Corrigido undefined numérico->NaN e índice validado depois de BinaryOffset, antes de base 1. Experimentos removendo essa validação e restaurando ipairs em ações falharam nas linhas 124/254; código restaurado e execuções finais refeitas.
-Preservados shareFrom sem copiar data/inheritDeform/devolver peso anterior, peso próprio versus compartilhado, ações duplicadas/crescentes/esparsas e estado parcial em falhas. Bone refs/textures/skin/armature não são devolvidos; boundingBox é dono do contrato de retorno ainda não integrado ao modelo real.
+ArmatureData/BoneData/SurfaceData/SlotData em dragonbones/model/ArmatureData.lua. TS e Lua do backup relidos integralmente; fontes TS de ConstraintData/SkinData/DragonBonesData também lidas para delimitar fronteiras. Construção usa BaseObject/Enums, Rectangle/Transform/ColorTransform e GeometryData reais.
+Resultado final: 34 cenários, 1.079 operações, 15.106 colunas por VM Lua 5.4/LuaJIT, binary64 exato com NaN canonicalizado. Classes, campos/refs, identidades, listas/mapas, ordenação acíclica, callbacks/erros, pools e cache comparados.
+Integração nova: AnimationData.cacheFrames percorre ArmatureData/BoneData/SurfaceData/SlotData reais. O registro de parent da suíte isolada anterior permanece teste isolado, não o suporte dessa integração. Outro registro parent.cachedFrames global ainda representa DragonBonesData em setCacheFrame/getCacheFrame.
+Estado privado _referenceState distingue undefined do construtor e null após limpeza/atribuição nil em defaultSkin/defaultAnimation e BoneData.parent. Ambas leem nil externamente; decisões estritas preservadas. Não substituir por teste simples ==nil nem antecipar defaults. SurfaceData herda os acessores de parent.
+Cache de transformações mantém offset base 0, resize de dez slots antes das leituras e x/y vindos de tx/ty. Índice efetivo de cada acesso é validado antes de +1, preservando casos subnormais. Experimentos com nil nas seleções padrão e sem validação do índice falharam nas linhas 56/372; código restaurado e execuções finais refeitas.
 
 ## Pendências explícitas
 
-- ArmatureData/BoneData/SurfaceData/SlotData ainda não portados; GeometryData agora está disponível para SurfaceData. ConstraintData/SkinData/DragonBonesData/BoundingBoxData reais continuam pendentes; registros de teste não substituem classes de produto.
-- GeometryData.data.intArray é entrada Int16 já decodificada; não valida parser binário/typed arrays genéricos. Null/undefined de referências normalizam nil; holes/undefined por valor/length, sem descritores/proxies/Array.prototype ou coerções fora dos tipos declarados.
-- Cache de AnimationData ainda usa parent de contrato no teste; integração real exige ArmatureData e seus bones/slots. Manter explícitos cacheFrames.length=aridade 1 e count zero reestendendo cachedFrames para 1.
-- WorldClock._now padrão usa os.time em segundos de época com resolução de segundos. Fonte determinística não prova equivalência de tempo automático a Date em milissegundos.
-- Parsers, armaduras, listeners/backend, constraints de runtime, timelines/blending/playback, factories, hit testing, deformação e GPU pendentes.
+- ConstraintData/SkinData/DragonBonesData ainda são fronteiras de teste, detalhadas em docs/contracts/ArmatureDataReferences.md. Não são stubs de produto nem modelos portados. BoundingBoxData/typed buffers/parser também pendentes.
+- sortBones mantém esperas originais por pai/constraint; não tem detector de ciclos ou limite novo. Testes usam grafos acíclicos; timeout 10s é do subprocesso de teste. Grafos que não terminam no original não são declarados resolvidos.
+- Mapas não emulam Object.prototype; nil público não distingue universalmente null/undefined; rawset que burle acessores/metadados, descritores/proxies e arrays JS arbitrários não são equivalência declarada.
+- WorldClock._now usa os.time em segundos de época com resolução de segundos; fonte determinística não prova equivalência de tempo automático a Date em milissegundos.
+- Runtime Armature/Bone/Slot/Surface, solver de constraints, parsers, playback/timelines/blending, listeners/backend, factories, hit testing, deformação e GPU pendentes. Modelos de dados não completam runtime.
 
 ## Próxima unidade
 
 1. Conferir main, backup, PRs/CI e ler status/mapa/decisões/diferenças/validação atuais.
-2. Reler model/ArmatureData.ts completo e Lua real do backup. Dependências de construção agora incluem GeometryData real, Rectangle/Transform/ColorTransform existentes. Auditar referências remanescentes de ConstraintData/SkinData/DragonBonesData antes de definir integração.
-3. Portar o lote conforme dependências reais, sem classes/constantes provisórias de produto. Exercitar sortedBones/sortedSlots e o cache de AnimationData com modelos reais quando disponíveis; não reclassificar provas de contrato como integração.
-4. Atualizar progresso/inventário, testar, publicar PR, conferir CI e integrar checkpoint autorizado, mantendo pendências de plataforma e runtime explícitas.
+2. Auditar model/ConstraintData.ts novamente e ler Lua real do backup. O arquivo tem base abstrata, IKConstraintData e PathConstraintData; referências BoneData/SlotData/PathDisplayData agora estão disponíveis. Preservar capitalização original AddBone e propriedade não proprietária dos vínculos/listas.
+3. Depois preparar SkinData/DragonBonesData reais para substituir as fronteiras de display ownership/cache global com testes próprios. Em SkinData, null explícito em listas é diferente de hole/undefined; definir a adaptação conforme o original, sem encerrar silenciosamente a iteração.
+4. Atualizar progresso/inventário, testar, publicar PR, conferir CI e integrar checkpoint autorizado, mantendo as demais pendências explícitas.
 
 ## Reprodução
 
@@ -39,7 +40,7 @@ Preservados shareFrom sem copiar data/inheritDeform/devolver peso anterior, peso
 git fetch origin
 git switch main
 git log -1 --format=fuller
-git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/model-display-data
+git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/model-armature-data
 npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
@@ -53,9 +54,8 @@ for vm in lua5.4 luajit; do
   node tests/config_differential.js ../DragonBonesJS "$vm"
   node tests/animationdata_differential.js ../DragonBonesJS "$vm"
   node tests/displaydata_differential.js ../DragonBonesJS "$vm"
+  node tests/armaturedata_differential.js ../DragonBonesJS "$vm"
 done
 ```
 
 ../DragonBonesJS deve estar no commit fixado. Consultar o PR do checkpoint para SHA final e CI pós-merge; não confiar apenas na memória da conversa.
-
-Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.

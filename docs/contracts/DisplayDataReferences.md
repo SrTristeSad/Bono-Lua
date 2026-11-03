@@ -1,5 +1,7 @@
 # Referências de DisplayData
 
+Atualização: ArmatureData/BoneData/SurfaceData/SlotData agora existem e SurfaceData exercita GeometryData real na suíte armaturedata_differential. A suíte displaydata_differential mantém seus probes isolados; SkinData/DragonBonesData/BoundingBoxData reais ainda pendem.
+
 Fontes: model/DisplayData.ts e declaração intArray de model/DragonBonesData.ts em DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Este documento descreve fronteiras do arquivo; não cria interfaces upstream ou classes substitutas.
 
 | Referência | Uso real e propriedade |

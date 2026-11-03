@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-display-data`, sobre `main@975b031`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-armature-data`, sobre `main@13ae3b1`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: retomar ArmatureData.ts com GeometryData real agora disponível, auditando referências remanescentes e integração de cache sem stubs de produto. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: ConstraintData.ts e seus três modelos, após leitura do Lua real do backup; depois SkinData/DragonBonesData para substituir as fronteiras remanescentes por integração real. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -152,7 +152,7 @@ Limites: parent é registro de contrato no teste, não ArmatureData real; não v
 
 Checkpoint remoto: PR #70, código 2b612757c2bfee0011db97cc3abea1a7de19625d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41650945111 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram oito suítes passed; novo lote 39 cenários/1.084 operações/11.924 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #70 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
 
-## Unidade atual: DisplayData, GeometryData e WeightData
+## Unidade anterior: DisplayData, GeometryData e WeightData
 
 Base main 975b0312d984313e7645fcc8d0d10026e49205d7, PR #70/CI pós-merge 41651358553 aprovados; backup cd4206a8 e fonte fixada limpa confirmados. Lidos DisplayData.ts completo, Lua real do backup e dependências; intArray de DragonBonesData declarado Int16Array. Destino dragonbones/model/DisplayData.lua, com as oito classes: GeometryData, DisplayData (abstrata), ImageDisplayData, ArmatureDisplayData, MeshDisplayData, BoundingBoxDisplayData, PathDisplayData e WeightData.
 
@@ -165,3 +165,17 @@ Falha real na linha 106: get g vertexCount em offset não inicializado devolvia 
 Fronteiras: SkinData/ArmatureData/BoneData/DragonBonesData e BoundingBoxData ainda não são classes de produto desta unidade. Registros de teste só fornecem referências, intArray já decodificado ou contrato returnToPool de boundingBox, documentados em contracts/DisplayDataReferences.md. Não validam typed arrays genéricos, parsing binário, hit testing, deformação, renderização/GPU ou armaduras/playback. Precisão temporal automática real continua pendente. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: ArmatureData, BoneData, SurfaceData e SlotData
+
+Base main 13ae3b1be3ed91e57a7215c01dd782d5b1df9b50, PR #71/CI pós-merge 41664512405 aprovados, backup cd4206a8 e fonte limpa/fixada conferidos. Relidos ArmatureData.ts completo e Lua real do backup; lidos também ConstraintData/SkinData/DragonBonesData TS para delimitar fronteiras. Destino dragonbones/model/ArmatureData.lua, quatro classes com BaseObject/Enums, Rectangle/Transform/ColorTransform e GeometryData reais.
+
+Preservados construtores sem antecipar defaults, arrays/mapas por identidade, avisos/recusas de duplicatas, seleções padrão e vínculos parent. Estado privado da própria instância preserva undefined do construtor versus null após limpeza/atribuição nil em defaultSkin/defaultAnimation e BoneData.parent, embora ambos leiam nil publicamente. Ordenação mantém a varredura original por pai/alvo de constraint, identidade estrita e o comportamento parcial em erro; não introduz detector de ciclos.
+
+Execuções finais locais Lua 5.4.8/LuaJIT: **34 cenários, 1.079 operações, 15.106 colunas por VM**, sem tolerância (binary64, NaN canonicalizado). Compara todos os campos declarados, identidades, mapas/listas, pools/flags/avisos, callbacks/leituras e falhas parciais. Cinco grafos acíclicos determinísticos têm operações adicionais de sort/cache/consulta; grafos não terminantes do original não são executados.
+
+Integração nova: AnimationData.cacheFrames usa ArmatureData/BoneData/SurfaceData/SlotData reais, em vez do registro de parent da suíte isolada anterior. Cache de transformações usa Matrix/Transform reais, offsets públicos base 0, resize de dez posições antes das leituras e restauração x/y a partir de tx/ty. O armazenamento parent.cachedFrames ainda é contrato de DragonBonesData no teste. SurfaceData limpa GeometryData/WeightData reais; SlotData preserva DEFAULT_COLOR compartilhado e não devolve color.
+
+Experimentos reversíveis: trocar as condições de null por leitura ==nil foi rejeitado na linha 56 add raw Skin one; remover validação antes da conversão de índice foi rejeitado na linha 372 load a out pose 5e-324. Produto restaurado e testes finais refeitos nas duas VMs. Sem relaxar expectativas/tolerâncias.
+
+Limites: ConstraintData/SkinData/DragonBonesData reais ainda não portados; contratos remanescentes em contracts/ArmatureDataReferences.md. Cache integrado de modelos não prova runtime Armature, solver, playback, parsing/binário, GPU ou precisão temporal automática. Mapas não emulam Object.prototype; referências null/undefined normalizam nil externamente, decisões estritas específicas mantêm estado privado; holes/undefined por valor/length, sem descritores/proxies/reflexão genérica. CI/PR/merge deste checkpoint devem ser confirmados no SHA publicado.

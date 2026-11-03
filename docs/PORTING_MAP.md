@@ -19,8 +19,9 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/UserData.ts (duas classes) | dragonbones/model/UserData.lua | UserData/ActionData e reciclagem de payload comparados |
 | DragonBones/src/dragonBones/event/IEventDispatcher.ts | docs/contracts/IEventDispatcher.md | Contrato documentado; listeners/backend real pendentes |
 | DragonBones/src/dragonBones/model/AnimationConfig.ts | dragonbones/model/AnimationConfig.lua | Defaults, cópia, máscaras esparsas/aliases e pool comparados; consumo por Animation/AnimationState pendente |
-| DragonBones/src/dragonBones/model/AnimationData.ts (três classes) | dragonbones/model/AnimationData.lua | Dados/cache/timelines comparados; parent por contrato de teste, integração ArmatureData/playback pendente |
+| DragonBones/src/dragonBones/model/AnimationData.ts (três classes) | dragonbones/model/AnimationData.lua | Dados/cache/timelines comparados; integração com ArmatureData/BoneData/SurfaceData/SlotData reais aprovada nos cenários, playback pendente |
 | DragonBones/src/dragonBones/model/DisplayData.ts (oito classes) | dragonbones/model/DisplayData.lua | Dados/geometria/pesos e ciclo de vida comparados; referências externas por contrato, sem backend gráfico |
+| DragonBones/src/dragonBones/model/ArmatureData.ts (quatro classes) | dragonbones/model/ArmatureData.lua | Ordenação/ciclo de vida/cache comparados com AnimationData real; referências remanescentes por contrato |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |
