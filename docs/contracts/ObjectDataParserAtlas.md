@@ -1,6 +1,6 @@
 # ObjectDataParser — atlas e helpers (parcial)
 
-Fonte: parser/ObjectDataParser.ts de DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Atualização: nove dependências estruturais adicionais estão em StructuralParser.md; total 14/47 métodos. Produto dragonbones/parser/ObjectDataParser.lua; adaptação de linguagem em JSValue.lua. Não é um decoder JSON.
+Fonte: parser/ObjectDataParser.ts de DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Atualização: nove dependências estruturais adicionais estão em StructuralParser.md; total 21/47 métodos (incluindo agora GeometryParser.md). Produto dragonbones/parser/ObjectDataParser.lua; adaptação de linguagem em JSValue.lua. Não é um decoder JSON.
 
 | Parte implementada | Contrato |
 | --- | --- |
@@ -19,8 +19,8 @@ No argumento raw de parseTextureAtlasData, nil explícito/NULL significa consumi
 
 Coerções cobrem valores JSON-like, arrays e objetos simples, gramática decimal/Infinity/hex/bin/oct e whitespace ECMAScript. Não implementam funções/Symbol/BigInt, coerções customizadas, getters/proxies/descritores ou Object.prototype genérico. Uint/Float views e buffer binário têm contrato futuro próprio. Locales especiais de DataParser continuam pendentes.
 
-## Métodos ainda ausentes (33 de 47)
+## Métodos ainda ausentes (26 de 47)
 
-_getCurvePoint, _samplingEasingCurve, _parseActionDataInFrame, _mergeActionFrame, _parseArmature, _parseBone, _parseSkin, _parseDisplay, _parsePath, _parseMesh, _parseAnimation, _parseTimeline, _parseBoneTimeline, _parseSlotTimeline, _parseFrame, _parseTweenFrame, _parseSingleValueFrame, _parseDoubleValueFrame, _parseActionFrame, _parseZOrderFrame, _parseBoneAllFrame, _parseBoneTranslateFrame, _parseBoneRotateFrame, _parseBoneScaleFrame, _parseSlotDisplayFrame, _parseSlotColorFrame, _parseSlotDeformFrame, _parseIKConstraintFrame, _parseDeformFrame, _parseGeometry, _parseArray, _modifyArray, parseDragonBonesData.
+_getCurvePoint, _samplingEasingCurve, _parseActionDataInFrame, _mergeActionFrame, _parseArmature, _parseAnimation, _parseTimeline, _parseBoneTimeline, _parseSlotTimeline, _parseFrame, _parseTweenFrame, _parseSingleValueFrame, _parseDoubleValueFrame, _parseActionFrame, _parseZOrderFrame, _parseBoneAllFrame, _parseBoneTranslateFrame, _parseBoneRotateFrame, _parseBoneScaleFrame, _parseSlotDisplayFrame, _parseSlotColorFrame, _parseSlotDeformFrame, _parseIKConstraintFrame, _parseDeformFrame, _modifyArray, parseDragonBonesData.
 
-Não há substitutos que retornem nil/false para esses métodos. Importação de armaduras/animações, geometria, timelines, compactação e parseDragonBonesData precisam das implementações originais e testes próprios antes de declarar parsing completo.
+Não há substitutos que retornem nil/false para esses métodos. Importação completa de armaduras/animações, timelines, compactação e parseDragonBonesData precisam das implementações originais e testes próprios antes de declarar parsing completo.

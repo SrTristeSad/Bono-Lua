@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-structural-primitives`, sobre `main@ff2db0e`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-geometry-skins`, sobre `main@a2a3fe7`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -279,3 +279,18 @@ JSValue.iterator segue emit genuíno TS2.4 target ES5: índices e length vivo, i
 Cobertura: precedência rotate/skew sobre skX/skY e retenção de ângulos ausentes; escalas/extremos, cores percentuais/parciais, pivôs, tipos/defaults/erros de slots, ações gotoAndPlay com payloads esparsos e herança de refs, IK chain/parents, Path classe/subclasse/bones/ordem/duplicatas/ausentes, polígonos escalados/AABB/odd length/NaN/warning. Mutantes de colapsar undefined/null e reter máximo em vez de largura foram rejeitados; código restaurado e testes finais refeitos.
 
 Dezessete suítes na CI; consultar PR para SHA/CI/merge confirmados. Próximo recorte: _parseGeometry e dependências completas para Surface/Mesh/Path antes de _parseBone/_parseDisplay/_parseSkin. Entry point, animação, typed buffers, runtime/solver/renderização e demais limites continuam pendentes.
+
+
+## Geometria, bones, displays e skins do parser
+
+Base main a2a3fe7216a8445351be86967db4e5c13fb59bb0, PR #79/CI pós-merge 41700176642 aprovados e backup cd4206a8 conferido. Lidos os sete corpos TS/Lua do backup e dependências: _parseGeometry/_parseArray/_parseBone/_parsePath/_parseMesh/_parseDisplay/_parseSkin. Auditados também Matrix.invert/transformPoint originais. **21/47 métodos implementados; 26 pendentes**. _parseArmature, animação, _modifyArray e parseDragonBonesData continuam ausentes.
+
+Resultado final: **53 cenários, 2.498 operações e 34.972 colunas por VM Lua 5.4/LuaJIT**, tolerância zero por binary64/NaN canonicalizado/sinal do zero exato. Geometria/WeightData/bones/SurfaceData/meshes/paths/displays/skins/ações/armadura/DragonBonesData e matrizes reais. Contexto global/armadura/bones é semeado em teste, não importado por entrypoint fictício.
+
+Reservas de arrays de trabalho preservam holes/length/identidade/extras. Offsets continuam base 0; armazenamento Lua base 1. Mantidas fórmula floor(length−vertexCount)/2, reserva anterior à contagem de bones, slot não preenchido no cabeçalho de peso e loop weightCount no ramo sem poses. Erros de comprimento fracionário/overflow mantêm estado anterior e alocações órfãs. Poses com matrizes gerais/singulares/incompletas usam Matrix real; nil/undefined propaga NaN em invert/transformPoint, sem trocar matriz por identidade. Regressão matemática anterior passou nas duas VMs (2.463/12.231/158; 52 diferenças trig já previstas).
+
+Skin preserva placeholders null para raw falsy/undefined, índice de display para transferir ações, estado _skin/_slot em erro e limpeza após sucesso. Mesh share fica deferido em caches por presença da chave, inclusive null/undefined/false; resolução em _parseArmature segue pendente. Pose caches mantêm referências raw. Cadeia global→armadura→skin→mesh→weight exercitada com falha/retry no retorno.
+
+Arrays ainda são trabalho numérico sem tipos; teste vincula referências a DragonBonesData para consultar GeometryData antes de haver _modifyArray. Não produz ArrayBuffer/Int16Array/Float32Array, arquivo JSON/DBDT ou renderização. Coeficientes de poses seguem o contrato numérico (incluindo holes); coerções JS genéricas de coeficientes não numéricos não são equivalência afirmada.
+
+Mutantes de trocar weightCount por vertexCount e mover floor na expressão foram rejeitados (linhas 331/890); produto restaurado e execuções finais refeitas. Dezoito suítes na CI; consultar PR para SHA/CI/merge confirmados. Próximo recorte: _modifyArray e armazenamento binário compartilhado/typed views, com prova de alinhamento/coerção/bytes antes de entrypoints e animações restantes.

@@ -4,6 +4,8 @@
 -- This module follows the original class's methods, mutating self and preserving return values.
 local Matrix = {}
 Matrix.__index = Matrix
+-- Undefined numeric entries propagate NaN in arithmetic, as in JS.
+local function number(v)if v==nil then return 0/0 end;return v end
 local jsNumberString=require("dragonbones.geom.JSNumberString").format
 
 -- Lua 5.4 math.floor/math.ceil may return integer zero, losing the sign
@@ -98,15 +100,15 @@ function Matrix:invert()
     if aA == 0.0 or dA == 0.0 then
       self.a, self.b, self.tx, self.ty = 0.0, 0.0, 0.0, 0.0
     else
-      aA, self.a = 1.0 / aA, 1.0 / aA
-      dA, self.d = 1.0 / dA, 1.0 / dA
-      self.tx = -aA * txA
-      self.ty = -dA * tyA
+      aA, self.a = 1.0 / number(aA), 1.0 / number(aA)
+      dA, self.d = 1.0 / number(dA), 1.0 / number(dA)
+      self.tx = -aA * number(txA)
+      self.ty = -dA * number(tyA)
     end
     return self
   end
 
-  local determinant = aA * dA - bA * cA
+  local determinant = number(aA) * number(dA) - number(bA) * number(cA)
   if determinant == 0.0 then
     self.a, self.d = 1.0, 1.0
     self.b, self.c = 0.0, 0.0
@@ -115,22 +117,22 @@ function Matrix:invert()
   end
 
   determinant = 1.0 / determinant
-  local k = dA * determinant
+  local k = number(dA) * determinant
   self.a = k
-  bA, self.b = -bA * determinant, -bA * determinant
-  cA, self.c = -cA * determinant, -cA * determinant
-  dA, self.d = aA * determinant, aA * determinant
-  self.tx = -(k * txA + cA * tyA)
-  self.ty = -(bA * txA + dA * tyA)
+  bA, self.b = -number(bA) * determinant, -number(bA) * determinant
+  cA, self.c = -number(cA) * determinant, -number(cA) * determinant
+  dA, self.d = number(aA) * determinant, number(aA) * determinant
+  self.tx = -(k * number(txA) + cA * number(tyA))
+  self.ty = -(bA * number(txA) + dA * number(tyA))
   return self
 end
 
 function Matrix:transformPoint(x, y, result, delta)
-  result.x = self.a * x + self.c * y
-  result.y = self.b * x + self.d * y
+  result.x = number(self.a) * number(x) + number(self.c) * number(y)
+  result.y = number(self.b) * number(x) + number(self.d) * number(y)
   if not delta then
-    result.x = result.x + self.tx
-    result.y = result.y + self.ty
+    result.x = result.x + number(self.tx)
+    result.y = result.y + number(self.ty)
   end
 end
 
