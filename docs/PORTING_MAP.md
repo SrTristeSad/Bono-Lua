@@ -27,7 +27,7 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/DragonBonesData.ts | dragonbones/model/DragonBonesData.lua | Coleções/ownership e cache real comparados; buffers por referência, parser/typed views pendentes |
 | DragonBones/src/dragonBones/model/BoundingBoxData.ts (quatro classes) | dragonbones/model/BoundingBoxData.lua | Contains/interseções locais, outputs/aliases e ownership comparados; Slot/runtime hit testing pendente |
 | DragonBones/src/dragonBones/parser/DataParser.ts | dragonbones/parser/DataParser.lua | Constantes/conversões e aplicação em modelos reais comparadas; base abstrata, importação e locales especiais pendentes |
-| DragonBones/src/dragonBones/parser/ObjectDataParser.ts (parcial) | dragonbones/parser/ObjectDataParser.lua | 21/47 métodos comparados: geometry/array/bone/path/mesh/display/skin integrados; 26 pendentes, incluindo armature/animação/finalização binária/entrypoint |
+| DragonBones/src/dragonBones/parser/ObjectDataParser.ts (parcial) | dragonbones/parser/ObjectDataParser.lua | 22/47 métodos comparados: geometry/array/bone/path/mesh/display/skin/_modifyArray integrados; 25 pendentes, incluindo armature/animação/entrypoint |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |
@@ -41,3 +41,5 @@ JSNumberString.lua é adaptação de representação numérica da linguagem para
 JSArray.lua e JSMap.lua em dragonbones/core/ são adaptações de representação da linguagem, extraídas de AnimationConfig/TextureAtlasData e reutilizadas em AnimationData; não contam como classes upstream adicionais. A fronteira de leitura de parent está em docs/contracts/AnimationDataParent.md, sem classe de produto substituta.
 
 DisplayDataReferences.md registra as leituras e a propriedade das referências externas de DisplayData.ts. Não é uma nova interface upstream nem uma implementação dos modelos ainda ausentes.
+
+SharedBinaryBuffer.lua é adaptador da plataforma ArrayBuffer/Int16Array/Uint16Array/Float32Array usada pelo parser, não uma classe upstream adicional. Ver contracts/SharedBinaryBuffer.md.

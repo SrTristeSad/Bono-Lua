@@ -15,4 +15,6 @@ Fonte: model/DragonBonesData.ts de DragonBonesJS@64b6c69ae35777c2404be68c9192e2c
 
 No construtor, somente arrays/mapa e userData têm inicializadores upstream. Borrow/clear estabelece os demais defaults. Não antecipar name, frameRate, autoSearch, stage ou buffers em new. O clear de armaduras pode falhar, mantendo arrays/campos ainda não resetados; nomes não são sincronizados por mutação direta do mapa, como no original.
 
-O teste de integração usa buffers JS genuínos e referências Lua já decodificadas para comparar identidade/retirada e leituras de GeometryData.intArray. Isso não implementa ArrayBuffer, coerção numérica tipada, views compartilhadas, endianness/alinhamento ou parser JSON/DBDT. Esses contratos precisam de implementação e prova próprias antes de importar dados binários reais.
+O teste histórico de armazenamento usa buffers JS genuínos e referências Lua já decodificadas para comparar identidade/retirada e leituras de GeometryData.intArray. Isso não implementa ArrayBuffer, coerção numérica tipada, views compartilhadas, endianness/alinhamento ou parser JSON/DBDT. Esses contratos precisam de implementação e prova próprias antes de importar dados binários reais.
+
+A unidade posterior `_modifyArray` implementa Buffer/views compartilhados e coerção tipada, conforme [SharedBinaryBuffer.md](SharedBinaryBuffer.md). O teste binaryarrays usa o parser e modelos reais, bytes nativos, aliases e reciclagem. O limite do parágrafo histórico acima não descreve mais essa nova unidade; JSON/DBDT completos continuam pendentes.
