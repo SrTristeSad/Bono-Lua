@@ -10,12 +10,12 @@ Reconstruir o DragonBonesJS oficial em Lua, preservando arquitetura, algoritmos,
 - PR #63 integrado; main confirmada em 71929d98cbb0461eab99d83e6fa7e0a3c4bf0584.
 - Backup anterior: backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb; intacto.
 - Branch desta unidade: port/geom-matrix-transform, criada da main confirmada.
-- Para commits/PR/CI posteriores, conferir o remoto antes de continuar; não inventar SHA futuro.
+- Checkpoint de código desta unidade: `7414985a8a9464f736a54f411b49e86cfebf035e`, PR #64; CI 41579761219 confirmada com três jobs aprovados, logs e artefatos conferidos. Para o merge e commits documentais posteriores, consultar main/PR/CI no GitHub; não inventar SHA futuro.
 
 ## Trabalho efetivo
 
 Cinco classes em dragonbones/geom/: Point, Rectangle, ColorTransform, Matrix, Transform, com JSNumberString como adaptação da representação numérica dos toString.
-Primeiro lote: 1.384 operações / 8.288 campos por VM. Lote Matrix/Transform: 2.463 casos / 12.231 números / 158 strings por VM, aprovado localmente em Lua 5.4.8 e LuaJIT; CI da unidade deve ser conferida no PR.
+Primeiro lote: 1.384 operações / 8.288 campos por VM. Lote Matrix/Transform: 2.463 casos / 12.231 números / 158 strings por VM, aprovado localmente em Lua 5.4.8 e LuaJIT; CI do checkpoint de código aprovada nos três jobs (41579761219); resultado pós-merge deve ser conferido na main.
 Todos os métodos declarados de Matrix/Transform entram nos cenários; não há prova de todos os binary64/locales/objetos dinâmicos ou integração completa. Corrigida perda de -0 em transformRectangle; 52 comparações trigonométricas locais usam o limite predefinido em DIFFERENCES.md.
 Inventário e dependências: relatórios regeneráveis, 1.203 caminhos, 192 unidades autorais e 241 classes; cinco declarações externas de engines ausentes registradas.
 
