@@ -98,6 +98,12 @@
       "status": "AnimationData/TimelineData/AnimationTimelineData comparados com pool/enums reais; parent por contrato em teste, integração ArmatureData/playback pendente",
       "tests": "tests/animationdata_differential.js: 39 cenários, 1.084 operações e 11.924 colunas por VM Lua 5.4/LuaJIT, binary64 exato. Regressões config/models também aprovadas após extração de JSArray/JSMap. Ver VALIDATION.md.",
       "differences": "Mapas próprios em ordem JS, rawequal para indexOf, arrays lógicos base 1/length, campos numéricos undefined como NaN e Math.max propagando NaN. Preservada peculiaridade cacheFrames.length (aridade 1), inclusive quando contagem é zero. Contrato parent.sortedBones/sortedSlots documentado; sem classe ArmatureData fictícia. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/model/DisplayData.ts": {
+      "destination": "dragonbones/model/DisplayData.lua",
+      "status": "Oito classes (incluindo base abstrata e GeometryData sem pool) comparadas; dados de display sem renderização; referências a modelos não portados por contrato em teste",
+      "tests": "tests/displaydata_differential.js: 33 cenários, 1.117 operações e 10.053 colunas por VM Lua 5.4/LuaJIT, binary64 exato, com pool/math/ações/pesos/TextureData reais. Ver VALIDATION.md.",
+      "differences": "Metatables/new, arrays lógicos JSArray base 1; getters readonly e índice validado após BinaryOffset antes do deslocamento; offset undefined como NaN nesta adição. Contratos externos em contracts/DisplayDataReferences.md. Não há implementação fictícia de BoundingBoxData/BoneData/SkinData/ArmatureData/DragonBonesData. Ver DIFFERENCES.md."
     }
   }
 }

@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-animation-data`, sobre `main@b45b575`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-display-data`, sobre `main@975b031`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: auditar DisplayData.ts, especialmente GeometryData/WeightData, para preparar ArmatureData sem dependências de produto fictícias. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: retomar ArmatureData.ts com GeometryData real agora disponível, auditando referências remanescentes e integração de cache sem stubs de produto. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -138,7 +138,7 @@ Limites: holes e undefined explícito comparados por valor/comprimento, sem equi
 
 Checkpoint remoto: PR #69, código 52b1ded46b858d3bfd941c399e182bc0a3239d3d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41645915590 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram sete suítes passed, incluindo AnimationConfig com 30 cenários/1.293 operações/10.344 colunas/21 campos escalares. Três artefatos conferidos no mesmo SHA. Consultar PR #69 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
 
-## Unidade atual: AnimationData e dados de timelines
+## Unidade anterior: AnimationData e dados de timelines
 
 Base main b45b575d6a61fec17068f78f700a22b1bf9799b0; PR #69/CI pós-merge 41646190037 aprovados, backup cd4206a8 intacto, fonte fixada limpa. Lidos AnimationData.ts e ArmatureData.ts completos, Lua real dos dois arquivos no backup e relatório de dependências. ArmatureData não é instanciado nem chamado por AnimationData: cacheFrames lê parent.sortedBones/sortedSlots e name. Essa fronteira está documentada em contracts/AnimationDataParent.md; registros existem somente no teste. A classe real e seus demais algoritmos continuam pendentes.
 
@@ -151,3 +151,15 @@ Peculiaridade original preservada: cacheFrames usa this.cacheFrames.length, a ar
 Limites: parent é registro de contrato no teste, não ArmatureData real; não valida sortBones, cache de transformações, animação/playback ou GPU. Mapas não emulam Object.prototype; holes/undefined normalizam por valor/length, referências null/undefined por nil; descritores, proxies e modificação da aridade da função não são equivalência declarada. Precisão temporal automática real continua pendente. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #70, código 2b612757c2bfee0011db97cc3abea1a7de19625d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41650945111 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram oito suítes passed; novo lote 39 cenários/1.084 operações/11.924 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #70 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: DisplayData, GeometryData e WeightData
+
+Base main 975b0312d984313e7645fcc8d0d10026e49205d7, PR #70/CI pós-merge 41651358553 aprovados; backup cd4206a8 e fonte fixada limpa confirmados. Lidos DisplayData.ts completo, Lua real do backup e dependências; intArray de DragonBonesData declarado Int16Array. Destino dragonbones/model/DisplayData.lua, com as oito classes: GeometryData, DisplayData (abstrata), ImageDisplayData, ArmatureDisplayData, MeshDisplayData, BoundingBoxDisplayData, PathDisplayData e WeightData.
+
+Executáveis reais: BaseObject/Enums, Point/Transform e JSArray; testes usam também ActionData/UserData e TextureData reais. GeometryData não herda BaseObject nem recebe hash/pool fictício; a base DisplayData continua abstrata e herda a falha de toString do BaseObject. GeometryData.clear devolve weight somente se não compartilhado; shareFrom altera somente isShared/offset/weight, sem copiar data/inheritDeform nem reciclar o peso anterior. Display base limpa transform/nome/path/parent antes dos resets/reciclagem específicos. Preservadas identidades de geometry, pivot, transform e arrays, duplicatas e regras de referências não proprietárias.
+
+Execuções finais locais em Lua 5.4.8/LuaJIT: **33 cenários, 1.117 operações e 10.053 colunas por VM**, sem tolerância (binary64, NaN canonicalizado). Observados todos os campos declarados, getters/readonly, identidades/aliases, flags/ordem/pools/avisos, callbacks e estado parcial quando peso/ação/boundingBox falha. Cinco sequências determinísticas de 100 operações complementam cenários de compartilhamento, ações crescentes/esparsas, comprimento lógico e valores especiais.
+
+Falha real na linha 106: get g vertexCount em offset não inicializado devolvia erro Lua, mas o original devolvia undefined. Corrigido nil numérico para NaN nessa adição e validado índice após BinaryOffset, antes de somar 1. Experimento que removeu a validação foi rejeitado na linha 124 (offset subnormal acessava indevidamente o primeiro elemento); outro com ipairs em actions foi rejeitado na linha 254 (clear retornava quando o original falhava em undefined). Código restaurado e testes finais refeitos nas duas VMs.
+
+Fronteiras: SkinData/ArmatureData/BoneData/DragonBonesData e BoundingBoxData ainda não são classes de produto desta unidade. Registros de teste só fornecem referências, intArray já decodificado ou contrato returnToPool de boundingBox, documentados em contracts/DisplayDataReferences.md. Não validam typed arrays genéricos, parsing binário, hit testing, deformação, renderização/GPU ou armaduras/playback. Precisão temporal automática real continua pendente. CI/PR/merge deste checkpoint devem ser confirmados no SHA publicado.
