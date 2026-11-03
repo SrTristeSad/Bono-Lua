@@ -96,3 +96,11 @@ Confirmados main 13ae3b1, PR #71/CI pós-merge 41664512405, backup cd4206a8 e fo
 A inspeção exigiu distinguir undefined/null em referências com testes estritos no código. Mantido estado privado por instância e acessores herdados em SurfaceData, sem inicializar os campos antes do ponto original. Experimento que voltou a testar somente nil selecionou skin padrão cedo demais e falhou na linha 56. O acesso ao cache preserva índices efetivos antes de base 1; experimento sem validação falhou na linha 372 com subnormal. Produto restaurado e execuções finais refeitas.
 
 Ordenação original por espera de pai/constraint foi preservada com identidade estrita, sem detector de ciclos ou novo limite no motor. Testes usam grafos acíclicos e timeout externo só para evitar travamento da infraestrutura. Next: ler Lua real de ConstraintData antes do próximo porte; SkinData/DragonBonesData deverão substituir os contratos remanescentes com suas próprias comparações.
+
+## Modelos de constraints
+
+Confirmados main 57e7d48, PR #72/CI pós-merge 41673223815, backup cd4206a8 e fonte limpa/fixada. Lidos TS completo e Lua real do backup antes de portar base abstrata, IKConstraintData e PathConstraintData. Mantidos defaults reais, referências não proprietárias e capitalização AddBone; não atribuir type=Path no reset que o original deixa como IK.
+
+Append usa comprimento lógico JSArray e preserva os dois passos de push para manter RangeError/estado parcial no limite uint32. Experimento sem esse passo foi rejeitado em row 107; um reset de tipo inventado foi rejeitado em row 30. Código restaurado e execuções finais refeitas nas duas VMs sem mudar expectativas/tolerâncias. Sem solver ou constantes/classes provisórias.
+
+A suíte nova integra constraints concretas com modelos reais de armadura/bones/slot/path display, removendo a dependência de probes para essa fronteira. SkinData/DragonBonesData ainda exigem seus próprios portes e comparações; a próxima unidade precisa tratar null explícito em listas de displays distintamente de holes/undefined.
