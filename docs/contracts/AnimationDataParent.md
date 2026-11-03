@@ -1,5 +1,7 @@
 # Fronteira AnimationData.parent
 
+Atualização: armaturedata_differential agora integra AnimationData com ArmatureData/BoneData/SurfaceData/SlotData reais. O contrato abaixo continua descrevendo a suíte isolada anterior; o armazenamento global parent.cachedFrames de ArmatureData é outra fronteira, ainda sem DragonBonesData real.
+
 Fonte auditada: model/AnimationData.ts e model/ArmatureData.ts em DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Este documento descreve a leitura feita por cacheFrames, não declara uma interface upstream nova nem fornece uma classe ArmatureData substituta.
 
 | Acesso do algoritmo | Contrato Lua |

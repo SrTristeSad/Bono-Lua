@@ -311,3 +311,30 @@ Limites: registros locais só representam referências externas/Int16Array já d
 Artefatos regeneráveis: displaydata-cases.tsv, displaydata-original.tsv e saídas/JSON por VM. CI executa as nove suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## ArmatureData/BoneData/SurfaceData/SlotData e integração com AnimationData
+
+ArmatureData.ts completo e Lua real do backup relidos; dependências de ConstraintData/SkinData/DragonBonesData auditadas no TS antes de definir fronteiras. O oráculo compila o namespace genuíno e executa os arquivos emitidos de BaseObject, Point/Rectangle/Matrix/Transform/ColorTransform, UserData, CanvasData, DisplayData, AnimationData e ArmatureData. Nenhum clone dos algoritmos no JS nem classe de produto fictícia.
+
+Execuções finais reais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/armaturedata_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/armaturedata_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**34 cenários, 1.079 operações e 15.106 colunas por VM; passed.** Tolerância zero, binary64/NaN canonicalizado. Após cada operação: retorno/erro, campos declarados/refs, identidades de arrays/mapas/primitivos, defaults, poses/cores, pool/hash/flags/LIFO/limites/avisos, chamadas de cache/retorno/delegação e efeitos parciais. Colunas agregam campos, sem porcentagem de equivalência.
+
+Cobertura das quatro classes: raw new versus borrow, clear repetido, reuso, defaults e aliases; diferença entre refs undefined do construtor e null após limpeza/atribuição; skin default por nome e seleção inicial de animação, duplicatas/getters ausentes/existentes, delegação getMesh com MeshDisplayData real por contrato de skin. Ordenação em lugar de chains pai/filho/surface e constraints target/root com __eq adversário, repetição, lista vazia e erro parcial em hole. Cinco grafos acíclicos determinísticos com ordem de inserção embaralhada e 70 operações adicionais por grafo. Não há teste que execute ciclos não terminantes do original.
+
+Limpeza: ordem de ações default/normais, mapas de bone/slot/constraint/skin/animation, canvas/userData; chaves canônicas/não canônicas, exclusão/reinserção, callbacks que excluem entradas, ações que crescem e holes com erro. Falhas de UserData antes de resets de Bone/Surface/Slot, GeometryData/WeightData após super.clear de Surface, identidade de primitivos e cores não proprietárias; DEFAULT_COLOR compartilhado versus createColor independente.
+
+Cache: AnimationData percorre ArmatureData/BoneData/SurfaceData/SlotData reais, produzindo índices por nome; guarda positiva, falha/ordem de animações, atualização antecipada do rate, exclusão de mapa por callback e rate raw undefined. Armazenamento de dez componentes com Matrix/Transform reais, offset base 0, resize antes das leituras, holes/valores undefined, falha deliberada de leitura após dois componentes, range inválido antes de qualquer gravação e x/y restaurados de tx/ty. Leitura com offsets negativos/fracionários/subnormais/undefined/NaN/infinitos; números extremos e sinais de zero preservados. O registro parent.cachedFrames global não é DragonBonesData real.
+
+Experimentos reversíveis: substituir decisões estritas de null por getter ==nil falhou em row 56 add raw Skin one (skin escolhida no construtor antes da limpeza); remover validação de índice antes de +1 falhou em row 372 load a out pose 5e-324 (primeiro componente deveria ser undefined, outros seguem o arredondamento efetivo de +1 etc). Código restaurado e comandos finais refeitos nas duas VMs, sem relaxar expectativas/tolerâncias.
+
+Limites: ConstraintData/SkinData/DragonBonesData são registros de fronteira somente no teste, definidos em contracts/ArmatureDataReferences.md. Não comprovam solver/skin ownership/typed buffers reais, runtime Armature, parsing, playback ou GPU. A normalização pública null/undefined para nil mantém decisões estritas selecionadas em estado privado, sem emulação universal de descritores/proxies/Object.prototype; holes/undefined comparam por valor/length. Timeout de subprocesso (10s) é proteção de teste, não comportamento do motor nem detector de ciclos.
+
+Artefatos regeneráveis: armaturedata-cases.tsv, armaturedata-original.tsv e saídas/JSON por VM. CI executa as dez suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #72, código 5e77b9bf9454c3ea3e0b52190e8025adc252cea9. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41672562343 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram dez suítes passed; novo lote 34 cenários/1.079 operações/15.106 colunas, incluindo cache com ArmatureData/BoneData/SurfaceData/SlotData reais. Três artefatos conferidos no mesmo SHA. Consultar PR #72 para SHA final, merge e CI pós-merge; este registro não antecipa merge.

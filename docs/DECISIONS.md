@@ -88,3 +88,11 @@ Conferidos main 975b031, PR #70/CI pós-merge 41651358553, backup cd4206a8 e fon
 Arrays de ações/curvas/bones usam JSArray para preservar posições sem valor, append e erros de iteração. Getters de geometria receberam adaptação localizada undefined->NaN e validação do índice antes de base 1, após falha real na linha 106. Experimentos que removeram a validação ou restauraram ipairs foram rejeitados respectivamente nas linhas 124/254; produto restaurado e execuções finais refeitas. Getter-only vertexCount/triangleCount não se tornam campos graváveis.
 
 Mantida a propriedade original: compartilhar geometria não copia data/inheritDeform nem devolve peso antigo; bones/textures/skin/armature são referências não proprietárias, ações/peso não compartilhado/boundingBox têm devolução na ordem original. Sem contagem de referência ou limpeza extra. GeometryData agora pode ser dependência real de SurfaceData na próxima unidade ArmatureData; as demais fronteiras e playback continuam pendentes.
+
+## ArmatureData e integração de cache
+
+Confirmados main 13ae3b1, PR #71/CI pós-merge 41664512405, backup cd4206a8 e fonte limpa/fixada. Relidos TS/Lua reais de ArmatureData e lidos os TS de ConstraintData/SkinData/DragonBonesData para delimitar contratos. Portadas as quatro classes com GeometryData real, sem stubs de produto. AnimationData passa a ser exercitado com parent/BoneData/SurfaceData/SlotData reais; contratos ainda não implementados não são reclassificados como integração completa.
+
+A inspeção exigiu distinguir undefined/null em referências com testes estritos no código. Mantido estado privado por instância e acessores herdados em SurfaceData, sem inicializar os campos antes do ponto original. Experimento que voltou a testar somente nil selecionou skin padrão cedo demais e falhou na linha 56. O acesso ao cache preserva índices efetivos antes de base 1; experimento sem validação falhou na linha 372 com subnormal. Produto restaurado e execuções finais refeitas.
+
+Ordenação original por espera de pai/constraint foi preservada com identidade estrita, sem detector de ciclos ou novo limite no motor. Testes usam grafos acíclicos e timeout externo só para evitar travamento da infraestrutura. Next: ler Lua real de ConstraintData antes do próximo porte; SkinData/DragonBonesData deverão substituir os contratos remanescentes com suas próprias comparações.
