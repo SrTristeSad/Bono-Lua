@@ -8,7 +8,7 @@ Reconstruir em Lua o DragonBonesJS oficial fixado em 64b6c69ae35777c2404be68c919
 
 - Main 92c010556009b4e9c516217062f0d40a90652d14; PR #65 integrado, CI pós-merge 41581381619 aprovada.
 - Backup anterior backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, intacto.
-- Branch desta unidade port/model-canvas-textures, criada dessa main. Conferir checkpoint, PR, merge e CI posteriores no GitHub; não antecipar SHA futuro.
+- Branch desta unidade port/model-canvas-textures, criada dessa main. Checkpoint de código `eef0e925c11bb80295c539b16e23654de2522b0f`, PR #66; CI 41583478829 aprovada nos três jobs, logs e artefatos conferidos. Para merge e commits documentais posteriores, consultar GitHub; não antecipar SHA futuro.
 - O proprietário autorizou checkpoints testados na main. Isso não representa motor completo; testar e confirmar CI antes de integrar.
 
 ## Trabalho atual

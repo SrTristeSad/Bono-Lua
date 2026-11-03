@@ -171,6 +171,11 @@ Falhas observadas e resolvidas antes da aprovação:
 - O driver inicial transpila arquivos isoladamente e não resolve o namespace BaseObject. Passou a compilar o namespace genuíno junto, sem aliases globais de simulação. Também corrigido um conflito de nome de variável do driver.
 - Na operação copy dest src, pairs no porte antigo reatribuía objetos de pool a chaves diferentes das do original. Adaptada a ordem do mapa mantendo algoritmo e expectativas; os testes finais passaram nas duas VMs.
 
-Artefatos regeneráveis em artifacts/: models-cases.tsv, models-original.tsv, transcrição e JSON por VM. CI inclui esses resultados e as três suítes anteriores (geometria, matemática e BaseObject). CI/PR/merge desta unidade ainda devem ser confirmados no SHA publicado antes de declarar aprovação remota.
+Artefatos regeneráveis em artifacts/: models-cases.tsv, models-original.tsv, transcrição e JSON por VM. CI inclui esses resultados e as três suítes anteriores (geometria, matemática e BaseObject). CI do checkpoint de código confirmada abaixo; merge e CI pós-merge devem ser consultados pelo SHA efetivamente integrado.
 
 Não comprovado: renderer/backend concreto, parsing/armaduras/animação, coerções/reflexão genérica JS ou chaves herdadas especiais de Object.prototype. As classes de dados não são um backend gráfico completo. A próxima dependência escolhida para o core é WorldClock, com auditoria explícita da origem do tempo.
+
+### CI confirmada dos modelos
+
+Código `eef0e925c11bb80295c539b16e23654de2522b0f`, [PR #66](https://github.com/SrTristeSad/Bono-Lua/pull/66). [CI 41583478829](https://github.com/SrTristeSad/Bono-Lua/actions/runs/41583478829) aprovada nos três jobs: inventory 125743437769, geometry (lua5.4) 125743437741 e geometry (luajit) 125743437620. As duas VMs executaram as quatro suítes, incluindo o novo teste de modelos.
+Artefatos geometry-differential-lua5.4, geometry-differential-luajit e pinned-inventory-evidence confirmados com o mesmo head_sha; incluem os arquivos models-cases/original/actual/result. A integração e a CI pós-merge devem ser verificadas separadamente no GitHub.
