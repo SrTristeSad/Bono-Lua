@@ -308,4 +308,6 @@ Falha real: linha 106 get g vertexCount em offset sem inicialização devolvia e
 
 Limites: registros locais só representam referências externas/Int16Array já decodificado/returnToPool de boundingBox. Não validam BoneData/SkinData/ArmatureData/DragonBonesData/BoundingBoxData reais, parser de bytes, coerções/propriedades genéricas de typed arrays, hit testing, renderização, deformação ou playback. TextureData cru é classe real usada como referência não proprietária, sem subclasse gráfica. Referências null/undefined normalizam nil; holes/undefined por valor/length, sem descritores/proxies/Array.prototype. Precisão temporal automática real permanece pendente.
 
-Artefatos regeneráveis: displaydata-cases.tsv, displaydata-original.tsv e saídas/JSON por VM. CI executa as nove suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.
+Artefatos regeneráveis: displaydata-cases.tsv, displaydata-original.tsv e saídas/JSON por VM. CI executa as nove suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #71, código ff97d497f1392f9142aab71fe57bead8e1a6e292. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41664061129 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram nove suítes passed; novo lote 33 cenários/1.117 operações/10.053 colunas. Três artefatos conferidos no mesmo SHA. Consultar PR #71 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
