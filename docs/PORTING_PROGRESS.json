@@ -140,6 +140,12 @@
       "status": "Base abstrata: 132 constantes e dez conversões comparadas, com aplicações em modelos reais; assinatura sem corpo documentada; importação JSON/binária e locales especiais pendentes",
       "tests": "tests/dataparser_differential.js: 11.206 operações e 44.824 colunas por VM Lua 5.4/LuaJIT, tolerância zero; 132 constantes, dez métodos, duas assinaturas abstratas ausentes e 90 aplicações em modelos reais. Todas as combinações ASCII de caixa dos tokens, versões compartilhadas/esparsas e Unicode Kelvin. Ver VALIDATION.md.",
       "differences": "DATA_VERSIONS usa JSArray base 1/length, compartilhado na herança estática. Matching ASCII independente do locale C, com Kelvin→k; não implementa lower Unicode genérico. Os três helpers toLocaleLowerCase seguem casing não túrquico en-US testado; outros locales do host exigem adaptação e não têm equivalência afirmada. Não cria corpos abstratos nem parser parcial fictício. Ver contracts/DataParserBase.md."
+    },
+    "DragonBones/src/dragonBones/parser/ObjectDataParser.ts": {
+      "destination": "dragonbones/parser/ObjectDataParser.lua",
+      "status": "PARCIAL: 5/47 métodos (três helpers, parseTextureAtlasData, getInstance), 38 inicializadores de instância e ActionFrame; 42 métodos restantes ausentes, incluindo parseDragonBonesData",
+      "tests": "tests/objectatlas_differential.js: 39 cenários/2.572 operações/28.292 colunas por VM Lua 5.4/LuaJIT, tolerância zero. Atlas/TextureData/Rectangle/pool reais; factory abstrata concretizada somente no teste. Ver VALIDATION.md.",
+      "differences": "JSValue representa null/undefined explícitos, arrays marcados e coerções de dados JSON-like; não decodifica texto JSON/bytes ou objetos JS genéricos. Atlas mantém coordenadas sem multiplicar pela escala, duplicatas/órfãos e falhas parciais; fila injetada apenas em teste até parseDragonBonesData existir. ActionFrame exportado como propriedade do módulo/classe Lua. Contrato ObjectDataParserAtlas.md."
     }
   }
 }
