@@ -11,10 +11,47 @@ function V.object(raw)
   return raw
 end
 function V.has(raw,key)return V.object(raw)[key]~=nil end
-function V.get(raw,key)local v=V.object(raw)[key];if v==nil then return V.UNDEFINED end;return v end
+function V.get(raw,key)
+ if raw==nil or rawequal(raw,V.NULL) or rawequal(raw,V.UNDEFINED) then error('Cannot read null/undefined') end
+ if type(raw)=='string' then
+  if key=='length' then local count=0;for _ in V.iterator(raw) do count=count+1 end;return count end
+  return V.UNDEFINED -- other string prototype properties are outside this adapter
+ end
+ if type(raw)~='table' then return V.UNDEFINED end
+ local v=raw[key];if v==nil then return V.UNDEFINED end;return v
+end
 function V.at(raw,index)
- local v;if V.isArray(raw) then v=raw[index+1] else v=V.object(raw)[string.format('%.0f',index)] end
+ local v;if V.isArray(raw) then v=raw[index+1]
+ elseif type(raw)=='string' then local iterator=V.iterator(raw);for _=0,index do v=iterator() end
+ else v=V.get(raw,string.format('%.0f',index)) end
  if v==nil then return V.UNDEFINED end;return v
+end
+-- The pinned TS 2.4/ES5 emit lowers for-of to indexed live-length loops,
+-- including array-like objects and UTF-16 string units (not ES2015 iterators).
+local function unitString(unit)
+ if unit<128 then return string.char(unit) end
+ if unit<2048 then return string.char(192+math.floor(unit/64),128+unit%64) end
+ return string.char(224+math.floor(unit/4096),128+math.floor(unit/64)%64,128+unit%64)
+end
+function V.iterator(value)
+ local index=0
+ if type(value)=='string' then
+  local units={};local offset=1
+  while offset<=#value do
+   local a,b,c,d=value:byte(offset,offset+3);local cp,width
+   if a<128 then cp,width=a,1 elseif a<224 then cp,width=(a-192)*64+b-128,2
+   elseif a<240 then cp,width=(a-224)*4096+(b-128)*64+c-128,3
+   else cp,width=(a-240)*262144+(b-128)*4096+(c-128)*64+d-128,4 end
+   if cp>65535 then local v=cp-65536;units[#units+1]=unitString(55296+math.floor(v/1024));units[#units+1]=unitString(56320+v%1024)
+   else units[#units+1]=unitString(cp) end
+   offset=offset+width
+  end
+  return function()index=index+1;return units[index] end
+ end
+ return function()
+  if not (index<V.number(V.get(value,'length'))) then return nil end
+  local item=V.at(value,index);index=index+1;return item
+ end
 end
 function V.truthy(v)
  if v==nil or rawequal(v,V.NULL) or rawequal(v,V.UNDEFINED) or v==false then return false end

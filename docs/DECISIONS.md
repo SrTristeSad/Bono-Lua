@@ -132,3 +132,8 @@ Auditoria integral TS/Lua do backup antes do porte. Reaproveitadas constantes e 
 ## Primeiro recorte ObjectDataParser
 
 Auditoria dos métodos/initializers de helpers e atlas no TS fixado e Lua do backup; AST/estrutura enumera 47 métodos/39 propriedades no arquivo todo. Não atribuir auditoria dos corpos remanescentes ao lote. Reaproveitada ordem original, corrigindo adaptações antigas de nil/NaN, arrays vazios e fila usando JSValue/JSArray em vez de heurísticas de #. Sem decoder/factory gráfico novo ou stubs de parseDragonBonesData. Atlas/texturas reais, factory concreta somente no teste e órfãos/erros preservados. Mutantes de default para undefined e escala aplicada às coordenadas foram rejeitados, produto restaurado e lote final repetido. Próximo recorte estrutural deve mapear dependências reais antes de oferecer entrypoint de importação.
+
+
+## Dependências estruturais completas antes de bones/skins
+
+Auditoria identificou geometria/surface/mesh/path e animação como dependências ainda ausentes de bone/display/skin/armature. Escolhidos nove métodos completos independentes, preservando seus modelos reais e efeitos parciais; não acrescentados stubs para cumprir chamadas pendentes. Reutilizado Lua do backup após comparar cada corpo TS, com presença null/undefined, length e ramo de classe corrigidos. UserData lógico e adaptador interno de referência são mudanças de representação necessárias para integrar os métodos. For-of validado contra emit fixado ES5; fixtures no realm da VM e transporte UTF-16 garantem observação de ramos verdadeiros e surrogates, sem trocar por semântica ES2015. Mutantes de parent e AABB foram rejeitados; produto restaurado e execuções finais repetidas.

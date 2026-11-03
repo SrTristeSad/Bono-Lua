@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-object-atlas`, sobre `main@771b932`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-structural-primitives`, sobre `main@ff2db0e`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -264,3 +264,18 @@ Atlas conserva ordem dos campos, reciprocal scale somente com argumento 1, coord
 Singleton e todos os inicializadores de instância comparados; ActionFrame tem frameStart=0/actions lógico e exportação Lua no módulo. Experimentos de tratar undefined como null/default e aplicar escala às coordenadas foram rejeitados; produto restaurado e execuções finais refeitas. Dezesseis suítes na CI. Consultar PR para SHA/CI/merge confirmados.
 
 Pendentes: 42 métodos do arquivo, parsing completo JSON/DBDT/texto, arrays tipados/buffers compartilhados, coerções/descritores/proxies/Object.prototype genéricos, locales especiais herdados de DataParser, runtime/solver/playback/renderização. Próximo recorte: modelos estruturais de armaduras, bones, slots e skins, mapeando todas as dependências de _parseArmature antes de acrescentar entrypoint de importação.
+
+
+## Dependências estruturais de ObjectDataParser
+
+Base main ff2db0ed4c5a54850354a2c5a0fbeb9a20935ed9, PR #78/CI pós-merge 41696197476 aprovados e backup cd4206a8 conferido. Lidos TS e Lua do backup dos nove métodos: transform/color/pivot, IK/Path, slot/action, bounding box/polygon. Dependências de bone/skin/display/armature identificadas como geometria/animação ainda ausentes; nenhum corpo parcial ou stub foi acrescentado a esses métodos. **14/47 métodos implementados, 33 pendentes**.
+
+Novo lote: **55 cenários, 2.465 operações e 27.115 colunas por VM Lua 5.4/LuaJIT**, tolerância zero por binary64/NaN canonicalizado, sinal de zero exato. ArmatureData/BoneData/SlotData/SkinData/PathDisplayData/bounding boxes/constraints/ActionData/UserData e pool reais, inclusive subclasse de PathDisplayData. Coletor de alocações só observa borrowObject real e inclui órfãos/falhas depois de alocar.
+
+UserData agora usa JSArray lógico nos três arrays para preservar length e getters com holes/undefined; suíte anterior de eventos passou localmente nas duas VMs. ArmatureData exporta adaptador interno _isNullReference para o parser conservar parent/defaultSkin undefined versus null; não é novo método upstream de armadura. IK com parent cru undefined e Path com defaultSkin cru undefined seguem ramos originais.
+
+JSValue.iterator segue emit genuíno TS2.4 target ES5: índices e length vivo, inclusive array-like sem Symbol.iterator; strings iteram unidades UTF-16. Surrogates isolados são bytes WTF-8 em Lua, observados como UTF-16LE no transporte do teste. Fixtures JS são arrays do mesmo realm do oráculo (instanceof Array) e têm checagem positiva de modelos alcançados. Não é adoção de semântica ES2015 nova.
+
+Cobertura: precedência rotate/skew sobre skX/skY e retenção de ângulos ausentes; escalas/extremos, cores percentuais/parciais, pivôs, tipos/defaults/erros de slots, ações gotoAndPlay com payloads esparsos e herança de refs, IK chain/parents, Path classe/subclasse/bones/ordem/duplicatas/ausentes, polígonos escalados/AABB/odd length/NaN/warning. Mutantes de colapsar undefined/null e reter máximo em vez de largura foram rejeitados; código restaurado e testes finais refeitos.
+
+Dezessete suítes na CI; consultar PR para SHA/CI/merge confirmados. Próximo recorte: _parseGeometry e dependências completas para Surface/Mesh/Path antes de _parseBone/_parseDisplay/_parseSkin. Entry point, animação, typed buffers, runtime/solver/renderização e demais limites continuam pendentes.

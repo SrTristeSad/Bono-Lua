@@ -435,5 +435,7 @@ return {
   ArmatureData = ArmatureData,
   BoneData = BoneData,
   SurfaceData = SurfaceData,
-  SlotData = SlotData
+  SlotData = SlotData,
+  -- Internal language adapter: parser branches must distinguish null/undefined.
+  _isNullReference = isNullReference
 }
