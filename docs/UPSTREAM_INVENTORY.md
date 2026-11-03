@@ -465,7 +465,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente nos cenários diferenciais; integração com modelos pendente |
 | `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | dragonbones/event/IEventDispatcher.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -3072,8 +3072,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/core/BaseObject.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/core/BaseObject.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/core/BaseObject.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/core/BaseObject.lua. Implementação presente nesta reconstrução.
+- Estado: Validado isoladamente nos cenários diferenciais; integração com modelos pendente; testes: tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.; diferenças: Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/DragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

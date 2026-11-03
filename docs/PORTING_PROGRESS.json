@@ -30,6 +30,12 @@
       "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
       "tests": "tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.",
       "differences": "Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md."
+    },
+    "DragonBones/src/dragonBones/core/BaseObject.ts": {
+      "destination": "dragonbones/core/BaseObject.lua",
+      "status": "Validado isoladamente nos cenários diferenciais; integração com modelos pendente",
+      "tests": "tests/baseobject_differential.js: 38 cenários, 1.211 operações e 12.110 colunas de transcrição por VM (Lua 5.4 e LuaJIT); tolerância zero. Ver VALIDATION.md.",
+      "differences": "Tabelas/metatables/new; chave string derivada do toString estático do construtor (colisões preservadas); ordem de chaves JS; avisos em stderr; tipos de exceção observados por categoria. Ver DIFFERENCES.md."
     }
   }
 }
