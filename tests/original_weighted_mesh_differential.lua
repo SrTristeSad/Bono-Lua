@@ -22,7 +22,7 @@ local actual={
     end
     return result
   end)(),","),
-  weight=tostring(weight.count),
+  weight=("%d"):format(weight.count), -- Lua 5.4 may stringify an integer-valued float as "6.0"
   bones=(function()
     local result={}
     for _,bone in ipairs(weight.bones) do result[#result+1]=bone.name end
