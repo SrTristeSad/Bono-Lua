@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-data-base`, sobre `main@da30013`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-object-atlas`, sobre `main@771b932`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: ObjectDataParser.ts e Lua real do backup, começando pelos helpers e importação de atlas com modelos reais; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: continuar ObjectDataParser nas estruturas de armadura/bones/slots/skins e dependências originais; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -249,3 +249,18 @@ Conversões aplicadas a ArmatureData/BoneData/SurfaceData, PathConstraintData, S
 Keyword matching baixa ASCII sem depender de locale C e reconhece K→k para darken. Auditoria de escalares Unicode do motor do oráculo encontrou Kelvin como fold não ASCII para letra ASCII; não é um lower Unicode genérico. Os três helpers com toLocaleLowerCase seguem o casing não túrquico/en-US validado; locales como tr/az podem divergir e permanecem pendência de host explícita. Experimentos de perder Kelvin e de fazer trim incorreto foram rejeitados; produto restaurado e teste final refeito nas duas VMs.
 
 Quinze suítes na CI. Consultar PR do checkpoint para SHA/CI/merge confirmados. Próxima unidade: auditar ObjectDataParser.ts completo e Lua, começando pelos helpers de valores e parseTextureAtlasData com modelos de atlas/textura reais. Parsing de armaduras/animações JSON e binário/typed buffers, runtime e renderização continuam pendentes.
+
+
+## ObjectDataParser — porte parcial de helpers e atlas
+
+Base main 771b932f065cce3570c8073a8529a2b130ed0f1e, PR #77/CI pós-merge 41693321632 aprovados e backup cd4206a8 conferido. Auditado o recorte TS e Lua do backup de helpers, inicializadores, atlas, singleton e ActionFrame; inventário estrutural do arquivo inteiro identifica **47 métodos, 39 propriedades (38 de instância + singleton estático)**. Cinco métodos implementados; os 42 restantes não receberam stubs. Este lote não afirma auditoria semântica completa dos corpos ainda não portados.
+
+Resultado final por VM Lua 5.4/LuaJIT: **39 cenários, 2.572 operações e 28.292 colunas**, tolerância zero por binary64/NaN canonicalizado, sinal do zero exato. Oráculo executa nove arquivos emitidos genuínos com ObjectDataParser/TextureAtlasData/TextureData/Rectangle/pool reais. As classes abstratas de atlas/textura recebem factory concreta só no teste; nenhum backend gráfico foi criado.
+
+JSValue é adaptação de linguagem para valores já decodificados: NULL/UNDEFINED explícitos, presença separada de truthiness, arrays marcados base 1/length, Boolean/Number/String de primitivos/arrays/objetos simples. Não há JSON decoder. _getNumber mantém null ou string exata NaN como default, undefined/NaN numérico/zero como +0, e gramática JS para strings numéricas. _getBoolean mantém comparação literal de strings e truthiness JS. _getString reutiliza JSNumberString, distingue arrays vazios de objetos e rejeita toString próprio não chamável.
+
+Atlas conserva ordem dos campos, reciprocal scale somente com argumento 1, coordenadas sem escala, frame só se ambas dimensões positivas, duplicatas rejeitadas sem devolver textura órfã e estado parcial de erros. Fila incrementa índice antes da recursão e relê o campo de fila após retorno; falha não reseta índice/fila. Console.assert de raw undefined é aviso, seguido da falha original. A fila é semeada somente no teste; parseDragonBonesData ainda não a popula no produto.
+
+Singleton e todos os inicializadores de instância comparados; ActionFrame tem frameStart=0/actions lógico e exportação Lua no módulo. Experimentos de tratar undefined como null/default e aplicar escala às coordenadas foram rejeitados; produto restaurado e execuções finais refeitas. Dezesseis suítes na CI. Consultar PR para SHA/CI/merge confirmados.
+
+Pendentes: 42 métodos do arquivo, parsing completo JSON/DBDT/texto, arrays tipados/buffers compartilhados, coerções/descritores/proxies/Object.prototype genéricos, locales especiais herdados de DataParser, runtime/solver/playback/renderização. Próximo recorte: modelos estruturais de armaduras, bones, slots e skins, mapeando todas as dependências de _parseArmature antes de acrescentar entrypoint de importação.

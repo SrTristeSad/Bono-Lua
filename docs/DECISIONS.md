@@ -127,3 +127,8 @@ Lidos BoundingBoxData.ts integral fixado e Lua integral do backup. Reaproveitada
 ## Base DataParser
 
 Auditoria integral TS/Lua do backup antes do porte. Reaproveitadas constantes e mapeamentos com import atual de Enums; array de versões passou a JSArray. Sem fake ObjectDataParser/BinaryDataParser nem corpos abstratos que retornem nil/false. Matching de keywords ASCII independe do locale C, inclui fold Kelvin observado no motor JS e registra separadamente a fronteira de toLocaleLowerCase en-US versus outros locales. AST extrai constantes e branches para entradas, mas retornos vêm do TS genuíno; aplicações em modelos reais não são chamadas de parsing. Mutantes de Kelvin/trim foram rejeitados; produto restaurado e lote final repetido. Próxima unidade: ObjectDataParser, helpers e atlas reais antes de declarar importação de armadura/animação ou binário.
+
+
+## Primeiro recorte ObjectDataParser
+
+Auditoria dos métodos/initializers de helpers e atlas no TS fixado e Lua do backup; AST/estrutura enumera 47 métodos/39 propriedades no arquivo todo. Não atribuir auditoria dos corpos remanescentes ao lote. Reaproveitada ordem original, corrigindo adaptações antigas de nil/NaN, arrays vazios e fila usando JSValue/JSArray em vez de heurísticas de #. Sem decoder/factory gráfico novo ou stubs de parseDragonBonesData. Atlas/texturas reais, factory concreta somente no teste e órfãos/erros preservados. Mutantes de default para undefined e escala aplicada às coordenadas foram rejeitados, produto restaurado e lote final repetido. Próximo recorte estrutural deve mapear dependências reais antes de oferecer entrypoint de importação.
