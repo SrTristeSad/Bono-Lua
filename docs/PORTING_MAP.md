@@ -18,6 +18,7 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/event/EventObject.ts | dragonbones/event/EventObject.lua | Objeto de evento e conversão de ações comparados com pool real |
 | DragonBones/src/dragonBones/model/UserData.ts (duas classes) | dragonbones/model/UserData.lua | UserData/ActionData e reciclagem de payload comparados |
 | DragonBones/src/dragonBones/event/IEventDispatcher.ts | docs/contracts/IEventDispatcher.md | Contrato documentado; listeners/backend real pendentes |
+| DragonBones/src/dragonBones/model/AnimationConfig.ts | dragonbones/model/AnimationConfig.lua | Defaults, cópia, máscaras esparsas/aliases e pool comparados; consumo por Animation/AnimationState pendente |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

@@ -475,7 +475,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/geom/Point.ts` | Código-fonte do núcleo | dragonbones/geom/Point.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Rectangle.ts` | Código-fonte do núcleo | dragonbones/geom/Rectangle.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Transform.ts` | Código-fonte do núcleo | dragonbones/geom/Transform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
-| `DragonBones/src/dragonBones/model/AnimationConfig.ts` | Código-fonte do núcleo | dragonbones/model/AnimationConfig.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/model/AnimationConfig.ts` | Código-fonte do núcleo | dragonbones/model/AnimationConfig.lua | Configuração comparada com BaseObject/enums reais; consumo por Animation/AnimationState e runtime completo pendente |
 | `DragonBones/src/dragonBones/model/AnimationData.ts` | Código-fonte do núcleo | dragonbones/model/AnimationData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/ArmatureData.ts` | Código-fonte do núcleo | dragonbones/model/ArmatureData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/model/BoundingBoxData.ts` | Código-fonte do núcleo | dragonbones/model/BoundingBoxData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -3692,8 +3692,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/model/AnimationConfig.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/model/AnimationConfig.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/model/AnimationConfig.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/model/AnimationConfig.lua. Implementação presente nesta reconstrução.
+- Estado: Configuração comparada com BaseObject/enums reais; consumo por Animation/AnimationState e runtime completo pendente; testes: tests/config_differential.js: 30 cenários, 1.293 operações, 10.344 colunas e 21 campos escalares por VM Lua 5.4/LuaJIT, bytes binary64 exatos. Ver VALIDATION.md.; diferenças: Metatables/new; boneMask com entradas base 1 e length lógico, preservando posições sem valor e identidade. Enums importados diretamente de core/Enums. Holes/undefined normalizados por valor/comprimento, sem equivalência de descritores/proxies. Ver DIFFERENCES.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

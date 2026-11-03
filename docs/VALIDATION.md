@@ -233,3 +233,28 @@ Probes de Armature/dispatcher/animatable só implementam fronteiras ainda não p
 Artefatos regenerados: events-cases.tsv, events-original.tsv, events-enums-original.tsv e saídas/valores de enums/JSON por VM. CI executa as seis suítes e publica evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #68, código 856b37a49ea10da7f4b43ba76da63c99dcb1a09a. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41634841014 aprovada: inventory, geometry (lua5.4) e geometry (luajit). Logs de ambos os jobs confirmaram seis suítes passed, incluindo 25 cenários/1.147 operações/16.058 colunas/98 enums no lote de eventos; três artefatos publicados no mesmo SHA. Consultar PR #68 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## AnimationConfig
+
+Fonte model/AnimationConfig.ts no commit único, original integral e Lua real do backup lidos antes da implementação. tests/config_differential.js compila o namespace genuíno e executa somente BaseObject.ts/AnimationConfig.ts emitidos; const enums são resolvidos pelo compilador a partir do core original. Nenhum core/AnimationState fictício é introduzido no oráculo ou produto.
+
+Execuções locais finais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/config_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/config_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**30 cenários, 1.293 operações e 10.344 colunas por VM; passed.** Tolerância zero, bytes binary64 (NaN canonicalizado). Cada operação compara retorno/categoria de erro, os 21 campos escalares de cada instância, campos extras, identidades de objeto/máscara, comprimento e entradas definidas da máscara, campos nomeados, pools/flags/LIFO/limites/avisos e sequência de leituras de getters. Colunas agregam vários campos, não representam uma porcentagem de equivalência.
+
+Cenários: raw new versus borrow, clear repetido, defaults reais, cópia de todos os campos e de campos ainda não inicializados, alteração independente da origem/destino, cópia em si mesmo, aliases de máscara, máscaras densas/esparsas/vazias, strings vazias/repetidas/UTF-8, crescimento/truncamento, índice máximo e length 2^32-1 sem materializar bilhões de posições. Valores especiais/preservação de sinal e subnormais nos campos numéricos; limites zero/negativos/fracionários/NaN/infinitos no pool e em length; seis sequências determinísticas de 100 operações.
+
+Getters são instalados somente em instâncias reais de origem do teste e observam a ordem de copyFrom. Dez posições (incluindo primeira, intermediárias, leitura de boneMask e elemento depois do resize) permitem sucesso ou falha deliberada; estado parcial do destino é comparado. Não emulam o algoritmo de cópia. Snapshot lê armazenamento do probe sem acionar getters/falhas fora da chamada observada.
+
+Verificação de regressão: experimento temporário usando # em copyFrom foi rejeitado na linha 61 copy dest src, com máscara de comprimento lógico 5 e apenas o índice JS 3 definido. Produto restaurado e comandos finais refeitos nas duas VMs. A primeira execução também detectou falha no transporte Lua de delete de índice ausente; corrigida para rawset(...,nil), mantendo as expectativas originais.
+
+Normalização explícita: holes/undefined de máscara comparados por valor e length; descritores/hasOwnProperty/proxies/Array.prototype não são equivalência declarada. Animation/AnimationState/Armature ainda não consomem essa classe no produto e não foram validados aqui. Precisão temporal automática real continua pendente.
+
+Artefatos regeneráveis: config-cases.tsv, config-original.tsv, config-<vm>-actual.tsv e config-<vm>-result.json. CI executa as sete suítes e preserva evidências por VM. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #69, código 52b1ded46b858d3bfd941c399e182bc0a3239d3d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41645915590 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram sete suítes passed, incluindo AnimationConfig com 30 cenários/1.293 operações/10.344 colunas/21 campos escalares. Três artefatos conferidos no mesmo SHA. Consultar PR #69 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
