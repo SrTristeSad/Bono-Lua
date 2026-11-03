@@ -363,3 +363,28 @@ Limites: não executa IKConstraint/PathConstraint ou qualquer solver de runtime,
 Artefatos regeneráveis: constraintdata-cases.tsv, constraintdata-original.tsv e saídas/JSON por VM. CI executa as onze suítes e preserva evidências. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #73, código db0c8806dfb903427ff51c47cfae58733571a391. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41676866452 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram onze suítes passed; novo lote 23 cenários/817 operações/7.353 colunas com integração de constraints reais. Três artefatos conferidos no mesmo SHA. Consultar PR #73 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## SkinData e integração real com armadura/displays
+
+SkinData.ts completo e Lua real do backup lidos. O oráculo compila o namespace genuíno e executa BaseObject, Point/Rectangle/Matrix/Transform/ColorTransform, UserData, DisplayData, AnimationData, ArmatureData e SkinData emitidos. Todos os modelos instanciados são reais; hooks/setters só observam instâncias, sem versão reescrita do algoritmo ou registro de skin substituto.
+
+Execuções finais reais:
+
+```sh
+NODE_PATH=../tooling/node_modules node tests/skindata_differential.js ../DragonBonesJS ../lua54/lua
+NODE_PATH=../tooling/node_modules node tests/skindata_differential.js ../DragonBonesJS ../luajit/src/luajit
+```
+
+**29 cenários, 814 operações e 8.140 colunas por VM; passed.** Tolerância zero, binary64/NaN canonicalizado. Cada operação observa retorno/erro, todos os campos de SkinData, mapa/listas/length/identidades/aliases, null distinto de undefined/hole, refs/parent e estado de displays/pesos/ações/payloads, pools/hash/flags/LIFO/limites/avisos, callbacks/setters e efeitos parciais. Hole versus undefined próprio normaliza descritores, preservando valor lido e diferença de null.
+
+Cobertura: raw new versus borrow e defaults; ausência/presença de slots, primeiro nome/nomes alterados, null explícito e marcador, argumento omitido/undefined criando lista antes do erro; listas esparsas com lookup antes de hole ou erro ao alcançá-lo; identidade estrita contra __eq; duplicatas e um display compartilhado entre skins sem detach da lista anterior; aliases/listas retornadas após map deletion. Ordem de chaves numéricas/-0/01 e reinserção, callbacks que acrescentam à lista, excluem chave futura ou criam chave nova que permanece na próxima enumeração/reuso da skin. Cinco sequências determinísticas de 80 operações.
+
+Parent setters em modelos reais observam erro, substituição e exclusão de lista antes do push, sem acionar setters na serialização. Overflow 2^32-1 mantém parent/propriedade não índice antes de RangeError; resize para zero preserva a propriedade não índice da lista alias. Erros de retorno preservam mapa e campos ainda não resetados, com retry original.
+
+Integração com ArmatureData.addSkin/getMesh/_onClear e displays concretos: getMesh sem filtro adicional de tipo do cast TS, geometria compartilhada, peso real falhando na cadeia display/skin/armadura, e ArmatureDisplayData com ActionData/UserData reais. Sem skin stub. A diferença null/undefined das listas foi preservada nos modelos; backend/renderização não foram exercitados.
+
+Experimentos reversíveis: substituir loop de limpeza por ipairs falhou em row 65 clear s (esperado erro no hole, obtido void); remover distinção do argumento omitido falhou em row 77 add s omitted omit. Produto restaurado e comandos finais refeitos nas duas VMs, sem relaxar comparação.
+
+Limites: não comprova seleção/renderização de skins no runtime, parser/binário/typed buffers, solver/deformação/playback/GPU ou precisão temporal automática real. DragonBonesData global e BoundingBoxData reais permanecem pendentes. Fora de listas, refs null/undefined normalizam nil; mapas não emulam Object.prototype e descritores/proxies/coerções JS genéricos não são equivalência declarada. Consumidores futuros devem reconhecer o marcador truthy SkinData.NULL.
+
+Artefatos regeneráveis: skindata-cases.tsv, skindata-original.tsv e saídas/JSON por VM. CI executa as doze suítes e preserva evidências. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.

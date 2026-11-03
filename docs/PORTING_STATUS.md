@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-constraint-data`, sobre `main@57e7d48`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-skin-data`, sobre `main@2e25e30`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: SkinData.ts após leitura do Lua real, preservando null explícito versus hole em listas; depois DragonBonesData para completar o armazenamento global real. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: DragonBonesData.ts e Lua real do backup, para substituir a fronteira de armazenamento global por modelos reais; buffers/parsers ainda precisam de auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -182,7 +182,7 @@ Limites: ConstraintData/SkinData/DragonBonesData reais ainda não portados; cont
 
 Checkpoint remoto: PR #72, código 5e77b9bf9454c3ea3e0b52190e8025adc252cea9. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41672562343 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram dez suítes passed; novo lote 34 cenários/1.079 operações/15.106 colunas, incluindo cache com ArmatureData/BoneData/SurfaceData/SlotData reais. Três artefatos conferidos no mesmo SHA. Consultar PR #72 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
 
-## Unidade atual: ConstraintData, IKConstraintData e PathConstraintData
+## Unidade anterior: ConstraintData, IKConstraintData e PathConstraintData
 
 Base main 57e7d48dc2c1e47cccc0fbd07db0b32297017c60, PR #72/CI pós-merge 41673223815 aprovados, backup cd4206a8 e fonte limpa/fixada conferidos. Lidos ConstraintData.ts completo e Lua real do backup; dependências executáveis BaseObject/Enums/JSArray disponíveis. Destino dragonbones/model/ConstraintData.lua, base abstrata e dois modelos concretos, sem criar solver de runtime.
 
@@ -195,3 +195,17 @@ Integração: ArmatureData.sortBones e _onClear usam IKConstraintData e PathCons
 Limites: são modelos de dados, não IKConstraint/PathConstraint executáveis ou deformação/playback. SkinData/DragonBonesData/Buffers/BoundingBoxData reais continuam pendentes, além do runtime/renderização e precisão temporal automática. Referências null/undefined normalizam nil; holes/undefined por valor/length; descritores/proxies/Array.prototype e reflexões genéricas não são equivalência declarada. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
 
 Checkpoint remoto: PR #73, código db0c8806dfb903427ff51c47cfae58733571a391. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41676866452 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram onze suítes passed; novo lote 23 cenários/817 operações/7.353 colunas com integração de constraints reais. Três artefatos conferidos no mesmo SHA. Consultar PR #73 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
+
+## Unidade atual: SkinData e integração real de skins/displays
+
+Base main 2e25e30c388a324aa314363038e98ceca649858e, PR #73/CI pós-merge 41677323508 aprovados, backup cd4206a8 e fonte limpa/fixada conferidos. Lidos SkinData.ts completo e Lua real do backup; dependências BaseObject/JSArray/JSMap e modelos de armadura/displays disponíveis. Destino dragonbones/model/SkinData.lua; construção só cria displays, sem antecipar name/parent.
+
+Preservados mapa/listas por identidade, ordem própria JS, null explícito distinto de hole/undefined, atribuição parent antes do push e leitura da lista depois dessa atribuição, busca do primeiro nome, duplicatas e ownership original. SkinData.NULL é marcador único de linguagem, não classe de display. addDisplay(slot,nil) adiciona null; argumento omitido lança erro após criar a lista, como undefined original. Listas usam length e posição Lua base 1; consumidores precisam reconhecer o marcador, conforme contracts/SkinDataLists.md.
+
+Execuções finais locais Lua 5.4.8/LuaJIT: **29 cenários, 814 operações, 8.140 colunas por VM**, sem tolerância (binary64, NaN canonicalizado). Observados todos os campos de SkinData, valores null/undefined/hole/refs, identidades/aliases, parent, pools/flags/avisos, callbacks/setters e efeitos parciais. Cinco sequências determinísticas de 80 operações complementam cenários de referência duplicada/compartilhada, chaves numéricas/reinserção, listas que crescem, exclusão de chave futura e chave nova durante enumeração.
+
+Integração: ArmatureData.addSkin/getMesh/_onClear usa SkinData/displays/geometria/WeightData e ActionData/UserData reais. getMesh preserva o cast apagado do TS, sem novo filtro de tipo. Falha de peso atravessa display->skin->armadura mantendo o estado anterior. Chave criada por callback durante limpeza permanece para a próxima enumeração e pode sobreviver ao retorno/reuso da skin, como no original executado. Push no limite conserva parent/propriedade não índice antes de RangeError; slots nulos são ignorados, holes produzem erro e mantêm mapa/estado parcial.
+
+Experimentos reversíveis: ipairs na limpeza de lista esparsa falhou em row 65 clear s (esperado erro, obtido void); tratar argumento omitido como null falhou em row 77 add s omitted omit. Produto restaurado e testes finais refeitos nas duas VMs, sem relaxar expectativas/tolerâncias.
+
+Limites: esta integração não implementa seleção/renderização de skin no runtime, parser/typed buffers, deformação, solver, playback ou GPU. DragonBonesData global e BoundingBoxData reais continuam pendentes, além da precisão temporal automática. Mapas não emulam Object.prototype; refs null/undefined para nil fora das listas; hole/undefined próprios normalizam por valor/length, sem descritores/proxies genéricos. CI/PR/merge deste checkpoint devem ser confirmados no SHA publicado.
