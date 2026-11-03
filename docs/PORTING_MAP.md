@@ -9,6 +9,7 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/geom/ColorTransform.ts | dragonbones/geom/ColorTransform.lua | Implementado, validado isoladamente nos testes diferenciais |
 | DragonBones/src/dragonBones/geom/Matrix.ts | dragonbones/geom/Matrix.lua | Implementado, validado isoladamente nos testes diferenciais |
 | DragonBones/src/dragonBones/geom/Transform.ts | dragonbones/geom/Transform.lua | Implementado, validado isoladamente nos testes diferenciais |
+| DragonBones/src/dragonBones/core/BaseObject.ts | dragonbones/core/BaseObject.lua | Implementado, comparado isoladamente com o original executado |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

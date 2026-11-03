@@ -2,45 +2,45 @@
 
 ## Objetivo permanente
 
-Reconstruir o DragonBonesJS oficial em Lua, preservando arquitetura, algoritmos, contratos e peculiaridades, com equivalência demonstrada por testes contra o original executado. Fonte fixa: 64b6c69ae35777c2404be68c9192e2c56906079e. Destino único: SrTristeSad/Bono-Lua. Não declarar 100% com pendências.
+Reconstruir o DragonBonesJS oficial em Lua, preservando arquitetura, algoritmos e comportamentos, com equivalência funcional comprovada por execução diferencial. Fonte: DragonBones/DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e. Destino único: SrTristeSad/Bono-Lua. Não declarar 100% com pendências.
 
-## Estado confirmado ao iniciar esta unidade
+## Estado confirmado ao iniciar
 
-- O proprietário solicitou “atualizar o main e continua”; autorizado integrar checkpoints testados do porte em andamento, sem afirmar motor completo.
-- PR #63 integrado; main confirmada em 71929d98cbb0461eab99d83e6fa7e0a3c4bf0584.
-- Backup anterior: backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb; intacto.
-- Branch desta unidade: port/geom-matrix-transform, criada da main confirmada.
-- Checkpoint de código desta unidade: `7414985a8a9464f736a54f411b49e86cfebf035e`, PR #64; CI 41579761219 confirmada com três jobs aprovados, logs e artefatos conferidos. Para o merge e commits documentais posteriores, consultar main/PR/CI no GitHub; não inventar SHA futuro.
+- Main: ab660cc740ae3d430ef283ea2eb07c78de58d658; PR #64 integrado; CI pós-merge 41579955766 aprovada.
+- Backup anterior: backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb; preservado.
+- Unidade atual: branch port/core-baseobject criada dessa main. Checkpoint de código confirmado: `21cf986f7e23740f712672ce2e3f341d39b21bec`, PR #65; CI 41581131475 aprovada nos três jobs, artefatos conferidos. Para merge e commits documentais posteriores, consultar GitHub; não antecipar SHA futuro.
+- O proprietário autorizou manter a main atualizada com checkpoints testados; isso não significa motor completo. CI pertinente deve passar antes de integrar.
 
 ## Trabalho efetivo
 
-Cinco classes em dragonbones/geom/: Point, Rectangle, ColorTransform, Matrix, Transform, com JSNumberString como adaptação da representação numérica dos toString.
-Primeiro lote: 1.384 operações / 8.288 campos por VM. Lote Matrix/Transform: 2.463 casos / 12.231 números / 158 strings por VM, aprovado localmente em Lua 5.4.8 e LuaJIT; CI do checkpoint de código aprovada nos três jobs (41579761219); resultado pós-merge deve ser conferido na main.
-Todos os métodos declarados de Matrix/Transform entram nos cenários; não há prova de todos os binary64/locales/objetos dinâmicos ou integração completa. Corrigida perda de -0 em transformRectangle; 52 comparações trigonométricas locais usam o limite predefinido em DIFFERENCES.md.
-Inventário e dependências: relatórios regeneráveis, 1.203 caminhos, 192 unidades autorais e 241 classes; cinco declarações externas de engines ausentes registradas.
+Cinco classes geométricas presentes e comparadas nas duas VMs. BaseObject implementado em dragonbones/core/BaseObject.lua, com inicializadores, hashCode, limites, pools por string, borrow/return/clear, flags e avisos.
+BaseObject: 38 cenários, 1.211 operações e 12.110 colunas de transcrição aprovadas localmente em Lua 5.4.8 e LuaJIT, comparação exata. Testes incluem colisões de chave de construtor, herança/receptor de toString, LIFO, duplicatas, limite padrão de 3000 com 3002 objetos, limites fracionários, efeitos parciais de erro, nested/throwing clear, strings numéricas e hashCode perto de 2^53.
+Subclasses de teste são apenas probes de contrato; nenhum modelo real portado nesta unidade. Limites de compatibilidade JS genérica e protótipos estão explícitos em DIFFERENCES.md. Não atribuir cobertura exaustiva ou integração completa.
 
 ## Próxima unidade
 
-1. Verificar main, branch, backup, PRs e CI no GitHub. Ler status, mapa, decisões, validação, inventário e os códigos reais dos dois repositórios antes de alterar.
-2. Abrir core/BaseObject.ts no commit fixado e o Lua correspondente do backup cd4206a8; comparar pool, hashCode, limites, duplicatas, limpeza e herança.
-3. Portar BaseObject para dragonbones/core/BaseObject.lua e comparar com o original executado nas duas VMs. Não inventar chave de classe/pool sem documentar a diferença de representação.
-4. Seguir core/modelos na ordem real das dependências; WorldClock/DragonBones exigem os contratos correspondentes. Nunca confundir doubles de teste com módulos de produto.
-5. Atualizar progresso/relatórios, publicar branch e PR, confirmar CI e integrar somente checkpoints validados conforme autorização do proprietário. O resto do motor permanece pendente.
+1. Conferir main, backup, PRs e CI; ler status, mapa, decisões, validação, inventário e códigos reais antes de editar.
+2. Abrir model/CanvasData.ts no commit fixado e sua versão Lua real no backup cd4206a8. Dependência autoral única: BaseObject, já portado.
+3. Portar CanvasData em dragonbones/model/CanvasData.lua e comparar construtor/campos/_onClear/toString e integração real de borrow/return/limites/reutilização com o original executado.
+4. Depois seguir core/modelos por dependências. UserData/ActionData e eventos requerem analisar enums/contratos do core; não adicionar constantes ou implementações fictícias para contornar dependências.
+5. Atualizar PORTING_PROGRESS.json, regenerar inventário, executar testes, publicar branch/PR, confirmar CI e integrar checkpoint conforme autorização. Animação, parsing, armaduras, constraints, factories e GPU continuam pendentes.
 
-## Comandos
+## Reprodução
 
 ```sh
 git fetch origin
-git switch port/geom-matrix-transform
+git switch port/core-baseobject
 git log -1 --format=fuller
-git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/geom-matrix-transform
+git ls-remote --heads origin main backup/pre-integral-rebuild-20261103 port/core-baseobject
 npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 node tests/geom_differential.js ../DragonBonesJS lua5.4
-node tests/geom_differential.js ../DragonBonesJS luajit
 node tests/math_differential.js ../DragonBonesJS lua5.4
+node tests/baseobject_differential.js ../DragonBonesJS lua5.4
+node tests/geom_differential.js ../DragonBonesJS luajit
 node tests/math_differential.js ../DragonBonesJS luajit
+node tests/baseobject_differential.js ../DragonBonesJS luajit
 ```
 
-O checkout ../DragonBonesJS deve estar no commit fixado. Resultados antigos só contam depois de conferir os SHAs e reexecutar o que a alteração exige.
+O checkout ../DragonBonesJS deve estar no commit fixado; os testes leem blobs Git. A memória da conversa não substitui os SHAs/códigos/evidências publicados.
