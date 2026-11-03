@@ -487,7 +487,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente |
 | `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
 | `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Base abstrata: 132 constantes e dez conversões comparadas, com aplicações em modelos reais; assinatura sem corpo documentada; importação JSON/binária e locales especiais pendentes |
 | `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/ObjectDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -4342,8 +4342,8 @@ Herança: extends ObjectDataParser.
 ### `DragonBones/src/dragonBones/parser/DataParser.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/parser/DataParser.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/parser/DataParser.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/parser/DataParser.lua. Implementação presente nesta reconstrução.
+- Estado: Base abstrata: 132 constantes e dez conversões comparadas, com aplicações em modelos reais; assinatura sem corpo documentada; importação JSON/binária e locales especiais pendentes; testes: tests/dataparser_differential.js: 11.206 operações e 44.824 colunas por VM Lua 5.4/LuaJIT, tolerância zero; 132 constantes, dez métodos, duas assinaturas abstratas ausentes e 90 aplicações em modelos reais. Todas as combinações ASCII de caixa dos tokens, versões compartilhadas/esparsas e Unicode Kelvin. Ver VALIDATION.md.; diferenças: DATA_VERSIONS usa JSArray base 1/length, compartilhado na herança estática. Matching ASCII independente do locale C, com Kelvin→k; não implementa lower Unicode genérico. Os três helpers toLocaleLowerCase seguem casing não túrquico en-US testado; outros locales do host exigem adaptação e não têm equivalência afirmada. Não cria corpos abstratos nem parser parcial fictício. Ver contracts/DataParserBase.md.
 - Dependências candidatas: `Cocos/Demos/assets/Script/BoundingBox.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `Egret/Demos/src/demo/BoundingBox.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Phaser/Demos/src/BoundingBox.ts`, `Pixi/Demos/4.x/src/BoundingBox.ts`, `Pixi/Demos/8.x/src/BoundingBox.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/model-bounding-box-data`, sobre `main@84c9b07`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-data-base`, sobre `main@da30013`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: parser/DataParser.ts e Lua real do backup, para preparar os contratos de importação; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: ObjectDataParser.ts e Lua real do backup, começando pelos helpers e importação de atlas com modelos reais; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -234,3 +234,18 @@ Preservadas peculiaridades upstream: pointB.y=xB quando endpoint A está dentro 
 Vertices usa JSArray lógico base 1/length; clear preserva identidade/extras e trata holes/length ímpar conforme aritmética undefined→NaN. Defaults não antecipados em new. Integração real DragonBonesData→ArmatureData→SkinData→BoundingBoxDisplayData→bounding box com falha/retry e pool. Falhas de setters dos outputs preservam escrita parcial/ordem, sem alterar receptor. Testes de mutação rejeitaram trocar a coordenada peculiar do retângulo e contar todas as interseções do polígono quando pointB está ausente; produto restaurado e testes finais refeitos.
 
 Quatorze suítes na CI; consultar PR do checkpoint para SHA/CI/merge confirmados. Não implementa Slot/transformações de hit testing do runtime, parser, typed buffers, solver, playback ou renderização/GPU. Próxima unidade: DataParser.ts e contratos básicos de dados do parser, antes de ObjectDataParser/BinaryDataParser.
+
+
+## DataParser — constantes e conversões da base abstrata
+
+Base main da300139d0e96e5645c56483dccd327ccaa47fd6, PR #76/CI pós-merge 41687483454 aprovados e backup cd4206a8 conferido. Lidos DataParser.ts integral e Lua integral original/parser/DataParser.lua do backup. Destino dragonbones/parser/DataParser.lua, sem dependência de BaseObject/pool e sem implementar corpos abstratos de parseDragonBonesData/parseTextureAtlasData.
+
+Resultado final nas duas VMs Lua 5.4/LuaJIT: **11.206 operações e 44.824 colunas**, tolerância zero. **132 constantes, dez conversões, duas assinaturas abstratas e 90 aplicações em modelos reais**. Oráculo enumera propriedades/métodos/cases por AST e executa TS genuíno. Cobertura inclui todas as combinações ASCII de maiúsculas/minúsculas de cada token reconhecido, palavras cruzadas entre helpers, desconhecidos, espaços sem trim, NUL, Unicode e 50 erros de tipos não string.
+
+DATA_VERSION e DATA_VERSIONS preservam valores/ordem originais; 2.3/3.0 continuam constantes fora da lista suportada. Array de versões usa JSArray lógico, com identidade/herança estática, aliases, holes, truncamento, length 2^32−1 e extras comparados. Constantes e métodos protected/readonly de TS não ganham emulação de descritores no Lua. Grafia DRADON_BONES mantida.
+
+Conversões aplicadas a ArmatureData/BoneData/SurfaceData, PathConstraintData, SlotData, displays/bounding boxes, AnimationData e ActionData reais, com campos antes/depois do clear/return e hash/flags do pool observados. Isso não é importação nem uma implementação de ObjectDataParser. Abstract methods permanecem ausentes, não retornam resultados fabricados.
+
+Keyword matching baixa ASCII sem depender de locale C e reconhece K→k para darken. Auditoria de escalares Unicode do motor do oráculo encontrou Kelvin como fold não ASCII para letra ASCII; não é um lower Unicode genérico. Os três helpers com toLocaleLowerCase seguem o casing não túrquico/en-US validado; locales como tr/az podem divergir e permanecem pendência de host explícita. Experimentos de perder Kelvin e de fazer trim incorreto foram rejeitados; produto restaurado e teste final refeito nas duas VMs.
+
+Quinze suítes na CI. Consultar PR do checkpoint para SHA/CI/merge confirmados. Próxima unidade: auditar ObjectDataParser.ts completo e Lua, começando pelos helpers de valores e parseTextureAtlasData com modelos de atlas/textura reais. Parsing de armaduras/animações JSON e binário/typed buffers, runtime e renderização continuam pendentes.
