@@ -22,8 +22,8 @@
     "DragonBones/src/dragonBones/geom/Matrix.ts": {
       "destination": "dragonbones/geom/Matrix.lua",
       "status": "Validado isoladamente nos cenários diferenciais; integração pendente",
-      "tests": "tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md.",
-      "differences": "Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md."
+      "tests": "tests/math_differential.js: 2.463 casos, 12.231 valores e 158 strings nas duas classes por VM (Lua 5.4 e LuaJIT). Ver VALIDATION.md. Regressão math refeita nas duas VMs; uso real com poses incompletas/singulares/gerais em geometryparser_differential (53/2.498/34.972 por VM).",
+      "differences": "Metatables/new; offsets públicos zero-based em copyFromArray e array Lua base 1; remainder assinado; arredondamento com zero assinado; conversão Number->String; trigonometria com tolerância explícita. Ver DIFFERENCES.md. invert/transformPoint propagam campos numéricos nil/undefined como NaN na aritmética, sem antecipar defaults após copyFromArray."
     },
     "DragonBones/src/dragonBones/geom/Transform.ts": {
       "destination": "dragonbones/geom/Transform.lua",
@@ -143,9 +143,9 @@
     },
     "DragonBones/src/dragonBones/parser/ObjectDataParser.ts": {
       "destination": "dragonbones/parser/ObjectDataParser.lua",
-      "status": "PARCIAL: 14/47 métodos, inicializadores e ActionFrame; inclui slots/ações/constraints/transform/color/pivot/bounding boxes, 33 métodos ausentes incluindo bone/display/skin/armature/entrypoint",
-      "tests": "tests/objectatlas_differential.js: 39 cenários/2.572 operações/28.292 colunas por VM Lua 5.4/LuaJIT, tolerância zero. Atlas/TextureData/Rectangle/pool reais; factory abstrata concretizada somente no teste. Ver VALIDATION.md. tests/structural_differential.js: 55 cenários/2.465 operações/27.115 colunas por VM, tolerância zero, nove métodos adicionais com modelos reais, alocações/órfãos e falhas parciais.",
-      "differences": "JSValue representa null/undefined explícitos, arrays marcados e coerções de dados JSON-like; não decodifica texto JSON/bytes ou objetos JS genéricos. Atlas mantém coordenadas sem multiplicar pela escala, duplicatas/órfãos e falhas parciais; fila injetada apenas em teste até parseDragonBonesData existir. ActionFrame exportado como propriedade do módulo/classe Lua. Contrato ObjectDataParserAtlas.md. Loops for-of seguem emit TS2.4/ES5 indexado: array-like e unidades UTF-16; surrogates isolados representados WTF-8 em Lua. UserData usa JSArray para payloads esparsos; ramo estrito de parent usa adaptador interno _isNullReference. Ver StructuralParser.md."
+      "status": "PARCIAL: 21/47 métodos, incluindo geometry/array/bone/path/mesh/display/skin completos neste recorte; 26 ausentes, incluindo armature/animação/finalização binária/entrypoint",
+      "tests": "tests/objectatlas_differential.js: 39 cenários/2.572 operações/28.292 colunas por VM Lua 5.4/LuaJIT, tolerância zero. Atlas/TextureData/Rectangle/pool reais; factory abstrata concretizada somente no teste. Ver VALIDATION.md. tests/structural_differential.js: 55 cenários/2.465 operações/27.115 colunas por VM, tolerância zero, nove métodos adicionais com modelos reais, alocações/órfãos e falhas parciais. tests/geometryparser_differential.js: 53 cenários/2.498 operações/34.972 colunas por VM, tolerância zero; pesos com/sem poses, matrizes, offsets, skins/displays/bones e pool reais.",
+      "differences": "JSValue representa null/undefined explícitos, arrays marcados e coerções de dados JSON-like; não decodifica texto JSON/bytes ou objetos JS genéricos. Atlas mantém coordenadas sem multiplicar pela escala, duplicatas/órfãos e falhas parciais; fila injetada apenas em teste até parseDragonBonesData existir. ActionFrame exportado como propriedade do módulo/classe Lua. Contrato ObjectDataParserAtlas.md. Loops for-of seguem emit TS2.4/ES5 indexado: array-like e unidades UTF-16; surrogates isolados representados WTF-8 em Lua. UserData usa JSArray para payloads esparsos; ramo estrito de parent usa adaptador interno _isNullReference. Ver StructuralParser.md. Arrays de trabalho JSArray preservam length/holes e reservas originais, inclusive weightCount e erros fracionários. Matrizes de poses têm ponte de índices/undefined, usando Matrix real; empacotamento/tipos binários continuam ausentes. Ver GeometryParser.md."
     }
   }
 }

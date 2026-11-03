@@ -2,7 +2,7 @@
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
 -- Implemented: initializers, helpers, atlas, structural dependencies and singleton.
--- Armature/animation/geometry parsing methods are still absent, not stubs.
+-- Armature/animation entrypoints and binary finalization remain absent.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
 local Textures=require('dragonbones.model.TextureAtlasData')
@@ -390,6 +390,342 @@ function ObjectDataParser:_parsePolygonBoundingBox(raw)
     io.stderr:write("Data error.\n Please reexport DragonBones Data to fixed the bug.\n")
   end
   return bounding
+end
+
+local SkinData=require('dragonbones.model.SkinData')
+local function clearWork(array)array.length=0 end
+local function workAt(array,index)
+ if array==nil then error('Array is absent') end
+ if type(index)=='number' and index>=0 and index<=4294967294 and index==math.floor(index) then
+  local value=array[index+1];return value==nil and V.UNDEFINED or value
+ end
+ local value=array[V.string(index)];return value==nil and V.UNDEFINED or value
+end
+local function workPut(array,index,value)array[index+1]=value end
+local function indexOf(array,value,raw)
+ if raw and not V.isArray(array) then error('Array.indexOf unavailable') end
+ local length=raw and V.number(V.get(array,'length')) or array.length
+ for index=0,length-1 do
+  local current=raw and V.at(array,index) or workAt(array,index)
+  local defined=raw and V.isArray(array) and array[index+1]~=nil or (not raw and array[index+1]~=nil)
+  if defined and type(current)==type(value) and rawequal(current,value) then return index end
+ end
+ return -1
+end
+local function matrixArray(raw)
+ V.object(raw) -- Preserve failure before assigning any Matrix fields.
+ return setmetatable({},{__index=function(_,key)
+  local value=V.at(raw,key-1);if rawequal(value,V.UNDEFINED) then return nil end;return value
+ end})
+end
+
+function ObjectDataParser:_parseGeometry(rawData,geometry)
+  local rawVertices=V.get(rawData,DataParser.VERTICES)
+  local vertexCount=math.floor(V.number(V.get(rawVertices,"length"))/2)
+  local triangleCount=0
+  local geometryOffset=self._intArray.length
+  local verticesOffset=self._floatArray.length
+  local intArray=self._intArray
+  local floatArray=self._floatArray
+  local offsets=Core.BinaryOffset
+  geometry.offset=geometryOffset
+  geometry.data=self._data
+
+  intArray.length=intArray.length+4
+  workPut(intArray,geometryOffset+offsets.GeometryVertexCount,vertexCount)
+  workPut(intArray,geometryOffset+offsets.GeometryFloatOffset,verticesOffset)
+  workPut(intArray,geometryOffset+offsets.GeometryWeightOffset,-1)
+
+  floatArray.length=floatArray.length+vertexCount*2
+  for i=0,vertexCount*2-1 do
+    workPut(floatArray,verticesOffset+i,V.at(rawVertices,i))
+  end
+
+  if V.has(rawData,DataParser.TRIANGLES) then
+    local triangles=V.get(rawData,DataParser.TRIANGLES)
+    triangleCount=math.floor(V.number(V.get(triangles,"length"))/3)
+    intArray.length=intArray.length+triangleCount*3
+    for i=0,triangleCount*3-1 do
+      workPut(intArray,geometryOffset+offsets.GeometryVertexIndices+i,
+        V.at(triangles,i))
+    end
+  end
+  workPut(intArray,geometryOffset+offsets.GeometryTriangleCount,triangleCount)
+
+  if V.has(rawData,DataParser.UVS) then
+    local uvs=V.get(rawData,DataParser.UVS)
+    local uvOffset=verticesOffset+vertexCount*2
+    floatArray.length=floatArray.length+vertexCount*2
+    for i=0,vertexCount*2-1 do
+      workPut(floatArray,uvOffset+i,V.at(uvs,i))
+    end
+  end
+
+  if V.has(rawData,DataParser.WEIGHTS) then
+    local rawWeights=V.get(rawData,DataParser.WEIGHTS)
+    -- Kept verbatim: upstream evaluates floor(length-vertexCount) / 2,
+    -- rather than floor((length-vertexCount) / 2).
+    local weightCount=math.floor(V.number(V.get(rawWeights,"length"))-vertexCount)/2
+    local weightOffset=intArray.length
+    local floatOffset=floatArray.length
+    local weightBoneCount=0
+    local sortedBones=self._armature.sortedBones
+    local weight=Pool.borrowObject(DisplayModels.WeightData)
+    weight.count=weightCount
+    weight.offset=weightOffset
+
+    intArray.length=intArray.length+2+weightBoneCount+vertexCount+weightCount
+    workPut(intArray,weightOffset+offsets.WeigthFloatOffset,floatOffset)
+
+    if V.has(rawData,DataParser.BONE_POSE) then
+      local slotPose=V.get(rawData,DataParser.SLOT_POSE)
+      local bonePoses=V.get(rawData,DataParser.BONE_POSE)
+      local indices=JSArray.new()
+      weightBoneCount=math.floor(V.number(V.get(bonePoses,"length"))/7)
+      indices.length=weightBoneCount
+      for i=0,weightBoneCount-1 do
+        local rawIndex=V.at(bonePoses,i*7)
+        local bone=workAt(self._rawBones,rawIndex)
+        weight:addBone(bone)
+        indices[i+1]=rawIndex
+        workPut(intArray,weightOffset+offsets.WeigthBoneIndices+i,
+          indexOf(sortedBones,bone))
+      end
+      floatArray.length=floatArray.length+weightCount*3
+      self._helpMatrixA:copyFromArray(matrixArray(slotPose),0)
+      local iW=0
+      local iB=weightOffset+offsets.WeigthBoneIndices+weightBoneCount
+      local iV=floatOffset
+      for i=0,vertexCount-1 do
+        local iD=i*2
+        local vertexBoneCount=V.at(rawWeights,iW)
+        workPut(intArray,iB,vertexBoneCount)
+        iB=iB+1
+        iW=iW+1
+        local x=V.number(workAt(floatArray,verticesOffset+iD))
+        local y=V.number(workAt(floatArray,verticesOffset+iD+1))
+        self._helpMatrixA:transformPoint(x,y,self._helpPoint)
+        x,y=self._helpPoint.x,self._helpPoint.y
+        local j=0
+        while j<V.number(vertexBoneCount) do
+          j=j+1
+          local rawBoneIndex=V.at(rawWeights,iW)
+          iW=iW+1
+          local boneIndex=indexOf(indices,rawBoneIndex)
+          self._helpMatrixB:copyFromArray(matrixArray(bonePoses),boneIndex*7+1)
+          self._helpMatrixB:invert()
+          self._helpMatrixB:transformPoint(x,y,self._helpPoint)
+          workPut(intArray,iB,boneIndex)
+          iB=iB+1
+          workPut(floatArray,iV,V.at(rawWeights,iW));iV=iV+1
+          workPut(floatArray,iV,self._helpPoint.x);iV=iV+1
+          workPut(floatArray,iV,self._helpPoint.y);iV=iV+1
+          iW=iW+1
+        end
+      end
+    else
+      local rawBones=V.get(rawData,DataParser.BONES)
+      weightBoneCount=V.number(V.get(rawBones,"length"))
+      for i=0,weightBoneCount-1 do
+        local bone=workAt(self._rawBones,V.at(rawBones,i))
+        weight:addBone(bone)
+        workPut(intArray,weightOffset+offsets.WeigthBoneIndices+i,
+          indexOf(sortedBones,bone))
+      end
+      floatArray.length=floatArray.length+weightCount*3
+      -- The upstream loops over weightCount here, not vertexCount.
+      local iW,iV=0,0
+      local iB=weightOffset+offsets.WeigthBoneIndices+weightBoneCount
+      local iF=floatOffset
+      local i=0
+      while i<weightCount do
+        i=i+1
+        local vertexBoneCount=V.at(rawWeights,iW)
+        iW=iW+1
+        workPut(intArray,iB,vertexBoneCount)
+        iB=iB+1
+        local j=0
+        while j<V.number(vertexBoneCount) do
+          j=j+1
+          local boneIndex=V.at(rawWeights,iW);iW=iW+1
+          local boneWeight=V.at(rawWeights,iW);iW=iW+1
+          local x=V.at(rawVertices,iV);iV=iV+1
+          local y=V.at(rawVertices,iV);iV=iV+1
+          workPut(intArray,iB,indexOf(rawBones,boneIndex,true));iB=iB+1
+          workPut(floatArray,iF,boneWeight);iF=iF+1
+          workPut(floatArray,iF,x);iF=iF+1
+          workPut(floatArray,iF,y);iF=iF+1
+        end
+      end
+    end
+    geometry.weight=weight
+  end
+end
+
+
+function ObjectDataParser:_parseArray(_rawData)
+  -- Preserve the identities of the seven original reusable JS arrays.
+  clearWork(self._intArray)
+  clearWork(self._floatArray)
+  clearWork(self._frameIntArray)
+  clearWork(self._frameFloatArray)
+  clearWork(self._frameArray)
+  clearWork(self._timelineArray)
+  clearWork(self._colorArray)
+end
+
+function ObjectDataParser:_parseBone(raw)
+  local kind
+  if type(V.get(raw,DataParser.TYPE))=="string" then
+    kind=DataParser._getBoneType(raw[DataParser.TYPE])
+  else
+    kind=ObjectDataParser._getNumber(raw,DataParser.TYPE,Core.BoneType.Bone)
+  end
+  if kind==Core.BoneType.Bone then
+    local scale=self._armature.scale
+    local bone=Pool.borrowObject(ArmatureModels.BoneData)
+    bone.inheritTranslation=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_TRANSLATION,true)
+    bone.inheritRotation=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_ROTATION,true)
+    bone.inheritScale=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_SCALE,true)
+    bone.inheritReflection=ObjectDataParser._getBoolean(raw,DataParser.INHERIT_REFLECTION,true)
+    bone.length=ObjectDataParser._getNumber(raw,DataParser.LENGTH,0)*scale
+    bone.alpha=ObjectDataParser._getNumber(raw,DataParser.ALPHA,1.0)
+    bone.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+    if V.has(raw,DataParser.TRANSFORM) then
+      self:_parseTransform(raw[DataParser.TRANSFORM],bone.transform,scale)
+    end
+    return bone
+  end
+  local surface=Pool.borrowObject(ArmatureModels.SurfaceData)
+  surface.alpha=ObjectDataParser._getNumber(raw,DataParser.ALPHA,1.0)
+  surface.name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  surface.segmentX=ObjectDataParser._getNumber(raw,DataParser.SEGMENT_X,0)
+  surface.segmentY=ObjectDataParser._getNumber(raw,DataParser.SEGMENT_Y,0)
+  self:_parseGeometry(raw,surface.geometry)
+  return surface
+end
+
+function ObjectDataParser:_parsePath(raw,display)
+  self:_parseGeometry(raw,display.geometry)
+end
+
+function ObjectDataParser:_parseMesh(raw,mesh)
+  self:_parseGeometry(raw,mesh.geometry)
+  if V.has(raw,DataParser.WEIGHTS) then
+    local name=self._skin.name.."_"..self._slot.name.."_"..mesh.name
+    self._weightSlotPose[name]=V.get(raw,DataParser.SLOT_POSE)
+    self._weightBonePoses[name]=V.get(raw,DataParser.BONE_POSE)
+  end
+end
+
+function ObjectDataParser:_parseDisplay(raw)
+  local name=ObjectDataParser._getString(raw,DataParser.NAME,"")
+  local path=ObjectDataParser._getString(raw,DataParser.PATH,"")
+  local kind=Core.DisplayType.Image
+  if type(V.get(raw,DataParser.TYPE))=="string" then
+    kind=DataParser._getDisplayType(raw[DataParser.TYPE])
+  else
+    kind=ObjectDataParser._getNumber(raw,DataParser.TYPE,kind)
+  end
+  local display=nil
+  if kind==Core.DisplayType.Image then
+    display=Pool.borrowObject(DisplayModels.ImageDisplayData)
+    display.name=name
+    display.path=#path>0 and path or name
+    self:_parsePivot(raw,display)
+  elseif kind==Core.DisplayType.Armature then
+    display=Pool.borrowObject(DisplayModels.ArmatureDisplayData)
+    display.name=name
+    display.path=#path>0 and path or name
+    display.inheritAnimation=true
+    if V.has(raw,DataParser.ACTIONS) then
+      local actions=self:_parseActionData(raw[DataParser.ACTIONS],Core.ActionType.Play,nil,nil)
+      local i=1
+      while i<=actions.length do
+        local action=actions[i]
+        display:addAction(action)
+        i=i+1
+      end
+    elseif self._slotChildActions[self._slot.name]~=nil then
+      local displays=self._skin:getDisplays(self._slot.name)
+      if (displays==nil and self._slot.displayIndex==0)
+          or (displays~=nil and self._slot.displayIndex==displays.length) then
+        local actions=self._slotChildActions[self._slot.name]
+        local i=1
+        while i<=actions.length do
+          local action=actions[i]
+          display:addAction(action)
+          i=i+1
+        end
+        self._slotChildActions[self._slot.name]=nil
+      end
+    end
+  elseif kind==Core.DisplayType.Mesh then
+    display=Pool.borrowObject(DisplayModels.MeshDisplayData)
+    display.geometry.inheritDeform=ObjectDataParser._getBoolean(
+      raw,DataParser.INHERIT_DEFORM,true)
+    display.name=name
+    display.path=#path>0 and path or name
+    if V.has(raw,DataParser.SHARE) then
+      display.geometry.data=self._data
+      self._cacheRawMeshes[self._cacheRawMeshes.length+1]=raw
+      self._cacheMeshes[self._cacheMeshes.length+1]=display
+    else
+      self:_parseMesh(raw,display)
+    end
+  elseif kind==Core.DisplayType.BoundingBox then
+    local bounding=self:_parseBoundingBox(raw)
+    if bounding~=nil then
+      display=Pool.borrowObject(DisplayModels.BoundingBoxDisplayData)
+      display.name=name
+      display.path=#path>0 and path or name
+      display.boundingBox=bounding
+    end
+  elseif kind==Core.DisplayType.Path then
+    local lengths=V.get(raw,DataParser.LENGTHS)
+    display=Pool.borrowObject(DisplayModels.PathDisplayData)
+    display.closed=ObjectDataParser._getBoolean(raw,DataParser.CLOSED,false)
+    display.constantSpeed=ObjectDataParser._getBoolean(raw,DataParser.CONSTANT_SPEED,false)
+    display.name=name
+    display.path=#path>0 and path or name
+    display.curveLengths.length=V.number(V.get(lengths,"length"))
+    local length=V.number(V.get(lengths,"length"))
+    for i=0,length-1 do display.curveLengths[i+1]=V.at(lengths,i) end
+    self:_parsePath(raw,display)
+  end
+  if display~=nil and V.has(raw,DataParser.TRANSFORM) then
+    self:_parseTransform(raw[DataParser.TRANSFORM],
+      display.transform,self._armature.scale)
+  end
+  return display
+end
+
+function ObjectDataParser:_parseSkin(raw)
+  local skin=Pool.borrowObject(SkinData)
+  skin.name=ObjectDataParser._getString(raw,DataParser.NAME,DataParser.DEFAULT_NAME)
+  if #skin.name==0 then skin.name=DataParser.DEFAULT_NAME end
+  if V.has(raw,DataParser.SLOT) then
+    self._skin=skin
+    for rawSlot in V.iterator(raw[DataParser.SLOT]) do
+      local name=ObjectDataParser._getString(rawSlot,DataParser.NAME,"")
+      local slot=self._armature:getSlot(name)
+      if slot~=nil then
+        self._slot=slot
+        if V.has(rawSlot,DataParser.DISPLAY) then
+          for rawDisplay in V.iterator(rawSlot[DataParser.DISPLAY]) do
+            if V.truthy(rawDisplay) then
+              skin:addDisplay(name,self:_parseDisplay(rawDisplay))
+            else
+              skin:addDisplay(name,nil)
+            end
+          end
+        end
+        self._slot=nil
+      end
+    end
+    self._skin=nil
+  end
+  return skin
 end
 
 return ObjectDataParser
