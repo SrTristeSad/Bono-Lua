@@ -30,4 +30,3 @@ Execução: https://github.com/SrTristeSad/Bono-Lua/actions/runs/41575623832. Jo
 Confirmados: instalação via lockfile, comparação exata dos blobs fixados e publicação do artefato `pinned-inventory-evidence`.
 `node --check tools/inventory.js` também executado localmente com saída 0.
 A aprovação é exclusivamente estrutural; não cobre runtime Lua nem GPU.
-
