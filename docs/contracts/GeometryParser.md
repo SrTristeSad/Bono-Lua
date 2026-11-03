@@ -11,7 +11,7 @@ Fonte: ObjectDataParser.ts de DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906
 | _parseDisplay | Cinco tipos, transform/pivot/actions, share deferido e comprimentos de path |
 | _parseSkin | Slots/displays conhecidos, placeholders null, transferência de ações e contexto |
 
-Estado atual do arquivo: 22/47 métodos; os outros 25 continuam ausentes. _modifyArray foi acrescentado na unidade seguinte, conforme [SharedBinaryBuffer.md](SharedBinaryBuffer.md). _parseArmature, animações e parseDragonBonesData não têm stubs. Testes semeiam contexto global/armadura/bones/slots com classes reais, sem importar uma armadura completa artificialmente.
+Estado atual do arquivo: 31/47 métodos; os outros 16 continuam ausentes. Curvas e frames genéricos constam em [CurveFrames.md](CurveFrames.md). _modifyArray foi acrescentado na unidade seguinte, conforme [SharedBinaryBuffer.md](SharedBinaryBuffer.md). _parseArmature, animações e parseDragonBonesData não têm stubs. Testes semeiam contexto global/armadura/bones/slots com classes reais, sem importar uma armadura completa artificialmente.
 
 Arrays de trabalho usam .length e índices Lua base 1; offsets armazenados/retornados continuam base 0. Reservas deixam holes e não devem ser preenchidas com zero antes da coerção tipada original. Pesos mantêm floor(length−vertexCount)/2, reserva anterior à contagem de bones e loop weightCount no ramo sem poses. Não reparar silenciosamente entrada malformada ou cabeçalhos deixados undefined pela fonte; RangeError e efeitos parciais são comparados.
 

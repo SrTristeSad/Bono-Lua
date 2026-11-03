@@ -1,7 +1,7 @@
 -- Partial port: ObjectDataParser.ts, pinned DragonBonesJS
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Implemented: initializers, helpers, atlas, structures, geometry and binary views.
+-- Implemented: atlas, structures, geometry, binary views, curves and generic frames.
 -- Armature/animation entrypoints remain absent; see docs/NEXT_STEPS.md.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
@@ -418,6 +418,196 @@ local function matrixArray(raw)
  return setmetatable({},{__index=function(_,key)
   local value=V.at(raw,key-1);if rawequal(value,V.UNDEFINED) then return nil end;return value
  end})
+end
+
+-- Curve sampling follows the original bisection, including its last probe.
+function ObjectDataParser:_getCurvePoint(x1,y1,x2,y2,x3,y3,x4,y4,t,result)
+  local l_t=1.0-t
+  local powA=l_t*l_t
+  local powB=t*t
+  local kA=l_t*powA
+  local kB=3.0*t*powA
+  local kC=3.0*l_t*powB
+  local kD=t*powB
+  result.x=kA*V.number(x1)+kB*V.number(x2)+kC*V.number(x3)+kD*V.number(x4)
+  result.y=kA*V.number(y1)+kB*V.number(y2)+kC*V.number(y3)+kD*V.number(y4)
+end
+
+function ObjectDataParser:_samplingEasingCurve(curve,samples)
+  local curveCount=V.number(V.get(curve,"length"))
+  local omitted=curveCount%3==1
+  local stepIndex=omitted and -2 or 0
+  local length=samples.length
+  for i=0,length-1 do
+    local t=(i+1)/(length+1)
+    if omitted then
+      while true do
+        local boundary=1
+        if stepIndex+6<curveCount then boundary=V.at(curve,stepIndex+6) end
+        if not (V.number(boundary)<t) then break end
+        stepIndex=stepIndex+6
+      end
+    else
+      while V.number(V.at(curve,stepIndex+6))<t do stepIndex=stepIndex+6 end
+    end
+    local isInCurve=not omitted or (stepIndex>=0 and stepIndex+6<curveCount)
+    local x1,y1,x4,y4=0.0,0.0,1.0,1.0
+    if isInCurve then
+      x1=V.at(curve,stepIndex);y1=V.at(curve,stepIndex+1)
+    end
+    local x2,y2=V.at(curve,stepIndex+2),V.at(curve,stepIndex+3)
+    local x3,y3=V.at(curve,stepIndex+4),V.at(curve,stepIndex+5)
+    if isInCurve then x4=V.at(curve,stepIndex+6);y4=V.at(curve,stepIndex+7) end
+    local lower,higher=0.0,1.0
+    while higher-lower>0.0001 do
+      local percentage=(higher+lower)*0.5
+      self:_getCurvePoint(x1,y1,x2,y2,x3,y3,x4,y4,percentage,self._helpPoint)
+      if t-self._helpPoint.x>0.0 then lower=percentage else higher=percentage end
+    end
+    samples[i+1]=self._helpPoint.y
+  end
+  return omitted
+end
+
+-- Math.round ties toward +infinity and preserves negative zero.
+local function roundFrame(value)
+  if value~=value or value==math.huge or value==-math.huge or value==0 then return value end
+  local lower=math.floor(value)
+  local rounded=value-lower>=0.5 and lower+1 or lower
+  if rounded==0 and value<0 then return -0.0 end
+  return rounded
+end
+
+function ObjectDataParser:_parseFrame(_rawData,frameStart,_frameCount)
+  local offset=self._frameArray.length
+  self._frameArray.length=offset+1
+  workPut(self._frameArray,offset+Core.BinaryOffset.FramePosition,frameStart)
+  return offset
+end
+
+function ObjectDataParser:_parseTweenFrame(rawData,frameStart,frameCount)
+  local offset=self:_parseFrame(rawData,frameStart,frameCount)
+  local array,binary,tween=self._frameArray,Core.BinaryOffset,Core.TweenType
+  if frameCount>0 then
+    if V.has(rawData,DataParser.CURVE) then
+      local sampleCount=frameCount+1
+      self._helpArray.length=sampleCount
+      local omitted=self:_samplingEasingCurve(V.get(rawData,DataParser.CURVE),self._helpArray)
+      array.length=array.length+1+1+self._helpArray.length
+      workPut(array,offset+binary.FrameTweenType,tween.Curve)
+      workPut(array,offset+binary.FrameTweenEasingOrCurveSampleCount,omitted and sampleCount or -sampleCount)
+      for i=0,sampleCount-1 do
+        workPut(array,offset+binary.FrameCurveSamples+i,roundFrame(V.number(workAt(self._helpArray,i))*10000.0))
+      end
+    else
+      local noTween=-2.0
+      local easing=noTween
+      if V.has(rawData,DataParser.TWEEN_EASING) then
+        easing=ObjectDataParser._getNumber(rawData,DataParser.TWEEN_EASING,noTween)
+      end
+      if easing==noTween then
+        array.length=array.length+1;workPut(array,offset+binary.FrameTweenType,tween.None)
+      elseif easing==0.0 then
+        array.length=array.length+1;workPut(array,offset+binary.FrameTweenType,tween.Line)
+      else
+        array.length=array.length+1+1
+        local kind,value
+        if easing<0.0 then kind=tween.QuadIn;value=-easing*100.0
+        elseif easing<=1.0 then kind=tween.QuadOut;value=easing*100.0
+        else kind=tween.QuadInOut;value=easing*100.0-100.0 end
+        workPut(array,offset+binary.FrameTweenType,kind)
+        workPut(array,offset+binary.FrameTweenEasingOrCurveSampleCount,roundFrame(value))
+      end
+    end
+  else
+    array.length=array.length+1;workPut(array,offset+binary.FrameTweenType,tween.None)
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseSingleValueFrame(rawData,frameStart,frameCount)
+  local offset=0
+  if self._frameValueType==0 then
+    offset=self:_parseFrame(rawData,frameStart,frameCount)
+    self._frameArray.length=self._frameArray.length+1
+    workPut(self._frameArray,offset+1,ObjectDataParser._getNumber(rawData,DataParser.VALUE,self._frameDefaultValue))
+  elseif self._frameValueType==1 or self._frameValueType==2 then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    local array=self._frameValueType==1 and self._frameIntArray or self._frameFloatArray
+    local valueOffset=array.length;array.length=valueOffset+1
+    local value=ObjectDataParser._getNumber(rawData,DataParser.VALUE,self._frameDefaultValue)*self._frameValueScale
+    if self._frameValueType==1 then value=roundFrame(value) end
+    workPut(array,valueOffset,value)
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseDoubleValueFrame(rawData,frameStart,frameCount)
+  local offset=0
+  if self._frameValueType==0 then
+    offset=self:_parseFrame(rawData,frameStart,frameCount)
+    self._frameArray.length=self._frameArray.length+2
+    workPut(self._frameArray,offset+1,ObjectDataParser._getNumber(rawData,DataParser.X,self._frameDefaultValue))
+    workPut(self._frameArray,offset+2,ObjectDataParser._getNumber(rawData,DataParser.Y,self._frameDefaultValue))
+  elseif self._frameValueType==1 or self._frameValueType==2 then
+    offset=self:_parseTweenFrame(rawData,frameStart,frameCount)
+    local array=self._frameValueType==1 and self._frameIntArray or self._frameFloatArray
+    local valueOffset=array.length;array.length=valueOffset+2
+    local x=ObjectDataParser._getNumber(rawData,DataParser.X,self._frameDefaultValue)*self._frameValueScale
+    if self._frameValueType==1 then x=roundFrame(x) end
+    workPut(array,valueOffset,x)
+    local y=ObjectDataParser._getNumber(rawData,DataParser.Y,self._frameDefaultValue)*self._frameValueScale
+    if self._frameValueType==1 then y=roundFrame(y) end
+    workPut(array,valueOffset+1,y)
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseActionFrame(frame,frameStart,_frameCount)
+  local offset=self._frameArray.length
+  local count=frame.actions.length
+  self._frameArray.length=self._frameArray.length+1+1+count
+  workPut(self._frameArray,offset+Core.BinaryOffset.FramePosition,frameStart)
+  workPut(self._frameArray,offset+Core.BinaryOffset.FramePosition+1,count)
+  for i=0,count-1 do
+    workPut(self._frameArray,offset+Core.BinaryOffset.FramePosition+2+i,workAt(frame.actions,i))
+  end
+  return offset
+end
+
+function ObjectDataParser:_parseActionDataInFrame(rawData,frameStart,bone,slot)
+  local keys={DataParser.EVENT,DataParser.SOUND,DataParser.ACTION,DataParser.EVENTS,DataParser.ACTIONS}
+  local types={Core.ActionType.Frame,Core.ActionType.Sound,Core.ActionType.Play,Core.ActionType.Frame,Core.ActionType.Play}
+  for i=1,5 do
+    if V.has(rawData,keys[i]) then self:_mergeActionFrame(V.get(rawData,keys[i]),frameStart,types[i],bone,slot) end
+  end
+end
+
+function ObjectDataParser:_mergeActionFrame(rawData,frameStart,typeCode,bone,slot)
+  local actionOffset=self._armature.actions.length
+  local actions=self:_parseActionData(rawData,typeCode,bone,slot)
+  local frameIndex,frame=0,nil
+  local i=1
+  while i<=actions.length do self._armature:addAction(actions[i],false);i=i+1 end
+  local frames=self._actionFrames
+  if frames.length==0 then
+    local initial=ActionFrame.new();initial.frameStart=0;frames[1]=initial
+  end
+  i=1
+  while i<=frames.length do
+    local each=frames[i]
+    if each.frameStart==frameStart then frame=each;break
+    elseif each.frameStart>frameStart then break end
+    frameIndex=frameIndex+1;i=i+1
+  end
+  if frame==nil then
+    frame=ActionFrame.new();frame.frameStart=frameStart
+    local length=frames.length
+    for j=length,frameIndex+1,-1 do frames[j+1]=frames[j] end
+    frames[frameIndex+1]=frame
+  end
+  i=0
+  while i<actions.length do frame.actions[frame.actions.length+1]=actionOffset+i;i=i+1 end
 end
 
 function ObjectDataParser:_parseGeometry(rawData,geometry)

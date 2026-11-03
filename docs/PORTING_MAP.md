@@ -27,7 +27,7 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/DragonBonesData.ts | dragonbones/model/DragonBonesData.lua | Coleções/ownership e cache real comparados; buffers por referência, parser/typed views pendentes |
 | DragonBones/src/dragonBones/model/BoundingBoxData.ts (quatro classes) | dragonbones/model/BoundingBoxData.lua | Contains/interseções locais, outputs/aliases e ownership comparados; Slot/runtime hit testing pendente |
 | DragonBones/src/dragonBones/parser/DataParser.ts | dragonbones/parser/DataParser.lua | Constantes/conversões e aplicação em modelos reais comparadas; base abstrata, importação e locales especiais pendentes |
-| DragonBones/src/dragonBones/parser/ObjectDataParser.ts (parcial) | dragonbones/parser/ObjectDataParser.lua | 22/47 métodos comparados: geometry/array/bone/path/mesh/display/skin/_modifyArray integrados; 25 pendentes, incluindo armature/animação/entrypoint |
+| DragonBones/src/dragonBones/parser/ObjectDataParser.ts (parcial) | dragonbones/parser/ObjectDataParser.lua | 31/47 métodos comparados: inclui curvas/frames genéricos/ações em frames; 16 pendentes, incluindo frames especializados/timelines/armature/animação/entrypoint |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |

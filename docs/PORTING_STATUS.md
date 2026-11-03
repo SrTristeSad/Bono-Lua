@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-shared-binary`, sobre `main@a9e34b0`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-curves-frames`, sobre `main@bc67313`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -305,3 +305,14 @@ SharedBinaryBuffer representa memória mutável única com sete views Int16/Uint
 163 cenários/6.272 operações/70.166 colunas por VM Lua 5.4/LuaJIT, zero tolerância; 32 erros originais esperados. Oráculo usa _modifyArray genuíno e typed arrays nativas, sem reconstrução manual do algoritmo. Paridades, bytes exatos, Float32 ties-even/subnormais/overflow/-0/NaN, coerções, holes, aliases/snapshots, views sobrepostas, falhas de cópia e de publicação, geometria/pesos e pool reais. Dezenove suítes na CI. Consultar PR para evidência remota/SHA/merge confirmados.
 
 Não implementa BinaryDataParser, entrypoint JSON/armaduras/animação, reflexão/proxies JS genéricos, payloads NaN arbitrários nem hosts big endian. Runtime/renderização continuam pendentes. Próximo recorte: curvas/frames e suas dependências para animações/timelines, antes de entrypoint completo.
+
+
+## Curvas e frames genéricos — estado atual
+
+Base main bc673135a8a92f1008f17e0cd7dbb2a14d0bf36f, PR #81/CI pós-merge 41735155177 e backup cd4206a8 conferidos. Nove métodos originais e Lua do backup auditados: _getCurvePoint, _samplingEasingCurve, _parseFrame, _parseTweenFrame, _parseSingleValueFrame, _parseDoubleValueFrame, _parseActionFrame, _parseActionDataInFrame, _mergeActionFrame. **31/47 métodos; 16 pendentes.** Esta seção sucede os totais dos checkpoints históricos acima.
+
+Bisseção preserva último ponto e limiar 0.0001; endpoints explícitos/omitidos, segmentos e NaNs seguem o original. Frames Step/Int/Float mantêm reservas/holes/offsets, Math.round com ties para +infinito e -0, coerções/defaults/escala e ordem de leituras. O backup lia valores cedo demais e preenchia reservas com zeros; essas diferenças não foram incorporadas. ActionFrame agrega índices em ArmatureData.actions real, com frame zero inicial, inserção/reuso por tempo e ordem EVENT/SOUND/ACTION/EVENTS/ACTIONS. Erros conservam reservas, objetos órfãos e ações anteriores, sem rollback.
+
+328 cenários/3.594 operações/71.880 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 21 exceções esperadas. Contadores do oráculo confirmam execução dos nove corpos genuínos. Modelos/ações/payloads/pool e finalização tipada reais; 20 suítes na CI. Ver contracts/CurveFrames.md e VALIDATION.md. Consultar PR para evidência remota/SHA/merge.
+
+Frames especializados, _parseTimeline/_parseBoneTimeline/_parseSlotTimeline, _parseAnimation, _parseArmature e entrypoint continuam pendentes. Isso não executa playback/blending/deformação ou renderização. Próximo recorte: serializers de frames especializados e dependências completas para timelines.
