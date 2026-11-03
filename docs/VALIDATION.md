@@ -255,4 +255,6 @@ Verificação de regressão: experimento temporário usando # em copyFrom foi re
 
 Normalização explícita: holes/undefined de máscara comparados por valor e length; descritores/hasOwnProperty/proxies/Array.prototype não são equivalência declarada. Animation/AnimationState/Armature ainda não consomem essa classe no produto e não foram validados aqui. Precisão temporal automática real continua pendente.
 
-Artefatos regeneráveis: config-cases.tsv, config-original.tsv, config-<vm>-actual.tsv e config-<vm>-result.json. CI executa as sete suítes e preserva evidências por VM. CI remota/PR/merge desta unidade devem ser confirmados no SHA publicado.
+Artefatos regeneráveis: config-cases.tsv, config-original.tsv, config-<vm>-actual.tsv e config-<vm>-result.json. CI executa as sete suítes e preserva evidências por VM. CI inicial confirmada abaixo; merge e CI pós-merge devem ser consultados no PR.
+
+Checkpoint remoto: PR #69, código 52b1ded46b858d3bfd941c399e182bc0a3239d3d. CI https://github.com/SrTristeSad/Bono-Lua/actions/runs/41645915590 aprovada nos jobs inventory, geometry (lua5.4) e geometry (luajit). Logs de ambas as VMs confirmaram sete suítes passed, incluindo AnimationConfig com 30 cenários/1.293 operações/10.344 colunas/21 campos escalares. Três artefatos conferidos no mesmo SHA. Consultar PR #69 para SHA final, merge e CI pós-merge; este registro não antecipa merge.
