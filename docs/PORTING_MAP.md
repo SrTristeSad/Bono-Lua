@@ -25,6 +25,7 @@ A tabela integral está em UPSTREAM_INVENTORY.md e é regenerável; o estado por
 | DragonBones/src/dragonBones/model/ConstraintData.ts (três classes) | dragonbones/model/ConstraintData.lua | Base abstrata/IK/Path data, pool e integração com armadura comparados; solver de runtime pendente |
 | DragonBones/src/dragonBones/model/SkinData.ts | dragonbones/model/SkinData.lua | Mapa/listas nullable, ownership e integração com ArmatureData/displays reais comparados; runtime/renderização pendentes |
 | DragonBones/src/dragonBones/model/DragonBonesData.ts | dragonbones/model/DragonBonesData.lua | Coleções/ownership e cache real comparados; buffers por referência, parser/typed views pendentes |
+| DragonBones/src/dragonBones/model/BoundingBoxData.ts (quatro classes) | dragonbones/model/BoundingBoxData.lua | Contains/interseções locais, outputs/aliases e ownership comparados; Slot/runtime hit testing pendente |
 | Demais DragonBones/src/dragonBones/**/*.ts | dragonbones/**/*.lua | Inventariado; implementação/validação pendente |
 | <engine>/<version>/src/dragonBones/**/*.ts | integrations/<mesmo caminho>.lua | Ausente; contratos de plataforma pendentes |
 | Interfaces TS | Contratos Lua documentados/testados junto às classes | Sem algoritmos próprios; nenhuma simulação |
