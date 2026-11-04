@@ -170,3 +170,10 @@ Teste usa os corpos genuínos e modelos reais, incluindo ações e bytes da fina
 Base main 147bc53/PR #84/CI pós-merge 41740725798 e backup cd4206a8 conferidos. Dois métodos e helpers antigos lidos; preservar algoritmo, corrigir reservas com zeros/#array e null/undefined do backup. Componentes e header compartilham helpers privados sem métodos upstream adicionais. Contexto de teste usa Geometry/Weight/AnimationData/TimelineData/Matrix reais, com poses e índices vindos de _parseMesh/_parseGeometry; não simular timeline ausente.
 
 Manter TODO do genérico ponderado, diferenças VERTICES/VALUE, delta=true, ordem reserva/cópia/header e offsets relativos. Não aplicar pesos novos nem corrigir dados inconsistentes automaticamente. Parser 41/47, seis pendentes; 22 suítes na CI. Normalização de NaN Float32 só no snapshot permanece a do contrato anterior, sem alterar produto ou outros testes.
+
+
+## Timelines antes de _parseAnimation
+
+Base main f5de26e/PR #85/CI pós-merge 41743120707 e backup cd4206a8 conferidos. Três corpos originais e Lua do backup auditados. Usar JSArray/length/holes, roundFrame correto e modelos reais, sem reservas com zeros/#array ou callback fictício de produto. Helpers privados só adaptam null e reconhecimento de ActionFrame. Preservar último frame extra, próximo tempo do cache de ações e diferença de registro imediato Bone versus adiado Slot, inclusive órfãos/contexto parcial.
+
+Testes usam callbacks genuínos de todos os codecs aplicáveis, wrappers somente para observar argumentos/falhar após callback real, TimelineData existente e mapas/pool/frameIndices reais. Snapshot do teste foi protegido contra contexto data=null para observar a falha original, sem mudar produto/oráculo. 44/47 métodos, três pendentes e 23 suítes na CI. Não declarar playback ou importação completa de animação/armadura com esta unidade.

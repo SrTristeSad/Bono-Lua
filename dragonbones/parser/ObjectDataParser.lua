@@ -478,6 +478,116 @@ local function roundFrame(value)
   return rounded
 end
 
+local AnimationModels=require('dragonbones.model.AnimationData')
+local function nullReference(value)return value==nil or rawequal(value,V.NULL) end
+local function isActionFrame(value)
+  local class=type(value)=="table" and getmetatable(value) or nil
+  while class do
+    if rawequal(class,ActionFrame) then return true end
+    local meta=getmetatable(class)
+    class=meta and type(meta.__index)=="table" and meta.__index or nil
+  end
+  return false
+end
+
+function ObjectDataParser:_parseTimeline(rawData,rawFrames,framesKey,timelineType,frameValueType,frameValueCount,frameParser,timeline)
+  if not nullReference(rawData) and #framesKey>0 and V.has(rawData,framesKey) then
+    rawFrames=V.get(rawData,framesKey)
+  end
+  if nullReference(rawFrames) then return nil end
+  local keyFrameCount=V.number(V.get(rawFrames,"length"))
+  if keyFrameCount==0 then return nil end
+  local intStart=self._frameIntArray.length
+  local floatStart=self._frameFloatArray.length
+  local offset=self._timelineArray.length
+  if nullReference(timeline) or rawequal(timeline,V.UNDEFINED) then timeline=Pool.borrowObject(AnimationModels.TimelineData) end
+  timeline.type=timelineType;timeline.offset=offset
+  self._frameValueType=frameValueType
+  self._timeline=timeline
+  self._timelineArray.length=self._timelineArray.length+5+keyFrameCount
+  local b=Core.BinaryOffset
+  if not nullReference(rawData) then
+    workPut(self._timelineArray,offset+b.TimelineScale,roundFrame(ObjectDataParser._getNumber(rawData,DataParser.SCALE,1.0)*100))
+    workPut(self._timelineArray,offset+b.TimelineOffset,roundFrame(ObjectDataParser._getNumber(rawData,DataParser.OFFSET,0.0)*100))
+  else
+    workPut(self._timelineArray,offset+b.TimelineScale,100)
+    workPut(self._timelineArray,offset+b.TimelineOffset,0)
+  end
+  workPut(self._timelineArray,offset+b.TimelineKeyFrameCount,keyFrameCount)
+  workPut(self._timelineArray,offset+b.TimelineFrameValueCount,frameValueCount)
+  if self._frameValueType==0 then workPut(self._timelineArray,offset+b.TimelineFrameValueOffset,0)
+  elseif self._frameValueType==1 then workPut(self._timelineArray,offset+b.TimelineFrameValueOffset,intStart-self._animation.frameIntOffset)
+  elseif self._frameValueType==2 then workPut(self._timelineArray,offset+b.TimelineFrameValueOffset,floatStart-self._animation.frameFloatOffset) end
+  local function at(index)
+    if rawequal(rawFrames,self._actionFrames) then return workAt(rawFrames,index) end
+    return V.at(rawFrames,index)
+  end
+  if keyFrameCount==1 then
+    timeline.frameIndicesOffset=-1
+    workPut(self._timelineArray,offset+b.TimelineFrameOffset,frameParser(self,at(0),0,0)-self._animation.frameOffset)
+  else
+    local total=self._animation.frameCount+1
+    local indices=self._data.frameIndices
+    local start=indices.length
+    indices.length=indices.length+total
+    timeline.frameIndicesOffset=start
+    local i,iK,frameStart,frameCount=0,0,0,0
+    while i<total do
+      if frameStart+frameCount<=i and iK<keyFrameCount then
+        local raw=at(iK);frameStart=i
+        if iK==keyFrameCount-1 then frameCount=self._animation.frameCount-frameStart
+        elseif isActionFrame(raw) then
+          frameCount=self._actionFrames[iK+2].frameStart-frameStart
+        else frameCount=ObjectDataParser._getNumber(raw,DataParser.DURATION,1) end
+        workPut(self._timelineArray,offset+b.TimelineFrameOffset+iK,frameParser(self,raw,frameStart,frameCount)-self._animation.frameOffset)
+        iK=iK+1
+      end
+      workPut(indices,start+i,iK-1)
+      i=i+1
+    end
+  end
+  self._timeline=nil
+  return timeline
+end
+
+function ObjectDataParser:_parseBoneTimeline(rawData)
+  local bone=self._armature:getBone(ObjectDataParser._getString(rawData,DataParser.NAME,""))
+  if bone==nil then return end
+  self._bone=bone;self._slot=self._armature:getSlot(self._bone.name)
+  local function parse(key,kind,parser,count)
+    local timeline=self:_parseTimeline(rawData,nil,key,kind,2,count,parser)
+    if timeline~=nil then self._animation:addBoneTimeline(bone.name,timeline) end
+  end
+  local t=Core.TimelineType
+  if V.has(rawData,DataParser.TRANSLATE_FRAME) then
+    self._frameDefaultValue=0.0;self._frameValueScale=1.0
+    parse(DataParser.TRANSLATE_FRAME,t.BoneTranslate,self._parseDoubleValueFrame,2)
+  end
+  if V.has(rawData,DataParser.ROTATE_FRAME) then
+    self._frameDefaultValue=0.0;self._frameValueScale=1.0
+    parse(DataParser.ROTATE_FRAME,t.BoneRotate,self._parseBoneRotateFrame,2)
+  end
+  if V.has(rawData,DataParser.SCALE_FRAME) then
+    self._frameDefaultValue=1.0;self._frameValueScale=1.0
+    parse(DataParser.SCALE_FRAME,t.BoneScale,self._parseBoneScaleFrame,2)
+  end
+  if V.has(rawData,DataParser.FRAME) then parse(DataParser.FRAME,t.BoneAll,self._parseBoneAllFrame,6) end
+  self._bone=nil;self._slot=nil
+end
+
+function ObjectDataParser:_parseSlotTimeline(rawData)
+  local slot=self._armature:getSlot(ObjectDataParser._getString(rawData,DataParser.NAME,""))
+  if slot==nil then return end
+  self._slot=slot
+  local displayKey=V.has(rawData,DataParser.DISPLAY_FRAME) and DataParser.DISPLAY_FRAME or DataParser.FRAME
+  local display=self:_parseTimeline(rawData,nil,displayKey,Core.TimelineType.SlotDisplay,0,0,self._parseSlotDisplayFrame)
+  local colorKey=V.has(rawData,DataParser.COLOR_FRAME) and DataParser.COLOR_FRAME or DataParser.FRAME
+  local color=self:_parseTimeline(rawData,nil,colorKey,Core.TimelineType.SlotColor,1,1,self._parseSlotColorFrame)
+  if display~=nil then self._animation:addSlotTimeline(slot.name,display) end
+  if color~=nil then self._animation:addSlotTimeline(slot.name,color) end
+  self._slot=nil
+end
+
 function ObjectDataParser:_parseFrame(_rawData,frameStart,_frameCount)
   local offset=self._frameArray.length
   self._frameArray.length=offset+1
