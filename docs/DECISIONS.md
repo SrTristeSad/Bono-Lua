@@ -1,5 +1,18 @@
 # Decisões rastreáveis
 
+## Slot — atualização e troca do display
+
+Representados os corpos restantes de Slot: _updateDisplay, update, replaceDisplay e acessores/aliases displayIndex/displayList/display/childArmature/getDisplay/setDisplay. Os quatorze hooks de renderer seguem abstratos no produto. Armature recebe dispose adiado, _bufferAction e acessores clock/cacheFrameRate/display/animation/parent originais, com dependências reais. Armature.init/advanceTime/Animation/backend continuam pendentes; não é player completo.
+
+slotruntime_differential: 1.970 cenários (1.024 de troca, 850 de update/cache/mesh/Surface, 96 de child Armature), 7.880 etapas, 165.480 colunas e 333 exceções esperadas por VM Lua 5.4/LuaJIT. Zero aproximações locais. Compara callbacks/estado/ordem/erros, flags, referências, listas, matrizes/cache, eventos e propriedade/clock/pool de filhos. Hook _updateMesh pode rearmar dirty e falhas de hooks não são revertidas. Valores false/0/string vazia não viram null; __eq não altera identidade; objeto com campos semelhantes a Armature continua display comum.
+
+WorldClock, DragonBones core, EventObject, ActionData, Bone/Surface/modelos e Armature são reais. No teste, uma subclasse local apenas registra os quatorze hooks; não calcula/desenha vértices. Metadata de geometria sintética exercita decisões de delegação de mesh; não é equivalência de GPU. Child sem herdar animação e attach com ações reais são sucesso; play/reset sem Animation real são falhas comparadas no ponto original, não simuladores. Root é removido do relógio antes de drenar Core.advanceTime(0), que devolve filhos ao pool antes de liberar modelos.
+
+Seis mutantes rejeitados (false como null, retenção baseada na referência errada, dirty de mesh limpo após callback, cache hit perdido, dispose sem lock e ações com push no lugar de unshift). Produto restaurado e revalidado nas duas VMs; SlotFoundation/SlotDisplayData também passam. Budgets numéricos antigos intactos; só derivados Surface usam seu orçamento 32 eps/escala de projeção 1000, flags/ref/zeros pareados exatos.
+
+Novo comando `lua5.4 examples/run.lua slotruntime` (ou luajit): troca espada→escudo por displayIndex público, percorre Slot.update e mantém posição/colisão ao mover o pai (45,20)→(55,20). Views são referências locais observadas, sem desenho/player; montagem de Armature/modelos continua explícita. CI configurada para 40 suítes/oito exemplos por VM. Contrato: [SlotRuntime.md](contracts/SlotRuntime.md).
+
+
 ## Slot — seleção e substituição dos dados de display
 
 Implementados _updateDisplayData, replaceRawDisplayData, replaceDisplayData e replaceTextureData. A seleção usa DisplayFrame/modelos/SkinData/Bone/Armature reais. Trata pivô de textura rotacionada/recortada, escala atlas×armadura, correção de transform na substituição, yDown, origin compatível, flags de geometria/textura e a lista de ossos ponderados. Não implementa Slot.update, _updateDisplay, replaceDisplay nem renderer/player.

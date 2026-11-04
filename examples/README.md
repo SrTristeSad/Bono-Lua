@@ -77,3 +77,14 @@ luajit examples/run.lua slotdata
 Estende o exemplo slot usando ImageDisplayData, SkinData e metadados reais de textura/atlas. Mostra pivô original (50,40) e substituto (40,30), conservando origin.x=5; a correção usa os transforms raw/substituto. Depois confirma o mesmo movimento e colisão do exemplo anterior. Edite dimensões, pivôs e transform.x em run.lua para experimentar.
 
 Os modelos de atlas/textura são construídos diretamente, sem recursos gráficos. _setDisplayIndex e _updateDisplayData são chamadas manuais até Slot.update estar pronto. O exemplo não desenha nem reproduz um clip.
+
+## Troca pelo índice e Slot.update
+
+```sh
+lua5.4 examples/run.lua slotruntime
+luajit examples/run.lua slotruntime
+```
+
+Troca os objetos locais espada→escudo com displayList e displayIndex públicos. Slot.update percorre os hooks de display/visibilidade/cor/transformação da subclasse observadora local. Depois o pai se move, a posição do slot passa de (45,20) para (55,20), e o centro continua dentro da caixa. Dados de transform/caixa pertencem à skin real e são limpos com ela.
+
+Não desenha os objetos e não reproduz animação. Armature continua com montagem explícita de dados; não há factory/backend provisório. Os modos slot/slotdata anteriores continuam disponíveis como exemplos de baixo nível; Slot.update agora está implementado no domínio do contrato SlotRuntime.

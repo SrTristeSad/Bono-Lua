@@ -1,12 +1,17 @@
 -- Partial port of Armature.ts, DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Lifecycle/registry only: init/advanceTime/animation/display APIs are absent.
+-- Partial lifecycle/registry/clock/cache/action APIs. init/advanceTime and Animation are absent.
 local BaseObject = require('dragonbones.core.BaseObject')
 local Array = require('dragonbones.core.JSArray')
 local Armature = {}
 setmetatable(Armature, {__index=BaseObject})
 function Armature.toString() return '[class dragonBones.Armature]' end
 function Armature.__index(self,key)
+  if key=='display' then return self._display end
+  if key=='animation' then return self._animation end
+  if key=='clock' then return self._clock end
+  if key=='parent' then return self._parent end
+  if key=='cacheFrameRate' then return self._armatureData.cacheFrameRate end
   if key=='flipX' then return rawget(self,'_flipX') end
   if key=='flipY' then return rawget(self,'_flipY') end
   if key=='name' then return self._armatureData.name end
@@ -14,12 +19,33 @@ function Armature.__index(self,key)
   return rawget(Armature,key) or BaseObject[key]
 end
 function Armature.__newindex(self,key,value)
-  if key=='flipX' or key=='flipY' then
+  if key=='clock' then
+    if rawequal(self._clock,value) then return end
+    if self._clock ~= nil then self._clock:remove(self) end
+    self._clock = value
+    if self._clock ~= nil then self._clock:add(self) end
+    local i = 1
+    while i <= self._slots.length do
+      local child = self._slots[i].childArmature
+      if child ~= nil then child.clock = self._clock end
+      i = i + 1
+    end
+  elseif key=='cacheFrameRate' then
+    if self._armatureData.cacheFrameRate ~= value then
+      self._armatureData:cacheFrames(value)
+      local i = 1
+      while i <= self._slots.length do
+        local child = self._slots[i].childArmature
+        if child ~= nil then child.cacheFrameRate = value end
+        i = i + 1
+      end
+    end
+  elseif key=='flipX' or key=='flipY' then
     local field=key=='flipX' and '_flipX' or '_flipY'
     if self[field]==value then return end
     self[field]=value
     self:invalidUpdate()
-  elseif key=='name' or key=='armatureData' then error('Readonly property: '..key)
+  elseif key=='name' or key=='armatureData' or key=='display' or key=='animation' or key=='parent' then error('Readonly property: '..key)
   else rawset(self,key,value) end
 end
 function Armature.new()
@@ -98,6 +124,20 @@ function Armature:invalidUpdate(boneName,updateSlot)
       i=1
       while i<=self._slots.length do self._slots[i]:invalidUpdate();i=i+1 end
     end
+  end
+end
+function Armature:_bufferAction(action,append)
+  for i=1,self._actions.length do if rawequal(self._actions[i],action) then return end end
+  if append then self._actions[self._actions.length+1]=action
+  else
+    for i=self._actions.length,1,-1 do self._actions[i+1]=self._actions[i] end
+    self._actions[1]=action
+  end
+end
+function Armature:dispose()
+  if self._armatureData ~= nil then
+    self._lockUpdate=true
+    self._dragonBones:bufferObject(self)
   end
 end
 return Armature

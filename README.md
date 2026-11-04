@@ -16,7 +16,7 @@ Ler o arquivo upstream fixado e a versão Lua antes de cada alteração. Preserv
 
 O comando completo está em [RECONSTRUCTION_SPEC.md](docs/RECONSTRUCTION_SPEC.md); a sequência de etapas, em [ROADMAP.md](docs/ROADMAP.md).
 
-DisplayFrame seleciona dados de geometria/textura/colisão e inicializa deformações. Slot tem fundação, vínculo ao osso, hit testing e seleção de dados/pivôs comparados. Atualização do objeto gráfico, backend e player continuam pendentes.
+DisplayFrame seleciona dados de geometria/textura/colisão e inicializa deformações. Slot tem fundação, vínculo ao osso, hit testing e seleção de dados/pivôs comparados. Slot.update e troca de displays já percorrem os hooks originais; backend e player continuam pendentes.
 
 ## Testar agora
 
@@ -30,6 +30,7 @@ lua5.4 examples/run.lua surface
 lua5.4 examples/run.lua displayframe
 lua5.4 examples/run.lua slot
 lua5.4 examples/run.lua slotdata
+lua5.4 examples/run.lua slotruntime
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.json 0.5
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.dbbin
 ```
@@ -38,7 +39,7 @@ Pode trocar `lua5.4` por `luajit`. Os exemplos não precisam de Node/npm. `inspe
 
 ## Estado atual
 
-Runtime: `TransformObject`, `Bone`, `Surface` e registro/ciclo de vida parcial de `Armature`, com comparação contra o original e exemplos executáveis. Slot parcial com registro/transformação/colisão; seleção de dados de display comparada; atualização do objeto gráfico, solvers, init completo e reprodução continuam pendentes.
+Runtime: `TransformObject`, `Bone`, `Surface` e registro/ciclo de vida parcial de `Armature`, com comparação contra o original e exemplos executáveis. Slot parcial com registro/transformação/colisão; seleção de dados de display comparada; update/troca de displays e integração parcial com filhos comparados. Backend, solvers, init completo e reprodução continuam pendentes.
 
 Corpus upstream validado: **74 exportações esqueléticas únicas**, em 181 caminhos, importadas em duas escalas nas duas VMs. Buffers e observações do grafo coincidiram com o original, sem tolerância. Ver [cobertura](docs/contracts/UpstreamCorpus.md).
 

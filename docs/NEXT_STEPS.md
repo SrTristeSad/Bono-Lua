@@ -1,29 +1,16 @@
 # Continuidade — Bono-Lua
 
-## Objetivo permanente
+Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura/algoritmos/comportamentos. Destino SrTristeSad/Bono-Lua; não declarar motor completo, criar renderer/player fictício nem alterar decisões autorais.
 
-Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura, algoritmos e comportamentos. Destino SrTristeSad/Bono-Lua. Não declarar motor completo com pendências. Sem renderer/player/dependências de produto fictícios.
+Base: main 2c505ccbe576aea7ef4c7826fc5d28b91f5610b9, PR #101; CI após merge 41872083705 aprovada (39 suítes/sete exemplos por VM). Backup backup/pre-integral-rebuild-20261103 cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb intacto. Branch desta unidade: port/slot-display-runtime; consultar PR para head/CI/merge final. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
-## Base e unidade atual
+Slot: corpos restantes de update/_updateDisplay/replaceDisplay e acessores/aliases representados. Armature parcial tem clock/cache/getters/dispose/fila de ações reais, sem Animation/init/advanceTime. slotruntime_differential: 1.970 cenários/7.880 etapas/165.480 colunas/333 exceções esperadas, zero aproximações locais por VM; seis probes rejeitados, produto restaurado. SlotFoundation/SlotDisplayData reexecutados. CI configurada para 40 suítes/oito exemplos. Exemplo slotruntime troca espada→escudo e usa Slot.update real, com observador local, sem desenho.
 
-Base integrada: PR #100, main 9a78e35f834854749214ecffee01884c63f4ddc1. CI do PR 41865523528 e após merge 41868022089 aprovadas: três jobs, 38 suítes por VM, seis exemplos e três artefatos vinculados aos heads conferidos em ambas. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, intacto. Autorização do proprietário mantém main acompanhando checkpoints testados.
+Próximo recorte: auditar Constraint/IK/Path ou Animation com suas dependências reais. Completar Armature.init/advanceTime somente com Animation/proxy real, sem simular dependências. Child com inheritAnimation=false e attach por ações já validados; play/reset sem Animation são erros comparados na montagem manual, não sucesso de playback. Ampliar integração Surface/polígono/aliases e exports reais conforme os consumidores ficarem prontos.
 
-Continuação: branch port/slot-display-data. _updateDisplayData e replaceRawDisplayData/replaceDisplayData/replaceTextureData implementados. Comparação: 1.224 cenários/11.016 etapas/182.376 colunas/146 exceções de etapas esperadas por VM, zero aproximações locais. Seis mutantes rejeitados; produto restaurado e testes finais nas duas VMs aprovados. SlotFoundation também reexecutado. CI configurada para 39 suítes/sete exemplos. Consultar PR desta branch para head, CI e merge final; não antecipar resultados futuros.
+Preservar semântica de identidade, false vs nil, ordem de callbacks, guard de raw e pivôs (inclusive agrupamento fractionalPivot), truncamento original de frames sem pooling, dirty de mesh antes do hook, prioridades do cache, unshift de ações e descarte adiado pelo core. Não avançar relógio contendo Armature incompleta; remover root antes de drenar descartes e liberar modelos por último. Não ampliar budgets antigos; SlotRuntime só herda o limite Surface de 32 eps nos derivados desse recorte, flags/refs/índices/zeros pareados exatos.
 
-Exemplo slotdata: pivô (50,40)→(40,30), origin.x=5 preservado; depois repete vínculo/colisão do slot em (45,20)→(55,20). Chama métodos de baixo nível e usa observador local, sem Slot.update/renderização/player.
-
-## Próximo recorte
-
-1. Conferir heads/backup/CI, integrar checkpoint autorizado somente após CI pertinente aprovada.
-2. Auditar _updateDisplay/replaceDisplay e Slot.update com dependências reais de Armature/animação; manter hooks abstratos, sem métodos substitutos de produto.
-3. Validar pai Surface, polígono/aliases no hit testing e lifecycle de child Armature quando dependências estiverem prontas. APIs públicas de displays ainda pendentes.
-4. Atualizar inventário/contratos/progresso e exemplos executáveis. Manter montagem manual explícita até init/factory completos.
-
-## Limites a preservar
-
-Guard de identidade frame/geometria/textura, caixa relida fora dele, prioridade de origin raw, TODO de pivô, ordem de erro/fallback e sentinel SkinData.NULL. Lista de ossos mantém miss null e duplicatas. SlotData numérico: somente casos trig em matriz/pose/pivôs admitem 8 eps; zero/flags/refs exatos, nenhuma aproximação local observada. Não ampliar budgets anteriores: Surface tem contrato próprio de 32 eps e Bone/TransformObject de 8 eps. Preservar _matrixCahce e hull 10→12.
-
-Armature.init/advanceTime, solvers IK/Path, avaliação/playback/blending, factories e backend LÖVE/GPU continuam pendentes. WorldClock mantém resolução de segundos de os.time. Exportações externas ao pin, locale tr/az, coerções/proxies/reflexão genéricos, Big Endian e payloads NaN arbitrários não são equivalência reivindicada. Listas da skin deste recorte são densas com null explícito; holes criados manualmente não foram validados.
+Continuam pendentes Animation/player, Armature completo, IK/Path, factories, backends LÖVE/GPU, integrações externas, locale/coerções/proxies genéricos, Big Endian e precisão automática de WorldClock (os.time em segundos). Fonte/pin/TODOs permanecem intactos.
 
 ## Reprodução
 
@@ -32,7 +19,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject bone surface displayframe slot slotdata; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject bone surface displayframe slot slotdata slotruntime; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
