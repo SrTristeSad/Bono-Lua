@@ -1,5 +1,18 @@
 # Estado da reconstrução integral
 
+## Slot — seleção e substituição dos dados de display
+
+Implementados _updateDisplayData, replaceRawDisplayData, replaceDisplayData e replaceTextureData. A seleção usa DisplayFrame/modelos/SkinData/Bone/Armature reais. Trata pivô de textura rotacionada/recortada, escala atlas×armadura, correção de transform na substituição, yDown, origin compatível, flags de geometria/textura e a lista de ossos ponderados. Não implementa Slot.update, _updateDisplay, replaceDisplay nem renderer/player.
+
+slotdata_differential: 1.220 cenários, 10.980 etapas, 181.780 colunas e 146 exceções de etapas esperadas por VM Lua 5.4/LuaJIT; zero aproximações observadas localmente. Só quatro campos derivados (matriz local, pose, pivôs) dos casos explicitamente trig admitem o budget anterior de 8*epsilon*max(1,abs(expected)), com zeros/identidades/flags exatos. Demais cenários são comparados byte a byte. Nenhum budget anterior foi alterado.
+
+São 1.152 combinações de tipos raw/substituto, textura rotacionada/recorte, eixo Y, escalas efetivas 1/1,5 e pesos, mais 68 cenários de fronteira. Cada caso compara nove transições e limpeza: índice omitido/negativo/inativo/alto/fracionário/NaN, frames ausentes, skin ausente/lista ausente/curta/null, textura sem atlas, armadura ausente, data igual ao raw, textura null, trig e troca apenas da caixa. Callbacks abstratos têm adaptadores somente no teste; atlas/textura são modelos reais construídos/limpos diretamente, sem recurso gráfico fictício.
+
+Mantida a guarda por identidade frame/geometria/textura: editar offset ou trocar somente boundingBox não reconstrói a matriz. BoundingBox é relido fora da guarda. Repetir raw não limpa deformação; trocar raw limpa antes do fallback/possível erro; raw nil igual ao atual não tenta buscar a skin. Preservadas posições null/repetidas de ossos; sentinel SkinData.NULL traduzido explicitamente para nil. Seis mutantes rejeitados (guarda, yUp, sentinel, osso ausente, escala e hook gráfico inesperado), produto restaurado e revalidado nas duas VMs, com regressão de SlotFoundation aprovada.
+
+Exemplo `lua5.4 examples/run.lua slotdata` (ou luajit): pivô (50,40)→(40,30), conservando origin.x=5; depois repete vínculo/colisão do slot. É montagem manual com _updateDisplayData direto e observador local, sem Slot.update/player/renderização. CI configurada para 39 suítes e sete exemplos por VM. Contrato: [SlotDisplayData.md](contracts/SlotDisplayData.md).
+
+
 ## Slot — fundação e hit testing
 
 Slot.lua implementa inicializadores/limpeza, init/registro em Armature real, visibilidade, alpha, frames, flags/índices, cor/zOrder, transformação e hit testing. Armature recebe _addSlot/getSlot originais. DisplayFrame continua em módulo próprio. update, avaliação/troca de displays, animação filha, factory e renderer continuam pendentes; nenhum hook gráfico concreto foi adicionado ao produto.
@@ -25,7 +38,7 @@ Exemplo: `lua5.4 examples/run.lua displayframe` (ou `luajit`): malha com três v
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/display-frame`, sobre `main@265304b3`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/slot-display-data`, sobre `main@9a78e35f`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 

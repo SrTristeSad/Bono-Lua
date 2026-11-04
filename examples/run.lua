@@ -115,7 +115,7 @@ elseif mode == 'surface' then
   armature:returnToPool()
   data:returnToPool()
   print('Surface e limpeza concluídas. Deformação manual, sem player ou renderização.')
-elseif mode == 'slot' then
+elseif mode == 'slot' or mode == 'slotdata' then
   local Pool = require('dragonbones.core.BaseObject')
   local Slot = require('dragonbones.armature.Slot')
   local Bone = require('dragonbones.armature.Bone')
@@ -158,6 +158,42 @@ elseif mode == 'slot' then
   model:addSlot(slotData)
   local slot = Pool.borrowObject(Probe)
   slot:init(slotData,armature,nil,nil)
+  if mode == 'slotdata' then
+    local Displays = require('dragonbones.model.DisplayData')
+    local Skin = require('dragonbones.model.SkinData')
+    local Textures = require('dragonbones.model.TextureAtlasData')
+    -- Real texture metadata, constructed directly: no graphics resource/backend.
+    local atlas = Textures.TextureAtlasData.new(Textures.TextureAtlasData)
+    atlas:_onClear()
+    local function texture(width,height)
+      local value = Textures.TextureData.new(Textures.TextureData)
+      value:_onClear()
+      value.parent = atlas
+      value.region.width,value.region.height = width,height
+      return value
+    end
+    local raw = Pool.borrowObject(Displays.ImageDisplayData)
+    raw.pivot.x,raw.pivot.y = .5,.5
+    raw.transform.x = 5
+    raw.texture = texture(100,80)
+    local replacement = Pool.borrowObject(Displays.ImageDisplayData)
+    replacement.pivot.x,replacement.pivot.y = .25,.25
+    replacement.transform.x = 15
+    replacement.texture = texture(200,120)
+    local skin = Pool.borrowObject(Skin)
+    skin.name = 'slotdata-example'
+    skin:addDisplay('probe',raw)
+    skin:addDisplay('replacement',replacement)
+    model:addSkin(skin)
+    slot.displayFrameCount = 1
+    slot:_setDisplayIndex(0)
+    slot:replaceRawDisplayData(raw,0)
+    slot:_updateDisplayData() -- Direct low-level call until Slot.update exists.
+    print(('Display original: pivô=(%g,%g) | origem x=%g'):format(slot._pivotX,slot._pivotY,slot.origin.x))
+    slot:replaceDisplayData(replacement,0)
+    slot:_updateDisplayData()
+    print(('Display substituto: pivô=(%g,%g) | origem x=%g'):format(slot._pivotX,slot._pivotY,slot.origin.x))
+  end
   local box = Pool.borrowObject(Box)
   box.width,box.height = 10,10
   slot._boundingBoxData = box -- Manual assignment until display evaluation exists.
@@ -207,5 +243,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata')
 end
