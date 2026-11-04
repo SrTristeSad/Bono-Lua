@@ -1,5 +1,27 @@
 # Validação
 
+## Slot — fundação e hit testing
+
+Slot.lua implementa inicializadores/limpeza, init/registro em Armature real, visibilidade, alpha, frames, flags/índices, cor/zOrder, transformação e hit testing. Armature recebe _addSlot/getSlot originais. DisplayFrame continua em módulo próprio. update, avaliação/troca de displays, animação filha, factory e renderer continuam pendentes; nenhum hook gráfico concreto foi adicionado ao produto.
+
+slot_differential executa o TS fixado com Bone/Armature/modelos reais e uma subclasse observadora apenas no teste. 1.448 cenários (440 de ciclo de vida/estado, 1.008 de hit testing), 56.472 colunas, 120 falhas esperadas e 30 comparações aproximadas por VM Lua 5.4/LuaJIT. Hit testing usa retângulo/elipse, seis matrizes (incluindo reflexão, shear e singularidade), sete segmentos e oito máscaras de outputs. Só pose/outputs matemáticos não nulos aceitam 8*epsilon*max(1,abs(expected)); matrizes, flags, identidade, comprimento e zeros exatos. Não relaxa budgets anteriores.
+
+Mantidos i < value da redução de displayFrameCount (trunca sem devolver frames removidos ao pool), _setZOrder sujando mesmo valor igual, guarda separada do índice de animação, flags publicadas antes do callback e deduplicação incluindo display null na limpeza. Quatro mutantes rejeitados (redução diferente, parar em osso null, callback antes da visibilidade e igualdade sobrecarregada de display); produto restaurado e revalidado. Contrato/limites: [SlotFoundation.md](contracts/SlotFoundation.md).
+
+Exemplo `lua5.4 examples/run.lua slot` ou `luajit`: slot ligado ao filho passa de (45,20) a (55,20) após mover o pai; contém o centro da caixa em ambas as poses e confirma registro. Montagem manual, caixa atribuída diretamente e subclasse observadora local, sem desenho/player. CI configurada para 38 suítes e seis exemplos por VM; consultar PR #100 para estado remoto, sem antecipar aprovação/merge.
+
+
+Regressão local completa: 38 suítes e seis exemplos aprovados em Lua 5.4 e LuaJIT; logs locais artifacts/slot-regression-lua.log e artifacts/slot-regression-luajit.log. Depois dos probes, os arquivos de produto foram restaurados e slot_differential reexecutado nas duas VMs com 1.448 cenários. A CI remota anterior continuava queued, portanto main não foi integrada antecipadamente.
+
+## DisplayFrame — dados dos displays de Slot
+
+DisplayFrame, classe separada dentro de Slot.ts, implementada integralmente: inicializadores, toString, _onClear, updateDeformVertices, getGeometryData, getBoundingBox e getTextureData. A classe Slot abstrata permanece pendente; isso não implementa troca gráfica nem reprodução de animação.
+
+Comparação diferencial com o TS fixado executado: 2.304 cenários, 32.256 colunas e 192 falhas esperadas por VM (Lua 5.4 e LuaJIT), tolerância zero. Combina seis tipos de display bruto/substituto, quatro configurações de textura, geometria com/sem pesos, buffers vazios/esparsos/editados, repetição, contagem inválida/zero, offset inválido e dados ausentes. Compara identidades retornadas, length/holes/zeros assinados, ordem de falha, limpeza e reuso do mesmo objeto/array pelo pool. Duas mutações (ignorar deformação existente e buscar fallback após textura nula do substituto) rejeitadas; produto restaurado antes da validação final.
+
+Exemplo: `lua5.4 examples/run.lua displayframe` (ou `luajit`): malha com três vértices gera seis componentes; editar Y para 12 e atualizar novamente conserva 12. Usa modelos reais, SharedBinaryBuffer/view Int16 e pool. Ainda sem player/renderização. CI passa a 37 suítes e cinco exemplos por VM. Contrato: [DisplayFrame.md](contracts/DisplayFrame.md).
+
+
 ## Unidade inicial: preparação e inventário
 
 Executado:

@@ -103,3 +103,5 @@ Comando executável examples/run.lua bones carrega dois modelos, monta dois Bone
 Surface portado com oito corpos e geometria/pool/armadura parcial reais. 585 cenários, 38.610 consultas e 26.325 colunas por VM; duas falhas esperadas. Inclui regiões central/laterais/bordas, cache hit/restauração/invalidação, deformação e cadeias de pais Bone/Surface. Não muda a tolerância da suíte Bone: a integração Surface usa orçamento próprio para trigonometria e projeção de coordenadas, registrado em [SurfaceRuntime.md](contracts/SurfaceRuntime.md).
 
 Exemplo `examples/run.lua surface`: o filho em (50,50) vai a (50,90) ao deformar o centro da grade em +80 no eixo Y. Montagem e deformação manuais, sem player/factory falso. CI com 36 suítes e quatro exemplos por VM. Slot, constraints/solvers, Armature.init/advanceTime, animação e backend continuam pendentes.
+
+Slot.ts contém duas classes: DisplayFrame corresponde a dragonbones/armature/DisplayFrame.lua (comparado); Slot parcialmente implementada em dragonbones/armature/Slot.lua (fundação/transformação/hit testing); avaliação de displays/backend ainda pendentes.
