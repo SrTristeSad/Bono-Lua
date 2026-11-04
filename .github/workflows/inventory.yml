@@ -110,6 +110,7 @@ jobs:
           node tests/ik_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/path_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/basetimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/bonetimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua inspect
           ${{ matrix.vm }} examples/run.lua transform
           ${{ matrix.vm }} examples/run.lua bones
@@ -121,6 +122,7 @@ jobs:
           ${{ matrix.vm }} examples/run.lua ik
           ${{ matrix.vm }} examples/run.lua path
           ${{ matrix.vm }} examples/run.lua timeline
+          ${{ matrix.vm }} examples/run.lua bonetimeline
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

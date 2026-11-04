@@ -453,10 +453,10 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/Animation.ts` | Código-fonte do núcleo | dragonbones/animation/Animation.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/AnimationState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/BlendState.lua | Parcial: somente BlendState portado. Classe AnimationState/controlador pendente. |
 | `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Corpos das cinco bases portados; validados no domínio do contrato. Subclasses concretas e AnimationState/Animation pendentes. |
 | `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | docs/contracts/IAnimatable.md | Contrato documentado e exercitado; interface TS sem classe de runtime para portar |
-| `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BoneTimelineState.lua | Parcial: quatro timelines de transformação de bones portadas; 12 classes restantes pendentes. |
 | `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente |
 | `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Parcial: registro/ciclo de vida, dispose adiado, _bufferAction, clock/cacheFrameRate e getters display/animation/parent. init/advanceTime/Animation/proxy/ordenação e demais APIs pendentes. _addConstraint original acrescentado, deduplicando por identidade. |
 | `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Corpos portados; Bone regulares e pai Surface comparados com Armature real parcial. Callbacks de Slot e execução de solvers continuam sem validação nesta unidade. |
@@ -2218,8 +2218,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/animation/AnimationState.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/animation/AnimationState.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/animation/AnimationState.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/animation/BlendState.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: somente BlendState portado. Classe AnimationState/controlador pendente.; testes: bonetimeline_differential: distribuição de três contribuições por tempo, camadas, pesos negativos/zero/acima de 1, saturação, reset e pooling com target real. Ver BoneTimelines.md.; diferenças: Módulo próprio para BlendState; sem stub de AnimationState/Animation.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/BaseTimelineState.ts`, `DragonBones/src/dragonBones/animation/TimelineState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/model/AnimationConfig.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -2452,8 +2452,8 @@ Herança: nenhuma explícita.
 ### `DragonBones/src/dragonBones/animation/TimelineState.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/animation/TimelineState.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/animation/TimelineState.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/animation/BoneTimelineState.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: quatro timelines de transformação de bones portadas; 12 classes restantes pendentes.; testes: bonetimeline_differential: 1.828 cenários por VM com Bone/BlendState reais; comparação exata. Exemplo bonetimeline lê JSON, aplica à pose e executa Bone.update. Ver BoneTimelines.md.; diferenças: Bases portadas, índices de buffers base zero/armazenamento um, módulos separados. Controlador AnimationState apenas contrato de campos de teste.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/animation/BaseTimelineState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/ConstraintData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

@@ -81,9 +81,10 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
-elseif mode == 'timeline' then
+elseif mode == 'timeline' or mode == 'bonetimeline' then
   local Pool = require('dragonbones.core.BaseObject')
   local Base = require('dragonbones.animation.BaseTimelineState').DoubleValueTimelineState
+  if mode=='bonetimeline' then Base=require('dragonbones.animation.BoneTimelineState').BoneTranslateTimelineState end
   local Parser = require('dragonbones.parser.ObjectDataParser')
   local JSON = require('dragonbones.parser.JSON')
   local Armature = require('dragonbones.armature.Armature')
@@ -104,15 +105,30 @@ elseif mode == 'timeline' then
   -- Explicit input contract: AnimationState/player is not implemented yet.
   local state = {animationData=animation,_position=0,_duration=animation.duration,
     playTimes=0,currentPlayTimes=0,_playheadState=3}
+  local bone,blend
+  if mode=='bonetimeline' then
+    bone=Pool.borrowObject(require('dragonbones.armature.Bone'))
+    bone:init(model:getBone('root'),armature)
+    blend=Pool.borrowObject(require('dragonbones.animation.BlendState'))
+    blend.target=bone;state.layer=0;state._weightResult=1
+  end
   local sample = Pool.borrowObject(Sample)
+  if blend then sample.target=blend end
   sample:init(armature,state,timelineData)
   sample._valueOffset=animation.frameFloatOffset
   sample._valueArray=data.frameFloatArray
   for _,time in ipairs({0,.25,.5,.75}) do
     sample:update(time)
-    print(('Timeline t=%.2f: x=%.3f y=%.3f'):format(time,sample._resultA,sample._resultB))
+    if blend then
+      blend:reset()
+      if blend:update(state) then sample:blend(true) end
+      bone:update(-1)
+      print(('Bone t=%.2f: pose x=%.3f | mundo x=%.3f'):format(time,bone.animationPose.x,bone.globalTransformMatrix.tx))
+    else
+      print(('Timeline t=%.2f: x=%.3f y=%.3f'):format(time,sample._resultA,sample._resultB))
+    end
   end
-  sample:returnToPool();armature:returnToPool();data:returnToPool()
+  sample:returnToPool();if blend then blend:returnToPool() end;armature:returnToPool();data:returnToPool()
   print('Amostragem de keyframes importados concluída. Sem AnimationState, player ou renderer.')
 elseif mode == 'path' then
   local Pool = require('dragonbones.core.BaseObject')
@@ -392,5 +408,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline')
 end
