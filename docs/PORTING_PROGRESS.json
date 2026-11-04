@@ -194,6 +194,18 @@
       "status": "Corpos das cinco bases portados; validados no domínio do contrato. Subclasses concretas e AnimationState/Animation pendentes.",
       "tests": "basetimeline_differential: 2.700 cenários/1.052.450 colunas/25 erros esperados por VM Lua 5.4/LuaJIT; comparação exata sem aproximações. Exemplo timeline usa JSON/parser/buffers reais. AnimationState apenas contrato de teste, sem player.",
       "differences": "Classes/tabelas/metatables, new(class), buffers com armazenamento base um/offsets base zero, JSArray para _rd e number para samples ausentes no helper; herança e métodos abstratos preservados. Ver BaseTimelineState.md."
+    },
+    "DragonBones/src/dragonBones/animation/TimelineState.ts": {
+      "destination": "dragonbones/animation/BoneTimelineState.lua",
+      "status": "Parcial: quatro timelines de transformação de bones portadas; 12 classes restantes pendentes.",
+      "tests": "bonetimeline_differential: 1.828 cenários por VM com Bone/BlendState reais; comparação exata. Exemplo bonetimeline lê JSON, aplica à pose e executa Bone.update. Ver BoneTimelines.md.",
+      "differences": "Bases portadas, índices de buffers base zero/armazenamento um, módulos separados. Controlador AnimationState apenas contrato de campos de teste."
+    },
+    "DragonBones/src/dragonBones/animation/AnimationState.ts": {
+      "destination": "dragonbones/animation/BlendState.lua",
+      "status": "Parcial: somente BlendState portado. Classe AnimationState/controlador pendente.",
+      "tests": "bonetimeline_differential: distribuição de três contribuições por tempo, camadas, pesos negativos/zero/acima de 1, saturação, reset e pooling com target real. Ver BoneTimelines.md.",
+      "differences": "Módulo próprio para BlendState; sem stub de AnimationState/Animation."
     }
   }
 }
