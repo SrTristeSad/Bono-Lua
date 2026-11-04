@@ -1,7 +1,7 @@
 -- Partial port of Slot.ts, DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Foundation, display data, transforms and hit testing. Display object update,
--- object replacement and child-armature playback remain absent. Renderer hooks are abstract.
+-- All Slot bodies are represented; renderer hooks remain abstract.
+-- Child Animation execution requires the future Animation runtime; see contract.
 local BaseObject = require('dragonbones.core.BaseObject')
 local TransformObject = require('dragonbones.armature.TransformObject')
 local DisplayFrame = require('dragonbones.armature.DisplayFrame')
@@ -11,6 +11,7 @@ local ColorTransform = require('dragonbones.geom.ColorTransform')
 local Array = require('dragonbones.core.JSArray')
 local SkinData = require('dragonbones.model.SkinData')
 local DragonBones = require('dragonbones.core.DragonBones')
+local EventObject = require('dragonbones.event.EventObject')
 local Armature = require('dragonbones.armature.Armature')
 local Slot = {}
 setmetatable(Slot,{__index=TransformObject})
@@ -49,7 +50,31 @@ local function setDisplayFrameCount(self,value)
     self._displayFrames.length=value
   end
 end
+local function nonNull(value,fallback)
+  if value ~= nil then return value end
+  return fallback
+end
+local function setDisplay(self,value)
+  if rawequal(self._display,value) then return end
+  if self._displayFrames.length == 0 then
+    self.displayFrameCount = 1
+    self._displayIndex = 0
+  end
+  self:replaceDisplay(value,self._displayIndex)
+end
 function Slot.__index(self,key)
+  if key=='displayIndex' then return self._displayIndex end
+  if key=='display' then return self._display end
+  if key=='childArmature' then return self._childArmature end
+  if key=='displayList' then
+    local displays = Array.new()
+    local i = 1
+    while i <= self._displayFrames.length do
+      displays[displays.length+1] = self._displayFrames[i].display
+      i = i + 1
+    end
+    return displays
+  end
   if key=='visible' then return self._visible end
   if key=='displayFrameCount' then return self._displayFrames.length end
   if key=='name' then return self._slotData.name end
@@ -65,6 +90,14 @@ function Slot.__newindex(self,key,value)
     self._visible=value
     self:_updateVisible()
   elseif key=='displayFrameCount' then setDisplayFrameCount(self,value)
+  elseif key=='displayIndex' then self:_setDisplayIndex(value);self:update(-1)
+  elseif key=='displayList' then
+    self.displayFrameCount = value.length
+    local i = 1
+    while i <= value.length do self:replaceDisplay(value[i],i-1);i=i+1 end
+  elseif key=='display' then setDisplay(self,value)
+  elseif key=='childArmature' then
+    if not rawequal(self._childArmature,value) then self.display=value end
   elseif key=='name' or key=='slotData' or key=='boundingBoxData' or key=='rawDisplay' or key=='meshDisplay' or key=='parent' then
     error('Readonly property: '..key)
   else TransformObject.__newindex(self,key,value) end
@@ -335,6 +368,101 @@ function Slot:replaceTextureData(textureData,index)
   end
 end
 
+function Slot:_updateDisplay()
+  local prevDisplay = nonNull(self._display,self._rawDisplay)
+  local prevChildArmature = self._childArmature
+
+  if self._displayFrame ~= nil then
+    self._display = self._displayFrame.display
+    if self._display ~= nil and isArmature(self._display) then
+      self._childArmature = self._display
+      self._display = self._childArmature.display
+    else
+      self._childArmature = nil
+    end
+  else
+    self._display = nil
+    self._childArmature = nil
+  end
+
+  local currentDisplay = nonNull(self._display,self._rawDisplay)
+  if not rawequal(currentDisplay,prevDisplay) then
+    self._textureDirty = true
+    self._visibleDirty = true
+    self._blendModeDirty = true
+    self._colorDirty = true
+    self._transformDirty = true
+    self:_onUpdateDisplay()
+    self:_replaceDisplay(prevDisplay)
+  end
+
+  if not rawequal(self._childArmature,prevChildArmature) then
+    if prevChildArmature ~= nil then
+      prevChildArmature._parent = nil
+      prevChildArmature.clock = nil
+      if prevChildArmature.inheritAnimation then
+        prevChildArmature.animation:reset()
+      end
+    end
+
+    if self._childArmature ~= nil then
+      self._childArmature._parent = self
+      self._childArmature.clock = self._armature.clock
+      if self._childArmature.inheritAnimation then
+        if self._childArmature.cacheFrameRate == 0 then
+          local cacheFrameRate = self._armature.cacheFrameRate
+          if cacheFrameRate ~= 0 then
+            self._childArmature.cacheFrameRate = cacheFrameRate
+          end
+        end
+        if self._displayFrame ~= nil then
+          local actions = nil
+          local currentData = nonNull(self._displayFrame.displayData,self._displayFrame.rawDisplayData)
+          if currentData ~= nil and currentData.type == Core.DisplayType.Armature then
+            actions = currentData.actions
+          end
+          if actions ~= nil and actions.length > 0 then
+            local i = 1
+            while i <= actions.length do
+              local action = actions[i]
+              local eventObject = BaseObject.borrowObject(EventObject)
+              EventObject.actionDataToInstance(action, eventObject, self._armature)
+              eventObject.slot = self
+              self._armature:_bufferAction(eventObject, false)
+              i = i + 1
+            end
+          else
+            self._childArmature.animation:play()
+          end
+        end
+      end
+    end
+  end
+end
+
+function Slot:replaceDisplay(value, index)
+  index = replacementIndex(self, index)
+  if index == nil then return end
+  local displayFrame = displayAt(self, index)
+  if not rawequal(displayFrame.display,value) then
+    local prevDisplay = displayFrame.display
+    displayFrame.display = value
+    if prevDisplay ~= nil and not rawequal(prevDisplay,self._rawDisplay)
+        and not rawequal(prevDisplay,self._meshDisplay) and not self:_hasDisplay(prevDisplay) then
+      if isArmature(prevDisplay) then
+        -- The original intentionally does not dispose replaced armatures.
+      else
+        self:_disposeDisplay(prevDisplay, true)
+      end
+    end
+    if value ~= nil and not rawequal(value,self._rawDisplay) and not rawequal(value,self._meshDisplay)
+        and not self:_hasDisplay(prevDisplay) and not isArmature(value) then
+      self:_initDisplay(value, true)
+    end
+    if index == self._displayIndex then self._displayDirty = true end
+  end
+end
+
 function Slot:_updateGlobalTransformMatrix(isCache)
   local parentMatrix = self._parent._boneData.type == Core.BoneType.Bone
     and self._parent.globalTransformMatrix
@@ -396,6 +524,93 @@ function Slot:init(slotData, armatureValue, rawDisplay, meshDisplay)
   end
   self:_onUpdateDisplay()
   self:_addDisplay()
+end
+
+function Slot:update(cacheFrameIndex)
+  if self._displayDataDirty then
+    self:_updateDisplayData()
+    self._displayDataDirty = false
+  end
+  if self._displayDirty then
+    self:_updateDisplay()
+    self._displayDirty = false
+  end
+  if self._geometryDirty or self._textureDirty then
+    if self._display == nil or rawequal(self._display,self._rawDisplay)
+        or rawequal(self._display,self._meshDisplay) then self:_updateFrame() end
+    self._geometryDirty = false
+    self._textureDirty = false
+  end
+  if self._display == nil then return end
+  if self._visibleDirty then
+    self:_updateVisible()
+    self._visibleDirty = false
+  end
+  if self._blendModeDirty then
+    self:_updateBlendMode()
+    self._blendModeDirty = false
+  end
+  if self._colorDirty then
+    self:_updateColor()
+    self._colorDirty = false
+  end
+  if self._zOrderDirty then
+    self:_updateZOrder()
+    self._zOrderDirty = false
+  end
+
+  if self._geometryData ~= nil and rawequal(self._display,self._meshDisplay) then
+    local isSkinned = self._geometryData.weight ~= nil
+    local isSurface = self._parent._boneData.type ~= Core.BoneType.Bone
+    if self._verticesDirty
+        or (isSkinned and self:_isBonesUpdate())
+        or (isSurface and self._parent._childrenTransformDirty) then
+      self._verticesDirty = false
+      self:_updateMesh()
+    end
+    if isSkinned or isSurface then return end
+  end
+
+  if cacheFrameIndex >= 0 and self._cachedFrameIndices ~= nil then
+    local cached = self._cachedFrameIndices[cacheFrameIndex + 1]
+    if cached ~= nil and cached >= 0 and self._cachedFrameIndex == cached then
+      self._transformDirty = false
+    elseif cached ~= nil and cached >= 0 then
+      self._transformDirty = true
+      self._cachedFrameIndex = cached
+    elseif self._transformDirty or self._parent._childrenTransformDirty then
+      self._transformDirty = true
+      self._cachedFrameIndex = -1
+    elseif self._cachedFrameIndex >= 0 then
+      self._transformDirty = false
+      self._cachedFrameIndices[cacheFrameIndex + 1] = self._cachedFrameIndex
+    else
+      self._transformDirty = true
+      self._cachedFrameIndex = -1
+    end
+  elseif self._transformDirty or self._parent._childrenTransformDirty then
+    cacheFrameIndex = -1
+    self._transformDirty = true
+    self._cachedFrameIndex = -1
+  end
+
+  if self._transformDirty then
+    if self._cachedFrameIndex < 0 then
+      local isCache = cacheFrameIndex >= 0
+      self:_updateGlobalTransformMatrix(isCache)
+      if isCache and self._cachedFrameIndices ~= nil then
+        local index = self._armature._armatureData:setCacheFrame(
+          self.globalTransformMatrix, self.global)
+        self._cachedFrameIndices[cacheFrameIndex + 1] = index
+        self._cachedFrameIndex = index
+      end
+    else
+      self._armature._armatureData:getCacheFrame(
+        self.globalTransformMatrix, self.global, self._cachedFrameIndex)
+    end
+    self:_updateTransform()
+    self._transformDirty = false
+  end
 end
 
 function Slot:invalidUpdate()
@@ -471,5 +686,8 @@ end
 function Slot:getDisplayFrameAt(index)
   return displayAt(self, index)
 end
+
+function Slot:getDisplay() return self._display end
+function Slot:setDisplay(value) self.display=value end
 
 return Slot

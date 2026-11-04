@@ -115,7 +115,7 @@ elseif mode == 'surface' then
   armature:returnToPool()
   data:returnToPool()
   print('Surface e limpeza concluídas. Deformação manual, sem player ou renderização.')
-elseif mode == 'slot' or mode == 'slotdata' then
+elseif mode == 'slot' or mode == 'slotdata' or mode == 'slotruntime' then
   local Pool = require('dragonbones.core.BaseObject')
   local Slot = require('dragonbones.armature.Slot')
   local Bone = require('dragonbones.armature.Bone')
@@ -140,7 +140,7 @@ elseif mode == 'slot' or mode == 'slotdata' then
     self.calls = {}
     return self
   end
-  for _,name in ipairs({'_initDisplay','_disposeDisplay','_onUpdateDisplay','_addDisplay','_updateVisible'}) do
+  for _,name in ipairs({'_initDisplay','_disposeDisplay','_onUpdateDisplay','_addDisplay','_replaceDisplay','_removeDisplay','_updateZOrder','_updateVisible','_updateBlendMode','_updateColor','_updateFrame','_updateMesh','_updateTransform','_identityTransform'}) do
     local hook = name
     Probe[hook] = function(self) self.calls[#self.calls+1] = hook end
   end
@@ -196,16 +196,45 @@ elseif mode == 'slot' or mode == 'slotdata' then
   end
   local box = Pool.borrowObject(Box)
   box.width,box.height = 10,10
-  slot._boundingBoxData = box -- Manual assignment until display evaluation exists.
-  slot._localMatrix.tx = 5
+  if mode == 'slotruntime' then
+    local Array = require('dragonbones.core.JSArray')
+    local Displays = require('dragonbones.model.DisplayData')
+    local Skin = require('dragonbones.model.SkinData')
+    local skin = Pool.borrowObject(Skin)
+    skin.name = 'slotruntime-example'
+    local hit = Pool.borrowObject(Displays.BoundingBoxDisplayData)
+    hit.boundingBox = box -- Owned by hit data; released with the skin below.
+    skin:addDisplay('hitbox',hit)
+    local list = Array.new()
+    list[1],list[2] = {name='espada'},{name='escudo'}
+    slot.displayList = list
+    for index=0,1 do
+      local image = Pool.borrowObject(Displays.ImageDisplayData)
+      image.transform.x = 5
+      skin:addDisplay('probe',image)
+      slot:replaceRawDisplayData(image,index)
+      slot:replaceDisplayData(hit,index)
+    end
+    model:addSkin(skin)
+    slot.displayIndex = 0 -- Public setter executes Slot.update(-1).
+    print(('Índice %d: display=%s'):format(slot.displayIndex,slot.display.name))
+    slot.displayIndex = 1
+    print(('Índice %d: display=%s'):format(slot.displayIndex,slot.display.name))
+  end
+  slot._boundingBoxData = box -- Direct assignment in the earlier low-level examples.
+  if mode ~= 'slotruntime' then slot._localMatrix.tx = 5 end
   local function updateAndPrint(label)
     for i=1,armature:getBones().length do
       local bone = armature:getBones()[i]
       bone:update(-1);bone:_updateAlpha()
     end
     slot:_updateAlpha()
-    slot._transformDirty = true
-    slot:updateTransformAndMatrix()
+    if mode == 'slotruntime' then
+      slot:invalidUpdate();slot:update(-1)
+    else
+      slot._transformDirty = true
+      slot:updateTransformAndMatrix()
+    end
     local m = slot.globalTransformMatrix
     print(('%s: slot x=%.3f y=%.3f | centro dentro da caixa: %s'):format(label,m.tx,m.ty,tostring(slot:containsPoint(m.tx,m.ty))))
   end
@@ -218,7 +247,7 @@ elseif mode == 'slot' or mode == 'slotdata' then
   slot.parent.visible = false
   print(('Slot registrado: %s | hooks observados: %d'):format(tostring(armature:getSlot('probe')==slot),#slot.calls))
   armature:returnToPool()
-  box:returnToPool()
+  if mode ~= 'slotruntime' then box:returnToPool() end
   data:returnToPool()
   print('Slot e limpeza concluídos. Montagem manual e observador local, sem renderer/player.')
 elseif mode == 'displayframe' then
@@ -243,5 +272,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime')
 end

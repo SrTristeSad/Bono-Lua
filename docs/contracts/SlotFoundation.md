@@ -31,3 +31,5 @@ Hit testing: retângulo/elipse, matrizes identidade/escala/reflexão/rotação d
 Slot.update, _updateDisplay, APIs públicas displayIndex/displayList/display/childArmature, replaceDisplay, animação e renderer ainda ausentes. Não escrever essas propriedades para simular implementação. Child Armature em _onClear exige Armature.dispose ainda pendente, portanto não está no domínio deste recorte. Callbacks reentrantes, falha em dispose, protótipos/proxies/coerções arbitrários, alocações enormes e uso antes de _onClear não são equivalência reivindicada.
 
 Atualização posterior: _updateDisplayData e as três APIs de dados já estão portadas/comparadas; ver [SlotDisplayData.md](SlotDisplayData.md). As métricas acima documentam a fundação original.
+
+Atualização posterior: corpos restantes de Slot, update/acessores/troca de objetos e suporte parcial a child Armature estão representados e comparados no recorte [SlotRuntime.md](SlotRuntime.md). As pendências e métricas acima descrevem a unidade original; Animation/backend e Armature.init/advanceTime continuam pendentes.
