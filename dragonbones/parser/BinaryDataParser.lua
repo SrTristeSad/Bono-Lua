@@ -1,6 +1,6 @@
 -- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- _inRange/_decodeUTF8/getInstance only; binary overrides/entrypoint absent.
+-- Helpers and binary timelines; binary overrides/entrypoint remain absent.
 local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
 local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
 setmetatable(BinaryDataParser,{__index=ObjectDataParser})
@@ -55,6 +55,53 @@ function BinaryDataParser:_decodeUTF8(data)
   end
   return table.concat(result)
 end
+local Pool = require('dragonbones.core.BaseObject')
+local AnimationModels = require('dragonbones.model.AnimationData')
+local BinaryOffset = require('dragonbones.core.Enums').BinaryOffset
+local V = require('dragonbones.parser.JSValue')
+
+function BinaryDataParser:_parseBinaryTimeline(timelineType, offset, timelineData)
+  local timeline = timelineData
+  if timeline == nil or rawequal(timeline, V.NULL) or rawequal(timeline, V.UNDEFINED) then
+    timeline = Pool.borrowObject(AnimationModels.TimelineData)
+  end
+  timeline.type = timelineType
+  timeline.offset = offset
+  self._timeline = timeline
+
+  -- Typed-array misses are undefined in JS; arithmetic/comparisons use NaN.
+  local keyFrameCount = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineKeyFrameCount + 1])
+  if keyFrameCount == 1 then
+    timeline.frameIndicesOffset = -1
+  else
+    local totalFrameCount = self._animation.frameCount + 1
+    local frameIndices = self._data.frameIndices
+    local frameIndicesOffset = frameIndices.length
+    frameIndices.length = frameIndices.length + totalFrameCount
+    timeline.frameIndicesOffset = frameIndicesOffset
+
+    local i, iK, frameStart, frameCount = 0, 0, 0, 0
+    while i < totalFrameCount do
+      if frameStart + frameCount <= i and iK < keyFrameCount then
+        local frameOffset = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineFrameOffset + iK + 1])
+        frameStart = V.number(self._frameArrayBuffer[self._animation.frameOffset + frameOffset + 1])
+        if iK == keyFrameCount - 1 then
+          frameCount = self._animation.frameCount - frameStart
+        else
+          local nextOffset = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineFrameOffset + iK + 2])
+          frameCount = V.number(self._frameArrayBuffer[self._animation.frameOffset + nextOffset + 1]) - frameStart
+        end
+        iK = iK + 1
+      end
+      frameIndices[frameIndicesOffset + i + 1] = iK - 1
+      i = i + 1
+    end
+  end
+  -- Preserve the source's retained timeline on failure: no finally cleanup.
+  self._timeline = nil
+  return timeline
+end
+
 function BinaryDataParser.getInstance()
   if BinaryDataParser._binaryDataParserInstance==nil then
     BinaryDataParser._binaryDataParserInstance=BinaryDataParser.new()
