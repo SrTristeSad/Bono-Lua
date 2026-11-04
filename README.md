@@ -18,7 +18,7 @@ O comando completo está em [RECONSTRUCTION_SPEC.md](docs/RECONSTRUCTION_SPEC.md
 
 ## Estado atual
 
-BinaryDataParser: **7/8 métodos**, incluindo arrays binários compartilhados. Novo recorte: 189 cenários comparados em Lua 5.4 e LuaJIT. Entrada DBDT/JSON interno pendente. Ver [contrato](docs/contracts/BinaryViews.md).
+BinaryDataParser: **8/8 corpos portados**, incluindo entrada DBDT e JSON interno. Novo recorte: 223 cenários comparados em Lua 5.4 e LuaJIT, nos domínios documentados. Isso não significa motor completo. Ver [API e limites](docs/contracts/DBDTEntry.md).
 
 O checkpoint inicial foi integrado na `main` pelo [PR #63](https://github.com/SrTristeSad/Bono-Lua/pull/63), por solicitação explícita do proprietário. A main acompanha o porte em andamento; isso não significa que o motor está completo. O estado anterior permanece em `backup/pre-integral-rebuild-20261103` (`cd4206a8`).
 

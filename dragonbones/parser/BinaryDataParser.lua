@@ -1,6 +1,6 @@
--- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
+-- Port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Binary helpers, timelines, animation, geometry and arrays; DBDT entry absent.
+-- All eight method bodies present; see contracts for compared domains.
 local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
 local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
 setmetatable(BinaryDataParser,{__index=ObjectDataParser})
@@ -270,6 +270,28 @@ function BinaryDataParser:_parseArray(rawData)
   self._timelineArrayBuffer = timelineArray
   self._data.timelineArray = timelineArray
   self._data.colorArray = colorArray
+end
+
+local JSON = require('dragonbones.parser.JSON')
+
+function BinaryDataParser:parseDragonBonesData(rawData, scale)
+  if not Shared.isBuffer(rawData) then
+    io.stderr:write('Assertion failed: Data error.\n')
+    error('BinaryDataParser expects SharedBinaryBuffer')
+  end
+  local tag = Shared.view(rawData, 0, 8, 'uint8')
+  if tag[1]~=68 or tag[2]~=66 or tag[3]~=68 or tag[4]~=84 then
+    io.stderr:write('Assertion failed: Nonsupport data.\n')
+    return nil
+  end
+  -- Uint32Array(rawData,8,1)[0], little endian; no general Uint32 API.
+  local lengthBytes = Shared.view(rawData, 8, 4, 'uint8')
+  local headerLength = lengthBytes[1] + lengthBytes[2]*256 + lengthBytes[3]*65536 + lengthBytes[4]*16777216
+  local headerBytes = Shared.view(rawData, 12, headerLength, 'uint8')
+  local header = JSON.parse(self:_decodeUTF8(headerBytes))
+  self._binaryOffset = 12 + headerLength
+  self._binary = rawData
+  return ObjectDataParser.parseDragonBonesData(self, header, scale)
 end
 
 function BinaryDataParser.getInstance()

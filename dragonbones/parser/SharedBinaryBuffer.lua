@@ -15,6 +15,8 @@ Buffer.__newindex=function(self,key,value)
   rawset(self,key,value)
 end
 
+function Shared.isBuffer(value) return getmetatable(value)==Buffer end
+
 function Shared.new(raw)
   local bytes=raw or ""
   assert(type(bytes)=="string","SharedBinaryBuffer expects raw bytes")
