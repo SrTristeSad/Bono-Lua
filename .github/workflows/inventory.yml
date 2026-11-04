@@ -100,6 +100,9 @@ jobs:
           node tests/binaryviews_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/dbdt_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/corpus_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/transformobject_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          ${{ matrix.vm }} examples/run.lua inspect
+          ${{ matrix.vm }} examples/run.lua transform
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

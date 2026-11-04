@@ -6,19 +6,19 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preser
 
 ## Base desta unidade
 
-main d0ecdd24f982159ee7eec49a57d80cb00290b4bb, PR #95, CI após merge 41789339464 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch test/upstream-export-corpus; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
+main 1d1ee912ebb2c579d8c79074a51dac264694d812, PR #96, CI após merge 41832504520 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/transform-object; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
 ## Unidade implementada
 
-Corpus esquelético upstream comparado: 74 blobs únicos (71 JSON/3 DBDT) em 181 caminhos, intactos e nas escalas 1/0,5. 148 cenários/1.924 colunas por VM, zero erros/tolerância. Contrato contracts/UpstreamCorpus.md; 33 suítes na CI. Nenhuma mudança no motor neste checkpoint. ObjectDataParser 47/47 e BinaryDataParser 8/8 corpos permanecem limitados aos domínios documentados.
+Primeira base do runtime: TransformObject abstrato, com inicializadores, dois métodos e getter. 212 cenários/8.056 colunas por VM, 35 falhas esperadas e 27 aproximações trig na tolerância anterior de Transform. Contrato contracts/TransformObject.md. CI com 34 suítes por VM e exemplos inspect/transform executados. README agora fornece comandos simples para experimentar JSON/DBDT e a atualização da matriz sem Node/npm.
 
-Preservar leitura dos blobs por SHA/pin, contexto VM do oracle para JSON/ArrayBuffer, bytes exatos, metadados/aliases e pool após cleanup. Não afrouxar campos ou tolerâncias para contornar diferenças de transporte do teste. Manifesto distingue caminhos duplicados de conteúdos únicos.
+Preservar construção sem clear automático, identidade dos vetores/helpers, dirty limpo antes de decompor, getter somente leitura e estado parcial em falhas. Subclasses delegam __index/__newindex; não criar toString fictício na base abstrata. Armature ainda é referência opaca sem chamadas/stub. Corpus upstream anterior (74 blobs/181 caminhos/duas escalas) permanece validado, com limites registrados.
 
 ## Próximo recorte
 
 1. Conferir main/backup/PR/CI, progresso, diferenças e contratos.
-2. Auditar TS e backup Lua de TransformObject e dependências antes de portar a primeira unidade do runtime. Conferir ciclos com Bone/Surface/Slot/Armature, sem inventar stubs de produto.
-3. Delimitar unidade portável com comparação original executada. Solvers, avaliação de timelines, factories, backend e playback seguem etapas próprias.
+2. Auditar integralmente Bone TS/Lua do backup e dependências com TransformObject/Armature/Surface/constraints. Separar referências de dados e chamadas executáveis, sem stubs de produto.
+3. Escolher próximo recorte real do runtime a partir dessa auditoria. Manter exemplos executáveis atualizados; solvers, avaliação de timelines, factories, backend e playback seguem etapas próprias.
 4. Atualizar inventário/docs, PR/CI e integrar checkpoint autorizado. Runtime/factories/backends permanecem etapas próprias.
 
 ## Pendências
@@ -32,7 +32,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
