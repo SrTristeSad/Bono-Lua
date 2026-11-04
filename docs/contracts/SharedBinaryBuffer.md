@@ -25,3 +25,5 @@ Chamadas repetidas criam novo buffer/views; referências antigas continuam váli
 Prova: tests/binaryarrays_differential.{js,lua}, parser e modelos reais, 163 cenários/6.272 operações/70.166 colunas por VM, 32 erros esperados, zero tolerância. Inclui 128 combinações de paridade, sobreposição, snapshots, setters com falha, pool e geometrias com/sem pesos. Não importa JSON texto/DBDT ou anima armaduras; limites JS genéricos e runtime permanecem em DIFFERENCES.md/NEXT_STEPS.md.
 
 O adaptador também suporta `uint8` (um byte) para os helpers parciais de BinaryDataParser; não altera os sete segmentos acima. Ver BinaryUTF8.md.
+
+_parseArray binário faz ToIndex de offset/contagem antes de chamar Shared.view, sem relaxar este adaptador estrito. Ver BinaryViews.md para frações, zero e cores opcionais.

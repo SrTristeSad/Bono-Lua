@@ -1,6 +1,6 @@
 -- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Helpers, binary timelines, animation and geometry; arrays/entry remain absent.
+-- Binary helpers, timelines, animation, geometry and arrays; DBDT entry absent.
 local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
 local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
 setmetatable(BinaryDataParser,{__index=ObjectDataParser})
@@ -222,6 +222,54 @@ function BinaryDataParser:_parseGeometry(rawData, geometry)
     weight.count = weightCount
     geometry.weight = weight
   end
+end
+
+local Shared = require('dragonbones.parser.SharedBinaryBuffer')
+
+-- The typed constructors receive element counts, not byte lengths. ToIndex
+-- truncates fractional counts and maps undefined/NaN to zero before bounds.
+local function toIndex(value)
+  local n = V.number(value)
+  if n ~= n or n == 0 then return 0 end
+  if n == math.huge or n == -math.huge then error('Invalid typed view index') end
+  n = n < 0 and math.ceil(n) or math.floor(n)
+  if n == 0 then return 0 end -- ToIndex canonicalizes negative zero.
+  if n < 0 or n > 9007199254740991 then error('Invalid typed view index') end
+  return n
+end
+
+function BinaryDataParser:_parseArray(rawData)
+  local offsets = V.get(rawData, DataParser.OFFSET)
+  local lengths = {}
+  for i = 0, 5 do lengths[i + 1] = V.at(offsets, i * 2 + 1) end
+  local colorLength = V.number(V.get(offsets, 'length')) > 12 and V.at(offsets, 13) or 0
+  local function part(index, length, kind, unit)
+    local byteOffset = toIndex(V.number(self._binaryOffset) + V.number(V.at(offsets, index)))
+    -- Alignment is checked before length conversion, as in TypedArray.
+    if byteOffset % unit ~= 0 then error('Misaligned typed view') end
+    local count = toIndex(V.number(length) / unit)
+    return Shared.view(self._binary, byteOffset, count * unit, kind)
+  end
+  local intArray = part(0, lengths[1], 'int16', 2)
+  local floatArray = part(2, lengths[2], 'float32', 4)
+  local frameIntArray = part(4, lengths[3], 'int16', 2)
+  local frameFloatArray = part(6, lengths[4], 'float32', 4)
+  local frameArray = part(8, lengths[5], 'int16', 2)
+  local timelineArray = part(10, lengths[6], 'uint16', 2)
+  local colorArray = intArray
+  if V.number(colorLength) > 0 then colorArray = part(12, colorLength, 'int16', 2) end
+
+  self._data.binary = self._binary
+  self._intArrayBuffer = intArray
+  self._data.intArray = intArray
+  self._data.floatArray = floatArray
+  self._data.frameIntArray = frameIntArray
+  self._data.frameFloatArray = frameFloatArray
+  self._frameArrayBuffer = frameArray
+  self._data.frameArray = frameArray
+  self._timelineArrayBuffer = timelineArray
+  self._data.timelineArray = timelineArray
+  self._data.colorArray = colorArray
 end
 
 function BinaryDataParser.getInstance()
