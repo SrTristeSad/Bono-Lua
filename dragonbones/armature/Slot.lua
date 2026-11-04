@@ -218,8 +218,8 @@ function Slot:_updateDisplayData()
       if self._textureData.rotated and frame == nil then
         width, height = rect.height, rect.width
       end
-      self._pivotX = self._pivotX * width * scale
-      self._pivotY = self._pivotY * height * scale
+      self._pivotX = self._pivotX * (width * scale)
+      self._pivotY = self._pivotY * (height * scale)
       if frame ~= nil then
         self._pivotX = self._pivotX + frame.x * scale
         self._pivotY = self._pivotY + frame.y * scale

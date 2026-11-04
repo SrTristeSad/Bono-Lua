@@ -36,8 +36,9 @@ local function execute(c)
  local sd=B.borrowObject(M.SlotData);sd.name='slot';sd.parent=bones[1];sd.color=Color.new();ad:addSlot(sd)
  local skin=B.borrowObject(Skin);skin.name='default';ad:addSkin(skin)
  local atlas=Textures.TextureAtlasData.new(Textures.TextureAtlasData);atlas:_onClear();atlas.scale=scale==1 and 3 or 1
+ if op=='fractionalPivot'then atlas.scale=.1;ad.scale=.3 end
  local function texture(id,w,h)
-  local t=Textures.TextureData.new(Textures.TextureData);t:_onClear();t.parent=atlas;t.region.width=w;t.region.height=h;t.rotated=rot==1
+  local t=Textures.TextureData.new(Textures.TextureData);t:_onClear();t.parent=atlas;t.region.width=op=='fractionalPivot'and 33.3 or w;t.region.height=op=='fractionalPivot'and 19.7 or h;t.rotated=rot==1
   if trim==1 then t.frame=Rect.new();t.frame.x=-7;t.frame.y=-11;t.frame.width=w+30;t.frame.height=h+20 end
   ids[t]=id;return t
  end
@@ -46,7 +47,7 @@ local function execute(c)
   if kind==0 then return nil end
   local x=borrow(classes[kind],id);ids[x.transform]=id..'Transform';x.transform.x=id=='raw'and 5 or 15;x.transform.y=id=='raw'and -3 or -9
   if op=='trig'then x.transform.rotation=id=='raw'and .25 or -.4;x.transform.scaleX=1.2;x.transform.scaleY=.8 end
-  if kind==1 then x.pivot.x=.25;x.pivot.y=.75;x.texture=t end
+  if kind==1 then x.pivot.x=op=='fractionalPivot'and .1 or .25;x.pivot.y=op=='fractionalPivot'and .3 or .75;x.texture=t end
   if kind==2 then x.texture=t end
   if kind==2 or kind==3 then
    ids[x.geometry]=id..'Geometry';x.geometry.data=gd

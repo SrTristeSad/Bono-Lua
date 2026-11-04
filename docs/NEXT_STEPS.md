@@ -8,7 +8,7 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preser
 
 Base integrada: PR #100, main 9a78e35f834854749214ecffee01884c63f4ddc1. CI do PR 41865523528 e após merge 41868022089 aprovadas: três jobs, 38 suítes por VM, seis exemplos e três artefatos vinculados aos heads conferidos em ambas. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb, intacto. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
-Continuação: branch port/slot-display-data. _updateDisplayData e replaceRawDisplayData/replaceDisplayData/replaceTextureData implementados. Comparação: 1.220 cenários/10.980 etapas/181.780 colunas/146 exceções de etapas esperadas por VM, zero aproximações locais. Seis mutantes rejeitados; produto restaurado e testes finais nas duas VMs aprovados. SlotFoundation também reexecutado. CI configurada para 39 suítes/sete exemplos. Consultar PR desta branch para head, CI e merge final; não antecipar resultados futuros.
+Continuação: branch port/slot-display-data. _updateDisplayData e replaceRawDisplayData/replaceDisplayData/replaceTextureData implementados. Comparação: 1.224 cenários/11.016 etapas/182.376 colunas/146 exceções de etapas esperadas por VM, zero aproximações locais. Seis mutantes rejeitados; produto restaurado e testes finais nas duas VMs aprovados. SlotFoundation também reexecutado. CI configurada para 39 suítes/sete exemplos. Consultar PR desta branch para head, CI e merge final; não antecipar resultados futuros.
 
 Exemplo slotdata: pivô (50,40)→(40,30), origin.x=5 preservado; depois repete vínculo/colisão do slot em (45,20)→(55,20). Chama métodos de baixo nível e usa observador local, sem Slot.update/renderização/player.
 
