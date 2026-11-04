@@ -7,7 +7,7 @@
 | 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Cinco classes implementadas e comparadas isoladamente; integração e auditoria exaustiva pendentes |
 | 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, núcleo DragonBones/enums, UserData/ActionData, AnimationConfig, AnimationData/TimelineData/AnimationTimelineData, ArmatureData/BoneData/SurfaceData/SlotData e dados de Canvas/atlas/textura/display/geometria/pesos comparados; cache AnimationData integrado com modelos reais; ConstraintData/IKConstraintData/PathConstraintData comparados com integração real; SkinData e cadeia de limpeza/getMesh comparados com modelos reais; DragonBonesData e armazenamento global/cache integrados com modelos reais; BoundingBoxData retângulo/elipse/polígono e ownership com displays reais comparados; buffers tipados e parsers pendentes |
 | 04 | Parsers JSON/DBDT | Base DataParser e 47/47 corpos de ObjectDataParser portados/comparados no domínio documentado, incluindo entrada de objetos decodificados; BinaryDataParser 8/8 corpos com entrada DBDT/JSON interno comparados no domínio documentado; 74 exportações únicas do corpus upstream comparadas; I/O, locales especiais e exportações externas pendentes |
-| 05 | Armature, Bone, Slot, Surface, TransformObject | TransformObject abstrato comparado com matemática/pool reais; Bone, Slot, Surface e Armature pendentes |
+| 05 | Armature, Bone, Slot, Surface, TransformObject | TransformObject e Bone regulares comparados; Armature parcial de registro/ciclo de vida; Slot, Surface, Armature.init/advanceTime e integração de animação pendentes |
 | 06 | IKConstraint e PathConstraint | Pendente |
 | 07 | Animação, timelines, blending e eventos | WorldClock, núcleo/EventObject, configuração AnimationConfig e dados de timelines comparados; Armature, animação, listeners/backend e precisão de host pendentes |
 | 08 | BaseFactory e runtime | Pendente |
@@ -65,3 +65,9 @@ Compara grafo selecionado, poses/cores/metadados, buffers byte a byte e classes/
 TransformObject portado com inicializadores, dois métodos e getter armature. Usa BaseObject/Matrix/Transform/Point reais; Armature aparece somente como tipo/referência, sem dependência executável ou stub. Mantém identidade dos vetores, dirty limpo antes de decompor e estado parcial em falhas. 212 cenários/8.056 colunas por VM, 35 exceções esperadas; 27 diferenças trigonométricas dentro da tolerância anterior de Transform, demais campos exatos. Ver [TransformObject.md](contracts/TransformObject.md).
 
 Exemplos executáveis em Lua 5.4/LuaJIT: examples/run.lua inspect importa JSON/DBDT e lista modelos; examples/run.lua transform demonstra atualização adiada da matriz. Sem Node/npm para executar esses exemplos. Ainda não há player/renderização; classe concreta da demonstração não é Bone/Slot de produto. CI com 34 suítes por VM e execução dos dois exemplos.
+
+## Bone regular e registro da armadura
+
+Bone portado com uma Armature parcial real de ciclo de vida/registro. Hierarquia, modos de offset, flips/yDown, quatro flags de herança, alpha, dirty flags, cache de ArmatureData/DragonBonesData reais e getters/setters comparados contra TS executado. 1.576 cenários/44.128 colunas por VM, seis falhas esperadas e 340 aproximações trig limitadas; índices/flags/zeros/offsets exatos. Ver [BoneRuntime.md](contracts/BoneRuntime.md).
+
+Comando executável examples/run.lua bones carrega dois modelos, monta dois Bone reais, gira o pai e move o filho de (40,20) para (10,50). Montagem manual com _armatureData, sem init/factory/player fictício. Surface, solvers, Slot runtime e Armature.init/advanceTime continuam pendentes. CI com 35 suítes e três exemplos por VM.

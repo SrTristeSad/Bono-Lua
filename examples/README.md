@@ -22,3 +22,16 @@ O argumento final é a escala, padrão 1. JSON de atlas não é um arquivo esque
 A demonstração transform deve imprimir posição (0,0)/rotação 0° antes da atualização e posição (40,20)/rotação 90° depois. Ela usa uma subclasse local de demonstração da base abstrata TransformObject e o pool real. A matriz está editável em run.lua. Essa classe não substitui Bone, Slot ou Armature do motor.
 
 Esses exemplos permitem experimentar importação e transformação no terminal. Playback, blending e renderização ainda não estão implementados.
+
+## Hierarquia de ossos
+
+```sh
+lua5.4 examples/run.lua bones
+luajit examples/run.lua bones
+```
+
+Carrega bones_ske.json (fixture criado neste projeto) e usa Bone, Armature parcial, modelos e pool reais. Inicialmente root está em (10,20) e child em (40,20). Depois de girar o pai em 90°, child passa a (10,50), mantendo o vínculo ao pai. Edite os transforms do JSON e execute novamente para experimentar a pose.
+
+Também aceita um JSON esquelético com ossos regulares: `lua5.4 examples/run.lua bones /caminho/arquivo_ske.json`. Usa a primeira armadura e gira seu primeiro osso em 90°. Surface é recusado explicitamente.
+
+É uma montagem manual de baixo nível: atribui _armatureData à armadura e chama Bone.init/update diretamente. Armature.init/advanceTime, animação, slots e factory completos ainda não estão disponíveis. O exemplo não substitui esses métodos por simuladores nem reproduz um clip.

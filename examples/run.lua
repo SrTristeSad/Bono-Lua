@@ -43,6 +43,44 @@ elseif mode == 'transform' then
   object:updateGlobalTransform()
   print(('Após atualizar: x=%g y=%g rotação=%g°'):format(object.global.x,object.global.y,object.global.rotation*180/math.pi))
   object:returnToPool()
+elseif mode == 'bones' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Bone = require('dragonbones.armature.Bone')
+  local Armature = require('dragonbones.armature.Armature')
+  local JSON = require('dragonbones.parser.JSON')
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local file = assert(io.open(arg[2] or 'examples/bones_ske.json', 'rb'))
+  local bytes = file:read('*a');file:close()
+  local data = assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model = assert(data:getArmature(data.armatureNames[1]), 'Sem armadura')
+  local armature = Pool.borrowObject(Armature)
+  -- Explicit low-level assembly: full Armature.init/Animation is still pending.
+  armature._armatureData = model
+  for i=1,model.sortedBones.length do
+    local boneData = model.sortedBones[i]
+    assert(boneData.type==0, 'Surface ainda não é suportado por este exemplo')
+    Pool.borrowObject(Bone):init(boneData, armature)
+  end
+  local function updateAndPrint(label)
+    print(label)
+    local bones = armature:getBones()
+    for i=1,bones.length do
+      local bone = bones[i]
+      bone:update(-1)
+      bone:_updateAlpha()
+      bone:updateGlobalTransform()
+      print(('  %s: x=%.3f y=%.3f rotação=%.3f°'):format(bone.name,bone.global.x,bone.global.y,bone.global.rotation*180/math.pi))
+    end
+  end
+  armature:invalidUpdate()
+  updateAndPrint('Pose inicial:')
+  local root = assert(armature:getBones()[1], 'Sem ossos')
+  root.offset.rotation = math.pi/2
+  root:invalidUpdate()
+  updateAndPrint('Após girar o primeiro osso em 90°:')
+  armature:returnToPool()
+  data:returnToPool()
+  print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]')
 end
