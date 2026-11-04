@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-deform-frames`, sobre `main@147bc53`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-timelines`, sobre `main@f5de26e`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -338,3 +338,14 @@ SlotDeform usa Geometry/WeightData reais, poses slot/bone, Matrix.copyFromArray/
 117 cenários/5.773 operações/127.006 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 26 exceções esperadas; 143 chamadas genuínas slot/131 genéricas. Geometrias/meshes/skins/bones/weights/matrizes/modelos de animação/timeline/pool/bytes reais; contexto semeado em teste, sem entrypoint/timeline falso. 22 suítes na CI. Somente NaN Float32 normalizado no snapshot conforme limite anterior; demais números/bytes exatos. Ver contracts/DeformFrames.md e VALIDATION.md; consultar PR para SHA/CI/merge.
 
 Pendentes: _parseTimeline/_parseBoneTimeline/_parseSlotTimeline/_parseAnimation/_parseArmature/parseDragonBonesData. Serializar dados de deformação não implementa aplicação de deltas no runtime, playback, solver ou renderização. Próximo recorte: timelines com callbacks/modelos reais, depois animação/armadura/entrypoint.
+
+
+## Timelines — estado atual
+
+Base main f5de26e80ab7d3fb59b14619d5c8f5a724bd4a8b, PR #85/CI pós-merge 41743120707 e backup cd4206a8 conferidos. _parseTimeline/_parseBoneTimeline/_parseSlotTimeline lidos integralmente em TS/Lua reais. **44/47 métodos; três pendentes.** Este total sucede os checkpoints históricos.
+
+Parser genérico usa TimelineData/AnimationData/frameIndices reais e callbacks dos serializers já portados. Mantém reservas/holes, offsets relativos de valores/frames, frame único sem índice, último frame extra, durações/índices e contexto _timeline em erro. ActionFrame lê o próximo tempo do cache _actionFrames, mesmo quando rawFrames é outro array. Bone registra cada timeline em sequência; Slot adia ambos os registros até display/cor completos. Contextos são limpos só após sucesso.
+
+132 cenários/7.909 operações/213.543 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 20 exceções esperadas. Contadores genuínos 200 genéricas/8 bone/8 slot. Callbacks/modelos/ações/índices/meshes/pesos/pool/finalização reais; contexto de animação ainda semeado em teste, sem _parseAnimation falso. 23 suítes na CI. NaN Float32 normalizado apenas no snapshot conforme contrato anterior. Ver contracts/Timelines.md e VALIDATION.md; consultar PR para SHA/CI/merge.
+
+Pendentes: _parseAnimation/_parseArmature/parseDragonBonesData. Timelines de dados não implementam avaliação/blending/playback, nem importação completa JSON/DBDT ou renderização. Próximo recorte: _parseAnimation com tipos de timeline/modelos/frames reais e estado completo.
