@@ -454,7 +454,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/Animation.ts` | Código-fonte do núcleo | dragonbones/animation/Animation.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/AnimationState.ts` | Código-fonte do núcleo | dragonbones/animation/AnimationState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/BaseTimelineState.lua | Corpos das cinco bases portados; validados no domínio do contrato. Subclasses concretas e AnimationState/Animation pendentes. |
 | `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | docs/contracts/IAnimatable.md | Contrato documentado e exercitado; interface TS sem classe de runtime para portar |
 | `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente |
@@ -2326,8 +2326,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/animation/BaseTimelineState.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/animation/BaseTimelineState.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/animation/BaseTimelineState.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/animation/BaseTimelineState.lua. Implementação presente nesta reconstrução.
+- Estado: Corpos das cinco bases portados; validados no domínio do contrato. Subclasses concretas e AnimationState/Animation pendentes.; testes: basetimeline_differential: 2.700 cenários/1.052.450 colunas/25 erros esperados por VM Lua 5.4/LuaJIT; comparação exata sem aproximações. Exemplo timeline usa JSON/parser/buffers reais. AnimationState apenas contrato de teste, sem player.; diferenças: Classes/tabelas/metatables, new(class), buffers com armazenamento base um/offsets base zero, JSArray para _rd e number para samples ausentes no helper; herança e métodos abstratos preservados. Ver BaseTimelineState.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/AnimationState.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

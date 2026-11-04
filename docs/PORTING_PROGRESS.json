@@ -188,6 +188,12 @@
       "status": "Corpos Constraint/IKConstraint/PathConstraint portados em módulos separados; domínio validado nos contratos, integração completa pendente.",
       "tests": "ik_differential: 15.404 cenários/46.212 etapas/955.048 colunas por VM Lua 5.4/LuaJIT; 32 exceções de etapas esperadas e 25.355 aproximações locais de componentes derivados. Bone/Armature/modelos/cache/pool reais; um/dois ossos, espelhamentos, pesos, alvos alcançáveis/inalcançáveis/degenerados. Exemplo ik importado de JSON. Ver IKConstraint.md. Path: 2.851 cenários/8.553 etapas/193.868 colunas/33 erros esperados por VM; exemplo path via Bone.update. Ver PathConstraint.md.",
       "differences": "Classes/metatables/new, nome somente leitura, refs opcionais null/undefined normalizadas nil. Negações promovem zero inteiro via *1.0. Mantém scaleEnabled como TODO sem comportamento. Orçamento IK específico: coordenadas 8 eps com escala geométrica; coeficientes/pose até 8 eps vezes ganho de condicionamento limitado a 8 (máximo 64 eps). Flags/refs/índices/zeros exatos. Nenhum budget anterior alterado. Path mantém TODOs/buracos/undefined/NaN/loops/segmentos sticky; budgets específicos no contrato."
+    },
+    "DragonBones/src/dragonBones/animation/BaseTimelineState.ts": {
+      "destination": "dragonbones/animation/BaseTimelineState.lua",
+      "status": "Corpos das cinco bases portados; validados no domínio do contrato. Subclasses concretas e AnimationState/Animation pendentes.",
+      "tests": "basetimeline_differential: 2.700 cenários/1.052.450 colunas/25 erros esperados por VM Lua 5.4/LuaJIT; comparação exata sem aproximações. Exemplo timeline usa JSON/parser/buffers reais. AnimationState apenas contrato de teste, sem player.",
+      "differences": "Classes/tabelas/metatables, new(class), buffers com armazenamento base um/offsets base zero, JSArray para _rd e number para samples ausentes no helper; herança e métodos abstratos preservados. Ver BaseTimelineState.md."
     }
   }
 }
