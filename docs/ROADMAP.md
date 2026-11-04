@@ -6,7 +6,7 @@
 | 01 | Inventário integral, contratos e dependências | Arquivos, contratos declarados e dependências estáticas catalogados; fronteiras externas registradas |
 | 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Cinco classes implementadas e comparadas isoladamente; integração e auditoria exaustiva pendentes |
 | 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, núcleo DragonBones/enums, UserData/ActionData, AnimationConfig, AnimationData/TimelineData/AnimationTimelineData, ArmatureData/BoneData/SurfaceData/SlotData e dados de Canvas/atlas/textura/display/geometria/pesos comparados; cache AnimationData integrado com modelos reais; ConstraintData/IKConstraintData/PathConstraintData comparados com integração real; SkinData e cadeia de limpeza/getMesh comparados com modelos reais; DragonBonesData e armazenamento global/cache integrados com modelos reais; BoundingBoxData retângulo/elipse/polígono e ownership com displays reais comparados; buffers tipados e parsers pendentes |
-| 04 | Parsers JSON/DBDT | Base DataParser e 47/47 corpos de ObjectDataParser portados/comparados no domínio documentado, incluindo entrada de objetos decodificados; BinaryDataParser parcial 5/8 (helpers UTF-8, timeline e animação binárias comparados); geometria/arrays/entrada DBDT/JSON interno, leitura de arquivos e locales especiais pendentes |
+| 04 | Parsers JSON/DBDT | Base DataParser e 47/47 corpos de ObjectDataParser portados/comparados no domínio documentado, incluindo entrada de objetos decodificados; BinaryDataParser parcial 6/8 (helpers UTF-8, timeline, animação e geometria binárias comparados); arrays/entrada DBDT/JSON interno, leitura de arquivos e locales especiais pendentes |
 | 05 | Armature, Bone, Slot, Surface, TransformObject | Pendente |
 | 06 | IKConstraint e PathConstraint | Pendente |
 | 07 | Animação, timelines, blending e eventos | WorldClock, núcleo/EventObject, configuração AnimationConfig e dados de timelines comparados; Armature, animação, listeners/backend e precisão de host pendentes |
@@ -35,3 +35,9 @@ Faltam os overrides binários `_parseAnimation`, `_parseGeometry`, `_parseArray`
 `BinaryDataParser._parseAnimation` portado, total 5/8 métodos. Compara metadados/offsets, grupos ordenados, todos os tipos genéricos, subclasses de blend, pool e falhas parciais com modelos reais. São 243 cenários, 468 chamadas reais de timeline, 3.159 colunas por VM, 32 exceções esperadas e tolerância zero. Ver [BinaryAnimation.md](contracts/BinaryAnimation.md). CI ampliada para 29 suítes por VM.
 
 Mapas de grupos decodificados exigem JSMap.new; listas raw usam JSValue.array. Não afirma reflexão/protótipos/for-in de primitivas genéricos. Preserva Action/ZOrder genéricos sem registro e órfãos upstream; não avalia animação no runtime. Restam _parseGeometry, _parseArray e parseDragonBonesData binários/JSON interno.
+
+## Geometria binária — checkpoint seguinte
+
+`BinaryDataParser._parseGeometry` portado, total 6/8 métodos. Preserva correção de offset abaixo de -1, ausência de peso sem limpeza, contagem de influências e referências aos bones, inclusive undefined. Peso novo só é publicado ao final; falhas preservam peso anterior e alocações parciais upstream.
+
+Comparação com TS fixado executado: 238 cenários/4.284 colunas por VM, três exceções esperadas, tolerância zero, modelos/pool/views reais. Ver [BinaryGeometry.md](contracts/BinaryGeometry.md). CI com 30 suítes por VM. Restam _parseArray e entrada parseDragonBonesData binários/JSON interno; DBDT ainda não está disponível.
