@@ -1,6 +1,6 @@
 -- Partial port of Armature.ts, DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Lifecycle/registry only: init/advanceTime/animation/slot APIs are absent.
+-- Lifecycle/registry only: init/advanceTime/animation/display APIs are absent.
 local BaseObject = require('dragonbones.core.BaseObject')
 local Array = require('dragonbones.core.JSArray')
 local Armature = {}
@@ -51,6 +51,20 @@ function Armature:_addBone(value)
   local bones=self._bones
   for i=1,bones.length do if bones[i]==value then return end end
   bones[bones.length+1]=value
+end
+function Armature:_addSlot(value)
+  local slots=self._slots
+  for i=1,slots.length do if rawequal(slots[i],value) then return end end
+  slots[slots.length+1]=value
+end
+function Armature:getSlot(name)
+  local i=1
+  while i<=self._slots.length do
+    local slot=self._slots[i]
+    if slot.name==name then return slot end
+    i=i+1
+  end
+  return nil
 end
 function Armature:getBone(name)
   local i=1

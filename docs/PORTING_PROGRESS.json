@@ -167,8 +167,8 @@
     },
     "DragonBones/src/dragonBones/armature/Armature.ts": {
       "destination": "dragonbones/armature/Armature.lua",
-      "status": "Parcial: inicializadores, toString, _onClear, _addBone/getBone/getBones/getSlots/invalidUpdate, getters name/armatureData e acessores flipX/flipY. init/advanceTime/animação/slots/clocks demais APIs ausentes.",
-      "tests": "bone_differential integra registro, busca, deduplicação, flips/invalidação, ownership e limpeza com Bone/ArmatureData/DragonBonesData reais. Branches não vazios de Slot/Constraint/Animation/proxy/clock continuam sem validação nesta unidade.",
+      "status": "Parcial: inicializadores, toString, _onClear, registro/busca de Bone e Slot, getBones/getSlots/invalidUpdate e getters name/armatureData/flipX/flipY. init/advanceTime/animação/clocks/display APIs ausentes.",
+      "tests": "bone_differential integra registro, busca, deduplicação, flips/invalidação, ownership e limpeza com Bone/ArmatureData/DragonBonesData reais. Branches não vazios de Slot/Constraint/Animation/proxy/clock continuam sem validação nesta unidade. slot_differential integra _addSlot/getSlot (busca, miss e deduplicação), invalidUpdate com slots não vazios e limpeza Bone→Slot reais; nenhuma animação/proxy/clock fictício.",
       "differences": "JSArray com length/base 1; getter readonly e flips delegam invalidUpdate. Exemplo faz montagem explícita _armatureData, sem fingir execução de Armature.init/factory. Método _onClear conserva chamadas originais às dependências futuras; não há substitutos. Ver contracts/BoneRuntime.md."
     },
     "DragonBones/src/dragonBones/armature/Surface.ts": {
@@ -178,10 +178,10 @@
       "differences": "JSArray com length/holes e índices Lua base 1; leitura numérica undefined vira NaN. Mantém grafia _matrixCahce, hull com length inicial 10 e posterior 12, helpers compartilhados e TODO interpolation upstream. Usa atan2 do host; não troca o algoritmo para ajustar resultados."
     },
     "DragonBones/src/dragonBones/armature/Slot.ts": {
-      "destination": "dragonbones/armature/DisplayFrame.lua",
-      "status": "Parcial: classe DisplayFrame completa (7 corpos incluindo construtor/toString); classe Slot abstrata no mesmo TS ainda pendente.",
-      "tests": "displayframe_differential: 2.304 cenários/32.256 colunas por VM Lua 5.4/LuaJIT, 192 falhas esperadas, tolerância zero. Seleção por tipo/identidade, textura nula, peso/geometria, buffer esparso/existente, repetição e reciclagem. Exemplo displayframe usa view Int16 real.",
-      "differences": "JSArray length/holes, índices Lua base 1, null/undefined opcionais normalizados nil. Contagem ausente vira NaN e falha ao atribuir length; sem validação antecipada. Casos iniciados via pool; sem coerção genérica ou alocações enormes. Sem Slot/backend substituto."
+      "destination": "dragonbones/armature/Slot.lua",
+      "status": "Parcial: DisplayFrame completa em DisplayFrame.lua; Slot com inicializadores/limpeza, init, getters/setters de fundação, frames/flags, alpha, transformação e hit testing. update/avaliação/substituição de displays, child playback e backend pendentes.",
+      "tests": "DisplayFrame: 2.304 cenários/32.256 colunas/192 falhas esperadas por VM, exato. slot_differential: 1.448 cenários/56.472 colunas/120 falhas esperadas/30 aproximações por VM Lua 5.4/LuaJIT; Bone/Armature/modelos reais, subclasse observadora somente no teste. Retângulo/elipse em seis matrizes, sete segmentos e oito máscaras de outputs. Exemplo slot: x=45→55 após mover o pai.",
+      "differences": "JSArray length/holes e índices públicos base 0; refs opcionais null/undefined normalizadas nil. Mantida redução de displayFrameCount que trunca sem pooling pelo i < value original. Somente pose/outputs matemáticos não nulos de hit testing aceitam 8*epsilon*max(1,abs(expected)); flags/matrizes/zeros exatos. Hooks gráficos abstratos sem corpos de produto. Ver contracts/SlotFoundation.md."
     }
   }
 }

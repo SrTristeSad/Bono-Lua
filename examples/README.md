@@ -55,3 +55,14 @@ luajit examples/run.lua displayframe
 ```
 
 Cria uma malha com três vértices usando view Int16 real. DisplayFrame gera seis componentes de deformação. O exemplo altera Y para 12 e confirma que atualizar novamente conserva a alteração. A limpeza do frame não destrói os modelos referenciados. Este comando ainda não desenha a malha nem reproduz animação.
+
+## Slot ligado ao osso e colisão
+
+```sh
+lua5.4 examples/run.lua slot
+luajit examples/run.lua slot
+```
+
+Usa Bone/Slot/Armature parcial, dados importados e caixa real. O slot começa em (45,20); mover o pai +10 no eixo X leva o slot a (55,20). Em ambas as poses, containsPoint confirma o centro dentro da caixa. Também confirma getSlot e observa o callback ao ocultar o osso pai.
+
+O exemplo atribui _armatureData/_boundingBoxData/_localMatrix manualmente e chama updateTransformAndMatrix diretamente. Uma subclasse local registra os hooks abstratos; ela não desenha nem implementa Slot.update, animação ou renderer.

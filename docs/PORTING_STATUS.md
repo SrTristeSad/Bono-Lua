@@ -1,5 +1,16 @@
 # Estado da reconstrução integral
 
+## Slot — fundação e hit testing
+
+Slot.lua implementa inicializadores/limpeza, init/registro em Armature real, visibilidade, alpha, frames, flags/índices, cor/zOrder, transformação e hit testing. Armature recebe _addSlot/getSlot originais. DisplayFrame continua em módulo próprio. update, avaliação/troca de displays, animação filha, factory e renderer continuam pendentes; nenhum hook gráfico concreto foi adicionado ao produto.
+
+slot_differential executa o TS fixado com Bone/Armature/modelos reais e uma subclasse observadora apenas no teste. 1.448 cenários (440 de ciclo de vida/estado, 1.008 de hit testing), 56.472 colunas, 120 falhas esperadas e 30 comparações aproximadas por VM Lua 5.4/LuaJIT. Hit testing usa retângulo/elipse, seis matrizes (incluindo reflexão, shear e singularidade), sete segmentos e oito máscaras de outputs. Só pose/outputs matemáticos não nulos aceitam 8*epsilon*max(1,abs(expected)); matrizes, flags, identidade, comprimento e zeros exatos. Não relaxa budgets anteriores.
+
+Mantidos i < value da redução de displayFrameCount (trunca sem devolver frames removidos ao pool), _setZOrder sujando mesmo valor igual, guarda separada do índice de animação, flags publicadas antes do callback e deduplicação incluindo display null na limpeza. Quatro mutantes rejeitados (redução diferente, parar em osso null, callback antes da visibilidade e igualdade sobrecarregada de display); produto restaurado e revalidado. Contrato/limites: [SlotFoundation.md](contracts/SlotFoundation.md).
+
+Exemplo `lua5.4 examples/run.lua slot` ou `luajit`: slot ligado ao filho passa de (45,20) a (55,20) após mover o pai; contém o centro da caixa em ambas as poses e confirma registro. Montagem manual, caixa atribuída diretamente e subclasse observadora local, sem desenho/player. CI configurada para 38 suítes e seis exemplos por VM; consultar PR #100 para estado remoto, sem antecipar aprovação/merge.
+
+
 ## DisplayFrame — dados dos displays de Slot
 
 DisplayFrame, classe separada dentro de Slot.ts, implementada integralmente: inicializadores, toString, _onClear, updateDeformVertices, getGeometryData, getBoundingBox e getTextureData. A classe Slot abstrata permanece pendente; isso não implementa troca gráfica nem reprodução de animação.

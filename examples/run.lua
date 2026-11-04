@@ -115,6 +115,76 @@ elseif mode == 'surface' then
   armature:returnToPool()
   data:returnToPool()
   print('Surface e limpeza concluídas. Deformação manual, sem player ou renderização.')
+elseif mode == 'slot' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Slot = require('dragonbones.armature.Slot')
+  local Bone = require('dragonbones.armature.Bone')
+  local Armature = require('dragonbones.armature.Armature')
+  local Models = require('dragonbones.model.ArmatureData')
+  local Color = require('dragonbones.geom.ColorTransform')
+  local Box = require('dragonbones.model.BoundingBoxData').RectangleBoundingBoxData
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local JSON = require('dragonbones.parser.JSON')
+  -- This local observer only records abstract hooks; it draws no display.
+  -- It is an example subclass, not a product renderer or Slot.update substitute.
+  local Probe = {__newindex=Slot.__newindex}
+  Probe.__index = function(self,key)
+    local member = rawget(Probe,key)
+    if member ~= nil then return member end
+    return Slot.__index(self,key)
+  end
+  setmetatable(Probe,{__index=Slot})
+  function Probe.toString() return '[example.SlotObserver]' end
+  function Probe.new()
+    local self = Slot.new(Probe)
+    self.calls = {}
+    return self
+  end
+  for _,name in ipairs({'_initDisplay','_disposeDisplay','_onUpdateDisplay','_addDisplay','_updateVisible'}) do
+    local hook = name
+    Probe[hook] = function(self) self.calls[#self.calls+1] = hook end
+  end
+  local file = assert(io.open('examples/bones_ske.json','rb'))
+  local bytes = file:read('*a');file:close()
+  local data = assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model = data:getArmature(data.armatureNames[1])
+  local armature = Pool.borrowObject(Armature)
+  armature._armatureData = model -- Explicit low-level assembly; no factory/player.
+  for i=1,model.sortedBones.length do Pool.borrowObject(Bone):init(model.sortedBones[i],armature) end
+  local slotData = Pool.borrowObject(Models.SlotData)
+  slotData.name = 'probe'
+  slotData.parent = model:getBone('child')
+  slotData.color = Color.new()
+  model:addSlot(slotData)
+  local slot = Pool.borrowObject(Probe)
+  slot:init(slotData,armature,nil,nil)
+  local box = Pool.borrowObject(Box)
+  box.width,box.height = 10,10
+  slot._boundingBoxData = box -- Manual assignment until display evaluation exists.
+  slot._localMatrix.tx = 5
+  local function updateAndPrint(label)
+    for i=1,armature:getBones().length do
+      local bone = armature:getBones()[i]
+      bone:update(-1);bone:_updateAlpha()
+    end
+    slot:_updateAlpha()
+    slot._transformDirty = true
+    slot:updateTransformAndMatrix()
+    local m = slot.globalTransformMatrix
+    print(('%s: slot x=%.3f y=%.3f | centro dentro da caixa: %s'):format(label,m.tx,m.ty,tostring(slot:containsPoint(m.tx,m.ty))))
+  end
+  armature:invalidUpdate()
+  updateAndPrint('Pose inicial')
+  local root = armature:getBone('root')
+  root.offset.x = 10
+  root:invalidUpdate()
+  updateAndPrint('Pai deslocado em +10 no eixo X')
+  slot.parent.visible = false
+  print(('Slot registrado: %s | hooks observados: %d'):format(tostring(armature:getSlot('probe')==slot),#slot.calls))
+  armature:returnToPool()
+  box:returnToPool()
+  data:returnToPool()
+  print('Slot e limpeza concluídos. Montagem manual e observador local, sem renderer/player.')
 elseif mode == 'displayframe' then
   local Pool = require('dragonbones.core.BaseObject')
   local Frame = require('dragonbones.armature.DisplayFrame')
@@ -137,5 +207,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot')
 end
