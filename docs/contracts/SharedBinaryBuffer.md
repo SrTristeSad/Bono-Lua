@@ -27,3 +27,5 @@ Prova: tests/binaryarrays_differential.{js,lua}, parser e modelos reais, 163 cen
 O adaptador também suporta `uint8` (um byte) para os helpers parciais de BinaryDataParser; não altera os sete segmentos acima. Ver BinaryUTF8.md.
 
 _parseArray binário faz ToIndex de offset/contagem antes de chamar Shared.view, sem relaxar este adaptador estrito. Ver BinaryViews.md para frações, zero e cores opcionais.
+
+Entrada DBDT recebe Shared Buffer e usa isBuffer para verificar essa representação; lê Uint32 LE do header via bytes, sem ampliar os tipos gerais de view. Ver DBDTEntry.md.
