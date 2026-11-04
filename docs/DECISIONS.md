@@ -177,3 +177,10 @@ Manter TODO do genérico ponderado, diferenças VERTICES/VALUE, delta=true, orde
 Base main f5de26e/PR #85/CI pós-merge 41743120707 e backup cd4206a8 conferidos. Três corpos originais e Lua do backup auditados. Usar JSArray/length/holes, roundFrame correto e modelos reais, sem reservas com zeros/#array ou callback fictício de produto. Helpers privados só adaptam null e reconhecimento de ActionFrame. Preservar último frame extra, próximo tempo do cache de ações e diferença de registro imediato Bone versus adiado Slot, inclusive órfãos/contexto parcial.
 
 Testes usam callbacks genuínos de todos os codecs aplicáveis, wrappers somente para observar argumentos/falhar após callback real, TimelineData existente e mapas/pool/frameIndices reais. Snapshot do teste foi protegido contra contexto data=null para observar a falha original, sem mudar produto/oráculo. 44/47 métodos, três pendentes e 23 suítes na CI. Não declarar playback ou importação completa de animação/armadura com esta unidade.
+
+
+## _parseAnimation antes da armadura/entrypoint
+
+Base main 0d285da/PR #86/CI pós-merge 41746583709 e backup cd4206a8 conferidos. Método completo auditado nos dois idiomas e dependências já reais. Reaproveitada arquitetura do backup, trocando #/ipairs/pairs por length/iterator ES5/JSMap.keys e conservando marcadores null/undefined. Não unificar codecs legado/genérico nem completar TODOs upstream. Preservar phase de actions antes de genéricas, última geometria entre skins/slots e órfãos de AnimationTimelineData blend.
+
+Testes observam todos os AnimationData alocados/retornados/parciais, subtipos de timeline e quatro mapas, além de estados/bytes reais. O transcript excedeu 64 MiB no desenvolvimento; limite de transporte do teste subiu para 128 MiB/30s, sem mudar comparação/oráculo/tolerância. Parser 45/47, 24 suítes; sem entrada/armadura falsa ou playback declarado.

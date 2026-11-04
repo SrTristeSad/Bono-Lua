@@ -2,7 +2,7 @@
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
 -- Implemented: atlas, structures, geometry, binary views, curves and frame serializers.
--- Armature/animation entrypoints remain absent; see docs/NEXT_STEPS.md.
+-- Armature/global entrypoints remain absent; see docs/NEXT_STEPS.md.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
 local Shared=require('dragonbones.parser.SharedBinaryBuffer')
@@ -548,6 +548,223 @@ function ObjectDataParser:_parseTimeline(rawData,rawFrames,framesKey,timelineTyp
   end
   self._timeline=nil
   return timeline
+end
+
+function ObjectDataParser:_parseAnimation(rawData)
+  local Model=require("dragonbones.model.AnimationData")
+  local Animation=Model.AnimationData
+  local Timeline=Model.AnimationTimelineData
+  local TT=Core.TimelineType
+  local FV={Step=0,Int=1,Float=2}
+  local animation=Pool.borrowObject(Animation)
+  animation.blendType=DataParser._getAnimationBlendType(
+    ObjectDataParser._getString(rawData,DataParser.BLEND_TYPE,""))
+  animation.frameCount=ObjectDataParser._getNumber(rawData,DataParser.DURATION,0)
+  animation.playTimes=ObjectDataParser._getNumber(
+    rawData,DataParser.PLAY_TIMES,1)
+  animation.duration=animation.frameCount/self._armature.frameRate
+  animation.fadeInTime=ObjectDataParser._getNumber(
+    rawData,DataParser.FADE_IN_TIME,0.0)
+  animation.scale=ObjectDataParser._getNumber(rawData,DataParser.SCALE,1.0)
+  animation.name=ObjectDataParser._getString(
+    rawData,DataParser.NAME,DataParser.DEFAULT_NAME)
+  if #animation.name==0 then animation.name=DataParser.DEFAULT_NAME end
+  animation.frameIntOffset=self._frameIntArray.length
+  animation.frameFloatOffset=self._frameFloatArray.length
+  animation.frameOffset=self._frameArray.length
+  self._animation=animation
+
+  if V.has(rawData,DataParser.FRAME) then
+    local frames=V.get(rawData,DataParser.FRAME)
+    local count=V.number(V.get(frames,"length"))
+    local i,frameStart=0,0
+    while i<count do
+      local frame=V.at(frames,i)
+      self:_parseActionDataInFrame(frame,frameStart,nil,nil)
+      frameStart=frameStart+ObjectDataParser._getNumber(frame,DataParser.DURATION,1)
+      i=i+1
+    end
+  end
+  if V.has(rawData,DataParser.Z_ORDER) then
+    animation.zOrderTimeline=self:_parseTimeline(
+      rawData[DataParser.Z_ORDER],nil,DataParser.FRAME,
+      TT.ZOrder,FV.Step,0,self._parseZOrderFrame)
+  end
+  if V.has(rawData,DataParser.BONE) then
+    for rawTimeline in V.iterator(V.get(rawData,DataParser.BONE)) do
+      self:_parseBoneTimeline(rawTimeline)
+    end
+  end
+  if V.has(rawData,DataParser.SLOT) then
+    for rawTimeline in V.iterator(V.get(rawData,DataParser.SLOT)) do
+      self:_parseSlotTimeline(rawTimeline)
+    end
+  end
+  if V.has(rawData,DataParser.FFD) then
+    for rawTimeline in V.iterator(V.get(rawData,DataParser.FFD)) do
+      local skinName=ObjectDataParser._getString(rawTimeline,
+        DataParser.SKIN,DataParser.DEFAULT_NAME)
+      local slotName=ObjectDataParser._getString(rawTimeline,
+        DataParser.SLOT,"")
+      local displayName=ObjectDataParser._getString(rawTimeline,
+        DataParser.NAME,"")
+      if #skinName==0 then skinName=DataParser.DEFAULT_NAME end
+      self._slot=self._armature:getSlot(slotName)
+      self._mesh=self._armature:getMesh(skinName,slotName,displayName)
+      if self._slot~=nil and self._mesh~=nil then
+        local timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+          TT.SlotDeform,FV.Float,0,self._parseSlotDeformFrame)
+        if timeline~=nil then
+          animation:addSlotTimeline(slotName,timeline)
+        end
+        self._slot=nil
+        self._mesh=nil
+      end
+    end
+  end
+  if V.has(rawData,DataParser.IK) then
+    for rawTimeline in V.iterator(V.get(rawData,DataParser.IK)) do
+      local name=ObjectDataParser._getString(rawTimeline,
+        DataParser.NAME,"")
+      if self._armature:getConstraint(name)~=nil then
+        local timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+          TT.IKConstraint,FV.Int,2,self._parseIKConstraintFrame)
+        if timeline~=nil then animation:addConstraintTimeline(name,timeline) end
+      end
+    end
+  end
+  if self._actionFrames.length>0 then
+    animation.actionTimeline=self:_parseTimeline(
+      nil,self._actionFrames,"",TT.Action,FV.Step,0,
+      self._parseActionFrame)
+    self._actionFrames.length=0
+  end
+
+  if V.has(rawData,DataParser.TIMELINE) then
+    for rawTimeline in V.iterator(V.get(rawData,DataParser.TIMELINE)) do
+      local kind=ObjectDataParser._getNumber(rawTimeline,
+        DataParser.TYPE,TT.Action)
+      local name=ObjectDataParser._getString(rawTimeline,DataParser.NAME,"")
+      local timeline=nil
+      if kind==TT.Action then
+        -- Source TODO: no special generic Action timeline parsing.
+      elseif kind==TT.SlotDisplay or kind==TT.SlotZIndex
+          or kind==TT.BoneAlpha or kind==TT.SlotAlpha
+          or kind==TT.AnimationProgress or kind==TT.AnimationWeight then
+        if kind==TT.SlotDisplay then
+          self._frameValueType=FV.Step
+          self._frameValueScale=1.0
+        else
+          self._frameValueType=FV.Int
+          if kind==TT.SlotZIndex then
+            self._frameValueScale=1.0
+          elseif kind==TT.AnimationProgress or kind==TT.AnimationWeight then
+            self._frameValueScale=10000.0
+          else
+            self._frameValueScale=100.0
+          end
+        end
+        if kind==TT.BoneAlpha or kind==TT.SlotAlpha
+            or kind==TT.AnimationWeight then
+          self._frameDefaultValue=1.0
+        else
+          self._frameDefaultValue=0.0
+        end
+        if kind==TT.AnimationProgress
+            and animation.blendType~=Core.AnimationBlendType.None then
+          timeline=Pool.borrowObject(Timeline)
+          timeline.x=ObjectDataParser._getNumber(rawTimeline,DataParser.X,0.0)
+          timeline.y=ObjectDataParser._getNumber(rawTimeline,DataParser.Y,0.0)
+        end
+        timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+          kind,self._frameValueType,1,self._parseSingleValueFrame,timeline)
+      elseif kind==TT.BoneTranslate or kind==TT.BoneRotate
+          or kind==TT.BoneScale or kind==TT.IKConstraint
+          or kind==TT.AnimationParameter then
+        if kind==TT.IKConstraint or kind==TT.AnimationParameter then
+          self._frameValueType=FV.Int
+          if kind==TT.AnimationParameter then
+            self._frameValueScale=10000.0
+          else
+            self._frameValueScale=100.0
+          end
+        else
+          if kind==TT.BoneRotate then
+            self._frameValueScale=Transform.DEG_RAD
+          else
+            self._frameValueScale=1.0
+          end
+          self._frameValueType=FV.Float
+        end
+        if kind==TT.BoneScale or kind==TT.IKConstraint then
+          self._frameDefaultValue=1.0
+        else
+          self._frameDefaultValue=0.0
+        end
+        timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+          kind,self._frameValueType,2,self._parseDoubleValueFrame)
+      elseif kind==TT.ZOrder then
+        -- Source TODO: no generic ZOrder timeline handling.
+      elseif kind==TT.Surface then
+        local surface=self._armature:getBone(name)
+        if surface~=nil then
+          self._geometry=V.get(surface,"geometry")
+          timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+            kind,FV.Float,0,self._parseDeformFrame)
+          self._geometry=nil
+        end
+      elseif kind==TT.SlotDeform then
+        self._geometry=nil
+        -- Pinned original iterates all skins and displays by object key.
+        -- SkinData.NULL is the original null display placeholder in Lua.
+        local SkinData=require("dragonbones.model.SkinData")
+        for _,skinName in ipairs(JSMap.keys(self._armature.skins)) do
+          local skin=self._armature.skins[skinName]
+          for _,slotName in ipairs(JSMap.keys(skin.displays)) do
+            local displays=skin.displays[slotName]
+            local i=1
+            while i<=displays.length do
+              local display=workAt(displays,i-1)
+              if not rawequal(display,SkinData.NULL) and V.get(display,"name")==name then
+                self._geometry=V.get(display,"geometry")
+                break
+              end
+              i=i+1
+            end
+          end
+        end
+        if not nullReference(self._geometry) then
+          timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+            kind,FV.Float,0,self._parseDeformFrame)
+          self._geometry=nil
+        end
+      elseif kind==TT.SlotColor then
+        timeline=self:_parseTimeline(rawTimeline,nil,DataParser.FRAME,
+          kind,FV.Int,1,self._parseSlotColorFrame)
+      end
+
+      if timeline~=nil then
+        if kind==TT.Action or kind==TT.ZOrder then
+          -- Source TODO.
+        elseif kind==TT.BoneTranslate or kind==TT.BoneRotate
+            or kind==TT.BoneScale or kind==TT.Surface
+            or kind==TT.BoneAlpha then
+          animation:addBoneTimeline(name,timeline)
+        elseif kind==TT.SlotDisplay or kind==TT.SlotColor
+            or kind==TT.SlotDeform or kind==TT.SlotZIndex
+            or kind==TT.SlotAlpha then
+          animation:addSlotTimeline(name,timeline)
+        elseif kind==TT.IKConstraint then
+          animation:addConstraintTimeline(name,timeline)
+        elseif kind==TT.AnimationProgress or kind==TT.AnimationWeight
+            or kind==TT.AnimationParameter then
+          animation:addAnimationTimeline(name,timeline)
+        end
+      end
+    end
+  end
+  self._animation=nil
+  return animation
 end
 
 function ObjectDataParser:_parseBoneTimeline(rawData)

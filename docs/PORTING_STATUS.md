@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-timelines`, sobre `main@f5de26e`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-animation`, sobre `main@0d285da`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -349,3 +349,14 @@ Parser genérico usa TimelineData/AnimationData/frameIndices reais e callbacks d
 132 cenários/7.909 operações/213.543 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 20 exceções esperadas. Contadores genuínos 200 genéricas/8 bone/8 slot. Callbacks/modelos/ações/índices/meshes/pesos/pool/finalização reais; contexto de animação ainda semeado em teste, sem _parseAnimation falso. 23 suítes na CI. NaN Float32 normalizado apenas no snapshot conforme contrato anterior. Ver contracts/Timelines.md e VALIDATION.md; consultar PR para SHA/CI/merge.
 
 Pendentes: _parseAnimation/_parseArmature/parseDragonBonesData. Timelines de dados não implementam avaliação/blending/playback, nem importação completa JSON/DBDT ou renderização. Próximo recorte: _parseAnimation com tipos de timeline/modelos/frames reais e estado completo.
+
+
+## _parseAnimation — estado atual
+
+Base main 0d285dae5b9492b52dfbc30b9d728c5a14c7ea34, PR #86/CI pós-merge 41746583709 e backup cd4206a8 conferidos. Corpo TS integral e Lua do backup auditados. **45/47 métodos; _parseArmature/parseDragonBonesData ausentes.** Este total sucede os checkpoints históricos.
+
+AnimationData real é criado pelo parser, com metadados/duração e offsets capturados antes dos frames. Ordem legado: ações de frame, zOrder, bone, slot, FFD, IK; depois consome actionFrames, então timelines genéricas. Escalas/defaults/codecs e registro nos quatro mapas seguem cada tipo original. AnimationProgress em blend cria AnimationTimelineData real, inclusive órfão quando frames vazios. Busca de deformação mantém enumeração JS e último match entre skins/slots; não encerrar na primeira skin. Contextos e objetos parciais preservados em erro.
+
+172 cenários/15.997 operações/447.916 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 28 exceções esperadas; 194 chamadas genuínas. Todos os tipos legado/genérico, modelos/frames/actions/meshes/SurfaceData/constraints/timelines/pool/bytes reais. Não se injeta resultado de animação ou dispatcher falso. 24 suítes na CI; NaN Float32 normalizado apenas no snapshot conforme contrato anterior. Ver contracts/AnimationParser.md e VALIDATION.md; consultar PR para SHA/CI/merge.
+
+TODOs upstream de Action/ZOrder genéricos, SlotDisplay genérico e deform ponderado continuam literais; formatos de rotação/IK usam codecs diferentes entre legado/genérico. Importar dados de AnimationData não implementa playback/blending, motor de armadura ou renderização. Próximo recorte: _parseArmature com ordem de modelos/meshes compartilhadas e estados completos, antes do entrypoint global.
