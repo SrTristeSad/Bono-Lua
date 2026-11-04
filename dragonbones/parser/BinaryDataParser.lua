@@ -1,6 +1,6 @@
 -- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Helpers, binary timelines and animation; geometry/arrays/entry remain absent.
+-- Helpers, binary timelines, animation and geometry; arrays/entry remain absent.
 local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
 local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
 setmetatable(BinaryDataParser,{__index=ObjectDataParser})
@@ -185,6 +185,43 @@ function BinaryDataParser:_parseAnimation(rawData)
   end
   self._animation = nil
   return animation
+end
+
+local DisplayModels = require('dragonbones.model.DisplayData')
+
+function BinaryDataParser:_parseGeometry(rawData, geometry)
+  geometry.offset = V.get(rawData, DataParser.OFFSET)
+  geometry.data = self._data
+  local offset = V.number(geometry.offset)
+  local weightOffset = V.number(self._intArrayBuffer[offset + BinaryOffset.GeometryWeightOffset + 1])
+  if weightOffset < -1 then weightOffset = weightOffset + 65536 end
+
+  if weightOffset >= 0 then
+    local weight = Pool.borrowObject(DisplayModels.WeightData)
+    local vertexCount = V.number(self._intArrayBuffer[offset + BinaryOffset.GeometryVertexCount + 1])
+    local boneCount = V.number(self._intArrayBuffer[weightOffset + BinaryOffset.WeigthBoneCount + 1])
+    weight.offset = weightOffset
+    local i = 0
+    while i < boneCount do
+      local boneIndex = V.number(self._intArrayBuffer[weightOffset + BinaryOffset.WeigthBoneIndices + i + 1])
+      -- An out-of-range raw bone is undefined, not a fabricated bone/null.
+      weight:addBone(self._rawBones[boneIndex + 1] or V.UNDEFINED)
+      i = i + 1
+    end
+
+    local boneIndicesOffset = weightOffset + BinaryOffset.WeigthBoneIndices + boneCount
+    local weightCount = 0
+    i = 0
+    while i < vertexCount do
+      local vertexBoneCount = V.number(self._intArrayBuffer[boneIndicesOffset + 1])
+      boneIndicesOffset = boneIndicesOffset + 1
+      weightCount = weightCount + vertexBoneCount
+      boneIndicesOffset = boneIndicesOffset + vertexBoneCount
+      i = i + 1
+    end
+    weight.count = weightCount
+    geometry.weight = weight
+  end
 end
 
 function BinaryDataParser.getInstance()
