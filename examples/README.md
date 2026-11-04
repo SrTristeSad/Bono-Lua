@@ -88,3 +88,14 @@ luajit examples/run.lua slotruntime
 Troca os objetos locais espada→escudo com displayList e displayIndex públicos. Slot.update percorre os hooks de display/visibilidade/cor/transformação da subclasse observadora local. Depois o pai se move, a posição do slot passa de (45,20) para (55,20), e o centro continua dentro da caixa. Dados de transform/caixa pertencem à skin real e são limpos com ela.
 
 Não desenha os objetos e não reproduz animação. Armature continua com montagem explícita de dados; não há factory/backend provisório. Os modos slot/slotdata anteriores continuam disponíveis como exemplos de baixo nível; Slot.update agora está implementado no domínio do contrato SlotRuntime.
+
+## IK de dois ossos
+
+```sh
+lua5.4 examples/run.lua ik
+luajit examples/run.lua ik
+```
+
+Importa ik_ske.json, fixture deste projeto, com segmentos 10+8. Sem IK a ponta está em (18,0); com o solver ela alcança o alvo (12,8). Depois o alvo move para (8,12) e a ponta acompanha. Edite o target, peso ou bendPositive no JSON para experimentar.
+
+Usa ordenação do modelo e Bone.update/IKConstraint reais, com registro manual em Armature parcial. O solver não move o alvo e não cria player/renderização. A opção scaleEnabled continua TODO do upstream, sem escalar comprimentos.

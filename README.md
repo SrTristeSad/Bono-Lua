@@ -31,6 +31,7 @@ lua5.4 examples/run.lua displayframe
 lua5.4 examples/run.lua slot
 lua5.4 examples/run.lua slotdata
 lua5.4 examples/run.lua slotruntime
+lua5.4 examples/run.lua ik
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.json 0.5
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.dbbin
 ```
@@ -39,7 +40,7 @@ Pode trocar `lua5.4` por `luajit`. Os exemplos não precisam de Node/npm. `inspe
 
 ## Estado atual
 
-Runtime: `TransformObject`, `Bone`, `Surface` e registro/ciclo de vida parcial de `Armature`, com comparação contra o original e exemplos executáveis. Slot parcial com registro/transformação/colisão; seleção de dados de display comparada; update/troca de displays e integração parcial com filhos comparados. Backend, solvers, init completo e reprodução continuam pendentes.
+Runtime: `TransformObject`, `Bone`, `Surface` e registro/ciclo de vida parcial de `Armature`, com comparação contra o original e exemplos executáveis. Slot parcial com registro/transformação/colisão; seleção de dados de display comparada; update/troca de displays e integração parcial com filhos comparados. IK de um/dois ossos comparado; Path, backend, init completo e reprodução continuam pendentes.
 
 Corpus upstream validado: **74 exportações esqueléticas únicas**, em 181 caminhos, importadas em duas escalas nas duas VMs. Buffers e observações do grafo coincidiram com o original, sem tolerância. Ver [cobertura](docs/contracts/UpstreamCorpus.md).
 
