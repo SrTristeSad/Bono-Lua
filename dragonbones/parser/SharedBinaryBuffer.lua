@@ -1,6 +1,6 @@
 -- Lua byte-backed ArrayBuffer / TypedArray transport for DragonBonesData.
 -- Pinned original: DragonBones/DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e
--- ObjectDataParser.ts::_modifyArray; BinaryDataParser is not implemented here.
+-- ObjectDataParser.ts::_modifyArray and uint8 transport for binary helpers.
 -- MIT: see LICENSE-DRAGONBONES. Only the platform representation differs:
 -- Lua numeric indices are 1-based; TypedArray in the original is 0-based.
 local V=require("dragonbones.parser.JSValue")
@@ -151,6 +151,7 @@ end
 
 local function getValue(buf,offset,kind)
   local lo=assert(buf:byte(offset),"Missing typed element")
+  if kind=="uint8" then return lo end
   local b1=assert(buf:byte(offset+1),"Missing typed element")
   local n=lo+b1*256
   if kind=="uint16" then return n end
@@ -196,7 +197,9 @@ View.__newindex=function(self,index,value)
   if type(index)=="number" then
     -- IntegerIndexedElementSet converts the value even for invalid indices.
     local bytes
-    if state._kind=="float32" then bytes=Shared.pack32(value)
+    if state._kind=="uint8" then
+      local n=truncNumber(value)%256;bytes=string.char(n)
+    elseif state._kind=="float32" then bytes=Shared.pack32(value)
     else bytes=Shared.pack16(value,state._kind=="uint16") end
     if index%1~=0 or index<1 or index>state._count then return end
     state._buffer:writeBytes(state._offset+(index-1)*state._unit,bytes)
@@ -231,8 +234,8 @@ local function proxy(state)
 end
 
 function Shared.view(buf,offset,byteLength,kind)
-  local unit=kind=="float32" and 4 or 2
-  assert(kind=="int16" or kind=="uint16" or kind=="float32",
+  local unit=kind=="uint8" and 1 or kind=="float32" and 4 or 2
+  assert(kind=="uint8" or kind=="int16" or kind=="uint16" or kind=="float32",
     "SharedBinaryBuffer: unknown typed kind")
   assert(type(offset)=="number" and offset>=0 and offset%unit==0,
     "SharedBinaryBuffer: misaligned typed view")

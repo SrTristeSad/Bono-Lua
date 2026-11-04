@@ -486,7 +486,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/model/SkinData.ts` | Código-fonte do núcleo | dragonbones/model/SkinData.lua | SkinData comparado e integrado com ArmatureData/displays/geometria/pesos/ações reais; runtime de skins/renderização pendente |
 | `DragonBones/src/dragonBones/model/TextureAtlasData.ts` | Código-fonte do núcleo | dragonbones/model/TextureAtlasData.lua | Comparação diferencial de modelo/pool aprovada nos cenários; runtime gráfico pendente |
 | `DragonBones/src/dragonBones/model/UserData.ts` | Código-fonte do núcleo | dragonbones/model/UserData.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
-| `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/BinaryDataParser.lua | Parcial: 3/8 métodos (_inRange, _decodeUTF8, getInstance); carregamento DBDT e overrides binários pendentes. |
 | `DragonBones/src/dragonBones/parser/DataParser.ts` | Código-fonte do núcleo | dragonbones/parser/DataParser.lua | Base abstrata: 132 constantes e dez conversões comparadas, com aplicações em modelos reais; assinatura sem corpo documentada; importação JSON/binária e locales especiais pendentes |
 | `DragonBones/src/dragonBones/parser/ObjectDataParser.ts` | Código-fonte do núcleo | dragonbones/parser/ObjectDataParser.lua | 47/47 corpos portados, com comparação diferencial nos recortes documentados; entrada global recebe objetos decodificados. Não declara equivalência JS irrestrita, runtime ou BinaryDataParser. |
 | `DragonBones/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -4313,8 +4313,8 @@ Herança: extends BaseObject.
 ### `DragonBones/src/dragonBones/parser/BinaryDataParser.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/parser/BinaryDataParser.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/parser/BinaryDataParser.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/parser/BinaryDataParser.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: 3/8 métodos (_inRange, _decodeUTF8, getInstance); carregamento DBDT e overrides binários pendentes.; testes: binaryutf8_differential: 67.083 operações, 134.166 colunas, incluindo todos os 65.536 pares de bytes; Lua 5.4/LuaJIT, tolerância zero.; diferenças: View uint8 no SharedBinaryBuffer; texto observado em unidades UTF-16. Preserva omissão de NUL, truncamento e reprocessamento upstream. Cinco campos binários sem inicializadores. Entrada ObjectDataParser herdada não é suporte DBDT. Ver contracts/BinaryUTF8.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/AnimationData.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `DragonBones/src/dragonBones/model/DragonBonesData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `DragonBones/src/dragonBones/parser/ObjectDataParser.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

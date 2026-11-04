@@ -36,10 +36,12 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
 ```
 
 Upstream fixado. Consultar PR para evidência remota/SHA/merge/CI; não antecipar resultados futuros.
+
+Próximo passo após os helpers: auditar e portar `_parseBinaryTimeline`, preservando offsets, frameIndices e referências reais; depois overrides e cabeçalho DBDT/JSON. Uint8 e decoder custom já têm comparação própria; não repetir como pendência integral.

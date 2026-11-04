@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-global-entry`, sobre `main@5d16e3d`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/binary-utf8-bytes`, sobre `main@adb5d5bb`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -382,3 +382,9 @@ Entrada pública recebe objeto já decodificado: aceita versão ou compatibleVer
 90 cenários/4.285 operações/149.975 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 23 exceções esperadas; 115 chamadas genuínas de entrada/31 atlas/63 finalizações. Parser começa sem dados/armaduras pré-semeados; 18 arquivos TS emitidos, modelos/ownership/views/frames/timelines/pool reais. Factory concreta de textura é somente infraestrutura de teste da base abstrata, sem backend fictício no produto. 26 suítes na CI. NaN Float32 só normalizado no snapshot; demais limites anteriores mantidos. Ver contracts/GlobalObjectEntry.md e VALIDATION.md; consultar PR para SHA/CI/merge.
 
 Próximo recorte: BinaryDataParser e fronteiras de bytes/UTF-8/JSON interno/views, com auditoria de dependências antes de portar. Texto JSON externo/arquivos, DBDT, runtime Armature/playback/solvers/factories/backend/renderização e locales especiais continuam pendentes. TODOs upstream não foram preenchidos para aparentar completude.
+
+## Helpers binários e bytes — checkpoint atual
+
+BinaryDataParser tem 3/8 métodos portados: `_inRange`, `_decodeUTF8` e `getInstance`. SharedBinaryBuffer agora oferece `uint8`, com aliases, metadados e coerções comparados ao Uint8Array nativo. A comparação executa o decoder original fixado: 67.083 operações e 134.166 colunas, incluindo todos os 65.536 pares de bytes, com tolerância zero. Ver [contrato](contracts/BinaryUTF8.md).
+
+Isso ainda não carrega DBDT: faltam `_parseBinaryTimeline`, overrides `_parseAnimation`/`_parseGeometry`/`_parseArray` e a entrada binária `parseDragonBonesData`, além da dependência JSON do cabeçalho. A entrada de objetos herdada não interpreta bytes. ObjectDataParser permanece em 47/47 corpos, nos domínios documentados. Runtime, factories e backends continuam pendentes.
