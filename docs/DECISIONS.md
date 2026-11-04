@@ -184,3 +184,10 @@ Testes usam callbacks genuínos de todos os codecs aplicáveis, wrappers somente
 Base main 0d285da/PR #86/CI pós-merge 41746583709 e backup cd4206a8 conferidos. Método completo auditado nos dois idiomas e dependências já reais. Reaproveitada arquitetura do backup, trocando #/ipairs/pairs por length/iterator ES5/JSMap.keys e conservando marcadores null/undefined. Não unificar codecs legado/genérico nem completar TODOs upstream. Preservar phase de actions antes de genéricas, última geometria entre skins/slots e órfãos de AnimationTimelineData blend.
 
 Testes observam todos os AnimationData alocados/retornados/parciais, subtipos de timeline e quatro mapas, além de estados/bytes reais. O transcript excedeu 64 MiB no desenvolvimento; limite de transporte do teste subiu para 128 MiB/30s, sem mudar comparação/oráculo/tolerância. Parser 45/47, 24 suítes; sem entrada/armadura falsa ou playback declarado.
+
+
+## _parseArmature antes do ponto de entrada global
+
+Base main 63b9b12/PR #87/CI pós-merge 41752378133 e backup cd4206a8 conferidos. Método integral lido em TS/Lua; usar CanvasData e demais modelos/parsers já reais, com length/iterator ES5/JSMap. Não corrigir TODO do slot vazio em share, ciclos de sort ou duplicatas/órfãos. Manter defaultAnimation pela última Play válida, ordem IK/sort/skins/path/link/animações e limpeza só no sucesso.
+
+Teste passou a executar 17 arquivos genuínos (CanvasData incluído) e recarregar CanvasData por cenário, sem stub. Fixture defaultActions corrigida de array de strings inválido para string direta, conforme formato aceito pelo original; RangeError positivo exercitado por reserva fracionária de peso real. Parser 46/47, 25 suítes na CI; parseDragonBonesData/entrada global não inventados.
