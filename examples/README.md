@@ -66,3 +66,14 @@ luajit examples/run.lua slot
 Usa Bone/Slot/Armature parcial, dados importados e caixa real. O slot começa em (45,20); mover o pai +10 no eixo X leva o slot a (55,20). Em ambas as poses, containsPoint confirma o centro dentro da caixa. Também confirma getSlot e observa o callback ao ocultar o osso pai.
 
 O exemplo atribui _armatureData/_boundingBoxData/_localMatrix manualmente e chama updateTransformAndMatrix diretamente. Uma subclasse local registra os hooks abstratos; ela não desenha nem implementa Slot.update, animação ou renderer.
+
+## Substituição de dados do display
+
+```sh
+lua5.4 examples/run.lua slotdata
+luajit examples/run.lua slotdata
+```
+
+Estende o exemplo slot usando ImageDisplayData, SkinData e metadados reais de textura/atlas. Mostra pivô original (50,40) e substituto (40,30), conservando origin.x=5; a correção usa os transforms raw/substituto. Depois confirma o mesmo movimento e colisão do exemplo anterior. Edite dimensões, pivôs e transform.x em run.lua para experimentar.
+
+Os modelos de atlas/textura são construídos diretamente, sem recursos gráficos. _setDisplayIndex e _updateDisplayData são chamadas manuais até Slot.update estar pronto. O exemplo não desenha nem reproduz um clip.

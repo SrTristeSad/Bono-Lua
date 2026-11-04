@@ -1,7 +1,7 @@
 -- Partial port of Slot.ts, DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Foundation/lifecycle/transform/hit testing only. Display evaluation/update,
--- replacement and child-armature playback remain absent. Renderer hooks are abstract.
+-- Foundation, display data, transforms and hit testing. Display object update,
+-- object replacement and child-armature playback remain absent. Renderer hooks are abstract.
 local BaseObject = require('dragonbones.core.BaseObject')
 local TransformObject = require('dragonbones.armature.TransformObject')
 local DisplayFrame = require('dragonbones.armature.DisplayFrame')
@@ -9,6 +9,8 @@ local Core = require('dragonbones.core.Enums')
 local Matrix = require('dragonbones.geom.Matrix')
 local ColorTransform = require('dragonbones.geom.ColorTransform')
 local Array = require('dragonbones.core.JSArray')
+local SkinData = require('dragonbones.model.SkinData')
+local DragonBones = require('dragonbones.core.DragonBones')
 local Armature = require('dragonbones.armature.Armature')
 local Slot = {}
 setmetatable(Slot,{__index=TransformObject})
@@ -178,6 +180,158 @@ function Slot:_updateAlpha()
   if self._globalAlpha ~= globalAlpha then
     self._globalAlpha = globalAlpha
     self._colorDirty = true
+  end
+end
+
+function Slot:_updateDisplayData()
+  local prevDisplayFrame = self._displayFrame
+  local prevGeometryData = self._geometryData
+  local prevTextureData = self._textureData
+  local rawDisplayData, displayData = nil, nil
+
+  self._displayFrame = nil
+  self._geometryData = nil
+  self._boundingBoxData = nil
+  self._textureData = nil
+  if self._displayIndex >= 0 and self._displayIndex < self._displayFrames.length then
+    self._displayFrame = displayAt(self, self._displayIndex)
+    rawDisplayData = self._displayFrame.rawDisplayData
+    displayData = self._displayFrame.displayData
+    self._geometryData = self._displayFrame:getGeometryData()
+    self._boundingBoxData = self._displayFrame:getBoundingBox()
+    self._textureData = self._displayFrame:getTextureData()
+  end
+
+  if not rawequal(self._displayFrame,prevDisplayFrame)
+      or not rawequal(self._geometryData,prevGeometryData)
+      or not rawequal(self._textureData,prevTextureData) then
+    if self._geometryData == nil and self._textureData ~= nil then
+      local imageDisplayData =
+        (displayData ~= nil and displayData.type == Core.DisplayType.Image)
+        and displayData or rawDisplayData
+      local scale = self._textureData.parent.scale * self._armature._armatureData.scale
+      local frame = self._textureData.frame
+      self._pivotX = imageDisplayData.pivot.x
+      self._pivotY = imageDisplayData.pivot.y
+      local rect = frame or self._textureData.region
+      local width, height = rect.width, rect.height
+      if self._textureData.rotated and frame == nil then
+        width, height = rect.height, rect.width
+      end
+      self._pivotX = self._pivotX * (width * scale)
+      self._pivotY = self._pivotY * (height * scale)
+      if frame ~= nil then
+        self._pivotX = self._pivotX + frame.x * scale
+        self._pivotY = self._pivotY + frame.y * scale
+      end
+      if rawDisplayData ~= nil and not rawequal(imageDisplayData,rawDisplayData) then
+        rawDisplayData.transform:toMatrix(Slot._helpMatrix)
+        Slot._helpMatrix:invert()
+        Slot._helpMatrix:transformPoint(0.0, 0.0, Slot._helpPoint)
+        self._pivotX = self._pivotX - Slot._helpPoint.x
+        self._pivotY = self._pivotY - Slot._helpPoint.y
+
+        imageDisplayData.transform:toMatrix(Slot._helpMatrix)
+        Slot._helpMatrix:invert()
+        Slot._helpMatrix:transformPoint(0.0, 0.0, Slot._helpPoint)
+        self._pivotX = self._pivotX + Slot._helpPoint.x
+        self._pivotY = self._pivotY + Slot._helpPoint.y
+      end
+      if not DragonBones.yDown then
+        self._pivotY = (self._textureData.rotated
+          and self._textureData.region.width or self._textureData.region.height)
+          * scale - self._pivotY
+      end
+    else
+      self._pivotX = 0.0
+      self._pivotY = 0.0
+    end
+
+    if rawDisplayData ~= nil then
+      self.origin = rawDisplayData.transform
+    elseif displayData ~= nil then
+      self.origin = displayData.transform
+    else
+      self.origin = nil
+    end
+    if self.origin ~= nil then
+      self.global:copyFrom(self.origin):add(self.offset):toMatrix(self._localMatrix)
+    else
+      self.global:copyFrom(self.offset):toMatrix(self._localMatrix)
+    end
+
+    if not rawequal(self._geometryData,prevGeometryData) then
+      self._geometryDirty = true
+      self._verticesDirty = true
+      if self._geometryData ~= nil then
+        self._geometryBones.length = 0
+        if self._geometryData.weight ~= nil then
+          local bones = self._geometryData.weight.bones
+          local length = bones.length
+          for i = 1, length do
+            self._geometryBones[self._geometryBones.length + 1] =
+              self._armature:getBone(bones[i].name)
+          end
+        end
+      else
+        self._geometryBones.length = 0
+        self._geometryData = nil
+      end
+    end
+    self._textureDirty = not rawequal(self._textureData,prevTextureData)
+    self._transformDirty = true
+  end
+end
+
+local function replacementIndex(self,index)
+  if index == nil then index = -1 end
+  if index < 0 then
+    index = self._displayIndex < 0 and 0 or self._displayIndex
+  elseif index >= self._displayFrames.length then
+    return nil
+  end
+  return index
+end
+
+function Slot:replaceRawDisplayData(displayData,index)
+  index = replacementIndex(self,index)
+  if index == nil then return end
+  local frame = displayAt(self,index)
+  if not rawequal(frame.rawDisplayData,displayData) then
+    frame.deformVertices.length = 0
+    frame.rawDisplayData = displayData
+    if frame.rawDisplayData == nil then
+      local skin = self._armature._armatureData.defaultSkin
+      if skin ~= nil then
+        local defaults = skin:getDisplays(self._slotData.name)
+        if defaults ~= nil and index < defaults.length then
+          local fallback = defaults[index + 1]
+          if rawequal(fallback,SkinData.NULL) then frame.rawDisplayData = nil
+          else frame.rawDisplayData = fallback end
+        end
+      end
+    end
+    if index == self._displayIndex then self._displayDataDirty = true end
+  end
+end
+
+function Slot:replaceDisplayData(displayData,index)
+  index = replacementIndex(self,index)
+  if index == nil then return end
+  local frame = displayAt(self,index)
+  if not rawequal(frame.displayData,displayData) and not rawequal(frame.rawDisplayData,displayData) then
+    frame.displayData = displayData
+    if index == self._displayIndex then self._displayDataDirty = true end
+  end
+end
+
+function Slot:replaceTextureData(textureData,index)
+  index = replacementIndex(self,index)
+  if index == nil then return end
+  local frame = displayAt(self,index)
+  if not rawequal(frame.textureData,textureData) then
+    frame.textureData = textureData
+    if index == self._displayIndex then self._displayDataDirty = true end
   end
 end
 

@@ -104,4 +104,4 @@ Surface portado com oito corpos e geometria/pool/armadura parcial reais. 585 cen
 
 Exemplo `examples/run.lua surface`: o filho em (50,50) vai a (50,90) ao deformar o centro da grade em +80 no eixo Y. Montagem e deformação manuais, sem player/factory falso. CI com 36 suítes e quatro exemplos por VM. Slot, constraints/solvers, Armature.init/advanceTime, animação e backend continuam pendentes.
 
-Slot.ts contém duas classes: DisplayFrame corresponde a dragonbones/armature/DisplayFrame.lua (comparado); Slot parcialmente implementada em dragonbones/armature/Slot.lua (fundação/transformação/hit testing); avaliação de displays/backend ainda pendentes.
+Slot.ts contém duas classes: DisplayFrame corresponde a dragonbones/armature/DisplayFrame.lua (comparado); Slot parcialmente implementada em dragonbones/armature/Slot.lua (fundação/transformação/hit testing); seleção de dados/pivôs também comparada; atualização do objeto gráfico/backend ainda pendentes.
