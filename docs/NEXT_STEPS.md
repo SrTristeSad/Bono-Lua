@@ -2,32 +2,28 @@
 
 ## Objetivo permanente
 
-Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura/algoritmos/comportamentos. Destino SrTristeSad/Bono-Lua. Não declarar completude com pendências.
+Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura, algoritmos e comportamentos. Destino SrTristeSad/Bono-Lua. Não declarar motor completo com pendências.
 
 ## Base desta unidade
 
-- main 5d16e3da546a5511dcece6753c622748331d66e2, PR #88, CI pós-merge 41754763774 aprovada.
-- Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb conferido.
-- Branch port/parser-global-entry; conferir PR/SHA/CI/merge atuais. Main acompanha checkpoints testados por autorização do proprietário.
+main 235edef2811f3ec26227b21acd44bff876019cfd, PR #90, CI após merge 41774942858 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/binary-timelines; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
 ## Unidade implementada
 
-parseDragonBonesData integral TS/Lua auditado: 47/47 corpos de ObjectDataParser presentes, com comparação nos recortes documentados. Não declarar motor completo/equivalência JS irrestrita. API recebe objeto decodificado, não texto JSON/DBDT.
+BinaryDataParser agora 4/8 métodos: helpers, singleton e _parseBinaryTimeline. ObjectDataParser permanece 47/47 corpos nos domínios documentados. Comparação nova: 439 cenários/448 chamadas/6.585 colunas por VM Lua 5.4/LuaJIT, 12 exceções esperadas, tolerância zero, modelos/pool/views reais. Contrato contracts/BinaryTimeline.md. CI com 28 suítes por VM.
 
-90 cenários/4.285 operações/149.975 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 23 exceções esperadas. 115 entradas/31 atlas/63 finalizações genuínas, 18 arquivos emitidos. Sem Data/Armature pré-semeados: grafo/ownership/views/frames/timelines/pool reais. Factory abstrata de textura concretizada só no teste, sem backend de produto. 26 suítes na CI; contrato contracts/GlobalObjectEntry.md.
-
-Preservar OR de versões, version primária, diagnósticos não bloqueantes, ramo ARMATURE por presença, buffers vazios versus ausentes, binary truthy para skip, stage explícito versus primeiro nome, fila de atlas sem reiniciar índice e null interno distinto de undefined. Erros e ramo sem ARMATURE não limpam contexto anterior. Mutantes de compatibilidade/finalização/índice de atlas rejeitados, código restaurado e testes finais refeitos. NaN Float32 normalizado só no snapshot conforme contrato anterior.
+Preservar length/holes de frameIndices, prefixo existente, frame final extra, offsets em elementos base 0, undefined numérico como NaN, reserva antes de frameIndicesOffset e contexto retido em falhas. Sucesso limpa _timeline; keyframe única dispensa contexto de dados/animação. Não confundir herança de entrada ObjectDataParser com suporte DBDT.
 
 ## Próximo recorte
 
-1. Conferir main/backup/PR/CI e ler estado/progresso/mapa/validação/decisões/diferenças.
-2. Auditar BinaryDataParser integral TS/Lua do backup e suas fronteiras de plataforma: _inRange/_decodeUTF8/_parseBinaryTimeline/_parseAnimation/_parseGeometry/_parseArray/parseDragonBonesData/getInstance. Herda ObjectDataParser real; não inventar binário já decodificado como substituto.
-3. Delimitar primeiro helpers de bytes/UTF-8/views e dependência JSON.parse do cabeçalho. SharedBinaryBuffer atual tem Int16/Uint16/Float32 little endian; Uint8/DataView, decodificação e JSON interno exigem representação/provas próprias. Não supor equivalência entre decoder custom upstream e biblioteca UTF-8 genérica.
-4. Atualizar inventário/docs, publicar PR, validar CI e integrar checkpoint autorizado. Runtime/factories/backends seguem fronteiras separadas.
+1. Conferir main/backup/PR/CI, progresso, diferenças e contratos.
+2. Portar o override binário _parseAnimation usando _parseBinaryTimeline e modelos reais. Comparar grupos bone/slot/constraint e timelines genéricas, offsets, ownership, TODOs e falhas parciais.
+3. Portar _parseGeometry e _parseArray binários; só depois fechar entrada DBDT com Uint32/header length/JSON interno e decoder custom original.
+4. Atualizar inventário/docs, PR/CI e integrar checkpoint autorizado. Runtime/factories/backends permanecem etapas próprias.
 
 ## Pendências
 
-BinaryDataParser/DBDT/bytes/UTF-8/JSON interno e leitura externa de arquivos; TODOs upstream (slot vazio em share, Action/ZOrder/SlotDisplay genéricos e deform ponderado), locales especiais, coerções/reflexão/proxies genéricos, controles/contexto fora dos tipos/offsets TS, length arbitrário de rawFrames, coeficientes de matriz não numéricos, Big Endian/payloads NaN arbitrários. Runtime Armature/Bone/Slot/Surface, solvers, aplicação de deformações, avaliação de timelines/playback/blending, factories, backend/LÖVE/GPU e contratos de engines. SkinData.NULL distinto de raw JSValue.NULL; ES5 indexado/UTF-16/WTF-8 preservados. Curvas/ZOrder/sortBones/clipping mantêm possíveis esperas originais; WorldClock usa os.time com resolução de segundos.
+Quatro métodos binários restantes e DBDT/JSON interno/leitura externa; TODOs upstream, locales especiais, coerções/reflexão/proxies genéricos, contextos fora do domínio TS, Big Endian e payloads NaN arbitrários. Runtime Armature/Bone/Slot/Surface, solvers IK/Path, deformações, avaliação/playback/blending, factories, backend LÖVE/GPU e contratos de engines. WorldClock continua os.time com resolução de segundos; não relaxar tolerâncias anteriores.
 
 ## Reprodução
 
@@ -36,12 +32,10 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
 ```
 
-Upstream fixado. Consultar PR para evidência remota/SHA/merge/CI; não antecipar resultados futuros.
-
-Próximo passo após os helpers: auditar e portar `_parseBinaryTimeline`, preservando offsets, frameIndices e referências reais; depois overrides e cabeçalho DBDT/JSON. Uint8 e decoder custom já têm comparação própria; não repetir como pendência integral.
+Consultar PR para evidência remota/SHA/merge/CI; não antecipar resultados futuros.
