@@ -81,6 +81,48 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'ik' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Bone = require('dragonbones.armature.Bone')
+  local Armature = require('dragonbones.armature.Armature')
+  local IK = require('dragonbones.armature.IKConstraint')
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local JSON = require('dragonbones.parser.JSON')
+  local file = assert(io.open('examples/ik_ske.json','rb'))
+  local bytes = file:read('*a');file:close()
+  local data = assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model = data:getArmature(data.armatureNames[1])
+  local constraintData = assert(model:getConstraint('aim'))
+  local armature = Pool.borrowObject(Armature)
+  armature._armatureData = model -- Manual assembly until init/factory are ready.
+  for i=1,model.sortedBones.length do
+    local bd = model.sortedBones[i]
+    assert(bd.type==0,'Este exemplo IK usa ossos regulares')
+    Pool.borrowObject(Bone):init(bd,armature)
+  end
+  local tipData = constraintData.bone or constraintData.root
+  local tip = armature:getBone(tipData.name)
+  local target = armature:getBone(constraintData.target.name)
+  local function updateAndPrint(label)
+    for i=1,armature:getBones().length do armature:getBones()[i]:update(-1) end
+    local m = tip.globalTransformMatrix
+    local x,y = m.a*tipData.length+m.tx,m.b*tipData.length+m.ty
+    print(('%s: ponta=(%.3f,%.3f) | alvo=(%.3f,%.3f)'):format(label,x,y,target.global.x,target.global.y))
+  end
+  armature:invalidUpdate()
+  updateAndPrint('Sem IK')
+  local ik = Pool.borrowObject(IK)
+  ik:init(constraintData,armature)
+  armature:_addConstraint(ik)
+  ik:invalidUpdate()
+  updateAndPrint('IK ativo')
+  target.offset.x,target.offset.y = -4,4
+  armature:invalidUpdate()
+  ik:invalidUpdate()
+  updateAndPrint('Alvo movido')
+  armature:returnToPool()
+  data:returnToPool()
+  print('IK e limpeza concluídos. Alvo manual, sem player ou renderização.')
 elseif mode == 'surface' then
   local Pool = require('dragonbones.core.BaseObject')
   local Bone = require('dragonbones.armature.Bone')
@@ -272,5 +314,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik')
 end

@@ -107,6 +107,7 @@ jobs:
           node tests/slot_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/slotdata_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/slotruntime_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/ik_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua inspect
           ${{ matrix.vm }} examples/run.lua transform
           ${{ matrix.vm }} examples/run.lua bones
@@ -115,6 +116,7 @@ jobs:
           ${{ matrix.vm }} examples/run.lua slot
           ${{ matrix.vm }} examples/run.lua slotdata
           ${{ matrix.vm }} examples/run.lua slotruntime
+          ${{ matrix.vm }} examples/run.lua ik
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

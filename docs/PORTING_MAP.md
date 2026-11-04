@@ -107,3 +107,5 @@ Exemplo `examples/run.lua surface`: o filho em (50,50) vai a (50,90) ao deformar
 Slot.ts contém duas classes: DisplayFrame corresponde a dragonbones/armature/DisplayFrame.lua (comparado); Slot parcialmente implementada em dragonbones/armature/Slot.lua (fundação/transformação/hit testing); seleção de dados/pivôs também comparada; atualização do objeto gráfico/backend ainda pendentes.
 
 Slot: todos os corpos e aliases representados, update/troca/cache/child no domínio de SlotRuntime.md; hooks gráficos abstratos, Animation/backend e Armature completo pendentes. Armature também inclui clock/cache/dispose/fila de ações necessários ao recorte.
+
+Constraint.ts: base Constraint em dragonbones/armature/Constraint.lua e IKConstraint em dragonbones/armature/IKConstraint.lua, comparados no domínio IKConstraint.md. PathConstraint do mesmo TS ainda pendente. Armature._addConstraint registra o solver real.

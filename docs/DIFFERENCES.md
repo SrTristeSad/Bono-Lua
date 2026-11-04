@@ -1,5 +1,18 @@
 # Adaptações e divergências
 
+## Constraint/IKConstraint — solver real
+
+Implementadas a base abstrata Constraint e a classe IKConstraint, em módulos separados, com _addConstraint original em Armature. Bone.update já chama o solver real pelo registro, incluindo updateByConstraint e cache. PathConstraint do mesmo TS ainda está pendente; scaleEnabled permanece TODO sem comportamento como no pin. Não há Animation/factory/renderer substitutos.
+
+ik_differential: 15.404 cenários, 46.212 etapas, 955.048 colunas por VM Lua 5.4/LuaJIT, 32 exceções de etapas esperadas e 25.355 aproximações locais de componentes. Grade de 15.360 combinações de um/dois ossos, dobra, pesos -0,5/0/0,25/1/1,5, oito alvos, quatro flips, dois eixos Y, três avós/reflexões e quatro poses/comprimentos. Outros 44 casos cobrem chamada direta, cache hit/miss/restore, init repetido, readonly, limpeza da base/IK, dados/referências ausentes, escalas/comprimento negativos, TODO de escala, NaN e zeros. Modelos/Bone/Armature/pool reais; nenhum solver/armadura fake.
+
+A primeira comparação mostrou propagação trigonométrica: em uma cadeia com peso 1,5 e junta perto do alvo, uma diferença de cerca de 1,33e-15 na rotação superior propagou-se até 1,33e-14 no coeficiente inferior. O algoritmo não foi trocado para igualar libm/V8. O comparador usa escala geométrica para coordenadas e condicionamento limitado para coeficientes/pose de IK; limite total de 64 eps. Flags/referências/índices/zeros e casos de erro são exatos. Ver fórmula/limites em [IKConstraint.md](contracts/IKConstraint.md); budgets anteriores intactos.
+
+Seis mutantes rejeitados: ignorar peso, dobra, reflexão, pular update com peso zero (flags de dois ossos), perder guarda de reinit e remover compensação dR da rotação inferior. Produto restaurado e suíte completa reexecutada nas duas VMs; Bone diferencial também reexecutado. Nome da base usa _constraintData; _onClear da base deixa essa referência intacta como TS, IK a limpa. Pool/registro/flags observados após cleanup.
+
+Exemplo `lua5.4 examples/run.lua ik` ou luajit: JSON próprio com cadeia 10+8, ponta sem IK (18,0), resolvida em (12,8), depois (8,12) ao mover o alvo. Parser, ordenação de modelos, ossos e solver reais; montagem explícita de Armature, sem player ou tela. CI configurada para 41 suítes e nove exemplos por VM.
+
+
 ## Slot — atualização e troca do display
 
 Representados os corpos restantes de Slot: _updateDisplay, update, replaceDisplay e acessores/aliases displayIndex/displayList/display/childArmature/getDisplay/setDisplay. Os quatorze hooks de renderer seguem abstratos no produto. Armature recebe dispose adiado, _bufferAction e acessores clock/cacheFrameRate/display/animation/parent originais, com dependências reais. Armature.init/advanceTime/Animation/backend continuam pendentes; não é player completo.

@@ -83,6 +83,12 @@ function Armature:_addSlot(value)
   for i=1,slots.length do if rawequal(slots[i],value) then return end end
   slots[slots.length+1]=value
 end
+function Armature:_addConstraint(value)
+  for i=1,self._constraints.length do
+    if rawequal(self._constraints[i],value) then return end
+  end
+  self._constraints[self._constraints.length+1]=value
+end
 function Armature:getSlot(name)
   local i=1
   while i<=self._slots.length do
