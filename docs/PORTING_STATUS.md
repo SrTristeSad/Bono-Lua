@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-armature`, sobre `main@63b9b12`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-global-entry`, sobre `main@5d16e3d`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -47,7 +47,7 @@ São resultados isolados dessas três classes; integração de armaduras, anima�
 
 ## Pendências e continuidade
 
-Próxima unidade: continuar ObjectDataParser nas estruturas de armadura/bones/slots/skins e dependências originais; buffers/parsers completos ainda precisam de implementação/auditoria própria. Armature/backend/listeners e runtime integrado continuam pendentes.
+Próxima unidade: BinaryDataParser e fronteiras de bytes/UTF-8/JSON interno. ObjectDataParser tem 47 corpos portados no domínio documentado, incluindo objetos globais/buffers. Armature runtime/backend/listeners e integração do motor continuam pendentes.
 Metatables, nil/default e ausência de distinção null/undefined estão documentadas em DIFFERENCES.md. Nenhuma equivalência irrestrita para chamadas JavaScript fora dos tipos TS foi afirmada.
 Evidências e comandos em VALIDATION.md; cobertura legível por ferramenta em PORTING_PROGRESS.json; ponto de retomada em NEXT_STEPS.md.
 
@@ -371,3 +371,14 @@ Cria ArmatureData real e integra metadados/frameRate/scale, CanvasData/aabb, par
 79 cenários/3.670 operações/113.770 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 24 exceções esperadas e 83 chamadas genuínas. 17 arquivos TS emitidos, incluindo CanvasData real; cadeia completa de modelos/frames/timelines/weights/poses/constraints/skins/ações/pool/bytes. 25 suítes na CI. Somente NaN Float32 normalizado no snapshot, conforme contrato anterior. Ver contracts/ArmatureParser.md e VALIDATION.md; consultar PR para SHA/CI/merge.
 
 Próximo recorte: parseDragonBonesData com versões/compatibilidade, múltiplas armaduras/ownership, stage/atlas e buffers. Construção de ArmatureData não cria runtime Armature nem implementa playback/solvers/renderização/importação JSON texto/DBDT completos. Loops patológicos e TODOs upstream/limites anteriores continuam explícitos.
+
+
+## Entrada global de objetos — estado atual
+
+Base main 5d16e3da546a5511dcece6753c622748331d66e2, PR #88/CI pós-merge 41754763774 e backup cd4206a8 conferidos. parseDragonBonesData integral TS/Lua auditado. **47/47 corpos de ObjectDataParser portados, com comparação nos recortes documentados.** Este total sucede os checkpoints históricos e não é conclusão do motor ou equivalência JS irrestrita.
+
+Entrada pública recebe objeto já decodificado: aceita versão ou compatibleVersion, mantém version primária, cria DragonBonesData/armaduras reais, limpa arrays só quando ARMATURE presente, finaliza se binary falsy e define stage por presença/primeiro nome. Ausência de ARMATURE deixa buffers nil e não troca contexto _data anterior. Exceções conservam dados/contextos parciais e só sucesso do ramo limpa _data. Fila de atlas é atribuída no fim, sem reset do índice; null interno e undefined permanecem distintos.
+
+90 cenários/4.285 operações/149.975 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 23 exceções esperadas; 115 chamadas genuínas de entrada/31 atlas/63 finalizações. Parser começa sem dados/armaduras pré-semeados; 18 arquivos TS emitidos, modelos/ownership/views/frames/timelines/pool reais. Factory concreta de textura é somente infraestrutura de teste da base abstrata, sem backend fictício no produto. 26 suítes na CI. NaN Float32 só normalizado no snapshot; demais limites anteriores mantidos. Ver contracts/GlobalObjectEntry.md e VALIDATION.md; consultar PR para SHA/CI/merge.
+
+Próximo recorte: BinaryDataParser e fronteiras de bytes/UTF-8/JSON interno/views, com auditoria de dependências antes de portar. Texto JSON externo/arquivos, DBDT, runtime Armature/playback/solvers/factories/backend/renderização e locales especiais continuam pendentes. TODOs upstream não foram preenchidos para aparentar completude.
