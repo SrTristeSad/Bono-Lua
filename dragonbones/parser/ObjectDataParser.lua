@@ -2,7 +2,7 @@
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
 -- Implemented: atlas, structures, geometry, binary views, curves and frame serializers.
--- Global parseDragonBonesData remains absent; see docs/NEXT_STEPS.md.
+-- Object-based parser entrypoints are present; runtime/backends remain separate.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
 local Shared=require('dragonbones.parser.SharedBinaryBuffer')
@@ -551,6 +551,51 @@ function ObjectDataParser:_parseTimeline(rawData,rawFrames,framesKey,timelineTyp
 end
 
 local CanvasData=require('dragonbones.model.CanvasData')
+local DragonBonesData=require('dragonbones.model.DragonBonesData')
+function ObjectDataParser:parseDragonBonesData(rawData,scale)
+  if scale==nil or rawequal(scale,V.UNDEFINED) then scale=1 end
+  if rawData==nil or rawequal(rawData,V.NULL) or rawequal(rawData,V.UNDEFINED) then
+    -- console.assert diagnoses but does not throw; value reads below still do.
+    io.stderr:write("Assertion failed: Data error.\n")
+  end
+  local version=ObjectDataParser._getString(rawData,DataParser.VERSION,"")
+  local compatible=ObjectDataParser._getString(rawData,DataParser.COMPATIBLE_VERSION,"")
+  local supported=false
+  for i=1,DataParser.DATA_VERSIONS.length do
+    local candidate=DataParser.DATA_VERSIONS[i]
+    if version==candidate or compatible==candidate then supported=true;break end
+  end
+  if not supported then
+    io.stderr:write("Assertion failed: Nonsupport data version: "..version..
+      "\nPlease convert DragonBones data to support version.\n"..
+      "Read more: https://github.com/DragonBones/Tools/\n")
+    return nil
+  end
+  local data=Pool.borrowObject(DragonBonesData)
+  data.version=version
+  data.name=ObjectDataParser._getString(rawData,DataParser.NAME,"")
+  data.frameRate=ObjectDataParser._getNumber(rawData,DataParser.FRAME_RATE,24)
+  if data.frameRate==0 then data.frameRate=24 end
+  if V.has(rawData,DataParser.ARMATURE) then
+    self._data=data
+    self:_parseArray(rawData)
+    for rawArmature in V.iterator(V.get(rawData,DataParser.ARMATURE)) do
+      data:addArmature(self:_parseArmature(rawArmature,scale))
+    end
+    if not V.truthy(self._data.binary) then self:_modifyArray() end
+    if V.has(rawData,DataParser.STAGE) then
+      data.stage=data:getArmature(ObjectDataParser._getString(rawData,DataParser.STAGE,""))
+    elseif data.armatureNames.length>0 then data.stage=data:getArmature(data.armatureNames[1]) end
+    self._data=nil
+  end
+  if V.has(rawData,DataParser.TEXTURE_ATLAS) then
+    local atlas=V.get(rawData,DataParser.TEXTURE_ATLAS)
+    if rawequal(atlas,V.NULL) then self._rawTextureAtlases=nil
+    else self._rawTextureAtlases=atlas end
+  end
+  return data
+end
+
 function ObjectDataParser:_parseArmature(rawData,scale)
   local armature=Pool.borrowObject(ArmatureModels.ArmatureData)
   armature.name=ObjectDataParser._getString(rawData,DataParser.NAME,"")

@@ -191,3 +191,10 @@ Testes observam todos os AnimationData alocados/retornados/parciais, subtipos de
 Base main 63b9b12/PR #87/CI pós-merge 41752378133 e backup cd4206a8 conferidos. Método integral lido em TS/Lua; usar CanvasData e demais modelos/parsers já reais, com length/iterator ES5/JSMap. Não corrigir TODO do slot vazio em share, ciclos de sort ou duplicatas/órfãos. Manter defaultAnimation pela última Play válida, ordem IK/sort/skins/path/link/animações e limpeza só no sucesso.
 
 Teste passou a executar 17 arquivos genuínos (CanvasData incluído) e recarregar CanvasData por cenário, sem stub. Fixture defaultActions corrigida de array de strings inválido para string direta, conforme formato aceito pelo original; RangeError positivo exercitado por reserva fracionária de peso real. Parser 46/47, 25 suítes na CI; parseDragonBonesData/entrada global não inventados.
+
+
+## Entrada de objetos fecha os corpos de ObjectDataParser
+
+Base main 5d16e3d/PR #88/CI pós-merge 41754763774 e backup cd4206a8 conferidos. Último método integral TS/Lua auditado. Corrigir assert bloqueante/#/ipairs do backup e manter teste de binary pela referência self._data, versão/compatibilidade, stage e atlas. Converter null da fila para nil interno, conservar undefined e não reiniciar índice. Sem reset/rollback extra no ramo sem ARMATURE ou em falhas.
+
+Testes iniciam parser sem modelos pré-semeados e criam grafo real pelo entrypoint. Factory abstrata de textura concretizada só no teste e override de _parseArray só para provar skip com Buffer real existente (não BinaryDataParser de produto). Snapshot Lua ajustou ordem de atribuição de IDs de observação, não algoritmos. 47/47 corpos, 26 suítes, limites/TODOs e falta de runtime/BinaryDataParser explícitos; próximo recorte deve auditar fronteiras de bytes/UTF-8/JSON interno.
