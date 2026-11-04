@@ -11,3 +11,5 @@ Reserva length preserva lacunas, prefixo e ordem; atribui frameIndicesOffset só
 439 cenários/448 chamadas/6.585 colunas por VM, 12 exceções esperadas, tolerância zero. Teste executa TS fixado com DragonBonesData/AnimationData/TimelineData/pool reais e views nativas; Lua usa o mesmo arranjo de bytes compartilhados. Inclui frame extra, contagens 0/1/múltiplas/65535, segmentos existentes e holes, offsets fracionários/NaN/fora dos limites, falta de contexto, length fracionário/overflow, totais zero/negativos, append, alias mutation, subclasses e reutilização do pool. Dois mutantes (omitir frame extra e usar offset seguinte incorreto) são rejeitados.
 
 Domínio: modelos/campos numéricos conforme TS, buffers finitos e loops finitos. Não afirma coerções arbitrárias, setters/proxies ou propriedades de protótipo. Não carrega DBDT nem avalia animação no runtime.
+
+Integração com animação binária: offset/frameOffset UNDEFINED são preservados nos campos e viram NaN somente ao calcular índices. Ver BinaryAnimation.md; offsets string com concatenação JS continuam fora do domínio.

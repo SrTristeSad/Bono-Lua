@@ -149,9 +149,9 @@
     },
     "DragonBones/src/dragonBones/parser/BinaryDataParser.ts": {
       "destination": "dragonbones/parser/BinaryDataParser.lua",
-      "status": "Parcial: 4/8 métodos (_inRange, _decodeUTF8, _parseBinaryTimeline, getInstance); carregamento DBDT e quatro overrides/entrada pendentes.",
-      "tests": "binaryutf8_differential: 67.083 operações, 134.166 colunas, incluindo todos os 65.536 pares de bytes; Lua 5.4/LuaJIT, tolerância zero. binarytimeline_differential: 439 cenários, 448 chamadas, 6.585 colunas por VM Lua 5.4/LuaJIT, 12 exceções esperadas, tolerância zero. Modelos/pool/views reais.",
-      "differences": "View uint8 no SharedBinaryBuffer; texto observado em unidades UTF-16. Preserva omissão de NUL, truncamento e reprocessamento upstream. Cinco campos binários sem inicializadores. Entrada ObjectDataParser herdada não é suporte DBDT. Ver contracts/BinaryUTF8.md. Timeline binária amplia frameIndices.length sem preencher holes antes do loop; mantém frame extra, offset do segmento e estado parcial em falhas. Miss de typed view vira NaN apenas em contextos numéricos. Ver contracts/BinaryTimeline.md."
+      "status": "Parcial: 5/8 métodos, incluindo _parseAnimation binário; _parseGeometry, _parseArray e entrada DBDT pendentes.",
+      "tests": "binaryutf8_differential: 67.083 operações, 134.166 colunas, incluindo todos os 65.536 pares de bytes; Lua 5.4/LuaJIT, tolerância zero. binarytimeline_differential: 439 cenários, 448 chamadas, 6.585 colunas por VM Lua 5.4/LuaJIT, 12 exceções esperadas, tolerância zero. Modelos/pool/views reais. binaryanimation_differential: 243 cenários, 468 chamadas reais de timeline, 3.159 colunas por VM Lua 5.4/LuaJIT, 32 exceções esperadas, tolerância zero.",
+      "differences": "View uint8 no SharedBinaryBuffer; texto observado em unidades UTF-16. Preserva omissão de NUL, truncamento e reprocessamento upstream. Cinco campos binários sem inicializadores. Entrada ObjectDataParser herdada não é suporte DBDT. Ver contracts/BinaryUTF8.md. Timeline binária amplia frameIndices.length sem preencher holes antes do loop; mantém frame extra, offset do segmento e estado parcial em falhas. Miss de typed view vira NaN apenas em contextos numéricos. Ver contracts/BinaryTimeline.md. Grupos raw bone/slot/constraint usam JSMap.new para ordem JS; listas usam JSValue.array. Offsets ausentes preservam UNDEFINED, convertido em NaN só no uso numérico. TODOs e órfãos genéricos preservados; ver contracts/BinaryAnimation.md."
     }
   }
 }
