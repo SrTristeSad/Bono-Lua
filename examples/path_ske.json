@@ -1,0 +1,137 @@
+{
+  "version": "5.6",
+  "name": "path-test",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "arm",
+      "bone": [
+        {
+          "name": "guide",
+          "transform": {
+            "x": 2,
+            "y": -1,
+            "scX": 1
+          }
+        },
+        {
+          "name": "aux",
+          "transform": {
+            "x": 3,
+            "y": -2
+          }
+        },
+        {
+          "name": "a",
+          "length": 10
+        },
+        {
+          "name": "b",
+          "parent": "a",
+          "length": 8,
+          "transform": {
+            "x": 10
+          }
+        }
+      ],
+      "slot": [
+        {
+          "name": "path",
+          "parent": "guide"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "path",
+              "display": [
+                {
+                  "name": "curve",
+                  "type": "path",
+                  "closed": false,
+                  "constantSpeed": true,
+                  "vertices": [
+                    -10,
+                    0,
+                    0,
+                    0,
+                    10,
+                    0,
+                    20,
+                    10,
+                    30,
+                    10,
+                    40,
+                    10
+                  ],
+                  "vertexCount": 6,
+                  "lengths": [
+                    32,
+                    64
+                  ],
+                  "weights": [
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1
+                  ],
+                  "slotPose": [
+                    1,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                  ],
+                  "bonePose": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "path": [
+        {
+          "name": "follow",
+          "target": "path",
+          "targetDisplay": "curve",
+          "bones": [
+            "a",
+            "b"
+          ],
+          "positionMode": "percent",
+          "spacingMode": "fixed",
+          "rotateMode": "chain",
+          "position": 0.25,
+          "spacing": 3,
+          "rotateMix": 1,
+          "translateMix": 1
+        }
+      ]
+    }
+  ]
+}
