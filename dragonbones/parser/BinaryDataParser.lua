@@ -1,0 +1,64 @@
+-- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
+-- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
+-- _inRange/_decodeUTF8/getInstance only; binary overrides/entrypoint absent.
+local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
+local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
+setmetatable(BinaryDataParser,{__index=ObjectDataParser})
+function BinaryDataParser.new()
+  -- The five binary fields have no initializers in TS (undefined, not zero).
+  return setmetatable(ObjectDataParser.new(),BinaryDataParser)
+end
+function BinaryDataParser:_inRange(a,min,max)return min<=a and a<=max end
+local function character(cp)
+  if cp<128 then return string.char(cp) end
+  if cp<2048 then return string.char(192+math.floor(cp/64),128+cp%64) end
+  if cp<65536 then return string.char(224+math.floor(cp/4096),128+math.floor(cp/64)%64,128+cp%64) end
+  return string.char(240+math.floor(cp/262144),128+math.floor(cp/4096)%64,128+math.floor(cp/64)%64,128+cp%64)
+end
+function BinaryDataParser:_decodeUTF8(data)
+  local EOF_byte,EOF_code_point,FATAL_POINT=-1,-1,65533
+  local pos,result=0,{}
+  local code_point
+  local utf8_code_point,utf8_bytes_needed,utf8_bytes_seen,utf8_lower_boundary=0,0,0,0
+  while data.length>pos do
+    local byte=data[pos+1];pos=pos+1
+    if byte==EOF_byte then
+      code_point=utf8_bytes_needed~=0 and FATAL_POINT or EOF_code_point
+    elseif utf8_bytes_needed==0 then
+      if self:_inRange(byte,0,127) then code_point=byte
+      else
+        if self:_inRange(byte,194,223) then utf8_bytes_needed=1;utf8_lower_boundary=128;utf8_code_point=byte-192
+        elseif self:_inRange(byte,224,239) then utf8_bytes_needed=2;utf8_lower_boundary=2048;utf8_code_point=byte-224
+        elseif self:_inRange(byte,240,244) then utf8_bytes_needed=3;utf8_lower_boundary=65536;utf8_code_point=byte-240 end
+        utf8_code_point=utf8_code_point*64^utf8_bytes_needed
+        code_point=nil
+      end
+    elseif not self:_inRange(byte,128,191) then
+      utf8_code_point=0;utf8_bytes_needed=0;utf8_bytes_seen=0;utf8_lower_boundary=0
+      pos=pos-1;code_point=byte
+    else
+      utf8_bytes_seen=utf8_bytes_seen+1
+      utf8_code_point=utf8_code_point+(byte-128)*64^(utf8_bytes_needed-utf8_bytes_seen)
+      if utf8_bytes_seen~=utf8_bytes_needed then code_point=nil
+      else
+        local cp,lower_boundary=utf8_code_point,utf8_lower_boundary
+        utf8_code_point=0;utf8_bytes_needed=0;utf8_bytes_seen=0;utf8_lower_boundary=0
+        if self:_inRange(cp,lower_boundary,1114111) and not self:_inRange(cp,55296,57343) then code_point=cp
+        else code_point=byte end
+      end
+    end
+    -- Lua stores scalar UTF-8; the source's surrogate pair is observed as UTF-16.
+    -- Preserve source omission of NUL and lack of EOF flush for truncated data.
+    if code_point~=nil and code_point~=EOF_code_point and code_point>0 then
+      result[#result+1]=character(code_point)
+    end
+  end
+  return table.concat(result)
+end
+function BinaryDataParser.getInstance()
+  if BinaryDataParser._binaryDataParserInstance==nil then
+    BinaryDataParser._binaryDataParserInstance=BinaryDataParser.new()
+  end
+  return BinaryDataParser._binaryDataParserInstance
+end
+return BinaryDataParser

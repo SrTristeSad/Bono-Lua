@@ -257,3 +257,9 @@ Somente presença de ARMATURE entra no ramo _data/parseArray/armaduras/finaliza�
 Atlas só atribuído após sucesso anterior, sem redefinir _rawTextureAtlasIndex; queue null vira nil de referência interna, undefined conserva marcador para falha original ao ler length. Sucesso sem ARMATURE não limpa _data anterior de erro; unsupported/falha não substituem a fila. Erros deixam objetos órfãos/ownership/buffers/contexto conforme estágio alcançado. Retornar DragonBonesData ao pool solta referências sem destruir aliases de buffer já demonstrados.
 
 47/47 é contagem dos corpos deste arquivo, não todos os comportamentos JS/plataformas. TODOs upstream, coerções/protótipos/reflexão genéricos, controles fora do TS, NaN payload/Big Endian, locales especiais e runtime/backends seguem limitados. BinaryDataParser ainda exige bytes/UTF-8/JSON interno; não confundir com a entrada de objetos. Contrato GlobalObjectEntry.md.
+
+## Helpers binários e bytes — checkpoint atual
+
+BinaryDataParser tem 3/8 métodos portados: `_inRange`, `_decodeUTF8` e `getInstance`. SharedBinaryBuffer agora oferece `uint8`, com aliases, metadados e coerções comparados ao Uint8Array nativo. A comparação executa o decoder original fixado: 67.083 operações e 134.166 colunas, incluindo todos os 65.536 pares de bytes, com tolerância zero. Ver [contrato](contracts/BinaryUTF8.md).
+
+Isso ainda não carrega DBDT: faltam `_parseBinaryTimeline`, overrides `_parseAnimation`/`_parseGeometry`/`_parseArray` e a entrada binária `parseDragonBonesData`, além da dependência JSON do cabeçalho. A entrada de objetos herdada não interpreta bytes. ObjectDataParser permanece em 47/47 corpos, nos domínios documentados. Runtime, factories e backends continuam pendentes.

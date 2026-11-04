@@ -198,3 +198,9 @@ Teste passou a executar 17 arquivos genuínos (CanvasData incluído) e recarrega
 Base main 5d16e3d/PR #88/CI pós-merge 41754763774 e backup cd4206a8 conferidos. Último método integral TS/Lua auditado. Corrigir assert bloqueante/#/ipairs do backup e manter teste de binary pela referência self._data, versão/compatibilidade, stage e atlas. Converter null da fila para nil interno, conservar undefined e não reiniciar índice. Sem reset/rollback extra no ramo sem ARMATURE ou em falhas.
 
 Testes iniciam parser sem modelos pré-semeados e criam grafo real pelo entrypoint. Factory abstrata de textura concretizada só no teste e override de _parseArray só para provar skip com Buffer real existente (não BinaryDataParser de produto). Snapshot Lua ajustou ordem de atribuição de IDs de observação, não algoritmos. 47/47 corpos, 26 suítes, limites/TODOs e falta de runtime/BinaryDataParser explícitos; próximo recorte deve auditar fronteiras de bytes/UTF-8/JSON interno.
+
+## Helpers binários e bytes — checkpoint atual
+
+BinaryDataParser tem 3/8 métodos portados: `_inRange`, `_decodeUTF8` e `getInstance`. SharedBinaryBuffer agora oferece `uint8`, com aliases, metadados e coerções comparados ao Uint8Array nativo. A comparação executa o decoder original fixado: 67.083 operações e 134.166 colunas, incluindo todos os 65.536 pares de bytes, com tolerância zero. Ver [contrato](contracts/BinaryUTF8.md).
+
+Isso ainda não carrega DBDT: faltam `_parseBinaryTimeline`, overrides `_parseAnimation`/`_parseGeometry`/`_parseArray` e a entrada binária `parseDragonBonesData`, além da dependência JSON do cabeçalho. A entrada de objetos herdada não interpreta bytes. ObjectDataParser permanece em 47/47 corpos, nos domínios documentados. Runtime, factories e backends continuam pendentes.
