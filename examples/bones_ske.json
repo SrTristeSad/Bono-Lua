@@ -1,0 +1,12 @@
+{
+  "version": "5.6",
+  "name": "Hierarquia Bono-Lua",
+  "frameRate": 24,
+  "armature": [{
+    "name": "hierarquia",
+    "bone": [
+      {"name": "root", "transform": {"x": 10, "y": 20}},
+      {"name": "child", "parent": "root", "transform": {"x": 30, "y": 0}}
+    ]
+  }]
+}

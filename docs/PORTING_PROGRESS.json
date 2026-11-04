@@ -158,6 +158,18 @@
       "status": "Primeira base abstrata do runtime: inicializadores, _onClear, updateGlobalTransform e getter armature portados; Bone/Slot/Armature e playback pendentes.",
       "tests": "transformobject_differential: 212 cenários/8.056 colunas por VM Lua 5.4/LuaJIT, 35 falhas esperadas e 27 comparações trigonométricas aproximadas por VM. Tolerância anterior de Transform: apenas resultados trig não nulos até 8*epsilon*max(1,abs(expected)); translação, zeros e demais estados exatos. Exemplos inspect/transform executados nas duas VMs.",
       "differences": "Classe abstrata conserva toString abstrato herdado, sem chave concreta fictícia. Subclasses delegam __index/__newindex para getters; armature somente leitura, vetores readonly TS sem guarda runtime como JS. Campos sem inicializador permanecem nil antes do _onClear; referências opcionais null/undefined normalizadas nil. Armature é só referência opaca sem módulo/stub nesta base. Ver contracts/TransformObject.md."
+    },
+    "DragonBones/src/dragonBones/armature/Bone.ts": {
+      "destination": "dragonbones/armature/Bone.lua",
+      "status": "Corpos portados; hierarquia de Bone regulares, flags, alpha e cache comparados com Armature real parcial. Surface, callbacks de Slot e execução de solvers não validados nesta unidade.",
+      "tests": "bone_differential: 1.576 cenários/44.128 colunas por VM Lua 5.4/LuaJIT, seis falhas esperadas e 340 aproximações trig por VM, até 8*epsilon*max(1,abs(expected)) somente componentes derivados; flags, índices, offset/animationPose e zeros exatos. Exemplo bones executado nas duas VMs.",
+      "differences": "Getter/setter via metamétodos; refs opcionais null/undefined mapeadas nil; arrays lógicos base 1, índices públicos de cache base 0. Negação promove para float via *1.0 para conservar -0 com zero inteiro Lua 5.4. Sem coerções/protótipos genéricos ou inteiros arbitrários fora de binary64. Ver contracts/BoneRuntime.md."
+    },
+    "DragonBones/src/dragonBones/armature/Armature.ts": {
+      "destination": "dragonbones/armature/Armature.lua",
+      "status": "Parcial: inicializadores, toString, _onClear, _addBone/getBone/getBones/getSlots/invalidUpdate, getters name/armatureData e acessores flipX/flipY. init/advanceTime/animação/slots/clocks demais APIs ausentes.",
+      "tests": "bone_differential integra registro, busca, deduplicação, flips/invalidação, ownership e limpeza com Bone/ArmatureData/DragonBonesData reais. Branches não vazios de Slot/Constraint/Animation/proxy/clock continuam sem validação nesta unidade.",
+      "differences": "JSArray com length/base 1; getter readonly e flips delegam invalidUpdate. Exemplo faz montagem explícita _armatureData, sem fingir execução de Armature.init/factory. Método _onClear conserva chamadas originais às dependências futuras; não há substitutos. Ver contracts/BoneRuntime.md."
     }
   }
 }

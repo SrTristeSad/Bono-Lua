@@ -23,15 +23,16 @@ Na raiz do repositório, com Lua 5.4 ou LuaJIT instalado:
 ```sh
 lua5.4 examples/run.lua inspect
 lua5.4 examples/run.lua transform
+lua5.4 examples/run.lua bones
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.json 0.5
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.dbbin
 ```
 
-Pode trocar `lua5.4` por `luajit`. Os exemplos não precisam de Node/npm. `inspect` lista armaduras/animações e limpa os modelos; sem caminho, usa o JSON mínimo incluído. `transform` mostra a atualização da posição e rotação a partir de uma matriz. Ainda não reproduzem animações na tela. Veja [instruções dos exemplos](examples/README.md).
+Pode trocar `lua5.4` por `luajit`. Os exemplos não precisam de Node/npm. `inspect` lista armaduras/animações e limpa os modelos; sem caminho, usa o JSON mínimo incluído. `transform` mostra a atualização da posição e rotação a partir de uma matriz. `bones` monta uma hierarquia real de dois ossos e gira o pai, alterando a posição do filho. Ainda não reproduzem animações na tela. Veja [instruções dos exemplos](examples/README.md).
 
 ## Estado atual
 
-Primeira base do runtime implementada: `TransformObject`, com comparação contra o original e demonstração executável. Ossos, slots, armaduras de runtime e reprodução continuam pendentes.
+Runtime: `TransformObject`, `Bone` regular e registro/ciclo de vida parcial de `Armature`, com comparação contra o original e exemplos executáveis. Surface, slots, solvers, init completo e reprodução continuam pendentes.
 
 Corpus upstream validado: **74 exportações esqueléticas únicas**, em 181 caminhos, importadas em duas escalas nas duas VMs. Buffers e observações do grafo coincidiram com o original, sem tolerância. Ver [cobertura](docs/contracts/UpstreamCorpus.md).
 

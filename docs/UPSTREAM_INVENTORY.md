@@ -458,8 +458,8 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/animation/IAnimatable.ts` | Interface ou declaração de tipos | docs/contracts/IAnimatable.md | Contrato documentado e exercitado; interface TS sem classe de runtime para portar |
 | `DragonBones/src/dragonBones/animation/TimelineState.ts` | Código-fonte do núcleo | dragonbones/animation/TimelineState.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/animation/WorldClock.ts` | Código-fonte do núcleo | dragonbones/animation/WorldClock.lua | Algoritmo comparado com fonte temporal determinística; precisão automática do host pendente |
-| `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Parcial: inicializadores, toString, _onClear, _addBone/getBone/getBones/getSlots/invalidUpdate, getters name/armatureData e acessores flipX/flipY. init/advanceTime/animação/slots/clocks demais APIs ausentes. |
+| `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Corpos portados; hierarquia de Bone regulares, flags, alpha e cache comparados com Armature real parcial. Surface, callbacks de Slot e execução de solvers não validados nesta unidade. |
 | `DragonBones/src/dragonBones/armature/Constraint.ts` | Código-fonte do núcleo | dragonbones/armature/Constraint.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | dragonbones/armature/IArmatureProxy.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -2672,8 +2672,8 @@ Herança: implements IAnimatable.
 ### `DragonBones/src/dragonBones/armature/Armature.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/armature/Armature.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/armature/Armature.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/armature/Armature.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: inicializadores, toString, _onClear, _addBone/getBone/getBones/getSlots/invalidUpdate, getters name/armatureData e acessores flipX/flipY. init/advanceTime/animação/slots/clocks demais APIs ausentes.; testes: bone_differential integra registro, busca, deduplicação, flips/invalidação, ownership e limpeza com Bone/ArmatureData/DragonBonesData reais. Branches não vazios de Slot/Constraint/Animation/proxy/clock continuam sem validação nesta unidade.; diferenças: JSArray com length/base 1; getter readonly e flips delegam invalidUpdate. Exemplo faz montagem explícita _armatureData, sem fingir execução de Armature.init/factory. Método _onClear conserva chamadas originais às dependências futuras; não há substitutos. Ver contracts/BoneRuntime.md.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/animation/IAnimatable.ts`, `DragonBones/src/dragonBones/animation/WorldClock.ts`, `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Constraint.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -2750,8 +2750,8 @@ Herança: extends BaseObject; implements IAnimatable.
 ### `DragonBones/src/dragonBones/armature/Bone.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/armature/Bone.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/armature/Bone.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/armature/Bone.lua. Implementação presente nesta reconstrução.
+- Estado: Corpos portados; hierarquia de Bone regulares, flags, alpha e cache comparados com Armature real parcial. Surface, callbacks de Slot e execução de solvers não validados nesta unidade.; testes: bone_differential: 1.576 cenários/44.128 colunas por VM Lua 5.4/LuaJIT, seis falhas esperadas e 340 aproximações trig por VM, até 8*epsilon*max(1,abs(expected)) somente componentes derivados; flags, índices, offset/animationPose e zeros exatos. Exemplo bones executado nas duas VMs.; diferenças: Getter/setter via metamétodos; refs opcionais null/undefined mapeadas nil; arrays lógicos base 1, índices públicos de cache base 0. Negação promove para float via *1.0 para conservar -0 com zero inteiro Lua 5.4. Sem coerções/protótipos genéricos ou inteiros arbitrários fora de binary64. Ver contracts/BoneRuntime.md.
 - Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/armature/TransformObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

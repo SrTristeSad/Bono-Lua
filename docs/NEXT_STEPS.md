@@ -6,19 +6,19 @@ Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preser
 
 ## Base desta unidade
 
-main 1d1ee912ebb2c579d8c79074a51dac264694d812, PR #96, CI após merge 41832504520 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/transform-object; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
+main 54c0c2ab3c1cadd061aeddaf7a559214dfbf81da, PR #97, CI após merge 41847955883 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/bone-runtime; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
 ## Unidade implementada
 
-Primeira base do runtime: TransformObject abstrato, com inicializadores, dois métodos e getter. 212 cenários/8.056 colunas por VM, 35 falhas esperadas e 27 aproximações trig na tolerância anterior de Transform. Contrato contracts/TransformObject.md. CI com 34 suítes por VM e exemplos inspect/transform executados. README agora fornece comandos simples para experimentar JSON/DBDT e a atualização da matriz sem Node/npm.
+Bone regular e Armature parcial real de registro/ciclo de vida implementados. 1.576 cenários/44.128 colunas por VM, seis falhas esperadas e 340 aproximações trig no limite documentado; índices/flags/zeros/offsets exatos. Contrato contracts/BoneRuntime.md. CI com 35 suítes e três exemplos por VM. Comando bones demonstra hierarquia real, com montagem manual de _armatureData e sem init/player/factory fictício.
 
-Preservar construção sem clear automático, identidade dos vetores/helpers, dirty limpo antes de decompor, getter somente leitura e estado parcial em falhas. Subclasses delegam __index/__newindex; não criar toString fictício na base abstrata. Armature ainda é referência opaca sem chamadas/stub. Corpus upstream anterior (74 blobs/181 caminhos/duas escalas) permanece validado, com limites registrados.
+Preservar lookup e registro em Bone.init, cache nos modelos reais, dirty/localDirty/childrenDirty, referência origin, matriz/decomposição adiada e +0/-0. Armature.init/advanceTime e métodos não portados continuam ausentes. Ramas Surface/Constraint/Slot runtime e cleanup de Animation/Proxy/clock não vazios não estão validadas nesta unidade. Não declarar Bone/Armature completos só por corpos presentes.
 
 ## Próximo recorte
 
 1. Conferir main/backup/PR/CI, progresso, diferenças e contratos.
-2. Auditar integralmente Bone TS/Lua do backup e dependências com TransformObject/Armature/Surface/constraints. Separar referências de dados e chamadas executáveis, sem stubs de produto.
-3. Escolher próximo recorte real do runtime a partir dessa auditoria. Manter exemplos executáveis atualizados; solvers, avaliação de timelines, factories, backend e playback seguem etapas próprias.
+2. Auditar Surface e dependências de geometria/constraints/Slot e do coordenador de animação, escolhendo o próximo recorte com objetos reais. Bone já foi auditado integralmente, mas seu ramo Surface continua sem prova.
+3. Ampliar Armature apenas quando as dependências forem reais; não improvisar Animation/slots/solvers para ativar init/advanceTime. Manter o exemplo bones e deixar a montagem manual explícita.
 4. Atualizar inventário/docs, PR/CI e integrar checkpoint autorizado. Runtime/factories/backends permanecem etapas próprias.
 
 ## Pendências
@@ -32,7 +32,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject bone; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done
