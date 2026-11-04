@@ -46,3 +46,12 @@ luajit examples/run.lua surface
 Carrega surface_ske.json, uma grade 2×2 e um osso filho, criada para esta demonstração. O filho começa em (50,50); o comando desloca o Y do vértice central em +80 e o filho passa a (50,90). Edite os vértices no JSON ou o deslocamento em run.lua para experimentar.
 
 Usa Surface, Bone, modelos importados, dados de cache e Armature parcial reais. _deformVertices usa índices Lua base 1: o Y central está em 10. A montagem de _armatureData e a alteração da deformação são manuais, sem factory, reprodução de clip ou renderização.
+
+## Dados de display e deformação
+
+```sh
+lua5.4 examples/run.lua displayframe
+luajit examples/run.lua displayframe
+```
+
+Cria uma malha com três vértices usando view Int16 real. DisplayFrame gera seis componentes de deformação. O exemplo altera Y para 12 e confirma que atualizar novamente conserva a alteração. A limpeza do frame não destrói os modelos referenciados. Este comando ainda não desenha a malha nem reproduz animação.

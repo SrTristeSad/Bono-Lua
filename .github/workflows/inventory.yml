@@ -103,10 +103,12 @@ jobs:
           node tests/transformobject_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/bone_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/surface_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/displayframe_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua inspect
           ${{ matrix.vm }} examples/run.lua transform
           ${{ matrix.vm }} examples/run.lua bones
           ${{ matrix.vm }} examples/run.lua surface
+          ${{ matrix.vm }} examples/run.lua displayframe
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4

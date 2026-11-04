@@ -1,12 +1,14 @@
 # Continuidade — Bono-Lua
 
+DisplayFrame: 2.304 cenários/32.256 colunas por VM, 192 falhas esperadas, tolerância zero; 37 suítes e cinco exemplos. Próximo recorte: classe Slot abstrata e registro real em Armature, mantendo hooks gráficos abstratos até o backend.
+
 ## Objetivo permanente
 
 Reconstruir em Lua DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e preservando arquitetura, algoritmos e comportamentos. Destino SrTristeSad/Bono-Lua. Não declarar motor completo com pendências.
 
 ## Base desta unidade
 
-main 2723c147167400204749e99d11b64a4875406367, PR #98, CI após merge 41855806671 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/surface-runtime; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
+main 265304b316a2987df5e57bd9078a27049f883ae6, PR #99, CI após merge 41860056636 aprovada. Backup backup/pre-integral-rebuild-20261103 em cd4206a8ac091b1b26ad02b9ee4bc6ec7f30eeeb. Branch port/display-frame; consultar PR para SHA/merge/evidência final. Autorização do proprietário mantém main acompanhando checkpoints testados.
 
 ## Unidade implementada
 
@@ -32,7 +34,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 node tools/inventory.js ../DragonBonesJS --check
 node tools/dependencies.js ../DragonBonesJS --check
 for vm in lua5.4 luajit; do
-  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject bone surface; do
+  for suite in geom math baseobject models worldclock events config animationdata displaydata armaturedata constraintdata skindata dragonbonesdata boundingbox dataparser objectatlas structural geometryparser binaryarrays curveframes specialframes deformframes timelines animationparser armatureparser globalentry binaryutf8 binarytimeline binaryanimation binarygeometry binaryviews dbdt corpus transformobject bone surface displayframe; do
     node tests/${suite}_differential.js ../DragonBonesJS "$vm"
   done
 done

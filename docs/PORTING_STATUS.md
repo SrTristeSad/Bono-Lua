@@ -1,11 +1,20 @@
 # Estado da reconstrução integral
 
+## DisplayFrame — dados dos displays de Slot
+
+DisplayFrame, classe separada dentro de Slot.ts, implementada integralmente: inicializadores, toString, _onClear, updateDeformVertices, getGeometryData, getBoundingBox e getTextureData. A classe Slot abstrata permanece pendente; isso não implementa troca gráfica nem reprodução de animação.
+
+Comparação diferencial com o TS fixado executado: 2.304 cenários, 32.256 colunas e 192 falhas esperadas por VM (Lua 5.4 e LuaJIT), tolerância zero. Combina seis tipos de display bruto/substituto, quatro configurações de textura, geometria com/sem pesos, buffers vazios/esparsos/editados, repetição, contagem inválida/zero, offset inválido e dados ausentes. Compara identidades retornadas, length/holes/zeros assinados, ordem de falha, limpeza e reuso do mesmo objeto/array pelo pool. Duas mutações (ignorar deformação existente e buscar fallback após textura nula do substituto) rejeitadas; produto restaurado antes da validação final.
+
+Exemplo: `lua5.4 examples/run.lua displayframe` (ou `luajit`): malha com três vértices gera seis componentes; editar Y para 12 e atualizar novamente conserva 12. Usa modelos reais, SharedBinaryBuffer/view Int16 e pool. Ainda sem player/renderização. CI passa a 37 suítes e cinco exemplos por VM. Contrato: [DisplayFrame.md](contracts/DisplayFrame.md).
+
+
 ## Objetivo central
 
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/surface-runtime`, sobre `main@2723c147`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/display-frame`, sobre `main@265304b3`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 

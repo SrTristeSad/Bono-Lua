@@ -16,6 +16,8 @@ Ler o arquivo upstream fixado e a versão Lua antes de cada alteração. Preserv
 
 O comando completo está em [RECONSTRUCTION_SPEC.md](docs/RECONSTRUCTION_SPEC.md); a sequência de etapas, em [ROADMAP.md](docs/ROADMAP.md).
 
+DisplayFrame já seleciona dados de geometria/textura/colisão e inicializa deformações; Slot gráfico e player continuam pendentes.
+
 ## Testar agora
 
 Na raiz do repositório, com Lua 5.4 ou LuaJIT instalado:
@@ -25,6 +27,7 @@ lua5.4 examples/run.lua inspect
 lua5.4 examples/run.lua transform
 lua5.4 examples/run.lua bones
 lua5.4 examples/run.lua surface
+lua5.4 examples/run.lua displayframe
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.json 0.5
 lua5.4 examples/run.lua inspect /caminho/arquivo_ske.dbbin
 ```

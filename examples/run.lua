@@ -115,6 +115,27 @@ elseif mode == 'surface' then
   armature:returnToPool()
   data:returnToPool()
   print('Surface e limpeza concluídas. Deformação manual, sem player ou renderização.')
+elseif mode == 'displayframe' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Frame = require('dragonbones.armature.DisplayFrame')
+  local Models = require('dragonbones.model.DisplayData')
+  local Data = require('dragonbones.model.DragonBonesData')
+  local Shared = require('dragonbones.parser.SharedBinaryBuffer')
+  local data = Pool.borrowObject(Data)
+  data.intArray = Shared.view(Shared.new(string.char(3,0)),0,2,'int16')
+  local mesh = Pool.borrowObject(Models.MeshDisplayData)
+  mesh.geometry.data = data
+  local frame = Pool.borrowObject(Frame)
+  frame.rawDisplayData = mesh
+  frame:updateDeformVertices()
+  print(('Malha com 3 vértices: %d componentes de deformação'):format(frame.deformVertices.length))
+  frame.deformVertices[2] = 12
+  frame:updateDeformVertices()
+  print(('Atualizar novamente preserva a edição: Y=%g'):format(frame.deformVertices[2]))
+  frame:returnToPool()
+  mesh:returnToPool()
+  data:returnToPool()
+  print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe')
 end

@@ -176,6 +176,12 @@
       "status": "Oito corpos portados, com geometria/bone/armature parcial reais; grades regulares e deformadas, pais Bone/Surface, matriz por ponto e cache comparados. Solvers/player/backend pendentes.",
       "tests": "surface_differential: 585 cenários/38.610 consultas/26.325 colunas por VM Lua 5.4/LuaJIT, duas falhas esperadas e 41.231 comparações aproximadas de componentes derivados. Coeficientes trig até 32*epsilon*max(1,abs(expected)); coordenadas incluem escala da projeção 1000 e magnitude dos vértices/hull. Cancelamento finito pode cruzar zero; pares de zeros assinados, flags/lengths/deforms/identidade exatos. Ver SurfaceRuntime.md. Exemplo surface nas duas VMs.",
       "differences": "JSArray com length/holes e índices Lua base 1; leitura numérica undefined vira NaN. Mantém grafia _matrixCahce, hull com length inicial 10 e posterior 12, helpers compartilhados e TODO interpolation upstream. Usa atan2 do host; não troca o algoritmo para ajustar resultados."
+    },
+    "DragonBones/src/dragonBones/armature/Slot.ts": {
+      "destination": "dragonbones/armature/DisplayFrame.lua",
+      "status": "Parcial: classe DisplayFrame completa (7 corpos incluindo construtor/toString); classe Slot abstrata no mesmo TS ainda pendente.",
+      "tests": "displayframe_differential: 2.304 cenários/32.256 colunas por VM Lua 5.4/LuaJIT, 192 falhas esperadas, tolerância zero. Seleção por tipo/identidade, textura nula, peso/geometria, buffer esparso/existente, repetição e reciclagem. Exemplo displayframe usa view Int16 real.",
+      "differences": "JSArray length/holes, índices Lua base 1, null/undefined opcionais normalizados nil. Contagem ausente vira NaN e falha ao atribuir length; sem validação antecipada. Casos iniciados via pool; sem coerção genérica ou alocações enormes. Sem Slot/backend substituto."
     }
   }
 }
