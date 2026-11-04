@@ -1,6 +1,6 @@
 -- Partial port: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Helpers and binary timelines; binary overrides/entrypoint remain absent.
+-- Helpers, binary timelines and animation; geometry/arrays/entry remain absent.
 local ObjectDataParser=require('dragonbones.parser.ObjectDataParser')
 local BinaryDataParser={};BinaryDataParser.__index=BinaryDataParser
 setmetatable(BinaryDataParser,{__index=ObjectDataParser})
@@ -69,8 +69,9 @@ function BinaryDataParser:_parseBinaryTimeline(timelineType, offset, timelineDat
   timeline.offset = offset
   self._timeline = timeline
 
+  local numericOffset = V.number(offset)
   -- Typed-array misses are undefined in JS; arithmetic/comparisons use NaN.
-  local keyFrameCount = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineKeyFrameCount + 1])
+  local keyFrameCount = V.number(self._timelineArrayBuffer[numericOffset + BinaryOffset.TimelineKeyFrameCount + 1])
   if keyFrameCount == 1 then
     timeline.frameIndicesOffset = -1
   else
@@ -83,13 +84,13 @@ function BinaryDataParser:_parseBinaryTimeline(timelineType, offset, timelineDat
     local i, iK, frameStart, frameCount = 0, 0, 0, 0
     while i < totalFrameCount do
       if frameStart + frameCount <= i and iK < keyFrameCount then
-        local frameOffset = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineFrameOffset + iK + 1])
-        frameStart = V.number(self._frameArrayBuffer[self._animation.frameOffset + frameOffset + 1])
+        local frameOffset = V.number(self._timelineArrayBuffer[numericOffset + BinaryOffset.TimelineFrameOffset + iK + 1])
+        frameStart = V.number(self._frameArrayBuffer[V.number(self._animation.frameOffset) + frameOffset + 1])
         if iK == keyFrameCount - 1 then
           frameCount = self._animation.frameCount - frameStart
         else
-          local nextOffset = V.number(self._timelineArrayBuffer[offset + BinaryOffset.TimelineFrameOffset + iK + 2])
-          frameCount = V.number(self._frameArrayBuffer[self._animation.frameOffset + nextOffset + 1]) - frameStart
+          local nextOffset = V.number(self._timelineArrayBuffer[numericOffset + BinaryOffset.TimelineFrameOffset + iK + 2])
+          frameCount = V.number(self._frameArrayBuffer[V.number(self._animation.frameOffset) + nextOffset + 1]) - frameStart
         end
         iK = iK + 1
       end
@@ -100,6 +101,90 @@ function BinaryDataParser:_parseBinaryTimeline(timelineType, offset, timelineDat
   -- Preserve the source's retained timeline on failure: no finally cleanup.
   self._timeline = nil
   return timeline
+end
+
+local DataParser = require('dragonbones.parser.DataParser')
+local Core = require('dragonbones.core.Enums')
+local JSMap = require('dragonbones.core.JSMap')
+
+function BinaryDataParser:_parseAnimation(rawData)
+  local animation = Pool.borrowObject(AnimationModels.AnimationData)
+  animation.blendType = DataParser._getAnimationBlendType(ObjectDataParser._getString(rawData, DataParser.BLEND_TYPE, ''))
+  animation.frameCount = ObjectDataParser._getNumber(rawData, DataParser.DURATION, 0)
+  animation.playTimes = ObjectDataParser._getNumber(rawData, DataParser.PLAY_TIMES, 1)
+  animation.duration = animation.frameCount / self._armature.frameRate
+  animation.fadeInTime = ObjectDataParser._getNumber(rawData, DataParser.FADE_IN_TIME, 0.0)
+  animation.scale = ObjectDataParser._getNumber(rawData, DataParser.SCALE, 1.0)
+  animation.name = ObjectDataParser._getString(rawData, DataParser.NAME, DataParser.DEFAULT_NAME)
+  if #animation.name == 0 then animation.name = DataParser.DEFAULT_NAME end
+
+  local offsets = V.get(rawData, DataParser.OFFSET)
+  animation.frameIntOffset = V.at(offsets, 0)
+  animation.frameFloatOffset = V.at(offsets, 1)
+  animation.frameOffset = V.at(offsets, 2)
+  self._animation = animation
+  local TT = Core.TimelineType
+  if V.has(rawData, DataParser.ACTION) then
+    animation.actionTimeline = self:_parseBinaryTimeline(TT.Action, V.get(rawData, DataParser.ACTION))
+  end
+  if V.has(rawData, DataParser.Z_ORDER) then
+    animation.zOrderTimeline = self:_parseBinaryTimeline(TT.ZOrder, V.get(rawData, DataParser.Z_ORDER))
+  end
+
+  local groups = {
+    {DataParser.BONE, 'getBone', 'addBoneTimeline'},
+    {DataParser.SLOT, 'getSlot', 'addSlotTimeline'},
+    {DataParser.CONSTRAINT, 'getConstraint', 'addConstraintTimeline'}
+  }
+  for _, group in ipairs(groups) do
+    if V.has(rawData, group[1]) then
+      local entries = V.get(rawData, group[1])
+      -- Decoded group maps use JSMap so numeric keys and insertion order agree.
+      if entries ~= nil and not rawequal(entries, V.NULL) and not rawequal(entries, V.UNDEFINED) then
+        for _, name in ipairs(JSMap.keys(entries)) do
+          local rawTimelines = V.get(entries, name)
+          local model = self._armature[group[2]](self._armature, name)
+          if model ~= nil then
+            local i, length = 0, V.number(V.get(rawTimelines, 'length'))
+            while i < length do
+              local timeline = self:_parseBinaryTimeline(V.at(rawTimelines, i), V.at(rawTimelines, i + 1))
+              self._animation[group[3]](self._animation, model.name, timeline)
+              i = i + 2
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if V.has(rawData, DataParser.TIMELINE) then
+    for rawTimeline in V.iterator(V.get(rawData, DataParser.TIMELINE)) do
+      local offset = ObjectDataParser._getNumber(rawTimeline, DataParser.OFFSET, 0)
+      if offset >= 0 then
+        local kind = ObjectDataParser._getNumber(rawTimeline, DataParser.TYPE, TT.Action)
+        local name = ObjectDataParser._getString(rawTimeline, DataParser.NAME, '')
+        local timeline
+        if kind == TT.AnimationProgress and animation.blendType ~= Core.AnimationBlendType.None then
+          timeline = Pool.borrowObject(AnimationModels.AnimationTimelineData)
+          timeline.x = ObjectDataParser._getNumber(rawTimeline, DataParser.X, 0.0)
+          timeline.y = ObjectDataParser._getNumber(rawTimeline, DataParser.Y, 0.0)
+        end
+        timeline = self:_parseBinaryTimeline(kind, offset, timeline)
+        if kind == TT.BoneTranslate or kind == TT.BoneRotate or kind == TT.BoneScale or kind == TT.Surface or kind == TT.BoneAlpha then
+          animation:addBoneTimeline(name, timeline)
+        elseif kind == TT.SlotDisplay or kind == TT.SlotColor or kind == TT.SlotDeform or kind == TT.SlotZIndex or kind == TT.SlotAlpha then
+          animation:addSlotTimeline(name, timeline)
+        elseif kind == TT.IKConstraint then
+          animation:addConstraintTimeline(name, timeline)
+        elseif kind == TT.AnimationProgress or kind == TT.AnimationWeight or kind == TT.AnimationParameter then
+          animation:addAnimationTimeline(name, timeline)
+        end
+        -- Action, ZOrder and unknown generic kinds remain unregistered upstream.
+      end
+    end
+  end
+  self._animation = nil
+  return animation
 end
 
 function BinaryDataParser.getInstance()
