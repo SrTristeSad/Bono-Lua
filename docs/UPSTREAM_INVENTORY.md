@@ -464,7 +464,7 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | dragonbones/armature/IArmatureProxy.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Primeira base abstrata do runtime: inicializadores, _onClear, updateGlobalTransform e getter armature portados; Bone/Slot/Armature e playback pendentes. |
 | `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente |
 | `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
 | `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
@@ -3042,8 +3042,8 @@ Herança: extends Bone.
 ### `DragonBones/src/dragonBones/armature/TransformObject.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/armature/TransformObject.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/armature/TransformObject.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/armature/TransformObject.lua. Implementação presente nesta reconstrução.
+- Estado: Primeira base abstrata do runtime: inicializadores, _onClear, updateGlobalTransform e getter armature portados; Bone/Slot/Armature e playback pendentes.; testes: transformobject_differential: 212 cenários/8.056 colunas por VM Lua 5.4/LuaJIT, 35 falhas esperadas e 27 comparações trigonométricas aproximadas por VM. Tolerância anterior de Transform: apenas resultados trig não nulos até 8*epsilon*max(1,abs(expected)); translação, zeros e demais estados exatos. Exemplos inspect/transform executados nas duas VMs.; diferenças: Classe abstrata conserva toString abstrato herdado, sem chave concreta fictícia. Subclasses delegam __index/__newindex para getters; armature somente leitura, vetores readonly TS sem guarda runtime como JS. Campos sem inicializador permanecem nil antes do _onClear; referências opcionais null/undefined normalizadas nil. Armature é só referência opaca sem módulo/stub nesta base. Ver contracts/TransformObject.md.
 - Dependências candidatas: `Cocos/Demos/packages/dragonbones/main.js`, `Cocos/Demos/packages/dragonbones/scene.js`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/geom/Matrix.ts`, `DragonBones/src/dragonBones/geom/Point.ts`, `DragonBones/src/dragonBones/geom/Transform.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

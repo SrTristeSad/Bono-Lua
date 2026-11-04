@@ -1,0 +1,17 @@
+{
+  "version": "5.6",
+  "name": "Exemplo Bono-Lua",
+  "frameRate": 24,
+  "armature": [{
+    "name": "demo",
+    "bone": [{"name": "root"}],
+    "animation": [{
+      "name": "idle",
+      "duration": 24,
+      "bone": [{"name": "root", "translateFrame": [
+        {"duration": 12, "x": 0, "y": 0},
+        {"duration": 12, "x": 40, "y": 0}
+      ]}]
+    }]
+  }]
+}

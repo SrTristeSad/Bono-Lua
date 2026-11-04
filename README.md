@@ -16,7 +16,22 @@ Ler o arquivo upstream fixado e a versão Lua antes de cada alteração. Preserv
 
 O comando completo está em [RECONSTRUCTION_SPEC.md](docs/RECONSTRUCTION_SPEC.md); a sequência de etapas, em [ROADMAP.md](docs/ROADMAP.md).
 
+## Testar agora
+
+Na raiz do repositório, com Lua 5.4 ou LuaJIT instalado:
+
+```sh
+lua5.4 examples/run.lua inspect
+lua5.4 examples/run.lua transform
+lua5.4 examples/run.lua inspect /caminho/arquivo_ske.json 0.5
+lua5.4 examples/run.lua inspect /caminho/arquivo_ske.dbbin
+```
+
+Pode trocar `lua5.4` por `luajit`. Os exemplos não precisam de Node/npm. `inspect` lista armaduras/animações e limpa os modelos; sem caminho, usa o JSON mínimo incluído. `transform` mostra a atualização da posição e rotação a partir de uma matriz. Ainda não reproduzem animações na tela. Veja [instruções dos exemplos](examples/README.md).
+
 ## Estado atual
+
+Primeira base do runtime implementada: `TransformObject`, com comparação contra o original e demonstração executável. Ossos, slots, armaduras de runtime e reprodução continuam pendentes.
 
 Corpus upstream validado: **74 exportações esqueléticas únicas**, em 181 caminhos, importadas em duas escalas nas duas VMs. Buffers e observações do grafo coincidiram com o original, sem tolerância. Ver [cobertura](docs/contracts/UpstreamCorpus.md).
 
