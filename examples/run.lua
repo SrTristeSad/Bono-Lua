@@ -81,6 +81,40 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'surface' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Bone = require('dragonbones.armature.Bone')
+  local Surface = require('dragonbones.armature.Surface')
+  local Armature = require('dragonbones.armature.Armature')
+  local JSON = require('dragonbones.parser.JSON')
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local file = assert(io.open('examples/surface_ske.json', 'rb'))
+  local bytes = file:read('*a');file:close()
+  local data = assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model = assert(data:getArmature('surface-demo'))
+  local armature = Pool.borrowObject(Armature)
+  -- Same explicit low-level assembly; no substitute Animation or factory.
+  armature._armatureData = model
+  for i=1,model.sortedBones.length do
+    local boneData = model.sortedBones[i]
+    Pool.borrowObject(boneData.type==1 and Surface or Bone):init(boneData,armature)
+  end
+  local grid = assert(armature:getBone('grid'))
+  local attached = assert(armature:getBone('attached'))
+  local function updateAndPrint(label)
+    local bones = armature:getBones()
+    for i=1,bones.length do bones[i]:update(-1);bones[i]:_updateAlpha() end
+    attached:updateGlobalTransform()
+    print(('%s: attached x=%.3f y=%.3f'):format(label,attached.global.x,attached.global.y))
+  end
+  armature:invalidUpdate()
+  updateAndPrint('Grade sem deformação')
+  grid._deformVertices[10] = 80.0 -- Center vertex Y, Lua index 10 (JS index 9).
+  grid:invalidUpdate()
+  updateAndPrint('Centro da grade deslocado em +80 no eixo Y')
+  armature:returnToPool()
+  data:returnToPool()
+  print('Surface e limpeza concluídas. Deformação manual, sem player ou renderização.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface')
 end
