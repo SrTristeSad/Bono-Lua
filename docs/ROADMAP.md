@@ -7,7 +7,7 @@
 | 02 | Matemática: Matrix, Transform, Point, Rectangle, ColorTransform | Cinco classes implementadas e comparadas isoladamente; integração e auditoria exaustiva pendentes |
 | 03 | Core, modelos e ciclo de vida | Em andamento: BaseObject, núcleo DragonBones/enums, UserData/ActionData, AnimationConfig, AnimationData/TimelineData/AnimationTimelineData, ArmatureData/BoneData/SurfaceData/SlotData e dados de Canvas/atlas/textura/display/geometria/pesos comparados; cache AnimationData integrado com modelos reais; ConstraintData/IKConstraintData/PathConstraintData comparados com integração real; SkinData e cadeia de limpeza/getMesh comparados com modelos reais; DragonBonesData e armazenamento global/cache integrados com modelos reais; BoundingBoxData retângulo/elipse/polígono e ownership com displays reais comparados; buffers tipados e parsers pendentes |
 | 04 | Parsers JSON/DBDT | Base DataParser e 47/47 corpos de ObjectDataParser portados/comparados no domínio documentado, incluindo entrada de objetos decodificados; BinaryDataParser 8/8 corpos com entrada DBDT/JSON interno comparados no domínio documentado; 74 exportações únicas do corpus upstream comparadas; I/O, locales especiais e exportações externas pendentes |
-| 05 | Armature, Bone, Slot, Surface, TransformObject | TransformObject e Bone regulares comparados; Armature parcial de registro/ciclo de vida; Slot, Surface, Armature.init/advanceTime e integração de animação pendentes |
+| 05 | Armature, Bone, Slot, Surface, TransformObject | TransformObject, Bone e Surface comparados nos domínios documentados; Armature parcial de registro/ciclo de vida; Slot, Armature.init/advanceTime e integração de animação pendentes |
 | 06 | IKConstraint e PathConstraint | Pendente |
 | 07 | Animação, timelines, blending e eventos | WorldClock, núcleo/EventObject, configuração AnimationConfig e dados de timelines comparados; Armature, animação, listeners/backend e precisão de host pendentes |
 | 08 | BaseFactory e runtime | Pendente |
@@ -71,3 +71,9 @@ Exemplos executáveis em Lua 5.4/LuaJIT: examples/run.lua inspect importa JSON/D
 Bone portado com uma Armature parcial real de ciclo de vida/registro. Hierarquia, modos de offset, flips/yDown, quatro flags de herança, alpha, dirty flags, cache de ArmatureData/DragonBonesData reais e getters/setters comparados contra TS executado. 1.576 cenários/44.128 colunas por VM, seis falhas esperadas e 340 aproximações trig limitadas; índices/flags/zeros/offsets exatos. Ver [BoneRuntime.md](contracts/BoneRuntime.md).
 
 Comando executável examples/run.lua bones carrega dois modelos, monta dois Bone reais, gira o pai e move o filho de (40,20) para (10,50). Montagem manual com _armatureData, sem init/factory/player fictício. Surface, solvers, Slot runtime e Armature.init/advanceTime continuam pendentes. CI com 35 suítes e três exemplos por VM.
+
+## Surface e integração com Bone
+
+Surface portado com oito corpos e geometria/pool/armadura parcial reais. 585 cenários, 38.610 consultas e 26.325 colunas por VM; duas falhas esperadas. Inclui regiões central/laterais/bordas, cache hit/restauração/invalidação, deformação e cadeias de pais Bone/Surface. Não muda a tolerância da suíte Bone: a integração Surface usa orçamento próprio para trigonometria e projeção de coordenadas, registrado em [SurfaceRuntime.md](contracts/SurfaceRuntime.md).
+
+Exemplo `examples/run.lua surface`: o filho em (50,50) vai a (50,90) ao deformar o centro da grade em +80 no eixo Y. Montagem e deformação manuais, sem player/factory falso. CI com 36 suítes e quatro exemplos por VM. Slot, constraints/solvers, Armature.init/advanceTime, animação e backend continuam pendentes.

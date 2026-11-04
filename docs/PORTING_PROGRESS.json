@@ -161,8 +161,8 @@
     },
     "DragonBones/src/dragonBones/armature/Bone.ts": {
       "destination": "dragonbones/armature/Bone.lua",
-      "status": "Corpos portados; hierarquia de Bone regulares, flags, alpha e cache comparados com Armature real parcial. Surface, callbacks de Slot e execução de solvers não validados nesta unidade.",
-      "tests": "bone_differential: 1.576 cenários/44.128 colunas por VM Lua 5.4/LuaJIT, seis falhas esperadas e 340 aproximações trig por VM, até 8*epsilon*max(1,abs(expected)) somente componentes derivados; flags, índices, offset/animationPose e zeros exatos. Exemplo bones executado nas duas VMs.",
+      "status": "Corpos portados; Bone regulares e pai Surface comparados com Armature real parcial. Callbacks de Slot e execução de solvers continuam sem validação nesta unidade.",
+      "tests": "bone_differential: 1.576 cenários/44.128 colunas por VM Lua 5.4/LuaJIT, seis falhas esperadas e 340 aproximações trig por VM, até 8*epsilon*max(1,abs(expected)) somente componentes derivados; flags, índices, offset/animationPose e zeros exatos. Exemplo bones executado nas duas VMs. surface_differential integra o ramo de pai Surface com _bone ausente/presente, inclusive cadeias Bone→Surface→Surface→Bone; contrato numérico específico em SurfaceRuntime.md.",
       "differences": "Getter/setter via metamétodos; refs opcionais null/undefined mapeadas nil; arrays lógicos base 1, índices públicos de cache base 0. Negação promove para float via *1.0 para conservar -0 com zero inteiro Lua 5.4. Sem coerções/protótipos genéricos ou inteiros arbitrários fora de binary64. Ver contracts/BoneRuntime.md."
     },
     "DragonBones/src/dragonBones/armature/Armature.ts": {
@@ -170,6 +170,12 @@
       "status": "Parcial: inicializadores, toString, _onClear, _addBone/getBone/getBones/getSlots/invalidUpdate, getters name/armatureData e acessores flipX/flipY. init/advanceTime/animação/slots/clocks demais APIs ausentes.",
       "tests": "bone_differential integra registro, busca, deduplicação, flips/invalidação, ownership e limpeza com Bone/ArmatureData/DragonBonesData reais. Branches não vazios de Slot/Constraint/Animation/proxy/clock continuam sem validação nesta unidade.",
       "differences": "JSArray com length/base 1; getter readonly e flips delegam invalidUpdate. Exemplo faz montagem explícita _armatureData, sem fingir execução de Armature.init/factory. Método _onClear conserva chamadas originais às dependências futuras; não há substitutos. Ver contracts/BoneRuntime.md."
+    },
+    "DragonBones/src/dragonBones/armature/Surface.ts": {
+      "destination": "dragonbones/armature/Surface.lua",
+      "status": "Oito corpos portados, com geometria/bone/armature parcial reais; grades regulares e deformadas, pais Bone/Surface, matriz por ponto e cache comparados. Solvers/player/backend pendentes.",
+      "tests": "surface_differential: 585 cenários/38.610 consultas/26.325 colunas por VM Lua 5.4/LuaJIT, duas falhas esperadas e 41.231 comparações aproximadas de componentes derivados. Coeficientes trig até 32*epsilon*max(1,abs(expected)); coordenadas incluem escala da projeção 1000 e magnitude dos vértices/hull. Cancelamento finito pode cruzar zero; pares de zeros assinados, flags/lengths/deforms/identidade exatos. Ver SurfaceRuntime.md. Exemplo surface nas duas VMs.",
+      "differences": "JSArray com length/holes e índices Lua base 1; leitura numérica undefined vira NaN. Mantém grafia _matrixCahce, hull com length inicial 10 e posterior 12, helpers compartilhados e TODO interpolation upstream. Usa atan2 do host; não troca o algoritmo para ajustar resultados."
     }
   }
 }

@@ -35,3 +35,14 @@ Carrega bones_ske.json (fixture criado neste projeto) e usa Bone, Armature parci
 Também aceita um JSON esquelético com ossos regulares: `lua5.4 examples/run.lua bones /caminho/arquivo_ske.json`. Usa a primeira armadura e gira seu primeiro osso em 90°. Surface é recusado explicitamente.
 
 É uma montagem manual de baixo nível: atribui _armatureData à armadura e chama Bone.init/update diretamente. Armature.init/advanceTime, animação, slots e factory completos ainda não estão disponíveis. O exemplo não substitui esses métodos por simuladores nem reproduz um clip.
+
+## Grade deformável
+
+```sh
+lua5.4 examples/run.lua surface
+luajit examples/run.lua surface
+```
+
+Carrega surface_ske.json, uma grade 2×2 e um osso filho, criada para esta demonstração. O filho começa em (50,50); o comando desloca o Y do vértice central em +80 e o filho passa a (50,90). Edite os vértices no JSON ou o deslocamento em run.lua para experimentar.
+
+Usa Surface, Bone, modelos importados, dados de cache e Armature parcial reais. _deformVertices usa índices Lua base 1: o Y central está em 10. A montagem de _armatureData e a alteração da deformação são manuais, sem factory, reprodução de clip ou renderização.

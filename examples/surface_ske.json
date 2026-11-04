@@ -1,0 +1,13 @@
+{
+  "version": "5.6",
+  "name": "Surface Bono-Lua",
+  "frameRate": 24,
+  "armature": [{
+    "name": "surface-demo",
+    "bone": [
+      {"name": "grid", "type": "surface", "segmentX": 2, "segmentY": 2,
+       "vertices": [-200,-200, 0,-200, 200,-200, -200,0, 0,0, 200,0, -200,200, 0,200, 200,200]},
+      {"name": "attached", "parent": "grid", "transform": {"x": 50, "y": 50}}
+    ]
+  }]
+}
