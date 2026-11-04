@@ -33,3 +33,5 @@ _animation só é solta no sucesso. Erros mantêm maps, arrays/holes, caches/con
 Prova: tests/animationparser_differential.{js,lua}, 172 cenários/15.997 operações/447.916 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 28 exceções esperadas, 194 chamadas genuínas. Todos os tipos, blends/frames vazios/um/vários, metadados, fases de ações, busca em skins e órfãos; AnimationData/AnimationTimelineData/timelines/SurfaceData/pesos/poses/constraints/maps/pool/bytes reais. NaN Float32 normalizado somente no snapshot conforme contrato anterior. Transcript usa limite 128 MiB/30s por volume, sem tolerância nova.
 
 Estado 45/47; _parseArmature e parseDragonBonesData ausentes. Não importa arquivo global/JSON texto/DBDT completos e não implementa motor/blending/playback/renderização. TODOs upstream, domínio JSON-like/tipos TS, locales/reflexão/coerções/plataforma anteriores continuam explícitos.
+
+Unidade posterior: _parseArmature está em [ArmatureParser.md](ArmatureParser.md), registrando esses AnimationData na ordem original. Estado atual 46/47; parseDragonBonesData permanece ausente. Os totais históricos acima não incluem essa unidade.

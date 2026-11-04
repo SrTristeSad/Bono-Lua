@@ -2,7 +2,7 @@
 -- 64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
 -- Implemented: atlas, structures, geometry, binary views, curves and frame serializers.
--- Armature/global entrypoints remain absent; see docs/NEXT_STEPS.md.
+-- Global parseDragonBonesData remains absent; see docs/NEXT_STEPS.md.
 local DataParser=require('dragonbones.parser.DataParser')
 local V=require('dragonbones.parser.JSValue')
 local Shared=require('dragonbones.parser.SharedBinaryBuffer')
@@ -548,6 +548,169 @@ function ObjectDataParser:_parseTimeline(rawData,rawFrames,framesKey,timelineTyp
   end
   self._timeline=nil
   return timeline
+end
+
+local CanvasData=require('dragonbones.model.CanvasData')
+function ObjectDataParser:_parseArmature(rawData,scale)
+  local armature=Pool.borrowObject(ArmatureModels.ArmatureData)
+  armature.name=ObjectDataParser._getString(rawData,DataParser.NAME,"")
+  armature.frameRate=ObjectDataParser._getNumber(
+    rawData,DataParser.FRAME_RATE,self._data.frameRate)
+  armature.scale=scale
+  if type(V.get(rawData,DataParser.TYPE))=="string" then
+    armature.type=DataParser._getArmatureType(rawData[DataParser.TYPE])
+  else
+    armature.type=ObjectDataParser._getNumber(
+      rawData,DataParser.TYPE,Core.ArmatureType.Armature)
+  end
+  if armature.frameRate==0 then armature.frameRate=24 end
+  self._armature=armature
+
+  if V.has(rawData,DataParser.CANVAS) then
+    local rawCanvas=rawData[DataParser.CANVAS]
+    local canvas=Pool.borrowObject(CanvasData)
+    canvas.hasBackground=V.has(rawCanvas,DataParser.COLOR)
+    canvas.color=ObjectDataParser._getNumber(rawCanvas,DataParser.COLOR,0)
+    canvas.x=ObjectDataParser._getNumber(rawCanvas,DataParser.X,0)*armature.scale
+    canvas.y=ObjectDataParser._getNumber(rawCanvas,DataParser.Y,0)*armature.scale
+    canvas.width=ObjectDataParser._getNumber(
+      rawCanvas,DataParser.WIDTH,0)*armature.scale
+    canvas.height=ObjectDataParser._getNumber(
+      rawCanvas,DataParser.HEIGHT,0)*armature.scale
+    armature.canvas=canvas
+  end
+
+  if V.has(rawData,DataParser.AABB) then
+    local aabb=rawData[DataParser.AABB]
+    armature.aabb.x=ObjectDataParser._getNumber(
+      aabb,DataParser.X,0)*armature.scale
+    armature.aabb.y=ObjectDataParser._getNumber(
+      aabb,DataParser.Y,0)*armature.scale
+    armature.aabb.width=ObjectDataParser._getNumber(
+      aabb,DataParser.WIDTH,0)*armature.scale
+    armature.aabb.height=ObjectDataParser._getNumber(
+      aabb,DataParser.HEIGHT,0)*armature.scale
+  end
+
+  if V.has(rawData,DataParser.BONE) then
+    for rawBone in V.iterator(V.get(rawData,DataParser.BONE)) do
+      local parentName=ObjectDataParser._getString(
+        rawBone,DataParser.PARENT,"")
+      local bone=self:_parseBone(rawBone)
+      if #parentName>0 then
+        local parent=armature:getBone(parentName)
+        if parent~=nil then
+          bone.parent=parent
+        else
+          if self._cacheBones[parentName]==nil then
+            self._cacheBones[parentName]=JSArray.new()
+          end
+          local pending=self._cacheBones[parentName]
+          pending[pending.length+1]=bone
+        end
+      end
+      local waiting=self._cacheBones[bone.name]
+      if waiting~=nil then
+        local j=1;while j<=waiting.length do waiting[j].parent=bone;j=j+1 end
+        JSMap.remove(self._cacheBones,bone.name)
+      end
+      armature:addBone(bone)
+      self._rawBones[self._rawBones.length+1]=bone
+    end
+  end
+
+  if V.has(rawData,DataParser.IK) then
+    for rawIK in V.iterator(V.get(rawData,DataParser.IK)) do
+      local constraint=self:_parseIKConstraint(rawIK)
+      if constraint~=nil then armature:addConstraint(constraint) end
+    end
+  end
+  armature:sortBones()
+
+  if V.has(rawData,DataParser.SLOT) then
+    local zOrder=0
+    for rawSlot in V.iterator(V.get(rawData,DataParser.SLOT)) do
+      local current=zOrder;zOrder=zOrder+1
+      armature:addSlot(self:_parseSlot(rawSlot,current))
+    end
+  end
+  if V.has(rawData,DataParser.SKIN) then
+    for rawSkin in V.iterator(V.get(rawData,DataParser.SKIN)) do
+      armature:addSkin(self:_parseSkin(rawSkin))
+    end
+  end
+  if V.has(rawData,DataParser.PATH_CONSTRAINT) then
+    for rawPath in V.iterator(V.get(rawData,DataParser.PATH_CONSTRAINT)) do
+      local constraint=self:_parsePathConstraint(rawPath)
+      if constraint~=nil then armature:addConstraint(constraint) end
+    end
+  end
+
+  -- The upstream source uses getMesh(skinName, "", shareName) with a
+  -- TODO about slot selection. Retain that behavior even if it misses a mesh.
+  local count=self._cacheRawMeshes.length
+  for i=1,count do
+    local rawMesh=self._cacheRawMeshes[i]
+    local shareName=ObjectDataParser._getString(
+      rawMesh,DataParser.SHARE,"")
+    if #shareName>0 then
+      local skinName=ObjectDataParser._getString(
+        rawMesh,DataParser.SKIN,DataParser.DEFAULT_NAME)
+      if #skinName==0 then skinName=DataParser.DEFAULT_NAME end
+      local shared=armature:getMesh(skinName,"",shareName)
+      if shared~=nil then
+        self._cacheMeshes[i].geometry:shareFrom(shared.geometry)
+      end
+    end
+  end
+
+  if V.has(rawData,DataParser.ANIMATION) then
+    for rawAnimation in V.iterator(V.get(rawData,DataParser.ANIMATION)) do
+      local animation=self:_parseAnimation(rawAnimation)
+      armature:addAnimation(animation)
+    end
+  end
+
+  if V.has(rawData,DataParser.DEFAULT_ACTIONS) then
+    local actions=self:_parseActionData(
+      rawData[DataParser.DEFAULT_ACTIONS],Core.ActionType.Play,nil,nil)
+    local i=1
+    while i<=actions.length do
+      local action=actions[i];i=i+1
+      armature:addAction(action,true)
+      if action.type==Core.ActionType.Play then
+        local animation=armature:getAnimation(action.name)
+        if animation~=nil then armature.defaultAnimation=animation end
+      end
+    end
+  end
+  if V.has(rawData,DataParser.ACTIONS) then
+    local actions=self:_parseActionData(
+      rawData[DataParser.ACTIONS],Core.ActionType.Play,nil,nil)
+    local i=1
+    while i<=actions.length do
+      local action=actions[i];i=i+1
+      armature:addAction(action,false)
+    end
+  end
+
+  self._rawBones.length=0
+  self._cacheRawMeshes.length=0
+  self._cacheMeshes.length=0
+  self._armature=nil
+  for _,key in ipairs(JSMap.keys(self._weightSlotPose)) do
+    JSMap.remove(self._weightSlotPose,key)
+  end
+  for _,key in ipairs(JSMap.keys(self._weightBonePoses)) do
+    JSMap.remove(self._weightBonePoses,key)
+  end
+  for _,key in ipairs(JSMap.keys(self._cacheBones)) do
+    JSMap.remove(self._cacheBones,key)
+  end
+  for _,key in ipairs(JSMap.keys(self._slotChildActions)) do
+    JSMap.remove(self._slotChildActions,key)
+  end
+  return armature
 end
 
 function ObjectDataParser:_parseAnimation(rawData)

@@ -5,7 +5,7 @@
 Reconstruir o Bono-Lua em Lua a partir do DragonBonesJS oficial, seguindo sua arquitetura, algoritmos e comportamentos. A meta é equivalência funcional integral demonstrada por comparação com o original executado. Não substituir o motor por uma implementação própria nem declarar 100% sem auditoria e testes de todo o escopo.
 
 Fonte única: DragonBones/DragonBonesJS@`64b6c69ae35777c2404be68c9192e2c56906079e`.
-Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-animation`, sobre `main@0d285da`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
+Destino único: SrTristeSad/Bono-Lua. Trabalho atual: `port/parser-armature`, sobre `main@63b9b12`. Checkpoints anteriores integrados com CI aprovada; não implica completude.
 
 ## Etapa 00 — concluída
 
@@ -360,3 +360,14 @@ AnimationData real é criado pelo parser, com metadados/duração e offsets capt
 172 cenários/15.997 operações/447.916 colunas por VM Lua 5.4/LuaJIT, zero tolerância e 28 exceções esperadas; 194 chamadas genuínas. Todos os tipos legado/genérico, modelos/frames/actions/meshes/SurfaceData/constraints/timelines/pool/bytes reais. Não se injeta resultado de animação ou dispatcher falso. 24 suítes na CI; NaN Float32 normalizado apenas no snapshot conforme contrato anterior. Ver contracts/AnimationParser.md e VALIDATION.md; consultar PR para SHA/CI/merge.
 
 TODOs upstream de Action/ZOrder genéricos, SlotDisplay genérico e deform ponderado continuam literais; formatos de rotação/IK usam codecs diferentes entre legado/genérico. Importar dados de AnimationData não implementa playback/blending, motor de armadura ou renderização. Próximo recorte: _parseArmature com ordem de modelos/meshes compartilhadas e estados completos, antes do entrypoint global.
+
+
+## _parseArmature — estado atual
+
+Base main 63b9b1286af24296e1bcc4b38d5d71eadc01fdf1, PR #87/CI pós-merge 41752378133 e backup cd4206a8 conferidos. Método TS integral e Lua do backup auditados. **46/47 métodos; parseDragonBonesData ausente.** Este total sucede os checkpoints históricos.
+
+Cria ArmatureData real e integra metadados/frameRate/scale, CanvasData/aabb, parentes futuros e ordem raw de bones, IK/sort, slots/skins/path, links compartilhados, animações e ações/defaultAnimation. Link usa getMesh(skinName,"",shareName), mantendo TODO de slot vazio. Última ação Play com animação encontrada substitui defaultAnimation. Caches/listas só limpam no sucesso; erros conservam contexto/modelos/órfãos e buffers anteriores. Não registra automaticamente a armadura no contêiner global.
+
+79 cenários/3.670 operações/113.770 colunas por VM Lua 5.4/LuaJIT, zero tolerância, 24 exceções esperadas e 83 chamadas genuínas. 17 arquivos TS emitidos, incluindo CanvasData real; cadeia completa de modelos/frames/timelines/weights/poses/constraints/skins/ações/pool/bytes. 25 suítes na CI. Somente NaN Float32 normalizado no snapshot, conforme contrato anterior. Ver contracts/ArmatureParser.md e VALIDATION.md; consultar PR para SHA/CI/merge.
+
+Próximo recorte: parseDragonBonesData com versões/compatibilidade, múltiplas armaduras/ownership, stage/atlas e buffers. Construção de ArmatureData não cria runtime Armature nem implementa playback/solvers/renderização/importação JSON texto/DBDT completos. Loops patológicos e TODOs upstream/limites anteriores continuam explícitos.

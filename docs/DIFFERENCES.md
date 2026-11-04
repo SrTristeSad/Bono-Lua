@@ -235,3 +235,14 @@ Mantida ordem frame actions→zOrder→bone→slot→FFD→IK→actionTimeline/c
 Blend AnimationProgress aloca AnimationTimelineData antes de ler x/y e de parsear frames; erro parcial ou frames vazios deixam objeto órfão, sem returnToPool extra. Busca SlotDeform usa JSMap.keys em skins/displays, não pairs do backup; só quebra o loop de displays, continuando slots/skins e mantendo o último match. SkinData.NULL é null; undefined presente pode falhar em display.name. Geometry ausente continua undefined, não é convertida para null no produto. Surface bone não é validado como classe adicional pelo upstream.
 
 _animation só é limpa no sucesso. Maps de timelines, ações já consumidas, reservas/caches/contexto e objetos alocados permanecem após erros; nova animação continua dos arrays/caches existentes, sem reset inventado. O método retorna AnimationData sem registrá-lo na armadura (responsabilidade do futuro _parseArmature). Contrato AnimationParser.md. Demais limites/NaN normalizado só no snapshot e TODO ponderado do deform genérico permanecem.
+
+
+## Orquestração de _parseArmature
+
+CanvasData é dependência real. Metadados antecedem _armature; canvas é alocado antes de consultar cor/campos, mas só atribuído após todos os valores; erro pode deixá-lo órfão. Aabb é alterado progressivamente. FrameRate zero vira 24, demais valores mantidos. Scale segue parâmetro numérico TS, sem default novo.
+
+Bone parents posteriores usam JSMap de arrays JSArray, resolvidos antes de addBone/rawBones.push. Mantida ordem de _rawBones e duplicatas/órfãos; sortBones após IK, antes de slots/skins/path. Parent ausente continua nil após sort e cache é limpo só no sucesso. Ciclos/parents patológicos podem não terminar no sort original; não há reparo inventado. Slots recebem zOrder sequencial, sem sort adicional por zIndex.
+
+Meshes compartilhados são ligados depois de skins/path e antes de animações, usando comprimento capturado de _cacheRawMeshes e índices paralelos. Slot vazio literal no getMesh é TODO upstream: compartilhar só funciona quando a busca nesse slot encontra o display; não procurar automaticamente em todos os slots. GeometryData.shareFrom real preserva ownership/peso/offset e flag de compartilhamento. Animações são criadas e registradas antes de ações padrão; cada Play válido pode substituir defaultAnimation, prevalecendo o último.
+
+Só sucesso limpa lengths rawBones/cacheMeshes/cacheRawMeshes, solta _armature e remove membros de quatro mapas sem trocar identidades; exceção conserva tudo que já ocorreu. Nova chamada pode usar contexto/caches deixados pelo erro, como no original. Métodos de arrays traduzem ES5 indexed/live length; mapas usam JSMap.remove/keys, não pairs/# do backup. Não chama _parseArray, _modifyArray ou data.addArmature automaticamente. Contrato ArmatureParser.md; entrada global/runtime permanecem pendentes.
