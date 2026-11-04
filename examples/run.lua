@@ -81,6 +81,66 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'slottimeline' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Slot = require('dragonbones.armature.Slot')
+  local Bone = require('dragonbones.armature.Bone')
+  local Armature = require('dragonbones.armature.Armature')
+  local Timelines = require('dragonbones.animation.SlotTimelineState')
+  local Blend = require('dragonbones.animation.BlendState')
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local JSON = require('dragonbones.parser.JSON')
+  -- Abstract display hooks only: this observer draws no graphics.
+  local Observer = {__newindex=Slot.__newindex}
+  Observer.__index=function(self,key) return rawget(Observer,key) or Slot.__index(self,key) end
+  setmetatable(Observer,{__index=Slot})
+  function Observer.toString() return '[example.SlotTimelineObserver]' end
+  function Observer.new() return Slot.new(Observer) end
+  function Observer:_initDisplay() end
+  function Observer:_disposeDisplay() end
+  function Observer:_onUpdateDisplay() end
+  function Observer:_addDisplay() end
+  local file=assert(io.open('examples/slottimeline_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('demo');local animation=model:getAnimation('change')
+  local armature=Pool.borrowObject(Armature);armature._armatureData=model
+  Pool.borrowObject(Bone):init(model:getBone('root'),armature)
+  local slot=Pool.borrowObject(Observer);slot:init(model:getSlot('slot'),armature,nil,nil)
+  slot.displayFrameCount=2
+  slot:replaceRawDisplayData(model.defaultSkin:getDisplay('slot','first'),0)
+  slot:replaceRawDisplayData(model.defaultSkin:getDisplay('slot','second'),1)
+  -- Manual input fields until AnimationState/Animation are implemented.
+  local state={animationData=animation,_position=0,_duration=animation.duration,
+    playTimes=0,currentPlayTimes=0,_playheadState=3,layer=0,_weightResult=1,
+    _fadeState=0,_subFadeState=0,_fadeProgress=1}
+  local classes={[20]=Timelines.SlotDisplayTimelineState,[21]=Timelines.SlotColorTimelineState,
+    [23]=Timelines.SlotZIndexTimelineState,[24]=Timelines.AlphaTimelineState}
+  local samplers,blends={},{}
+  local timelines=animation:getSlotTimelines('slot')
+  for i=1,timelines.length do
+    local td=timelines[i];local sample=Pool.borrowObject(classes[td.type])
+    if td.type==23 or td.type==24 then
+      local blend=Pool.borrowObject(Blend);blend.target=slot;sample.target=blend
+      blends[sample]=blend
+    else sample.target=slot end
+    sample:init(armature,state,td);samplers[#samplers+1]=sample
+  end
+  for _,time in ipairs({0,.25,.5,.75}) do
+    for _,sample in ipairs(samplers) do
+      sample:update(time)
+      local blend=blends[sample]
+      if blend then blend:reset();if blend:update(state) then sample:blend(true) end end
+    end
+    print(('Slot t=%.2f: display=%d vermelho=%.3f alpha=%.3f z=%.3f'):format(
+      time,slot.displayIndex,slot._colorTransform.redMultiplier,slot._alpha,slot._zIndex))
+  end
+  for _,sample in ipairs(samplers) do
+    if blends[sample] then blends[sample]:returnToPool() end
+    sample:returnToPool()
+  end
+  armature:returnToPool();data:returnToPool()
+  print('Timelines de slot concluídas. Tempo manual, sem player ou renderer.')
 elseif mode == 'timeline' or mode == 'bonetimeline' then
   local Pool = require('dragonbones.core.BaseObject')
   local Base = require('dragonbones.animation.BaseTimelineState').DoubleValueTimelineState
@@ -408,5 +468,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline')
 end

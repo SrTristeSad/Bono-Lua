@@ -1,0 +1,113 @@
+{
+  "version": "5.6",
+  "name": "Slot timelines Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "demo",
+      "bone": [
+        {
+          "name": "root"
+        }
+      ],
+      "slot": [
+        {
+          "name": "slot",
+          "parent": "root"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "slot",
+              "display": [
+                {
+                  "name": "first"
+                },
+                {
+                  "name": "second"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "animation": [
+        {
+          "name": "change",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 20,
+              "name": "slot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "type": 21,
+              "name": "slot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": {
+                    "rM": 100
+                  }
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": {
+                    "rM": 20
+                  }
+                }
+              ]
+            },
+            {
+              "type": 24,
+              "name": "slot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.2
+                }
+              ]
+            },
+            {
+              "type": 23,
+              "name": "slot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 4
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
