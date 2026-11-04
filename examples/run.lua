@@ -81,6 +81,51 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'path' then
+  local Pool = require('dragonbones.core.BaseObject')
+  local Bone = require('dragonbones.armature.Bone')
+  local Slot = require('dragonbones.armature.Slot')
+  local Armature = require('dragonbones.armature.Armature')
+  local Path = require('dragonbones.armature.PathConstraint')
+  local Parser = require('dragonbones.parser.ObjectDataParser')
+  local JSON = require('dragonbones.parser.JSON')
+  -- Local observer supplies abstract display hooks, without a renderer.
+  local Observer = {__newindex=Slot.__newindex}
+  Observer.__index = function(self,key) return rawget(Observer,key) or Slot.__index(self,key) end
+  setmetatable(Observer,{__index=Slot})
+  function Observer.toString() return '[example.PathSlotObserver]' end
+  function Observer.new() return Slot.new(Observer) end
+  function Observer:_initDisplay() end
+  function Observer:_disposeDisplay() end
+  function Observer:_onUpdateDisplay() end
+  function Observer:_addDisplay() end
+  local file = assert(io.open('examples/path_ske.json','rb'))
+  local bytes = file:read('*a');file:close()
+  local data = assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model = data:getArmature('arm')
+  local armature = Pool.borrowObject(Armature)
+  armature._armatureData = model -- Manual assembly until factory/Animation exist.
+  for i=1,model.sortedBones.length do
+    local bone = Pool.borrowObject(Bone)
+    bone:init(model.sortedBones[i],armature);bone:update(-1)
+  end
+  local slot = Pool.borrowObject(Observer)
+  slot:init(model:getSlot('path'),armature,nil,nil)
+  slot.displayFrameCount = 1
+  slot:replaceRawDisplayData(model.defaultSkin:getDisplay('path','curve'),0)
+  slot:_setDisplayIndex(0);slot:_updateDisplayData()
+  local constraint = Pool.borrowObject(Path)
+  constraint:init(model:getConstraint('follow'),armature)
+  armature:_addConstraint(constraint)
+  for _,position in ipairs({.25,.5,.75}) do
+    constraint.position,constraint.dirty = position,true
+    armature:invalidUpdate()
+    for i=1,armature:getBones().length do armature:getBones()[i]:update(-1) end
+    local a,b = armature:getBone('a').globalTransformMatrix,armature:getBone('b').globalTransformMatrix
+    print(('Path %.0f%%: a=(%.3f,%.3f) b=(%.3f,%.3f)'):format(position*100,a.tx,a.ty,b.tx,b.ty))
+  end
+  armature:returnToPool();data:returnToPool()
+  print('Path e limpeza concluídos. Curva ponderada, montagem manual, sem player ou renderer.')
 elseif mode == 'ik' then
   local Pool = require('dragonbones.core.BaseObject')
   local Bone = require('dragonbones.armature.Bone')
@@ -314,5 +359,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path')
 end

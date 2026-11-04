@@ -1,5 +1,12 @@
 # Decisões rastreáveis
 
+## PathConstraint — curva e seguidores
+
+Portado o corpo de PathConstraint para módulo próprio, completando as três classes de Constraint.ts no domínio documentado. Parser/modelos/Bone/Slot/Armature reais; preservados loops, buffers incompletos e TODOs originais. Teste diferencial: 2.851 cenários, 8.553 etapas, 193.868 colunas e 33 erros esperados por VM Lua 5.4/LuaJIT. Precisão e limites em [PathConstraint.md](contracts/PathConstraint.md). CI passa a executar 42 suítes e dez exemplos por VM.
+
+Teste sem dependências JS: `lua5.4 examples/run.lua path` ou `luajit examples/run.lua path`. Dois ossos seguem a curva em 25%, 50% e 75%. Montagem manual, sem player ou renderer; Animation, Armature completa, factories e backends permanecem pendentes. Esta atualização substitui as indicações históricas de Path pendente abaixo.
+
+
 ## Constraint/IKConstraint — solver real
 
 Implementadas a base abstrata Constraint e a classe IKConstraint, em módulos separados, com _addConstraint original em Armature. Bone.update já chama o solver real pelo registro, incluindo updateByConstraint e cache. PathConstraint do mesmo TS ainda está pendente; scaleEnabled permanece TODO sem comportamento como no pin. Não há Animation/factory/renderer substitutos.

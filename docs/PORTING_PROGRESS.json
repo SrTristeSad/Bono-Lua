@@ -185,9 +185,9 @@
     },
     "DragonBones/src/dragonBones/armature/Constraint.ts": {
       "destination": "dragonbones/armature/Constraint.lua",
-      "status": "Parcial: base Constraint e IKConstraint completos em módulos separados. PathConstraint, terceiro tipo do mesmo TS, ainda pendente; sem solver falso.",
-      "tests": "ik_differential: 15.404 cenários/46.212 etapas/955.048 colunas por VM Lua 5.4/LuaJIT; 32 exceções de etapas esperadas e 25.355 aproximações locais de componentes derivados. Bone/Armature/modelos/cache/pool reais; um/dois ossos, espelhamentos, pesos, alvos alcançáveis/inalcançáveis/degenerados. Exemplo ik importado de JSON. Ver IKConstraint.md.",
-      "differences": "Classes/metatables/new, nome somente leitura, refs opcionais null/undefined normalizadas nil. Negações promovem zero inteiro via *1.0. Mantém scaleEnabled como TODO sem comportamento. Orçamento IK específico: coordenadas 8 eps com escala geométrica; coeficientes/pose até 8 eps vezes ganho de condicionamento limitado a 8 (máximo 64 eps). Flags/refs/índices/zeros exatos. Nenhum budget anterior alterado."
+      "status": "Corpos Constraint/IKConstraint/PathConstraint portados em módulos separados; domínio validado nos contratos, integração completa pendente.",
+      "tests": "ik_differential: 15.404 cenários/46.212 etapas/955.048 colunas por VM Lua 5.4/LuaJIT; 32 exceções de etapas esperadas e 25.355 aproximações locais de componentes derivados. Bone/Armature/modelos/cache/pool reais; um/dois ossos, espelhamentos, pesos, alvos alcançáveis/inalcançáveis/degenerados. Exemplo ik importado de JSON. Ver IKConstraint.md. Path: 2.851 cenários/8.553 etapas/193.868 colunas/33 erros esperados por VM; exemplo path via Bone.update. Ver PathConstraint.md.",
+      "differences": "Classes/metatables/new, nome somente leitura, refs opcionais null/undefined normalizadas nil. Negações promovem zero inteiro via *1.0. Mantém scaleEnabled como TODO sem comportamento. Orçamento IK específico: coordenadas 8 eps com escala geométrica; coeficientes/pose até 8 eps vezes ganho de condicionamento limitado a 8 (máximo 64 eps). Flags/refs/índices/zeros exatos. Nenhum budget anterior alterado. Path mantém TODOs/buracos/undefined/NaN/loops/segmentos sticky; budgets específicos no contrato."
     }
   }
 }
