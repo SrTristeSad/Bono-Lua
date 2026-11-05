@@ -115,6 +115,7 @@ jobs:
           node tests/deformationtimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/constraintorder_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/actiontimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/animationcontrol_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua inspect
           ${{ matrix.vm }} examples/run.lua transform
           ${{ matrix.vm }} examples/run.lua bones
@@ -131,6 +132,7 @@ jobs:
           ${{ matrix.vm }} examples/run.lua deformationtimeline
           ${{ matrix.vm }} examples/run.lua constraintorder
           ${{ matrix.vm }} examples/run.lua actiontimeline
+          ${{ matrix.vm }} examples/run.lua animationcontrol
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4
