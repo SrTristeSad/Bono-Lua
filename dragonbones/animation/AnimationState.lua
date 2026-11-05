@@ -1,9 +1,12 @@
 -- Partial AnimationState from AnimationState.ts; real lifecycle/seek/weight APIs.
 -- DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e; MIT.
--- advanceTime and automatic bone/slot/constraint timeline construction remain absent.
+-- Original AnimationState bodies; Animation facade and Armature orchestration remain separate.
 local BaseObject=require('dragonbones.core.BaseObject')
 local Core=require('dragonbones.core.Enums')
 local Array=require('dragonbones.core.JSArray')
+local Map=require('dragonbones.core.JSMap')
+local BlendState=require('dragonbones.animation.BlendState')
+local Binary=Core.BinaryOffset
 local AnimationState={}
 setmetatable(AnimationState,{__index=BaseObject})
 local function each(a)
@@ -46,17 +49,29 @@ local function erase(a,value)
   end
   return false
 end
-local function borrowTimeline(name,target,armature,state,data,into)
-  local class
-  if name=='ActionTimelineState'then class=require('dragonbones.animation.ActionTimelineState')
-  elseif name=='ZOrderTimelineState'then class=require('dragonbones.animation.ConstraintOrderTimelineState').ZOrderTimelineState
-  else class=require('dragonbones.animation.AnimationTimelineState')[name]end
-  local timeline=BaseObject.borrowObject(class)
+local timelineClasses
+local function borrowTimeline(name,target,armature,state,data,into,pose,frame)
+  if timelineClasses==nil then
+    timelineClasses={ActionTimelineState=require('dragonbones.animation.ActionTimelineState')}
+    for _,module in ipairs({'BoneTimelineState','SlotTimelineState','DeformationTimelineState',
+        'ConstraintOrderTimelineState','AnimationTimelineState'})do
+      for key,class in pairs(require('dragonbones.animation.'..module))do timelineClasses[key]=class end
+    end
+  end
+  local timeline=BaseObject.borrowObject(timelineClasses[name])
   if target~=nil then timeline.target=target end
+  if frame~=nil then timeline.displayFrame=frame end
   timeline:init(armature,state,data)
   if into~=nil then into[into.length+1]=timeline end
+  if pose~=nil then pose[pose.length+1]=timeline end
   return timeline
 end
+local function addMap(map,key,item)
+  if map[key]==nil then map[key]=Array.new()end
+  local a=map[key];a[a.length+1]=item
+end
+local function getZeroBased(a,i)return number(a[i+1])end
+local function jsFloor(value)if value==0 then return value end;return math.floor(value)end
 function AnimationState.toString()return '[class dragonBones.AnimationState]'end
 function AnimationState.new()
   local self=BaseObject.new(AnimationState)
@@ -399,4 +414,338 @@ function AnimationState:activeTimeline()
     timeline.currentTime=-1.0
   end
 end
+function AnimationState:_updateTimelines()
+  for _,constraint in each(self._armature._constraints) do
+    local data=self._animationData:getConstraintTimelines(constraint.name)
+    if data~=nil then
+      for _,entry in each(data) do
+        if entry.type==Type.IKConstraint then
+          borrowTimeline("IKConstraintTimelineState",constraint,self._armature,self,entry,self._constraintTimelines)
+        end
+      end
+    elseif self.resetToPose then
+      borrowTimeline("IKConstraintTimelineState",constraint,self._armature,self,nil,
+        self._constraintTimelines,self._poseTimelines)
+    end
+  end
+end
+
+function AnimationState:_updateBoneAndSlotTimelines()
+  do
+    local existing=Map.new()
+    for _,timeline in each(self._boneTimelines) do
+      addMap(existing,timeline.target.target.name,timeline)
+    end
+    for _,timeline in each(self._boneBlendTimelines) do
+      addMap(existing,timeline.target.target.name,timeline)
+    end
+    for _,bone in each(self._armature:getBones()) do
+      local name=bone.name
+      if self:containsBoneMask(name) then
+        if existing[name]~=nil then
+          Map.remove(existing,name)
+        else
+          local datas=self._animationData:getBoneTimelines(name)
+          local blend=self._armature.animation:getBlendState(BlendState.BONE_TRANSFORM,name,bone)
+          if datas~=nil then
+            for _,data in each(datas) do
+              local clazz={
+                [Type.BoneAll]="BoneAllTimelineState",
+                [Type.BoneTranslate]="BoneTranslateTimelineState",
+                [Type.BoneRotate]="BoneRotateTimelineState",
+                [Type.BoneScale]="BoneScaleTimelineState",
+              }
+              local nameOfClass=clazz[data.type]
+              if nameOfClass~=nil then
+                borrowTimeline(nameOfClass,blend,self._armature,self,data,self._boneTimelines)
+              elseif data.type==Type.BoneAlpha then
+                borrowTimeline("AlphaTimelineState",
+                  self._armature.animation:getBlendState(BlendState.BONE_ALPHA,name,bone),
+                  self._armature,self,data,self._boneBlendTimelines)
+              elseif data.type==Type.Surface then
+                borrowTimeline("SurfaceTimelineState",
+                  self._armature.animation:getBlendState(BlendState.SURFACE,name,bone),
+                  self._armature,self,data,self._boneBlendTimelines)
+              end
+            end
+          elseif self.resetToPose then
+            if bone._boneData.type==Core.BoneType.Bone then
+              borrowTimeline("BoneAllTimelineState",blend,self._armature,self,nil,
+                self._boneTimelines,self._poseTimelines)
+            else
+              borrowTimeline("SurfaceTimelineState",
+                self._armature.animation:getBlendState(BlendState.SURFACE,name,bone),
+                self._armature,self,nil,self._boneBlendTimelines,self._poseTimelines)
+            end
+          end
+        end
+      end
+    end
+    for _,key in ipairs(Map.keys(existing))do
+      local group=existing[key]
+      for _,timeline in each(group) do
+        if erase(self._boneTimelines,timeline) then
+          timeline:returnToPool()
+        end
+        if erase(self._boneBlendTimelines,timeline) then
+          timeline:returnToPool()
+        end
+      end
+    end
+  end
+
+  do
+    local existing=Map.new()
+    local ffdFlags=Array.new()
+    for _,timeline in each(self._slotTimelines) do
+      addMap(existing,timeline.target.name,timeline)
+    end
+    for _,timeline in each(self._slotBlendTimelines) do
+      addMap(existing,timeline.target.target.name,timeline)
+    end
+    for _,slot in each(self._armature:getSlots()) do
+      if self:containsBoneMask(slot.parent.name) then
+        local name=slot.name
+        if existing[name]~=nil then
+          Map.remove(existing,name)
+        else
+          local displayIndexFlag=false
+          local colorFlag=false
+          clear(ffdFlags)
+          local datas=self._animationData:getSlotTimelines(name)
+          if datas~=nil then
+            for _,data in each(datas) do
+              if data.type==Type.SlotDisplay then
+                borrowTimeline("SlotDisplayTimelineState",slot,self._armature,self,data,self._slotTimelines)
+                displayIndexFlag=true
+              elseif data.type==Type.SlotZIndex then
+                borrowTimeline("SlotZIndexTimelineState",
+                  self._armature.animation:getBlendState(BlendState.SLOT_Z_INDEX,name,slot),
+                  self._armature,self,data,self._slotBlendTimelines)
+              elseif data.type==Type.SlotColor then
+                borrowTimeline("SlotColorTimelineState",slot,self._armature,self,data,self._slotTimelines)
+                colorFlag=true
+              elseif data.type==Type.SlotDeform then
+                local db=self._animationData.parent.parent
+                local intOffset=self._animationData.frameIntOffset+
+                  getZeroBased(db.timelineArray,data.offset+Binary.TimelineFrameValueCount)
+                local geometryOffset=getZeroBased(db.frameIntArray,intOffset+Binary.DeformVertexOffset)
+                if geometryOffset<0 then geometryOffset=geometryOffset+65536 end
+                for i=0,slot.displayFrameCount-1 do
+                  local frame=slot:getDisplayFrameAt(i)
+                  local geometry=frame:getGeometryData()
+                  if geometry~=nil and geometry.offset==geometryOffset then
+                    borrowTimeline("DeformTimelineState",
+                      self._armature.animation:getBlendState(
+                        BlendState.SLOT_DEFORM,frame.rawDisplayData.name,slot),
+                      self._armature,self,data,self._slotBlendTimelines,nil,frame)
+                    frame:updateDeformVertices()
+                    ffdFlags[ffdFlags.length+1]=geometryOffset
+                    break
+                  end
+                end
+              elseif data.type==Type.SlotAlpha then
+                borrowTimeline("AlphaTimelineState",
+                  self._armature.animation:getBlendState(BlendState.SLOT_ALPHA,name,slot),
+                  self._armature,self,data,self._slotBlendTimelines)
+              end
+            end
+          end
+          if self.resetToPose then
+            if not displayIndexFlag then
+              borrowTimeline("SlotDisplayTimelineState",slot,self._armature,self,nil,
+                self._slotTimelines,self._poseTimelines)
+            end
+            if not colorFlag then
+              borrowTimeline("SlotColorTimelineState",slot,self._armature,self,nil,
+                self._slotTimelines,self._poseTimelines)
+            end
+            for i=0,slot.displayFrameCount-1 do
+              local frame=slot:getDisplayFrameAt(i)
+              if frame.deformVertices.length>0 then
+                local geometry=frame:getGeometryData()
+                if geometry~=nil and not has(ffdFlags,geometry.offset) then
+                  borrowTimeline("DeformTimelineState",
+                    self._armature.animation:getBlendState(BlendState.SLOT_DEFORM,name,slot),
+                    self._armature,self,nil,self._slotBlendTimelines,self._poseTimelines,frame)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    for _,key in ipairs(Map.keys(existing))do
+      local group=existing[key]
+      for _,timeline in each(group) do
+        if erase(self._slotTimelines,timeline) then
+          timeline:returnToPool()
+        end
+        if erase(self._slotBlendTimelines,timeline) then
+          timeline:returnToPool()
+        end
+      end
+    end
+  end
+end
+
+function AnimationState:advanceTime(passedTime,cacheFrameRate)
+  if self._fadeState~=0 or self._subFadeState~=0 then
+    self:_advanceFadeTime(passedTime)
+  end
+  if self._playheadState==3 then
+    if self.timeScale~=1.0 then passedTime=passedTime*self.timeScale end
+    self._time=self._time+passedTime
+  end
+
+  if self._timelineDirty~=0 then
+    if self._timelineDirty==2 then self:_updateTimelines() end
+    self._timelineDirty=0
+    self:_updateBoneAndSlotTimelines()
+  end
+
+  local isBlendDirty=self._fadeState~=0 or self._subFadeState==0
+  local isCacheEnabled=self._fadeState==0 and cacheFrameRate>0.0
+  local isUpdateTimeline=true
+  local isUpdateBoneTimeline=true
+  local time=self._time
+  self._weightResult=self._weight*self._fadeProgress
+  if self._parent~=nil then
+    self._weightResult=self._weightResult*self._parent._weightResult
+  end
+
+  if self._actionTimeline.playState<=0 then
+    self._actionTimeline:update(time)
+  end
+  if self._weight==0.0 then return end
+
+  if isCacheEnabled then
+    local interval=cacheFrameRate*2.0
+    self._actionTimeline.currentTime=
+      jsFloor(self._actionTimeline.currentTime*interval)/interval
+  end
+  if self._zOrderTimeline~=nil and self._zOrderTimeline.playState<=0 then
+    self._zOrderTimeline:update(time)
+  end
+
+  if isCacheEnabled then
+    local cacheIndex=jsFloor(self._actionTimeline.currentTime*cacheFrameRate)
+    if self._armature._cacheFrameIndex==cacheIndex then
+      isUpdateTimeline=false
+      isUpdateBoneTimeline=false
+    else
+      self._armature._cacheFrameIndex=cacheIndex
+      if self._animationData.cachedFrames[cacheIndex+1] then
+        isUpdateBoneTimeline=false
+      else
+        self._animationData.cachedFrames[cacheIndex+1]=true
+      end
+    end
+  end
+
+  if isUpdateTimeline then
+    local blended=false
+    local previous=nil
+    if isUpdateBoneTimeline then
+      for i=1,self._boneTimelines.length do
+        local timeline=self._boneTimelines[i]
+        if timeline.playState<=0 then timeline:update(time) end
+        if timeline.target~=previous then
+          local blend=timeline.target
+          blended=blend:update(self)
+          previous=blend
+          if blend.dirty==1 then
+            local pose=blend.target.animationPose
+            pose.x=0.0;pose.y=0.0
+            pose.rotation=0.0;pose.skew=0.0
+            pose.scaleX=1.0;pose.scaleY=1.0
+          end
+        end
+        if blended then timeline:blend(isBlendDirty) end
+      end
+    end
+    for i=1,self._boneBlendTimelines.length do
+      local timeline=self._boneBlendTimelines[i]
+      if timeline.playState<=0 then timeline:update(time) end
+      if timeline.target:update(self) then timeline:blend(isBlendDirty) end
+    end
+    if self.displayControl then
+      for i=1,self._slotTimelines.length do
+        local timeline=self._slotTimelines[i]
+        if timeline.playState<=0 then
+          local slot=timeline.target
+          local controller=slot.displayController
+          if controller==nil or controller==self.name or controller==self.group then
+            timeline:update(time)
+          end
+        end
+      end
+    end
+    for i=1,self._slotBlendTimelines.length do
+      local timeline=self._slotBlendTimelines[i]
+      if timeline.playState<=0 then
+        local blend=timeline.target
+        timeline:update(time)
+        if blend:update(self) then timeline:blend(isBlendDirty) end
+      end
+    end
+    for i=1,self._constraintTimelines.length do
+      local timeline=self._constraintTimelines[i]
+      if timeline.playState<=0 then timeline:update(time) end
+    end
+
+    if self._animationTimelines.length>0 then
+      local dL,dR=100.0,100.0
+      local left,right=nil,nil
+      for i=1,self._animationTimelines.length do
+        local timeline=self._animationTimelines[i]
+        if timeline.playState<=0 then timeline:update(time) end
+        if self.blendType==Core.AnimationBlendType.E1D then
+          local child=timeline.target
+          local d=self.parameterX-child.positionX
+          if d>=0 then
+            if d<dL then dL=d;left=child end
+          else
+            if -d<dR then dR=-d;right=child end
+          end
+        end
+      end
+      if left~=nil then
+        if self._activeChildA~=left then
+          if self._activeChildA~=nil then self._activeChildA.weight=0.0 end
+          self._activeChildA=left
+          self._activeChildA:activeTimeline()
+        end
+        if self._activeChildB~=right then
+          if self._activeChildB~=nil then self._activeChildB.weight=0.0 end
+          self._activeChildB=right
+        end
+        left.weight=dR/(dL+dR)
+        if right~=nil then right.weight=1.0-left.weight end
+      end
+    end
+  end
+
+  if self._fadeState==0 then
+    if self._subFadeState>0 then
+      self._subFadeState=0
+      if self._poseTimelines.length>0 then
+        for _,timeline in each(self._poseTimelines) do
+          if erase(self._boneTimelines,timeline)
+             or erase(self._boneBlendTimelines,timeline)
+             or erase(self._slotTimelines,timeline)
+             or erase(self._slotBlendTimelines,timeline)
+             or erase(self._constraintTimelines,timeline) then
+            timeline:returnToPool()
+          end
+        end
+        clear(self._poseTimelines)
+      end
+    end
+    if self._actionTimeline.playState>0 and self.autoFadeOutTime>=0.0 then
+      self:fadeOut(self.autoFadeOutTime)
+    end
+  end
+end
+
 return AnimationState
