@@ -26,7 +26,7 @@ if mode == 'inspect' then
   end
   data:returnToPool()
   print('Importação e limpeza concluídas. Este comando não reproduz a animação.')
-elseif mode == 'playback' or mode == 'animation' then
+elseif mode == 'playback' or mode == 'animation' or mode == 'armature' then
   dofile('examples/playback.lua')
 elseif mode == 'transform' then
   local T = require('dragonbones.armature.TransformObject')
@@ -713,5 +713,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline\n     lua examples/run.lua animationcontrol\n     lua examples/run.lua stateinit\n     lua examples/run.lua playback\n     lua examples/run.lua animation')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline\n     lua examples/run.lua animationcontrol\n     lua examples/run.lua stateinit\n     lua examples/run.lua playback\n     lua examples/run.lua animation\n     lua examples/run.lua armature')
 end

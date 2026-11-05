@@ -119,6 +119,8 @@ jobs:
           node tests/stateinit_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/stateadvance_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/animationfacade_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/armatureruntime_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          ${{ matrix.vm }} examples/run.lua armature
           ${{ matrix.vm }} examples/run.lua animation
           ${{ matrix.vm }} examples/run.lua playback
           ${{ matrix.vm }} examples/run.lua inspect
