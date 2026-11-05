@@ -26,4 +26,4 @@ Oito mutações rejeitadas: fade omitido, Single desativado, ordem de layer inve
 
 `lua5.4 examples/run.lua animation` (ou LuaJIT) usa play para criar o estado, stop/play para retomar, gotoAndStopByFrame(12) para chegar a 0.50 s pausado, fadeIn('alt',.25,0) para chegar a progresso 0.50 após delta .125 e reset para zerar os estados. O exemplo playback também passou a usar play, sem registro protegido manual. Core real gerencia os objetos adiados; backend apenas observa callbacks, sem desenho.
 
-Todos os corpos de Animation.ts estão representados no domínio declarado. Ainda faltam Armature.init/advanceTime e demais APIs de orquestração, factories e backends gráficos para uma API completa de carregamento e reprodução. Esse marco não significa paridade integral do DragonBonesJS.
+Todos os corpos de Animation.ts estão representados no domínio declarado. Atualização posterior: Armature foi integrado e validado em [ArmatureRuntime.md](ArmatureRuntime.md). Factories e backends gráficos ainda faltam para uma API completa de carregamento e reprodução. Esse marco não significa paridade integral do DragonBonesJS.
