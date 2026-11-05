@@ -81,6 +81,48 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'animationcontrol' then
+  local Pool=require('dragonbones.core.BaseObject')
+  local State=require('dragonbones.animation.AnimationState')
+  local Action=require('dragonbones.animation.ActionTimelineState')
+  local Timelines=require('dragonbones.animation.AnimationTimelineState')
+  local Armature=require('dragonbones.armature.Armature')
+  local Parser=require('dragonbones.parser.ObjectDataParser')
+  local JSON=require('dragonbones.parser.JSON')
+  local file=assert(io.open('examples/animationcontrol_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('demo')
+  local armature=Pool.borrowObject(Armature);armature._armatureData=model
+  -- Manual assembly of real states until AnimationState.init/advanceTime exist.
+  local function makeState(animation)
+    local state=Pool.borrowObject(State)
+    state._animationData=animation;state._armature=armature
+    state._position=0;state._duration=animation.duration
+    state._playheadState=3;state.playTimes=1
+    state._actionTimeline=Pool.borrowObject(Action)
+    state._actionTimeline:init(armature,state,nil)
+    state._actionTimeline:setCurrentTime(0)
+    return state
+  end
+  local parent=makeState(model:getAnimation('controller'));parent.playTimes=0
+  local child=makeState(model:getAnimation('child'));child._parent=parent
+  local classes={[40]=Timelines.AnimationProgressTimelineState,
+    [41]=Timelines.AnimationWeightTimelineState,[42]=Timelines.AnimationParametersTimelineState}
+  local timelines=parent.animationData:getAnimationTimelines('child')
+  for i=1,timelines.length do
+    local td=timelines[i];local timeline=Pool.borrowObject(classes[td.type])
+    timeline.target=child;timeline:init(armature,parent,td)
+    parent._animationTimelines[parent._animationTimelines.length+1]=timeline
+  end
+  for _,time in ipairs({0,.25,.5,.75})do
+    parent._actionTimeline:_setCurrentTime(time)
+    for i=1,parent._animationTimelines.length do parent._animationTimelines[i]:update(time)end
+    print(('Controle t=%.2f: tempo=%.3f peso=%.3f X=%.3f Y=%.3f'):format(
+      time,child.currentTime,child.weight,child.parameterX,child.parameterY))
+  end
+  parent:returnToPool();child:returnToPool();armature:returnToPool();data:returnToPool()
+  print('Controle de estado filho concluído. Montagem manual, player e renderer pendentes.')
 elseif mode == 'actiontimeline' then
   local Pool=require('dragonbones.core.BaseObject')
   local Bone=require('dragonbones.armature.Bone')
@@ -617,5 +659,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline\n     lua examples/run.lua animationcontrol')
 end

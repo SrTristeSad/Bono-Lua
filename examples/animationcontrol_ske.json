@@ -1,0 +1,77 @@
+{
+  "version": "5.6",
+  "name": "Animation control Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "demo",
+      "bone": [
+        {
+          "name": "root"
+        }
+      ],
+      "animation": [
+        {
+          "name": "controller",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 40,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "type": 41,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.25
+                }
+              ]
+            },
+            {
+              "type": 42,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1,
+                  "y": -1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "child",
+          "duration": 48
+        }
+      ]
+    }
+  ]
+}
