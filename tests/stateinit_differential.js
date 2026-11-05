@@ -1,0 +1,58 @@
+'use strict';
+// Compare AnimationState initialization, fades, masks and child wiring against the pin.
+const fs=require('fs'),path=require('path'),cp=require('child_process'),vm=require('vm');
+const ts=require('typescript');
+const PIN='64b6c69ae35777c2404be68c9192e2c56906079e';
+const upstream=path.resolve(process.argv[2]||'../DragonBonesJS'),lua=process.argv[3]||'lua5.4';
+const root=path.resolve(__dirname,'..');
+const git=(...a)=>cp.execFileSync('git',['-C',upstream,...a],{encoding:'utf8'});
+if(git('rev-parse','HEAD').trim()!==PIN)throw Error('Wrong upstream HEAD');
+// Compile the common namespace together: transpileModule(file-by-file) cannot
+// resolve cross-file namespace references such as CanvasData extends BaseObject.
+const prefix='/pinned/';
+const files=git('ls-tree','-r','--name-only',PIN,'DragonBones/src').trim().split('\n').filter(p=>p.endsWith('.ts'));
+const texts=new Map(files.map(p=>[prefix+p,git('show',PIN+':'+p)]));
+const config=ts.parseConfigFileTextToJson('tsconfig.json',git('show',PIN+':DragonBones/tsconfig.json')).config;
+const converted=ts.convertCompilerOptionsFromJson(config.compilerOptions,prefix+'DragonBones');
+const options={...converted.options,declaration:false,watch:false};delete options.outFile;
+const host=ts.createCompilerHost(options),read=host.readFile.bind(host),exists=host.fileExists.bind(host);
+host.getCurrentDirectory=()=>prefix;
+host.readFile=p=>p.startsWith(prefix)?texts.get(p):read(p);
+host.fileExists=p=>p.startsWith(prefix)?texts.has(p):exists(p);
+host.getSourceFile=(p,version)=>{const text=host.readFile(p);return text===undefined?undefined:ts.createSourceFile(p,text,version,true);};
+const emitted=new Map();host.writeFile=(p,text)=>emitted.set(p,text);
+const program=ts.createProgram([...texts.keys()],options,host);
+const diagnostics=program.getSyntacticDiagnostics();
+if(diagnostics.length)throw Error('Cannot parse pinned core');
+const emitResult=program.emit();if(emitResult.emitSkipped)throw Error('Original emit skipped');
+const code=['core/BaseObject','geom/Point','geom/Rectangle','geom/Matrix','geom/Transform','geom/ColorTransform','model/TextureAtlasData','model/CanvasData','model/UserData','model/DisplayData','model/AnimationConfig','model/AnimationData','model/ArmatureData','model/ConstraintData','model/SkinData','model/DragonBonesData','model/BoundingBoxData','parser/DataParser','parser/ObjectDataParser','parser/BinaryDataParser','armature/TransformObject','event/EventObject','animation/WorldClock','core/DragonBones','armature/Armature','armature/Bone','armature/Surface','armature/Slot','armature/Constraint','animation/BaseTimelineState','animation/TimelineState','animation/AnimationState'].map(p=>{const js=emitted.get(prefix+'DragonBones/src/dragonBones/'+p+'.js');if(!js)throw Error(p);return js;}).join('\n');
+
+
+const ctx=vm.createContext({console:{warn(){},assert(){},info(){}}});vm.runInContext(code,ctx);const d=ctx.dragonBones,B=d.BaseObject;
+const keys=['resetToPose','additive','displayControl','actionEnabled','blendType','layer','playTimes','timeScale','fadeTotalTime','autoFadeOutTime','name','group','_weight','_playheadState','_position','_duration','_time','_fadeProgress','_fadeTime','_fadeState','_subFadeState','_timelineDirty'];
+const getters=['isFadeIn','isFadeOut','isFadeComplete','isPlaying','isCompleted','currentPlayTimes','totalTime','currentTime','weight'];
+const cases=[];for(const rate of [-1,0,1])for(const position of [0,.25,1.25])for(const duration of [-1,0,.5])for(const fade of [-.5,0,.5])for(let pause=0;pause<2;pause++)for(const weight of [0,1.5])cases.push([rate,position,duration,fade,pause,weight,cases.length%4,'normal']);
+for(const op of ['reinit','defaultArgs','maskNonRecursive','missingMask','addNone','addOnlyWeight','addRepeated','earlyFade','readonly','completed','bitwise','foreignParent','noZOrder','negativeFade'])cases.push([1,0,-1,.5,1,1,0,op]);
+const sel=process.argv[4];if(sel!==undefined){const a=/^\d+$/.test(sel)?[cases[+sel]]:cases.filter(c=>c[7]===sel);if(!a.length||!a[0])throw Error('selection');cases.splice(0,cases.length,...a);}
+const fixture=fs.readFileSync(path.join(root,'examples/stateinit_ske.json'),'utf8');
+function scalar(v){if(v===undefined||v===null)return'u';if(typeof v==='boolean')return String(v);if(typeof v==='string')return's'+Buffer.from(v).toString('hex');if(Number.isNaN(v))return'NaN';const b=Buffer.alloc(8);b.writeDoubleLE(v);return'n'+b.toString('hex');}
+function execute(c){const [rate,position,duration,fade,pause,weight,profile,op]=c;ctx.__json=fixture;const raw=vm.runInContext('JSON.parse(__json)',ctx);if(op==='noZOrder')delete raw.armature[0].animation[0].zOrder;raw.armature[0].animation[0].blendType=profile%2?'1d':'none';const gd=new d.ObjectDataParser().parseDragonBonesData(raw),ad=gd.getArmature('demo'),anim=ad.getAnimation('controller'),arm=B.borrowObject(d.Armature),s=B.borrowObject(d.AnimationState),child=B.borrowObject(d.AnimationState),external=B.borrowObject(d.AnimationState),cfg=B.borrowObject(d.AnimationConfig),cc=B.borrowObject(d.AnimationConfig);arm._armatureData=ad;for(const bd of ad.sortedBones)B.borrowObject(d.Bone).init(bd,arm);
+ class SlotObserver extends d.Slot{static toString(){return'[test.StateInitSlot]';}_initDisplay(){}_disposeDisplay(){}_onUpdateDisplay(){}_addDisplay(){}}B.clearPool(SlotObserver);for(const sd of ad.sortedSlots)B.borrowObject(SlotObserver).init(sd,arm,null,null);
+ const checks=[],dispatch=[];let clears=0;const proxy={hasDBEventListener(type){checks.push(type);return profile!==3;},dispatchDBEvent(type,e){dispatch.push([type,e.animationState===s?'parent':'child',scalar(e.time)].join('~'));},dbClear(){clears++;}};const core=new d.DragonBones({dispatchDBEvent(){throw Error('Unexpected sound');}});arm._proxy=proxy;arm._dragonBones=core;
+ cfg.animation='controller';cfg.name=profile%2?'':'custom';cfg.group='group';cfg.layer=profile-1;cfg.position=position;cfg.duration=duration;cfg.timeScale=rate;cfg.playTimes=profile%3;cfg.fadeInTime=fade;cfg.pauseFadeIn=!!pause;cfg.weight=weight;cfg.autoFadeOutTime=.25;cfg.actionEnabled=profile!==1;cfg.resetToPose=profile%2===0;cfg.displayControl=true;cfg.additive=profile===2;cfg.boneMask.push(...[[],['branch'],['missing','branch'],[]][profile]);
+ cc.animation='child';cc.timeScale=1;cc.playTimes=1;cc.fadeInTime=0;cc.duration=-1;cc.pauseFadeIn=false;child.init(arm,ad.getAnimation('child'),cc);child._boneTimelines.push(B.borrowObject(d.AlphaTimelineState));const childProbe=child._boneTimelines[0];childProbe.dirty=true;
+ const out=[],refs=[];const read=(fn)=>{try{return scalar(fn());}catch(e){return'getter-error';}};
+ function event(e){return[e.type,e.animationState===s?'parent':'child',scalar(e.time),e.armature===arm,e._isInPool].join('~');}
+ function snap(status){out.push(status,...keys.map(k=>scalar(s[k])),...getters.map(k=>read(()=>s[k])),s._boneMask.map(scalar).join(','),cfg.boneMask.map(scalar).join(','),s._boneMask!==cfg.boneMask,...['root','branch','tip','other','missing'].map(n=>s.containsBoneMask(n)),...refs.flatMap(t=>[scalar(t.dirty),scalar(t._isTween),scalar(t.currentTime),scalar(t._resultA),scalar(t._resultB),t._isInPool]),String(s._animationTimelines.length),s._animationTimelines.map(t=>[t.constructor.toString(),t.target===child,t._animationState===s,t._isInPool,scalar(t._valueScale)].join('~')).join('|'),...['_parent','_fadeState','_subFadeState','_playheadState','_fadeProgress','fadeTotalTime','_fadeTime','_weight','positionX','positionY'].map(k=>k==='_parent'?(child._parent===s?'parent':child._parent===external?'external':'nil'):scalar(child[k])),scalar(childProbe.dirty),scalar(childProbe._isInPool),s._parent===external,s._actionTimeline?s._actionTimeline._isInPool:'nil',s._zOrderTimeline!==null,...['currentTime','playState','_frameIndex'].map(k=>s._actionTimeline?scalar(s._actionTimeline[k]):'nil'),String(core._events.length),core._events.map(event).join('|'),String(core._objects.length),checks.join(','),dispatch.join(','),s.animationData===anim,s._armature===arm);}
+ function stage(fn){checks.length=dispatch.length=0;let status='ok';try{fn();}catch(e){status='error';}snap(status);core.advanceTime(0);snap('dispatch');}
+ stage(()=>s.init(arm,anim,cfg));const action=s._actionTimeline,zorder=s._zOrderTimeline,mask=s._boneMask;
+ if(profile===2)s._parent=external;
+ for(const [key,cls]of [['_boneTimelines',d.BoneRotateTimelineState],['_boneBlendTimelines',d.AlphaTimelineState],['_slotTimelines',d.SlotColorTimelineState],['_slotBlendTimelines',d.SlotZIndexTimelineState],['_constraintTimelines',d.IKConstraintTimelineState]]){const t=B.borrowObject(cls);t.dirty=true;t._isTween=true;t.currentTime=.25;if(key==='_boneTimelines'){t._resultA=9;t._resultB=-8;}s[key].push(t);refs.push(t);}s._poseTimelines.push(refs[0]);
+ stage(()=>{if(op==='reinit'){cfg.name='changed';s.init(arm,ad.getAnimation('child'),cfg);}if(op==='foreignParent'||op==='addNone'||op==='addOnlyWeight')child._parent=external;const data=anim.getAnimationTimelines('child');s.addState(child,op==='addNone'?null:op==='addOnlyWeight'?[data[1]]:data);if(op==='addRepeated')s.addState(child,data);if(op==='readonly')s.isPlaying=false;if(op==='completed')action.playState=1;});
+ stage(()=>s.addBoneMask(op==='missingMask'?'absent':'branch',op==='maskNonRecursive'?false:undefined));stage(()=>s.removeBoneMask('root'));stage(()=>{s.removeAllBoneMask();s.removeBoneMask('branch');s.activeTimeline();});stage(()=>s.stop());stage(()=>s.play());
+ if(op==='bitwise')for(const value of [NaN,Infinity,-1,4294967298,3.75,-4294967297])stage(()=>{s._playheadState=value;s.stop();});
+ for(const delta of [0,.125,-.125,.5])stage(()=>{s._advanceFadeTime(delta);if(op==='earlyFade')s.fadeOut(.5,false);});
+ stage(()=>{if(op==='defaultArgs')s.fadeOut(.5);else s.fadeOut(.5,!!pause);});stage(()=>s.fadeOut(1));stage(()=>s._advanceFadeTime(.125));stage(()=>s.fadeOut(op==='negativeFade'?-.125:.125,false));stage(()=>s._advanceFadeTime(.25));
+ core.advanceTime(0);s.returnToPool();snap('clear');out.push(s._isInPool,mask===s._boneMask,action._isInPool,zorder?zorder._isInPool:'nil',child._parent===s);child.returnToPool();out.push(childProbe._isInPool);external.returnToPool();cfg.returnToPool();cc.returnToPool();arm.returnToPool();out.push(clears,core._events.length,core._objects.length);gd.returnToPool();return out.map(String);}
+const dir=path.join(root,'artifacts');fs.mkdirSync(dir,{recursive:true});const tag=path.basename(lua),input=path.join(dir,'stateinit-'+tag+'-cases.tsv');fs.writeFileSync(input,cases.map(c=>c.join('\t')).join('\n')+'\n');const expected=cases.map(execute);fs.writeFileSync(path.join(dir,'stateinit-'+tag+'-original.tsv'),expected.map(r=>r.join('\t')).join('\n')+'\n');const actual=cp.execFileSync(lua,['tests/stateinit_differential.lua',input],{cwd:root,encoding:'utf8',timeout:240000,maxBuffer:128*1024*1024});fs.writeFileSync(path.join(dir,'stateinit-'+tag+'-actual.tsv'),actual);const rows=actual.trimEnd().split('\n').map(r=>r.split('\t'));if(rows.length!==expected.length)throw Error('rows');let columns=0,errors=0,getterErrors=0;for(let i=0;i<rows.length;i++){if(rows[i].length!==expected[i].length)throw Error('columns '+i);for(let j=0;j<rows[i].length;j++){columns++;if(expected[i][j]==='error')errors++;if(expected[i][j]==='getter-error')getterErrors++;if(rows[i][j]!==expected[i][j])throw Error('State init mismatch '+i+' '+cases[i]+' col '+j+' expected '+expected[i][j]+' actual '+rows[i][j]);}}
+const result={upstream:PIN,scenarios:cases.length,comparedColumns:columns,sourceErrors:errors,getterErrors,approximateComparisons:0,lua,result:'passed'};fs.writeFileSync(path.join(dir,'stateinit-'+tag+'-result.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));

@@ -81,6 +81,58 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'stateinit' then
+  local Pool=require('dragonbones.core.BaseObject')
+  local State=require('dragonbones.animation.AnimationState')
+  local Config=require('dragonbones.model.AnimationConfig')
+  local Core=require('dragonbones.core.DragonBones')
+  local Bone=require('dragonbones.armature.Bone')
+  local Armature=require('dragonbones.armature.Armature')
+  local Parser=require('dragonbones.parser.ObjectDataParser')
+  local JSON=require('dragonbones.parser.JSON')
+  -- Backend interface observer; no renderer is installed.
+  local proxy={}
+  function proxy:hasDBEventListener(kind)return true end
+  function proxy:dispatchDBEvent(kind,event)print('Evento de fade: '..kind)end
+  function proxy:dbClear()end
+  local manager={};function manager:dispatchDBEvent(kind,event)end
+  local core=Core.new(manager)
+  local file=assert(io.open('examples/stateinit_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('demo')
+  local armature=Pool.borrowObject(Armature)
+  armature._armatureData=model;armature._dragonBones=core;armature._proxy=proxy
+  for i=1,model.sortedBones.length do Pool.borrowObject(Bone):init(model.sortedBones[i],armature)end
+  local cfg=Pool.borrowObject(Config)
+  cfg.animation='controller';cfg.timeScale=1;cfg.playTimes=0
+  cfg.fadeInTime=.5;cfg.pauseFadeIn=true
+  local state=Pool.borrowObject(State)
+  state:init(armature,model:getAnimation('controller'),cfg)
+  local childCfg=Pool.borrowObject(Config)
+  childCfg.animation='child';childCfg.timeScale=1;childCfg.playTimes=1;childCfg.fadeInTime=0
+  local child=Pool.borrowObject(State)
+  child:init(armature,model:getAnimation('child'),childCfg)
+  state:addState(child,state.animationData:getAnimationTimelines('child'))
+  state:addBoneMask('branch')
+  local names={};for i=1,state._boneMask.length do names[i]=state._boneMask[i]end
+  print('Máscara: '..table.concat(names,','))
+  print(('Timelines do filho: %d'):format(state._animationTimelines.length))
+  state:stop();print('Após stop: '..tostring(state.isPlaying))
+  state:play();print('Após play: '..tostring(state.isPlaying))
+  -- Exercise the real fade helper explicitly; full advanceTime is still absent.
+  for _,delta in ipairs({.25,.25})do
+    state:_advanceFadeTime(delta);core:advanceTime(0)
+    print(('Fade entrada: %.3f'):format(state._fadeProgress))
+  end
+  state:fadeOut(.5)
+  for _,delta in ipairs({.25,.25})do
+    state:_advanceFadeTime(delta);core:advanceTime(0)
+    print(('Fade saída: %.3f'):format(state._fadeProgress))
+  end
+  core:advanceTime(0);state:returnToPool();child:returnToPool()
+  cfg:returnToPool();childCfg:returnToPool();armature:returnToPool();data:returnToPool()
+  print('Init, fade, máscaras e ligação concluídos. AdvanceTime/player/renderer pendentes.')
 elseif mode == 'animationcontrol' then
   local Pool=require('dragonbones.core.BaseObject')
   local State=require('dragonbones.animation.AnimationState')
@@ -659,5 +711,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline\n     lua examples/run.lua animationcontrol')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline\n     lua examples/run.lua animationcontrol\n     lua examples/run.lua stateinit')
 end
