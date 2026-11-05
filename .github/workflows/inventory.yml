@@ -121,6 +121,7 @@ jobs:
           node tests/animationfacade_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/armatureruntime_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/factory_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua factory
           ${{ matrix.vm }} examples/run.lua armature
           ${{ matrix.vm }} examples/run.lua animation
@@ -149,4 +150,43 @@ jobs:
         with:
           name: geometry-differential-${{ matrix.vm }}
           path: Bono-Lua/artifacts/
+          if-no-files-found: error
+
+  love-pixels:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Bono-Lua
+      - uses: actions/checkout@v4
+        with:
+          repository: DragonBones/DragonBonesJS
+          ref: 64b6c69ae35777c2404be68c9192e2c56906079e
+          path: DragonBonesJS
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install real graphics runtimes
+        working-directory: Bono-Lua
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y love xvfb
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm install --prefix ../graphics-tools --no-save --ignore-scripts pixi.js@4.8.9 playwright@1.51.1
+          ../graphics-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render with LÖVE and compare with original Pixi in Chromium
+        working-directory: Bono-Lua
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          mkdir -p artifacts/love
+          BONO_RENDER_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
+          NODE_PATH=../graphics-tools/node_modules node tests/love_pixels.js ../DragonBonesJS
+      - name: Preserve actual RGBA frames and PNG captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: love-pixi-pixel-evidence
+          path: Bono-Lua/artifacts/love/
           if-no-files-found: error

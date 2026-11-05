@@ -1,0 +1,28 @@
+{
+  "name": "sprites",
+  "width": 48,
+  "height": 16,
+  "SubTexture": [
+    {
+      "name": "red",
+      "x": 0,
+      "y": 0,
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "blue",
+      "x": 16,
+      "y": 0,
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "green",
+      "x": 32,
+      "y": 0,
+      "width": 16,
+      "height": 16
+    }
+  ]
+}
