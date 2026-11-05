@@ -1,0 +1,160 @@
+{
+  "version": "5.6",
+  "name": "Surface Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "surface-demo",
+      "bone": [
+        {
+          "name": "grid",
+          "type": "surface",
+          "segmentX": 2,
+          "segmentY": 2,
+          "vertices": [
+            -200,
+            -200,
+            0,
+            -200,
+            200,
+            -200,
+            -200,
+            0,
+            0,
+            0,
+            200,
+            0,
+            -200,
+            200,
+            0,
+            200,
+            200,
+            200
+          ]
+        },
+        {
+          "name": "attached",
+          "parent": "grid",
+          "transform": {
+            "x": 50,
+            "y": 50
+          }
+        }
+      ],
+      "slot": [
+        {
+          "name": "slot",
+          "parent": "attached"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "slot",
+              "display": [
+                {
+                  "name": "mesh",
+                  "type": "mesh",
+                  "vertices": [
+                    0,
+                    0,
+                    10,
+                    0,
+                    0,
+                    10
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2
+                  ]
+                },
+                {
+                  "name": "other",
+                  "type": "mesh",
+                  "vertices": [
+                    0,
+                    0,
+                    10,
+                    0,
+                    0,
+                    10
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "animation": [
+        {
+          "name": "deform",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 50,
+              "name": "grid",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "vertices": []
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "offset": 9,
+                  "vertices": [
+                    80
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 22,
+              "name": "mesh",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "vertices": []
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "offset": 3,
+                  "vertices": [
+                    20
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

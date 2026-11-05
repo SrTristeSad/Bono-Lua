@@ -81,6 +81,62 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'deformationtimeline' then
+  local Pool=require('dragonbones.core.BaseObject')
+  local Bone=require('dragonbones.armature.Bone')
+  local Surface=require('dragonbones.armature.Surface')
+  local Slot=require('dragonbones.armature.Slot')
+  local Armature=require('dragonbones.armature.Armature')
+  local Blend=require('dragonbones.animation.BlendState')
+  local Timelines=require('dragonbones.animation.DeformationTimelineState')
+  local Parser=require('dragonbones.parser.ObjectDataParser')
+  local JSON=require('dragonbones.parser.JSON')
+  local Observer={__newindex=Slot.__newindex}
+  Observer.__index=function(self,key)return rawget(Observer,key)or Slot.__index(self,key)end
+  setmetatable(Observer,{__index=Slot})
+  function Observer.toString()return '[example.DeformationSlotObserver]'end
+  function Observer.new()return Slot.new(Observer)end
+  function Observer:_initDisplay()end
+  function Observer:_disposeDisplay()end
+  function Observer:_onUpdateDisplay()end
+  function Observer:_addDisplay()end
+  local file=assert(io.open('examples/deformation_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('surface-demo');local animation=model:getAnimation('deform')
+  local armature=Pool.borrowObject(Armature);armature._armatureData=model
+  for i=1,model.sortedBones.length do
+    local bd=model.sortedBones[i];Pool.borrowObject(bd.type==1 and Surface or Bone):init(bd,armature)
+  end
+  local surface=armature:getBone('grid')
+  local slot=Pool.borrowObject(Observer);slot:init(model:getSlot('slot'),armature,nil,nil)
+  slot.displayFrameCount=1;slot:replaceRawDisplayData(model.defaultSkin:getDisplay('slot','mesh'),0)
+  slot:_setDisplayIndex(0);slot:_updateDisplayData()
+  local frame=slot:getDisplayFrameAt(0);frame:updateDeformVertices()
+  -- Manual input contract, not a substitute AnimationState/player.
+  local state={animationData=animation,_position=0,_duration=animation.duration,
+    playTimes=0,currentPlayTimes=0,_playheadState=3,layer=0,_weightResult=1}
+  local samplers,blends={},{}
+  local function add(class,target,td)
+    local blend=Pool.borrowObject(Blend);blend.target=target
+    local sample=Pool.borrowObject(class);sample.target=blend
+    if class==Timelines.DeformTimelineState then sample.displayFrame=frame end
+    sample:init(armature,state,td);samplers[#samplers+1]=sample;blends[sample]=blend
+  end
+  add(Timelines.SurfaceTimelineState,surface,animation:getBoneTimelines('grid')[1])
+  add(Timelines.DeformTimelineState,slot,animation:getSlotTimelines('mesh')[1])
+  for _,time in ipairs({0,.25,.5,.75})do
+    for _,sample in ipairs(samplers)do
+      sample:update(time);local blend=blends[sample];blend:reset()
+      if blend:update(state)then sample:blend(true)end
+    end
+    for i=1,armature:getBones().length do armature:getBones()[i]:update(-1)end
+    print(('Deform t=%.2f: Surface Y=%.3f malha Y=%.3f'):format(
+      time,surface._deformVertices[10],frame.deformVertices[4]))
+  end
+  for _,sample in ipairs(samplers)do blends[sample]:returnToPool();sample:returnToPool()end
+  armature:returnToPool();data:returnToPool()
+  print('Deformações interpoladas concluídas. Tempo manual, sem player ou renderer.')
 elseif mode == 'slottimeline' then
   local Pool = require('dragonbones.core.BaseObject')
   local Slot = require('dragonbones.armature.Slot')
@@ -468,5 +524,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline')
 end

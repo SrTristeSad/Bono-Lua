@@ -197,9 +197,9 @@
     },
     "DragonBones/src/dragonBones/animation/TimelineState.ts": {
       "destination": "dragonbones/animation/BoneTimelineState.lua",
-      "status": "Parcial: 8/16 classes em BoneTimelineState.lua e SlotTimelineState.lua; oito classes restantes pendentes.",
-      "tests": "bonetimeline_differential: 1.828 cenários por VM com Bone/BlendState reais; comparação exata. Exemplo bonetimeline lê JSON, aplica à pose e executa Bone.update. Ver BoneTimelines.md. slottimeline_differential: 992 cenários/639.840 colunas/zero erros e aproximações por VM; quatro timelines e exemplo JSON reais. Ver SlotTimelines.md.",
-      "differences": "Bases portadas, índices de buffers base zero/armazenamento um, módulos separados. Controlador AnimationState apenas contrato de campos de teste. Arrays fixos de cor preservam conteúdo/identidade no pool; offset negativo recebe +65536, fade tem expoente 4, alpha limita teto somente no acúmulo."
+      "status": "Parcial: 10/16 classes em BoneTimelineState.lua, SlotTimelineState.lua e DeformationTimelineState.lua; seis classes restantes pendentes.",
+      "tests": "bonetimeline_differential: 1.828 cenários por VM com Bone/BlendState reais; comparação exata. Exemplo bonetimeline lê JSON, aplica à pose e executa Bone.update. Ver BoneTimelines.md. slottimeline_differential: 992 cenários/639.840 colunas/zero erros e aproximações por VM; quatro timelines e exemplo JSON reais. Ver SlotTimelines.md. deformationtimeline_differential: 1.554 cenários/1.048.950 colunas/26 erros esperados por VM, zero aproximações; buffers e geometria reais. Exemplo deformationtimeline importa JSON. Ver DeformationTimelines.md.",
+      "differences": "Bases portadas, índices de buffers base zero/armazenamento um, módulos separados. Controlador AnimationState apenas contrato de campos de teste. Arrays fixos de cor preservam conteúdo/identidade no pool; offset negativo recebe +65536, fade tem expoente 4, alpha limita teto somente no acúmulo. Surface não corrige offsets negativos; Deform soma 65536. Trechos fixos não recebem escala adicional. Dirty da malha depende da identidade da geometria; displayFrame não é proprietário."
     },
     "DragonBones/src/dragonBones/animation/AnimationState.ts": {
       "destination": "dragonbones/animation/BlendState.lua",
