@@ -218,6 +218,18 @@
       "status": "Todos os corpos representados no domínio de BaseFactory.md; montagem real integrada a parsers/Armature/Animation/Bones/Slots/IK/Path. Três hooks de backend permanecem abstratos; renderer pendente.",
       "tests": "factory_differential: 252 cenários/85.217 colunas por VM Lua 5.4/LuaJIT, duas exceções readonly esperadas, zero aproximações. Oito mutações rejeitadas; regressão armatureruntime nas duas VMs. Exemplo factory monta skeleton/atlas automaticamente com backend observador.",
       "differences": "JSMap/JSArray, offsets públicos base zero/armazenamento um, SkinData.NULL normalizado, ArrayBuffer via SharedBinaryBuffer. Construtor aceita classType para subclassing; getters readonly. Avisos stderr e guards abstratos explícitos. Mapas/protótipos/coerções/recursões complexas limitados pelo contrato. Ver BaseFactory.md."
+    },
+    "Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts": {
+      "destination": "dragonbones/love/Slot.lua",
+      "status": "Parcial: ramo sprite/V4 adaptado ao backend LÖVE. Meshes e blends fora de Normal/Add recusados. Não é porte completo da integração Pixi.",
+      "tests": "lovesprites_differential: 56 cenários/11.188 colunas exatas por VM Lua 5.4/LuaJIT; referencia blobs originais com probes de plataforma. Job love-pixels compara oito capturas reais entre LÖVE e Pixi CanvasRenderer/Chromium; resultado no artefato da CI.",
+      "differences": "LÖVE scene graph/Quads/Image em vez de objetos Pixi. Ramo sprite conserva escala/pivot/skew/tint/alpha; suporte limitado ao contrato LoveSprites.md. Sem claims de mesh/atlas rotacionado/blends avançados."
+    },
+    "Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts": {
+      "destination": "dragonbones/love/TextureAtlasData.lua",
+      "status": "Parcial: atlas/TextureData para sprites não rotacionados em LÖVE, com frames e recursos do host.",
+      "tests": "Diferencial numérico de sprites nas duas VMs e job gráfico real de referência; ver LoveSprites.md e evidências de CI.",
+      "differences": "Image do chamador não é liberada por frames; Quad do frame é liberado no pooling. Atlas rotacionado explicitamente pendente."
     }
   }
 }

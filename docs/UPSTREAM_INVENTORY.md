@@ -910,8 +910,8 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `Pixi/4.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiSlot.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | dragonbones/love/Slot.lua | Parcial: ramo sprite/V4 adaptado ao backend LÖVE. Meshes e blends fora de Normal/Add recusados. Não é porte completo da integração Pixi. |
+| `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | dragonbones/love/TextureAtlasData.lua | Parcial: atlas/TextureData para sprites não rotacionados em LÖVE, com frames e recursos do host. |
 | `Pixi/4.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/4.x/tslint.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/5.x/README.md` | Documentação | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -6716,8 +6716,8 @@ Herança: extends BaseFactory.
 ### `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts`
 
 - Origem/commit: `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: integrations/Pixi/4.x/src/dragonBones/pixi/PixiSlot.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/love/Slot.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: ramo sprite/V4 adaptado ao backend LÖVE. Meshes e blends fora de Normal/Add recusados. Não é porte completo da integração Pixi.; testes: lovesprites_differential: 56 cenários/11.188 colunas exatas por VM Lua 5.4/LuaJIT; referencia blobs originais com probes de plataforma. Job love-pixels compara oito capturas reais entre LÖVE e Pixi CanvasRenderer/Chromium; resultado no artefato da CI.; diferenças: LÖVE scene graph/Quads/Image em vez de objetos Pixi. Ramo sprite conserva escala/pivot/skew/tint/alpha; suporte limitado ao contrato LoveSprites.md. Sem claims de mesh/atlas rotacionado/blends avançados.
 - Dependências candidatas: `DragonBones/src/dragonBones/armature/Bone.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/armature/Surface.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/model/DisplayData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiSlot.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiSlot.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -6751,8 +6751,8 @@ Herança: extends Slot.
 ### `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`
 
 - Origem/commit: `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: integrations/Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/love/TextureAtlasData.lua. Implementação presente nesta reconstrução.
+- Estado: Parcial: atlas/TextureData para sprites não rotacionados em LÖVE, com frames e recursos do host.; testes: Diferencial numérico de sprites nas duas VMs e job gráfico real de referência; ver LoveSprites.md e evidências de CI.; diferenças: Image do chamador não é liberada por frames; Quad do frame é liberado no pooling. Atlas rotacionado explicitamente pendente.
 - Dependências candidatas: `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/model/TextureAtlasData.ts`, `Phaser/3.x/src/dragonBones/phaser/display/TextureAtlasData.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
