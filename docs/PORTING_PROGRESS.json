@@ -203,9 +203,9 @@
     },
     "DragonBones/src/dragonBones/animation/AnimationState.ts": {
       "destination": "dragonbones/animation/AnimationState.lua",
-      "status": "Parcial: BlendState completo em módulo próprio; AnimationState tem construtor/_onClear/getters de tempo/peso/dados e setters currentTime/weight. init/advanceTime/fade/construção de timelines pendentes.",
-      "tests": "bonetimeline_differential: distribuição de três contribuições por tempo, camadas, pesos negativos/zero/acima de 1, saturação, reset e pooling com target real. Ver BoneTimelines.md. animationcontrol_differential cobre APIs reais de AnimationState e ownership com timelines reais, sem registros substitutos. Ver AnimationControl.md.",
-      "differences": "Módulo próprio para BlendState; sem stub de AnimationState/Animation. JSArray lógico conserva identidade; poses são aliases não proprietários; currentTime/weight invalidam somente listas do pin, getters sem setter readonly. Estado montado manualmente, sem player fictício."
+      "status": "Parcial: BlendState completo; AnimationState com init/fade/play/stop/máscaras/addState/activeTimeline/getters/setters/lifecycle. Restam _updateTimelines, _updateBoneAndSlotTimelines e advanceTime.",
+      "tests": "bonetimeline_differential: distribuição de três contribuições por tempo, camadas, pesos negativos/zero/acima de 1, saturação, reset e pooling com target real. Ver BoneTimelines.md. animationcontrol_differential cobre APIs reais de AnimationState e ownership com timelines reais, sem registros substitutos. Ver AnimationControl.md. stateinit_differential: 338 cenários/1.065.864 colunas/1 erro readonly/1.014 leituras pós-limpeza esperadas por VM; sem aproximações. Regressão animationcontrol refeita nas duas VMs. Ver StateInitialization.md.",
+      "differences": "Módulo próprio para BlendState; sem stub de AnimationState/Animation. JSArray lógico conserva identidade; poses são aliases não proprietários; currentTime/weight invalidam somente listas do pin, getters sem setter readonly. Estado montado manualmente, sem player fictício. Preserva init guardado, sentinelas e origem reversa, pausa antes da guarda de fadeOut, máscara complementar e vínculos de filhos. Exemplo stateinit usa config/estado/timelines/core reais."
     }
   }
 }

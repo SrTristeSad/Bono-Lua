@@ -27,3 +27,5 @@ Sete mutações deliberadas rejeitadas: remover gate de parent, alterar escala d
 ## Reprodução
 
 `node tests/animationcontrol_differential.js ../DragonBonesJS lua5.4` ou luajit; quarto argumento opcional seleciona índice/operação. Artefatos guardam entrada, expected, actual e resultado. `lua5.4 examples/run.lua animationcontrol` importa JSON, monta estados reais e imprime tempo 0/1/2/1, peso 1/0,625/0,25/0,625 e parâmetros X/Y. Saída com três casas; ajustes de precisão originais são preservados. Tempo e montagem manuais, sem player ou renderer.
+
+Atualização posterior: init/fade/play/stop/máscaras/addState e getters de status agora portados. A descrição de métodos ausentes acima registra o recorte anterior; consultar StateInitialization.md para o estado atual.

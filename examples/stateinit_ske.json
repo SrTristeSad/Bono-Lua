@@ -1,0 +1,119 @@
+{
+  "version": "5.6",
+  "name": "Animation control Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "demo",
+      "bone": [
+        {
+          "name": "root"
+        },
+        {
+          "name": "branch",
+          "parent": "root"
+        },
+        {
+          "name": "tip",
+          "parent": "branch"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "animation": [
+        {
+          "name": "controller",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 40,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                }
+              ],
+              "x": 0.5,
+              "y": -0.25
+            },
+            {
+              "type": 41,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.25
+                }
+              ]
+            },
+            {
+              "type": 42,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1,
+                  "y": -1
+                }
+              ]
+            }
+          ],
+          "zOrder": {
+            "frame": [
+              {
+                "duration": 12,
+                "zOrder": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "duration": 12,
+                "zOrder": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "child",
+          "duration": 48
+        }
+      ],
+      "slot": [
+        {
+          "name": "a",
+          "parent": "root"
+        },
+        {
+          "name": "b",
+          "parent": "root"
+        },
+        {
+          "name": "c",
+          "parent": "root"
+        }
+      ]
+    }
+  ]
+}
