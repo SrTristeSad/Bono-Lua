@@ -81,6 +81,49 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'constraintorder' then
+  local Pool=require('dragonbones.core.BaseObject')
+  local Bone=require('dragonbones.armature.Bone')
+  local Slot=require('dragonbones.armature.Slot')
+  local Armature=require('dragonbones.armature.Armature')
+  local IK=require('dragonbones.armature.IKConstraint')
+  local Timelines=require('dragonbones.animation.ConstraintOrderTimelineState')
+  local Parser=require('dragonbones.parser.ObjectDataParser')
+  local JSON=require('dragonbones.parser.JSON')
+  local Observer={__newindex=Slot.__newindex}
+  Observer.__index=function(self,key)return rawget(Observer,key)or Slot.__index(self,key)end
+  setmetatable(Observer,{__index=Slot})
+  function Observer.toString()return '[example.ConstraintOrderSlot]'end
+  function Observer.new()return Slot.new(Observer)end
+  function Observer:_initDisplay()end
+  function Observer:_disposeDisplay()end
+  function Observer:_onUpdateDisplay()end
+  function Observer:_addDisplay()end
+  local file=assert(io.open('examples/constraintorder_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('ik-demo');local animation=model:getAnimation('change')
+  local armature=Pool.borrowObject(Armature);armature._armatureData=model
+  for i=1,model.sortedBones.length do Pool.borrowObject(Bone):init(model.sortedBones[i],armature)end
+  for i=1,model.sortedSlots.length do Pool.borrowObject(Observer):init(model.sortedSlots[i],armature,nil,nil)end
+  local ik=Pool.borrowObject(IK);ik:init(model:getConstraint('aim'),armature);armature:_addConstraint(ik)
+  -- Explicit manual fields until AnimationState/Animation are implemented.
+  local state={animationData=animation,_position=0,_duration=animation.duration,
+    playTimes=0,currentPlayTimes=0,_playheadState=3}
+  local aim=Pool.borrowObject(Timelines.IKConstraintTimelineState);aim.target=ik
+  aim:init(armature,state,animation:getConstraintTimelines('aim')[1])
+  local order=Pool.borrowObject(Timelines.ZOrderTimelineState)
+  order:init(armature,state,animation.zOrderTimeline)
+  for _,time in ipairs({0,.25,.5,.75})do
+    aim:update(time);order:update(time)
+    armature:invalidUpdate()
+    for i=1,armature:getBones().length do armature:getBones()[i]:update(-1)end
+    print(('IK/ordem t=%.2f: peso=%.2f dobra=%s ordem=%d,%d,%d'):format(time,ik._weight,
+      tostring(ik._bendPositive),armature:getSlot('a')._zOrder,
+      armature:getSlot('b')._zOrder,armature:getSlot('c')._zOrder))
+  end
+  aim:returnToPool();order:returnToPool();armature:returnToPool();data:returnToPool()
+  print('IK e ordem por keyframes concluídos. Tempo manual, sem player ou renderer.')
 elseif mode == 'deformationtimeline' then
   local Pool=require('dragonbones.core.BaseObject')
   local Bone=require('dragonbones.armature.Bone')
@@ -524,5 +567,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder')
 end

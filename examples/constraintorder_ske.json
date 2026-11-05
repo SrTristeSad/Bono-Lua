@@ -1,0 +1,96 @@
+{
+  "version": "5.6",
+  "name": "IK Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "ik-demo",
+      "bone": [
+        {
+          "name": "upper",
+          "length": 10
+        },
+        {
+          "name": "lower",
+          "parent": "upper",
+          "length": 8,
+          "transform": {
+            "x": 10
+          }
+        },
+        {
+          "name": "target",
+          "transform": {
+            "x": 12,
+            "y": 8
+          }
+        }
+      ],
+      "ik": [
+        {
+          "name": "aim",
+          "bone": "lower",
+          "target": "target",
+          "chain": 1,
+          "bendPositive": true,
+          "weight": 1
+        }
+      ],
+      "slot": [
+        {
+          "name": "a",
+          "parent": "upper"
+        },
+        {
+          "name": "b",
+          "parent": "upper"
+        },
+        {
+          "name": "c",
+          "parent": "upper"
+        }
+      ],
+      "animation": [
+        {
+          "name": "change",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 30,
+              "name": "aim",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0.25
+                }
+              ]
+            }
+          ],
+          "zOrder": {
+            "frame": [
+              {
+                "duration": 12,
+                "zOrder": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "duration": 12,
+                "zOrder": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
