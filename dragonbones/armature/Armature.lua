@@ -8,6 +8,7 @@ local Armature = {}
 setmetatable(Armature, {__index=BaseObject})
 function Armature.toString() return '[class dragonBones.Armature]' end
 function Armature.__index(self,key)
+  if key=='eventDispatcher' then return self._proxy end
   if key=='display' then return self._display end
   if key=='animation' then return self._animation end
   if key=='clock' then return self._clock end
@@ -46,7 +47,7 @@ function Armature.__newindex(self,key,value)
     if self[field]==value then return end
     self[field]=value
     self:invalidUpdate()
-  elseif key=='name' or key=='armatureData' or key=='display' or key=='animation' or key=='parent' then error('Readonly property: '..key)
+  elseif key=='eventDispatcher' or key=='name' or key=='armatureData' or key=='display' or key=='animation' or key=='parent' then error('Readonly property: '..key)
   else rawset(self,key,value) end
 end
 function Armature.new()

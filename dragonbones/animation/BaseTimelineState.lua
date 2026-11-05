@@ -18,6 +18,12 @@ local function at(array,index)
   return array[index + 1]
 end
 
+-- Math.floor preserves signed zero; Lua 5.4 integer conversion does not.
+local function floor(value)
+  if value==0 then return value end
+  return math.floor(value)
+end
+
 local function clear(array)
   array.length=0
 end
@@ -99,10 +105,10 @@ function TimelineState:_setCurrentTime(passedTime)
       end
       if passedTime < 0.0 then
         passedTime = -passedTime
-        self.currentPlayTimes = math.floor(passedTime / self._duration)
+        self.currentPlayTimes = floor(passedTime / self._duration)
         self.currentTime = self._duration - math.fmod(passedTime,self._duration)
       else
-        self.currentPlayTimes = math.floor(passedTime / self._duration)
+        self.currentPlayTimes = floor(passedTime / self._duration)
         self.currentTime = math.fmod(passedTime,self._duration)
       end
     end
