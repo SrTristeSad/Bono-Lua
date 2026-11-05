@@ -25,3 +25,5 @@ Quatro mutações rejeitadas: remover epsilon de conclusão, inverter clamp supe
 `node tests/basetimeline_differential.js ../DragonBonesJS lua5.4` (ou luajit). Quarto argumento opcional: índice ou operação, como reinit/helper/clear. Artefatos preservam entrada, expected, actual e resultado. `lua5.4 examples/run.lua timeline` importa examples/timeline_ske.json com o parser real e interpola translação 0/20/40/20 nos tempos 0/0,25/0,5/0,75. Não aplica pose a Bone nem abre janela.
 
 Próximo trabalho: subclasses concretas de TimelineState.ts e BlendState; depois AnimationState/Animation e integração de Armature. Preservar contratos e ownership; não preencher dependências com player fictício.
+
+Integração posterior de ActionTimelineState revelou Math.floor(-0) em currentPlayTimes; helper preserva o zero assinado. Regressão integral sem alteração de métricas/budgets. Ver ActionTimeline.md e seu caso 24.

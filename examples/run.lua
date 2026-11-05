@@ -81,6 +81,56 @@ elseif mode == 'bones' then
   armature:returnToPool()
   data:returnToPool()
   print('Hierarquia e limpeza concluídas. Montagem manual, sem reprodução de animação.')
+elseif mode == 'actiontimeline' then
+  local Pool=require('dragonbones.core.BaseObject')
+  local Bone=require('dragonbones.armature.Bone')
+  local Slot=require('dragonbones.armature.Slot')
+  local Armature=require('dragonbones.armature.Armature')
+  local Action=require('dragonbones.animation.ActionTimelineState')
+  local Core=require('dragonbones.core.DragonBones')
+  local Parser=require('dragonbones.parser.ObjectDataParser')
+  local JSON=require('dragonbones.parser.JSON')
+  local SlotObserver={__newindex=Slot.__newindex}
+  SlotObserver.__index=function(self,key)return rawget(SlotObserver,key)or Slot.__index(self,key)end
+  setmetatable(SlotObserver,{__index=Slot})
+  function SlotObserver.toString()return '[example.ActionSlot]'end
+  function SlotObserver.new()return Slot.new(SlotObserver)end
+  function SlotObserver:_initDisplay()end
+  function SlotObserver:_disposeDisplay()end
+  function SlotObserver:_onUpdateDisplay()end
+  function SlotObserver:_addDisplay()end
+  local function report(where,kind,event)
+    print(('%s: %s %s t=%.3f'):format(where,kind,event.name,event.time))
+  end
+  -- Observers of the backend interfaces; no graphic/event backend is installed.
+  local proxy={}
+  function proxy:hasDBEventListener(kind)return true end
+  function proxy:dispatchDBEvent(kind,event)report('local',kind,event)end
+  function proxy:dbClear()end
+  local manager={}
+  function manager:dispatchDBEvent(kind,event)report('som',kind,event)end
+  local core=Core.new(manager)
+  local file=assert(io.open('examples/actiontimeline_ske.json','rb'))
+  local bytes=file:read('*a');file:close()
+  local data=assert(Parser.new():parseDragonBonesData(JSON.parse(bytes)))
+  local model=data:getArmature('ik-demo');local animation=model:getAnimation('events')
+  local armature=Pool.borrowObject(Armature)
+  armature._armatureData=model;armature._dragonBones=core;armature._proxy=proxy
+  for i=1,model.sortedBones.length do Pool.borrowObject(Bone):init(model.sortedBones[i],armature)end
+  for i=1,model.sortedSlots.length do Pool.borrowObject(SlotObserver):init(model.sortedSlots[i],armature,nil,nil)end
+  local timeline=Pool.borrowObject(Action)
+  -- Manual input contract: this is not an AnimationState implementation.
+  local state={animationData=animation,_actionTimeline=timeline,_position=0,
+    _duration=animation.duration,playTimes=2,_playheadState=3,actionEnabled=true,
+    displayControl=true,resetToPose=true,timeScale=1}
+  timeline:init(armature,state,animation.actionTimeline)
+  -- Armature remains outside the clock while its player is incomplete.
+  for _,time in ipairs({0,.3,.6,1.1,2.1})do
+    timeline:update(time);core:advanceTime(0)
+  end
+  print(('Ações Play pendentes: %d (execução depende do player)'):format(armature._actions.length))
+  timeline:returnToPool();core:advanceTime(0);armature:returnToPool();data:returnToPool()
+  print('Eventos, som e limpeza concluídos. Tempo manual, sem player ou renderer.')
 elseif mode == 'constraintorder' then
   local Pool=require('dragonbones.core.BaseObject')
   local Bone=require('dragonbones.armature.Bone')
@@ -567,5 +617,5 @@ elseif mode == 'displayframe' then
   data:returnToPool()
   print('DisplayFrame e limpeza concluídos. Sem renderização ou player.')
 else
-  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder')
+  error('Uso: lua examples/run.lua inspect [arquivo.json|arquivo.dbbin] [escala]\n     lua examples/run.lua transform\n     lua examples/run.lua bones [arquivo_ske.json]\n     lua examples/run.lua surface\n     lua examples/run.lua displayframe\n     lua examples/run.lua slot\n     lua examples/run.lua slotdata\n     lua examples/run.lua slotruntime\n     lua examples/run.lua ik\n     lua examples/run.lua path\n     lua examples/run.lua timeline\n     lua examples/run.lua bonetimeline\n     lua examples/run.lua slottimeline\n     lua examples/run.lua deformationtimeline\n     lua examples/run.lua constraintorder\n     lua examples/run.lua actiontimeline')
 end
