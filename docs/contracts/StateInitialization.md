@@ -1,6 +1,6 @@
 # Inicialização, fade e controles de AnimationState
 
-Fonte: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e, animation/AnimationState.ts. Lidos init, _advanceFadeTime, play/stop, fadeOut, máscaras, addState, activeTimeline e getters de fade/reprodução; versão Lua do backup cd4206a8 consultada. Depende de AnimationConfig, Action/ZOrder/Animation timelines, eventos/core e bones reais já portados. Permanecem ausentes _updateTimelines, _updateBoneAndSlotTimelines e advanceTime; Animation também ainda pendente. Não há player substituto.
+Fonte: DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e, animation/AnimationState.ts. Lidos init, _advanceFadeTime, play/stop, fadeOut, máscaras, addState, activeTimeline e getters de fade/reprodução; versão Lua do backup cd4206a8 consultada. Depende de AnimationConfig, Action/ZOrder/Animation timelines, eventos/core e bones reais já portados. Esses três corpos e a parte de avanço de Animation foram acrescentados posteriormente; ver [StateAdvance.md](StateAdvance.md). O facade público e a orquestração de Armature continuam pendentes.
 
 ## Contrato
 

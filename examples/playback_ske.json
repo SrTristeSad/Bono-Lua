@@ -1,0 +1,450 @@
+{
+  "version": "5.6",
+  "name": "Playback Bono-Lua",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "playback",
+      "bone": [
+        {
+          "name": "root",
+          "length": 10
+        },
+        {
+          "name": "child",
+          "parent": "root",
+          "length": 8,
+          "transform": {
+            "x": 10
+          }
+        },
+        {
+          "name": "grid",
+          "type": "surface",
+          "segmentX": 1,
+          "segmentY": 1,
+          "vertices": [
+            -200,
+            -200,
+            200,
+            -200,
+            -200,
+            200,
+            200,
+            200
+          ]
+        },
+        {
+          "name": "attached",
+          "parent": "grid",
+          "transform": {
+            "x": 50,
+            "y": 50
+          }
+        },
+        {
+          "name": "target",
+          "transform": {
+            "x": 12,
+            "y": 8
+          }
+        }
+      ],
+      "slot": [
+        {
+          "name": "meshSlot",
+          "parent": "root"
+        },
+        {
+          "name": "plain",
+          "parent": "child"
+        },
+        {
+          "name": "extra",
+          "parent": "attached"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "meshSlot",
+              "display": [
+                {
+                  "name": "meshSlot",
+                  "type": "mesh",
+                  "vertices": [
+                    0,
+                    0,
+                    10,
+                    0,
+                    0,
+                    10
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2
+                  ]
+                },
+                {
+                  "name": "image"
+                }
+              ]
+            },
+            {
+              "name": "plain",
+              "display": [
+                {
+                  "name": "plainImage"
+                }
+              ]
+            },
+            {
+              "name": "extra",
+              "display": [
+                {
+                  "name": "extraImage"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "ik": [
+        {
+          "name": "aim",
+          "bone": "child",
+          "target": "target",
+          "chain": 1,
+          "bendPositive": true,
+          "weight": 1
+        }
+      ],
+      "animation": [
+        {
+          "name": "move",
+          "duration": 24,
+          "frame": [
+            {
+              "duration": 12,
+              "event": "startFrame"
+            },
+            {
+              "duration": 12,
+              "event": "halfFrame",
+              "sound": "tap"
+            }
+          ],
+          "timeline": [
+            {
+              "type": 11,
+              "name": "root",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 40,
+                  "y": 20
+                }
+              ]
+            },
+            {
+              "type": 12,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 60,
+                  "y": -20
+                }
+              ]
+            },
+            {
+              "type": 13,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1.5,
+                  "y": 0.75
+                }
+              ]
+            },
+            {
+              "type": 60,
+              "name": "root",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.5
+                }
+              ]
+            },
+            {
+              "type": 50,
+              "name": "grid",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "vertices": []
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "offset": 1,
+                  "vertices": [
+                    40
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 20,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "type": 21,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": {
+                    "rM": 100
+                  }
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": {
+                    "rM": 20
+                  }
+                }
+              ]
+            },
+            {
+              "type": 22,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "vertices": []
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "offset": 3,
+                  "vertices": [
+                    20
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 24,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.25
+                }
+              ]
+            },
+            {
+              "type": 23,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 4
+                }
+              ]
+            },
+            {
+              "type": 30,
+              "name": "aim",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": 0,
+                  "y": 0.25
+                }
+              ]
+            }
+          ],
+          "zOrder": {
+            "frame": [
+              {
+                "duration": 12,
+                "zOrder": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "duration": 12,
+                "zOrder": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "alt",
+          "duration": 24,
+          "timeline": [
+            {
+              "type": 11,
+              "name": "root",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": -10,
+                  "y": 5
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "x": -30,
+                  "y": 15
+                }
+              ]
+            },
+            {
+              "type": 24,
+              "name": "meshSlot",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.2
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0.8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "controller",
+          "duration": 24,
+          "blendType": "1d",
+          "timeline": [
+            {
+              "type": 40,
+              "name": "move",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                }
+              ],
+              "x": 0,
+              "y": 0
+            },
+            {
+              "type": 40,
+              "name": "alt",
+              "frame": [
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 1
+                },
+                {
+                  "duration": 12,
+                  "tweenEasing": 0,
+                  "value": 0
+                }
+              ],
+              "x": 1,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "name": "empty",
+          "duration": 24
+        }
+      ]
+    }
+  ]
+}
