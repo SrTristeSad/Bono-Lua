@@ -3,7 +3,7 @@
 local Display={};Display.__index=Display
 function Display.new(kind)
   return setmetatable({kind=kind or'container',children={},x=0,y=0,scaleX=1,scaleY=1,
-    rotation=0,skewX=0,skewY=0,alpha=1,tint=0xffffff,visible=true,blendMode=0},Display)
+    rotation=0,skewX=0,skewY=0,alpha=1,tint=0xffffff,visible=true,blendMode=0,dirty=0,indexDirty=0},Display)
 end
 function Display:setTransform(x,y,sx,sy,r,kx,ky)
   self.x=x or 0;self.y=y or 0;self.scaleX=sx or 1;self.scaleY=sy or 1
@@ -31,6 +31,7 @@ function Display:swapChildren(a,b)
 end
 function Display:destroy()
   if self.parent then self.parent:removeChild(self)end
+  if self._gpuMesh then self._gpuMesh:release();self._gpuMesh=nil end
   self.texture=nil;self.destroyed=true
 end
 local function drawNode(node,parentAlpha)
@@ -44,10 +45,10 @@ local function drawNode(node,parentAlpha)
     0,0,1,0,0,0,0,1)
   g.applyTransform(transform)
   local alpha=parentAlpha*node.alpha
-  if node.kind=='sprite'and node.texture then
+  if (node.kind=='sprite'or node.kind=='mesh')and node.texture then
     local texture=node.texture
     assert(not texture.destroyed,'Texture frame was disposed')
-    if not texture.quad then
+    if node.kind=='sprite'and not texture.quad then
       texture.quad=g.newQuad(texture.x,texture.y,texture.width,texture.height,
         texture.image:getWidth(),texture.image:getHeight())
     end
@@ -56,7 +57,26 @@ local function drawNode(node,parentAlpha)
     if node.blendMode==0 then g.setBlendMode('alpha','alphamultiply')
     elseif node.blendMode==1 then g.setBlendMode('add','alphamultiply')
     else error('LÖVE sprite backend currently supports Normal/Add blend only')end
-    g.draw(texture.image,texture.quad)
+    if node.kind=='mesh'then
+      g.setMeshCullMode('none')
+      if node.vertices and node.indices.length>0 then
+        if node._gpuDirty or not node._gpuMesh then
+          local vertices={}
+          for i=1,node.vertices.length,2 do
+            vertices[#vertices+1]={node.vertices[i],node.vertices[i+1],node.uvs[i],node.uvs[i+1],1,1,1,1}
+          end
+          if node._gpuMesh and node._gpuMesh:getVertexCount()~=#vertices then
+            node._gpuMesh:release();node._gpuMesh=nil
+          end
+          if not node._gpuMesh then node._gpuMesh=g.newMesh(vertices,'triangles','dynamic')
+          else node._gpuMesh:setVertices(vertices)end
+          local map={};for i=1,node.indices.length do map[i]=node.indices[i]+1 end
+          node._gpuMesh:setVertexMap(map);node._gpuDirty=false
+        end
+        node._gpuMesh:setTexture(texture.image)
+        g.draw(node._gpuMesh)
+      end
+    else g.draw(texture.image,texture.quad)end
   end
   for _,child in ipairs(node.children)do drawNode(child,alpha)end
   g.pop()

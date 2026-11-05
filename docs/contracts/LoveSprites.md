@@ -1,5 +1,7 @@
 # Primeiro backend gráfico LÖVE: sprites
 
+Atualização posterior: meshes/deformação foram acrescentadas em [LoveMeshes.md](LoveMeshes.md); os limites abaixo descrevem o recorte original de sprites.
+
 O documento RECONSTRUCTION_SPEC.md, etapa 09, prevê LÖVE como integração Lua separada do motor. Este recorte implementa sprites com atlas não rotacionado, transformações/pivot/trim, cor multiplicativa, alpha, visibilidade, ordem e blends Normal/Add. Meshes, atlas rotacionados e outros blends são recusados explicitamente; não estão implementados nem são declarados equivalentes.
 
 ## Fonte e adaptação

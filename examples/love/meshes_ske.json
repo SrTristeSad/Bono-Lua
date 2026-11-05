@@ -1,0 +1,369 @@
+{
+  "version": "5.6",
+  "name": "meshes",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "demo",
+      "bone": [
+        {
+          "name": "root"
+        },
+        {
+          "name": "child",
+          "parent": "root",
+          "transform": {
+            "x": 8
+          }
+        },
+        {
+          "name": "grid",
+          "type": "surface",
+          "segmentX": 1,
+          "segmentY": 1,
+          "vertices": [
+            -200,
+            -200,
+            200,
+            -200,
+            -200,
+            200,
+            200,
+            200
+          ]
+        }
+      ],
+      "slot": [
+        {
+          "name": "mesh",
+          "parent": "root"
+        },
+        {
+          "name": "weighted",
+          "parent": "root"
+        },
+        {
+          "name": "surface",
+          "parent": "grid"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "mesh",
+              "display": [
+                {
+                  "name": "mesh",
+                  "type": "mesh",
+                  "path": "red",
+                  "vertices": [
+                    0,
+                    0,
+                    16,
+                    0,
+                    16,
+                    16,
+                    0,
+                    16
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2,
+                    0,
+                    2,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "weighted",
+              "display": [
+                {
+                  "name": "weighted",
+                  "type": "mesh",
+                  "path": "blue",
+                  "vertices": [
+                    24,
+                    0,
+                    40,
+                    0,
+                    40,
+                    16,
+                    24,
+                    16
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2,
+                    0,
+                    2,
+                    3
+                  ],
+                  "weights": [
+                    2,
+                    0,
+                    0.5,
+                    1,
+                    0.5,
+                    2,
+                    0,
+                    0.5,
+                    1,
+                    0.5,
+                    2,
+                    0,
+                    0.5,
+                    1,
+                    0.5,
+                    2,
+                    0,
+                    0.5,
+                    1,
+                    0.5
+                  ],
+                  "slotPose": [
+                    1,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                  ],
+                  "bonePose": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    8,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "surface",
+              "display": [
+                {
+                  "name": "surface",
+                  "type": "mesh",
+                  "path": "green",
+                  "vertices": [
+                    0,
+                    24,
+                    16,
+                    24,
+                    16,
+                    40,
+                    0,
+                    40
+                  ],
+                  "uvs": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1
+                  ],
+                  "triangles": [
+                    0,
+                    1,
+                    2,
+                    0,
+                    2,
+                    3
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "animation": [
+        {
+          "name": "move",
+          "duration": 24,
+          "playTimes": 0,
+          "timeline": [
+            {
+              "type": 11,
+              "name": "root",
+              "frame": [
+                {
+                  "duration": 12,
+                  "x": 0,
+                  "y": 0,
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "x": 8,
+                  "y": 0,
+                  "tweenEasing": 0
+                }
+              ]
+            },
+            {
+              "type": 11,
+              "name": "child",
+              "frame": [
+                {
+                  "duration": 12,
+                  "x": 0,
+                  "y": 0,
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "x": 4,
+                  "y": 0,
+                  "tweenEasing": 0
+                }
+              ]
+            },
+            {
+              "type": 50,
+              "name": "grid",
+              "frame": [
+                {
+                  "duration": 12,
+                  "vertices": [],
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "vertices": [
+                    0,
+                    8,
+                    0,
+                    8,
+                    0,
+                    8,
+                    0,
+                    8
+                  ],
+                  "tweenEasing": 0
+                }
+              ]
+            }
+          ],
+          "ffd": [
+            {
+              "skin": "default",
+              "slot": "mesh",
+              "name": "mesh",
+              "frame": [
+                {
+                  "duration": 12,
+                  "vertices": [],
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "vertices": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    8,
+                    0,
+                    8
+                  ],
+                  "tweenEasing": 0
+                }
+              ]
+            },
+            {
+              "skin": "default",
+              "slot": "weighted",
+              "name": "weighted",
+              "frame": [
+                {
+                  "duration": 12,
+                  "vertices": [],
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "vertices": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    8,
+                    0,
+                    8
+                  ],
+                  "tweenEasing": 0
+                }
+              ]
+            },
+            {
+              "skin": "default",
+              "slot": "surface",
+              "name": "surface",
+              "frame": [
+                {
+                  "duration": 12,
+                  "vertices": [],
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "vertices": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    8,
+                    0,
+                    8
+                  ],
+                  "tweenEasing": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

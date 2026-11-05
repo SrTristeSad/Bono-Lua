@@ -1,5 +1,13 @@
 # Adaptações e divergências
 
+## LÖVE — meshes, skinning e deformação
+
+Portados os ramos mesh de PixiSlot para o backend LÖVE: buffers Float32/Uint16, UVs/triângulos, deformação comum, skinning ponderado e pai Surface. `love .` inicia meshes; M alterna com sprites. Ver [LoveMeshes.md](contracts/LoveMeshes.md).
+
+Diferencial: 82 cenários/21.368 colunas exatas por VM Lua 5.4/LuaJIT, com runtime/factory reais. CI: 56 suítes por VM, 22 exemplos de terminal e job gráfico com as oito cenas anteriores de sprites mais oito cenas de meshes contra Pixi WebGL real. Mesh pixels exigem igualdade exata; resultado no artefato/mesh-result.json, sem inferir sucesso antes da execução.
+
+Este é o estado atual; abaixo estão etapas anteriores. Atlas rotacionados e blends avançados continuam pendentes. Backend e integrações oficiais não são declarados completos; a prova numérica usa probes e a prova gráfica usa hosts reais.
+
 ## LÖVE — primeiro backend de sprites
 
 Acrescentado backend gráfico separado do runtime: sprites com atlas não rotacionado, transformações/pivot/trim, tint/alpha, ordem, visibilidade e Normal/Add. `love .` abre a demonstração gráfica. Meshes, atlas rotacionados e blends avançados ainda são recusados. Ver [LoveSprites.md](contracts/LoveSprites.md).

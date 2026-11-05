@@ -221,9 +221,9 @@
     },
     "Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts": {
       "destination": "dragonbones/love/Slot.lua",
-      "status": "Parcial: ramo sprite/V4 adaptado ao backend LÖVE. Meshes e blends fora de Normal/Add recusados. Não é porte completo da integração Pixi.",
-      "tests": "lovesprites_differential: 56 cenários/11.188 colunas exatas por VM Lua 5.4/LuaJIT; referencia blobs originais com probes de plataforma. Job love-pixels compara oito capturas reais entre LÖVE e Pixi CanvasRenderer/Chromium; resultado no artefato da CI.",
-      "differences": "LÖVE scene graph/Quads/Image em vez de objetos Pixi. Ramo sprite conserva escala/pivot/skew/tint/alpha; suporte limitado ao contrato LoveSprites.md. Sem claims de mesh/atlas rotacionado/blends avançados."
+      "status": "Parcial: sprites/V4 e ramos de mesh comum/ponderada/Surface adaptados ao LÖVE. Atlas rotacionados e blends avançados pendentes; integração Pixi não é declarada completa.",
+      "tests": "lovesprites_differential: 56 cenários/11.188 colunas exatas por VM Lua 5.4/LuaJIT; referencia blobs originais com probes de plataforma. Job love-pixels compara oito capturas reais entre LÖVE e Pixi CanvasRenderer/Chromium; resultado no artefato da CI. lovemeshes_differential: 82 cenários/21.368 colunas exatas por VM Lua 5.4/LuaJIT, buffers tipados reais, skinning/Surface/deform, offsets grandes e bone ausente. Job gráfico acrescenta oito meshes LÖVE vs Pixi WebGL/Chromium; resultado em mesh-result.json. Ver LoveMeshes.md.",
+      "differences": "LÖVE Mesh/Image/Quad e scene graph em vez dos objetos Pixi. Buffers Float32/Uint16 e cursores/algoritmos originais preservados, inclusive avanço condicionado ao bone não-null. Índices de GPU LÖVE +1; recurso Mesh é atualizado/recriado/liberado pelo adaptador. Atlas rotacionados/blends avançados continuam fora do recorte. Ver LoveMeshes.md e LoveSprites.md."
     },
     "Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts": {
       "destination": "dragonbones/love/TextureAtlasData.lua",
