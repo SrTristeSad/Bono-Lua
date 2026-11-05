@@ -11,7 +11,7 @@ class Node {
  destroy(){if(this.parent)this.parent.removeChild(this);this.destroyed=true;this.texture=null;}
 }
 class Sprite extends Node{}
-class Mesh extends Node{}
+class Mesh extends Node{constructor(){super();this.dirty=this.indexDirty=0;}}
 class Rectangle{constructor(x,y,width,height){Object.assign(this,{x,y,width,height});}}
 class Texture{constructor(baseTexture,frame,orig,trim,rotate){Object.assign(this,{baseTexture,frame,orig,trim,rotate});}destroy(){this.destroyed=true;}}
 module.exports={VERSION:'4.8.9',Container:Node,Sprite,mesh:{Mesh},Rectangle,Texture,BLEND_MODES:{NORMAL:0,ADD:1}};

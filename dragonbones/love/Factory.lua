@@ -18,7 +18,7 @@ function Factory.new(core)
   self._dragonBones=core
   return self
 end
-function Factory:_isSupportMesh()return false end
+function Factory:_isSupportMesh()return true end
 function Factory:_buildTextureAtlasData(atlas,image)
   if atlas==nil then return Pool.borrowObject(Atlas)end
   atlas.renderTexture=image;return atlas
@@ -42,7 +42,7 @@ function Factory:_buildArmature(packageData)
 end
 function Factory:_buildSlot(_,slotData,armature)
   local slot=Pool.borrowObject(Slot)
-  slot:init(slotData,armature,Display.new('sprite'),Display.new('unsupported-mesh'))
+  slot:init(slotData,armature,Display.new('sprite'),Display.new('mesh'))
   return slot
 end
 return Factory
