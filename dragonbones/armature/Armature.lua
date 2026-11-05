@@ -3,6 +3,7 @@
 -- Partial lifecycle/registry/clock/cache/action APIs. init/advanceTime and Animation are absent.
 local BaseObject = require('dragonbones.core.BaseObject')
 local Array = require('dragonbones.core.JSArray')
+local number = require('dragonbones.parser.JSValue').number
 local Armature = {}
 setmetatable(Armature, {__index=BaseObject})
 function Armature.toString() return '[class dragonBones.Armature]' end
@@ -72,6 +73,24 @@ function Armature:_onClear()
   self._armatureData=nil;self._animation=nil;self._proxy=nil;self._display=nil
   self._replaceTextureAtlasData=nil;self._replacedTexture=nil
   self._dragonBones=nil;self._clock=nil;self._parent=nil
+end
+function Armature:_sortZOrder(slotIndices,offset)
+  local slotDatas=self._armatureData.sortedSlots
+  local isOriginal=slotIndices==nil
+  if self._zOrderDirty or not isOriginal then
+    local length=slotDatas.length
+    for i=0,length-1 do
+      local index=i
+      if not isOriginal then index=number(slotIndices[offset+i+1]) end
+      if not(index<0 or index>=length)then
+        local data=slotDatas[index+1]
+        local slot=self:getSlot(data.name)
+        if slot~=nil then slot:_setZOrder(i)end
+      end
+    end
+    self._slotsDirty=true
+    self._zOrderDirty=not isOriginal
+  end
 end
 function Armature:_addBone(value)
   local bones=self._bones

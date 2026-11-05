@@ -113,6 +113,7 @@ jobs:
           node tests/bonetimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/slottimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
           node tests/deformationtimeline_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          node tests/constraintorder_differential.js ../DragonBonesJS ${{ matrix.vm }}
           ${{ matrix.vm }} examples/run.lua inspect
           ${{ matrix.vm }} examples/run.lua transform
           ${{ matrix.vm }} examples/run.lua bones
@@ -127,6 +128,7 @@ jobs:
           ${{ matrix.vm }} examples/run.lua bonetimeline
           ${{ matrix.vm }} examples/run.lua slottimeline
           ${{ matrix.vm }} examples/run.lua deformationtimeline
+          ${{ matrix.vm }} examples/run.lua constraintorder
       - name: Preserve inputs, original output, Lua output and results
         if: always()
         uses: actions/upload-artifact@v4
