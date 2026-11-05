@@ -212,6 +212,12 @@
       "status": "Todos os corpos representados no domínio de AnimationFacade.md; criação/seleção/ordenação/reprodução de estados reais. Orquestração de Armature e factories/backends pendentes.",
       "tests": "stateadvance_differential: 200 cenários/392.400 colunas exatas por VM Lua 5.4/LuaJIT. Zero/um/vários estados, camadas, reset de blends, cache, eventos e pooling adiado com objetos reais. Exemplo playback executa deltas e updates reais de Bone/Slot. animationfacade_differential: 839 cenários/2.325.490 colunas por VM Lua 5.4/LuaJIT, seis erros readonly esperados, zero aproximações. Oito mutações rejeitadas; exemplo animation demonstra play/stop/resume/goto/fade/reset e playback usa API pública.",
       "differences": "JSArray/JSMap; mapas públicos devem usar JSMap.new. Collections preservam identidade; getter readonly rejeita escrita; aviso no stderr. Preserva sentinelas, resto com sinal, Single, ordenação, recursão de filhos/config compartilhada e peculiaridades de play sem nome. Ver AnimationFacade.md e StateAdvance.md."
+    },
+    "DragonBones/src/dragonBones/factory/BaseFactory.ts": {
+      "destination": "dragonbones/factory/BaseFactory.lua",
+      "status": "Todos os corpos representados no domínio de BaseFactory.md; montagem real integrada a parsers/Armature/Animation/Bones/Slots/IK/Path. Três hooks de backend permanecem abstratos; renderer pendente.",
+      "tests": "factory_differential: 252 cenários/85.217 colunas por VM Lua 5.4/LuaJIT, duas exceções readonly esperadas, zero aproximações. Oito mutações rejeitadas; regressão armatureruntime nas duas VMs. Exemplo factory monta skeleton/atlas automaticamente com backend observador.",
+      "differences": "JSMap/JSArray, offsets públicos base zero/armazenamento um, SkinData.NULL normalizado, ArrayBuffer via SharedBinaryBuffer. Construtor aceita classType para subclassing; getters readonly. Avisos stderr e guards abstratos explícitos. Mapas/protótipos/coerções/recursões complexas limitados pelo contrato. Ver BaseFactory.md."
     }
   }
 }

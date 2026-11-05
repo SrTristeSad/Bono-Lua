@@ -36,4 +36,4 @@ Oito mutações rejeitadas: init sem registro de modelos, avanço de Animation o
 
 `lua5.4 examples/run.lua armature` (também LuaJIT) usa Armature.init, Animation.play e core.clock para atualizar pose/mundo 0→20→40→20, trocar display, executar IK e despachar seis eventos locais. Três frames passam pelo clock porque o primeiro delta é zero; ao final lock=false. O backend só observa callbacks, sem desenhar. playback/animation mantêm suas demonstrações anteriores.
 
-Todos os corpos de Armature.ts estão representados no domínio declarado. A montagem de Bones/Slots/constraints/displays ainda é explícita. Factories e backends gráficos são o próximo trabalho; isso não representa paridade integral com DragonBonesJS nem um player gráfico pronto.
+Todos os corpos de Armature.ts estão representados no domínio declarado. Atualização posterior: a montagem automática foi acrescentada em [BaseFactory.md](BaseFactory.md), com backend observador. Backends gráficos continuam pendentes; isso não representa paridade integral com DragonBonesJS nem um player gráfico pronto.
