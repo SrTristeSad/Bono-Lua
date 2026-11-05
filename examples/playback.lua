@@ -17,6 +17,13 @@ file:close()
 local model=data:getArmature('playback')
 local arm=B.borrowObject(require('dragonbones.armature.Armature'))
 arm._armatureData=model
+local proxy={}
+function proxy:hasDBEventListener()return false end
+function proxy:dispatchDBEvent()end
+function proxy:dbClear()end
+local sound={};function sound:dispatchDBEvent()end
+local core=require('dragonbones.core.DragonBones').new(sound)
+arm._proxy=proxy;arm._dragonBones=core
 for i=1,model.sortedBones.length do
   local bd=model.sortedBones[i]
   local class=require(bd.type==1 and 'dragonbones.armature.Surface' or 'dragonbones.armature.Bone')
@@ -33,16 +40,12 @@ for i=1,model.sortedSlots.length do
   end
   slot:_setDisplayIndex(0);slot:_updateDisplayData()
 end
--- Until the playConfig facade/factory is ported, assembly and registration are explicit.
+-- Armature assembly remains explicit; the Animation public facade owns states.
 local animation=B.borrowObject(require('dragonbones.animation.Animation'))
 animation:init(arm);arm._animation=animation
-local config=B.borrowObject(require('dragonbones.model.AnimationConfig'))
-config.animation='move';config.timeScale=1;config.playTimes=0
-config.fadeInTime=0;config.pauseFadeIn=false;config.resetToPose=false;config.actionEnabled=false
-local state=B.borrowObject(require('dragonbones.animation.AnimationState'))
-state:init(arm,model:getAnimation('move'),config)
-animation._animationStates[1]=state
-animation._lastAnimationState=state
+animation.animations=model.animations
+local state=assert(animation:play('move',0))
+state.actionEnabled=false;state.resetToPose=false
 for _,delta in ipairs({0,.25,.25,.25})do
   animation:advanceTime(delta)
   for i=1,arm:getBones().length do
@@ -55,4 +58,20 @@ for _,delta in ipairs({0,.25,.25,.25})do
   print(('t=%.2f | root pose.x=%.2f | mundo.x=%.2f | display=%d'):format(state.currentTime,root.animationPose.x,root.globalTransformMatrix.tx,arm:getSlot('meshSlot').displayIndex))
 end
 print(('Reprodução por delta concluída; %d callbacks do backend de observação. Sem desenho na tela.'):format(callbacks))
-arm:returnToPool();config:returnToPool();data:returnToPool()
+if arg[1]=='animation' then
+  animation:stop('move')
+  local resumed=animation:play()
+  print('play() retoma o mesmo estado: '..tostring(resumed==state))
+  local paused=assert(animation:gotoAndStopByFrame('move',12))
+  paused.actionEnabled=false
+  animation:advanceTime(0)
+  print(('gotoAndStopByFrame(12): t=%.2f | tocando=%s'):format(paused.currentTime,tostring(paused.isPlaying)))
+  local nextState=assert(animation:fadeIn('alt',.25,0))
+  nextState.actionEnabled=false
+  animation:advanceTime(.125)
+  print(('fadeIn alt: progresso=%.2f | estados=%d'):format(nextState._fadeProgress,animation:getStates().length))
+  animation:reset()
+  print(('reset: estados=%d | tocando=%s'):format(animation:getStates().length,tostring(animation.isPlaying)))
+end
+core:advanceTime(0);core:advanceTime(0)
+arm:returnToPool();data:returnToPool()

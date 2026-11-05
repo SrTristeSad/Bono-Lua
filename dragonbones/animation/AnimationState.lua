@@ -1,6 +1,6 @@
--- Partial AnimationState from AnimationState.ts; real lifecycle/seek/weight APIs.
+-- AnimationState from AnimationState.ts; real lifecycle/seek/weight/advance APIs.
 -- DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e; MIT.
--- Original AnimationState bodies; Animation facade and Armature orchestration remain separate.
+-- Original AnimationState bodies; Armature orchestration remains separate.
 local BaseObject=require('dragonbones.core.BaseObject')
 local Core=require('dragonbones.core.Enums')
 local Array=require('dragonbones.core.JSArray')

@@ -1,6 +1,6 @@
 -- Partial port of Armature.ts, DragonBonesJS@64b6c69ae35777c2404be68c9192e2c56906079e.
 -- Copyright (c) 2012-2025 DragonBones team and contributors; MIT.
--- Partial lifecycle/registry/clock/cache/action APIs. init/advanceTime and Animation are absent.
+-- Partial lifecycle/registry/clock/cache/action APIs; init/advanceTime remain absent.
 local BaseObject = require('dragonbones.core.BaseObject')
 local Array = require('dragonbones.core.JSArray')
 local number = require('dragonbones.parser.JSValue').number
