@@ -1,0 +1,42 @@
+{
+  "name": "demo",
+  "width": 64,
+  "height": 64,
+  "SubTexture": [
+    {
+      "name": "meshSlot",
+      "x": 0,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "plainImage",
+      "x": 0,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "extraImage",
+      "x": 0,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "replacement",
+      "x": 0,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "image",
+      "x": 10,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    }
+  ]
+}
