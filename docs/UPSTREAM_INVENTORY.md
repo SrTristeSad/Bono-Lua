@@ -461,14 +461,14 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `DragonBones/src/dragonBones/armature/Armature.ts` | Código-fonte do núcleo | dragonbones/armature/Armature.lua | Todos os corpos representados no domínio de ArmatureRuntime.md. init/advanceTime integrados a Animation, bones/Surface/slots/IK, proxy/core/clock reais. Factories/backend e demais integrações pendentes. |
 | `DragonBones/src/dragonBones/armature/Bone.ts` | Código-fonte do núcleo | dragonbones/armature/Bone.lua | Corpos portados; Bone regulares e pai Surface comparados com Armature real parcial. Callbacks de Slot e execução de solvers continuam sem validação nesta unidade. |
 | `DragonBones/src/dragonBones/armature/Constraint.ts` | Código-fonte do núcleo | dragonbones/armature/Constraint.lua | Corpos Constraint/IKConstraint/PathConstraint portados em módulos separados; domínio validado nos contratos, integração completa pendente. |
-| `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | dragonbones/armature/IArmatureProxy.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` | Interface ou declaração de tipos | docs/contracts/IArmatureProxy.md | Interface sem corpo executável; contrato implementado pelo proxy LÖVE real. |
 | `DragonBones/src/dragonBones/armature/Slot.ts` | Código-fonte do núcleo | dragonbones/armature/Slot.lua | Todos os corpos de Slot e DisplayFrame representados; renderer hooks abstratos. update, troca/lista/índices e child Armature comparados no domínio declarado, sem Animation/player/backend completo. |
 | `DragonBones/src/dragonBones/armature/Surface.ts` | Código-fonte do núcleo | dragonbones/armature/Surface.lua | Oito corpos portados, com geometria/bone/armature parcial reais; grades regulares e deformadas, pais Bone/Surface, matriz por ponto e cache comparados. Solvers/player/backend pendentes. |
 | `DragonBones/src/dragonBones/armature/TransformObject.ts` | Código-fonte do núcleo | dragonbones/armature/TransformObject.lua | Primeira base abstrata do runtime: inicializadores, _onClear, updateGlobalTransform e getter armature portados; Bone/Slot/Armature e playback pendentes. |
 | `DragonBones/src/dragonBones/core/BaseObject.ts` | Código-fonte do núcleo | dragonbones/core/BaseObject.lua | Validado isoladamente e nos cenários modelo/pool de Canvas/atlas; runtime completo pendente |
 | `DragonBones/src/dragonBones/core/DragonBones.ts` | Código-fonte do núcleo | dragonbones/core/DragonBones.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
 | `DragonBones/src/dragonBones/event/EventObject.ts` | Código-fonte do núcleo | dragonbones/event/EventObject.lua | Classe(s) comparadas com core/clock/pool reais; integração com Armature/backend e runtime completo pendente |
-| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | docs/contracts/IEventDispatcher.md | Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente |
+| `DragonBones/src/dragonBones/event/IEventDispatcher.ts` | Interface ou declaração de tipos | docs/contracts/IEventDispatcher.md | Interface sem corpo executável; contrato implementado no proxy LÖVE e no gerenciador global de eventos. |
 | `DragonBones/src/dragonBones/factory/BaseFactory.ts` | Código-fonte do núcleo | dragonbones/factory/BaseFactory.lua | Todos os corpos representados no domínio de BaseFactory.md; montagem real integrada a parsers/Armature/Animation/Bones/Slots/IK/Path. Três hooks de backend permanecem abstratos; renderer pendente. |
 | `DragonBones/src/dragonBones/geom/ColorTransform.ts` | Código-fonte do núcleo | dragonbones/geom/ColorTransform.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
 | `DragonBones/src/dragonBones/geom/Matrix.ts` | Código-fonte do núcleo | dragonbones/geom/Matrix.lua | Validado isoladamente nos cenários diferenciais; integração pendente |
@@ -908,8 +908,8 @@ Todos os 1203 arquivos rastreados estão abaixo. 192 arquivos autorais TS/JS sã
 | `Pixi/4.x/out/dragonBones.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/4.x/out/dragonBones.min.js` | Arquivo gerado ou dependência distribuída | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
 | `Pixi/4.x/package.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
-| `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | integrations/Pixi/4.x/src/dragonBones/pixi/PixiFactory.lua | Inventariado; implementação/validação pendente ou não aplicável à categoria |
+| `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` | Integração com motor gráfico | dragonbones/love/ArmatureDisplay.lua | Onze corpos originais representados: proxy, getters, eventos, dispose/destroy e dbUpdate com bones e três bounding boxes. Integração usa Armature/Animation/clock/pool reais. |
+| `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` | Integração com motor gráfico | dragonbones/love/Factory.lua | Nove corpos originais representados: singleton, construtor/parser, runtime compartilhado, ticker, três hooks, montagem automática, textura avulsa e soundEventManager. Host LÖVE, não uma implementação do Pixi. |
 | `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts` | Integração com motor gráfico | dragonbones/love/Slot.lua | Parcial: sprites, meshes comum/ponderada/Surface, atlas rotacionados, Screen e Multiply sobre Canvas adaptados ao LÖVE; outros blends e integração completa pendentes. |
 | `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts` | Integração com motor gráfico | dragonbones/love/TextureAtlasData.lua | Parcial: atlas/TextureData LÖVE com regiões normais/rotacionadas e recursos do host. |
 | `Pixi/4.x/tsconfig.json` | Configuração | — | Inventariado; implementação/validação pendente ou não aplicável à categoria |
@@ -2865,8 +2865,8 @@ Herança: extends Constraint.
 ### `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`
 
 - Origem/commit: `DragonBones/src/dragonBones/armature/IArmatureProxy.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: dragonbones/armature/IArmatureProxy.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: docs/contracts/IArmatureProxy.md. Implementação presente nesta reconstrução.
+- Estado: Interface sem corpo executável; contrato implementado pelo proxy LÖVE real.; testes: Lifecycle integrado em publicfactory_differential e smoke LÖVE real; contrato em IArmatureProxy.md.; diferenças: Interface apagada em TS; contrato/metatable em Lua. Contexto de callback explícito.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/event/IEventDispatcher.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -3473,7 +3473,7 @@ Herança: extends BaseObject.
 
 - Origem/commit: `DragonBones/src/dragonBones/event/IEventDispatcher.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
 - Destino: docs/contracts/IEventDispatcher.md. Contrato documentado; interface sem algoritmo executável.
-- Estado: Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente; testes: events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica.; diferenças: Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício.
+- Estado: Interface sem corpo executável; contrato implementado no proxy LÖVE e no gerenciador global de eventos.; testes: events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica. PublicFactory.md acrescenta dispatcher real/contextos e eventos do runtime, comparados às classes originais.; diferenças: Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício.
 - Dependências candidatas: `DragonBones/src/dragonBones/event/EventObject.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -6660,8 +6660,8 @@ Herança: extends BaseDemo.
 ### `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`
 
 - Origem/commit: `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: integrations/Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/love/ArmatureDisplay.lua. Implementação presente nesta reconstrução.
+- Estado: Onze corpos originais representados: proxy, getters, eventos, dispose/destroy e dbUpdate com bones e três bounding boxes. Integração usa Armature/Animation/clock/pool reais.; testes: publicfactory_differential compara lifecycle, eventos/contextos, reentrância, adição/remoção durante dispatch, once/exceções, debug local/global, geometrias e transformação. 44 cenários exatos por VM. Smoke test de desenho no LÖVE real; rasterização vetorial entre hosts não comparada.; diferenças: Sprite/Graphics por Display/Graphics LÖVE; JS this torna-se primeiro argumento Lua do callback. EventEmitter adapta a dependência do host; oracle executa o EventEmitter do bundle Pixi fixado. onEvent(kind,event) anterior preservado como extensão. Armature/animation readonly; diagnóstico conserva argumentos originais, inclusive ellipse e pivot.
 - Dependências candidatas: `DragonBones/src/dragonBones/animation/Animation.ts`, `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/IArmatureProxy.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/event/EventObject.ts`, `DragonBones/src/dragonBones/geom/Rectangle.ts`, `DragonBones/src/dragonBones/model/BoundingBoxData.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 
@@ -6690,8 +6690,8 @@ Herança: extends PIXI.Sprite; implements IArmatureProxy.
 ### `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts`
 
 - Origem/commit: `Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts` @ `64b6c69ae35777c2404be68c9192e2c56906079e`.
-- Destino: integrations/Pixi/4.x/src/dragonBones/pixi/PixiFactory.lua. Ausente nesta reconstrução antes de iniciar o porte.
-- Estado: pendente; testes: não executados; diferenças: ainda não auditadas.
+- Destino: dragonbones/love/Factory.lua. Implementação presente nesta reconstrução.
+- Estado: Nove corpos originais representados: singleton, construtor/parser, runtime compartilhado, ticker, três hooks, montagem automática, textura avulsa e soundEventManager. Host LÖVE, não uma implementação do Pixi.; testes: publicfactory_differential: 44 cenários/8.941 colunas, exatos nas duas VMs, incluindo getters readonly, clock automático, parser, busca/textura ausente, dispatch local/global, descarte e API do proxy. Regressões de sprites/meshes; smoke test LÖVE real. Ver PublicFactory.md.; diferenças: Ticker Pixi substituído por Factory:update(dt) chamado pelo host; _clockHandler recebe elapsedMS explicitamente. Factory.new(core) anterior preservado; new(dataParser,core) permite injeção. Padrão compartilha core/clock como o original; caches de dados continuam por factory.
 - Dependências candidatas: `DragonBones/src/dragonBones/armature/Armature.ts`, `DragonBones/src/dragonBones/armature/Slot.ts`, `DragonBones/src/dragonBones/core/BaseObject.ts`, `DragonBones/src/dragonBones/core/DragonBones.ts`, `DragonBones/src/dragonBones/factory/BaseFactory.ts`, `DragonBones/src/dragonBones/model/ArmatureData.ts`, `DragonBones/src/dragonBones/parser/DataParser.ts`, `Phaser/3.x/src/dragonBones/phaser/display/Slot.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts`, `Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiSlot.ts`, `Pixi/5.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiArmatureDisplay.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiFactory.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiSlot.ts`, `Pixi/8.x/src/dragonBones/pixi/PixiTextureAtlasData.ts`.
 - Importações externas: nenhuma importação explícita; APIs globais ainda exigem auditoria.
 

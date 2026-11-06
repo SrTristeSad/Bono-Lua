@@ -3,11 +3,19 @@
 local Display={};Display.__index=Display
 function Display.new(kind)
   return setmetatable({kind=kind or'container',children={},x=0,y=0,scaleX=1,scaleY=1,
-    rotation=0,skewX=0,skewY=0,alpha=1,tint=0xffffff,visible=true,blendMode=0,dirty=0,indexDirty=0},Display)
+    rotation=0,skewX=0,skewY=0,pivotX=0,pivotY=0,alpha=1,tint=0xffffff,visible=true,blendMode=0,dirty=0,indexDirty=0},Display)
 end
-function Display:setTransform(x,y,sx,sy,r,kx,ky)
+function Display:setTransform(x,y,sx,sy,r,kx,ky,px,py)
   self.x=x or 0;self.y=y or 0;self.scaleX=sx or 1;self.scaleY=sy or 1
   self.rotation=r or 0;self.skewX=kx or 0;self.skewY=ky or 0
+  self.pivotX=px or 0;self.pivotY=py or 0
+end
+function Display:getChildAt(index)
+  assert(index>=0 and index<#self.children,'Child index out of range')
+  return self.children[index+1]
+end
+function Display:getChildByName(name)
+  for _,child in ipairs(self.children)do if child.name==name then return child end end
 end
 function Display:getChildIndex(child)
   for i,v in ipairs(self.children)do if v==child then return i-1 end end
@@ -29,7 +37,7 @@ function Display:swapChildren(a,b)
   local ia,ib=self:getChildIndex(a)+1,self:getChildIndex(b)+1
   self.children[ia],self.children[ib]=b,a
 end
-function Display:destroy()
+function Display:destroy(options)
   if self.parent then self.parent:removeChild(self)end
   if self._gpuMesh then self._gpuMesh:release();self._gpuMesh=nil end
   if self._blendCanvas then self._blendCanvas:release();self._blendCanvas=nil end
@@ -37,6 +45,12 @@ function Display:destroy()
     for _,shader in pairs(self._blendShaders)do shader:release()end
     self._blendShaders=nil
   end
+  local children=self.children;self.children={}
+  for _,child in ipairs(children)do
+    child.parent=nil
+    if options==true or(type(options)=='table'and options.children)then child:destroy(options)end
+  end
+  if self.removeAllListeners then self:removeAllListeners()end
   self.texture=nil;self.destroyed=true
 end
 -- Pixi's sprite batch packs premultiplied tint and alpha into four bytes.
@@ -109,8 +123,11 @@ local function drawNode(node,parentAlpha)
   g.push('all')
   local r,kx,ky=node.rotation,node.skewX,node.skewY
   local transform=love.math.newTransform()
-  transform:setMatrix(math.cos(r+ky)*node.scaleX,-math.sin(r-kx)*node.scaleY,0,node.x,
-    math.sin(r+ky)*node.scaleX,math.cos(r-kx)*node.scaleY,0,node.y,
+  local a,b=math.cos(r+ky)*node.scaleX,math.sin(r+ky)*node.scaleX
+  local c,d=-math.sin(r-kx)*node.scaleY,math.cos(r-kx)*node.scaleY
+  local px,py=node.pivotX,node.pivotY
+  transform:setMatrix(a,c,0,node.x-px*a-py*c,
+    b,d,0,node.y-px*b-py*d,
     0,0,1,0,0,0,0,1)
   g.applyTransform(transform)
   local alpha=parentAlpha*node.alpha
@@ -174,6 +191,7 @@ local function drawNode(node,parentAlpha)
     else g.draw(texture.image,texture.quad)end
     if node.blendMode==2 or node.blendMode==3 then g.setShader(previousShader)end
   end
+  if node._drawGraphics then node:_drawGraphics(alpha)end
   for _,child in ipairs(node.children)do drawNode(child,alpha)end
   g.pop()
 end

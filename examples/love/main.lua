@@ -22,7 +22,7 @@ local function scene(image,alpha,tint,meshMode,scale)
   local factory=Factory.new()
   factory:parseDragonBonesData(raw,'sprites',scale or 1)
   factory:parseTextureAtlasData(JSON.parse(love.filesystem.read('examples/love/sprites_tex.json')),image,'sprites')
-  local arm=factory:buildArmature('demo','sprites')
+  local arm=factory:buildArmatureDisplay('demo','sprites').armature
   arm.animation:play('move',0)
   return factory,arm
 end
@@ -87,6 +87,11 @@ local TextureAlpha=require('examples.love.texture_alpha')
 local showTextureAlpha=false
 local factory,arm,image,paused
 function love.load()
+  if os.getenv('BONO_PUBLIC_API_SMOKE')then
+    local ok,message=xpcall(require('examples.love.public_api'),debug.traceback)
+    if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
+    love.event.quit(0);return
+  end
   love.graphics.setDefaultFilter('nearest','nearest')
   image=atlasImage()
   local output=os.getenv('BONO_RENDER_OUTPUT')
@@ -125,10 +130,10 @@ function love.load()
     if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
     print('LÖVE rendered ten real rotated-atlas RGBA/PNG frames.');love.event.quit(0);return
   end
-  factory,arm=scene(image,1,1,showMeshes);arm.clock=factory.clock
+  factory,arm=scene(image,1,1,showMeshes)
 end
 function love.update(delta)
-  if factory and not paused then factory.dragonBones:advanceTime(delta)end
+  if factory and not paused then factory:update(delta)end
 end
 function love.draw()
   love.graphics.clear(16/255,16/255,24/255,1)
@@ -168,7 +173,7 @@ function love.keypressed(key)
     elseif showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1,12,showTextureAlpha and TextureAlpha.image or nil)
     elseif showRotation then factory,arm,image=Rotated.scene(showMeshes,1,false,false,false,false)
     else image=atlasImage();factory,arm=scene(image,1,1,showMeshes)end
-    arm.clock=factory.clock
+    -- buildArmatureDisplay already registers the armature with the clock.
   end
 end
 function love.quit()if multiplyCanvas then multiplyCanvas:release()end;if factory then close(factory,arm)end;if image then image:release()end end

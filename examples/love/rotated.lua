@@ -41,7 +41,7 @@ function R.scene(meshMode,scale,trim,pivot,mixed,fallback)
   local factory=Factory.new()
   factory:parseDragonBonesData(raw,'sprites',scale)
   factory:parseTextureAtlasData(atlas,image,'sprites')
-  local arm=factory:buildArmature('demo','sprites');arm.animation:play('move',0)
+  local arm=factory:buildArmatureDisplay('demo','sprites').armature;arm.animation:play('move',0)
   return factory,arm,image
 end
 function R.capture(output)

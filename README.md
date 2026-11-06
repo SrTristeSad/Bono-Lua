@@ -1,5 +1,15 @@
 # Bono-Lua — porte integral do DragonBonesJS para Lua
 
+## API pública portada de Factory e ArmatureDisplay
+
+Portados os nove corpos de PixiFactory e os onze de PixiArmatureDisplay do upstream fixado, adaptando o host para LÖVE: singleton, runtime/relógio compartilhado, parser no construtor, buildArmatureDisplay, getTextureDisplay, eventos locais/globais de som, getters, dispose/destroy e atualização de diagnóstico de bones/bounding boxes. O motor de animação existente é reutilizado; não foi refeito.
+
+`buildArmatureDisplay` registra automaticamente no relógio; `buildArmature` continua sem registro automático, como no original. Chame `factory:update(dt)` uma vez por frame para cada core distinto. A demonstração existente usa essa API. Exemplo sem desenho: `lua examples/public_factory.lua`. Guia completo em [PublicFactory.md](docs/contracts/PublicFactory.md).
+
+Comparação com as classes TypeScript originais: 44 cenários/8.941 colunas, sem aproximações, em Lua 5.4/LuaJIT. A CI passa a 61 suítes e 23 exemplos por VM, mantém as 94 capturas anteriores e acrescenta execução LÖVE real de factory/proxy, eventos, diagnóstico e descarte. O diagnóstico tem seus comandos comparados; não declara igualdade de rasterização entre Graphics vetorial dos hosts.
+
+Este é o estado atual; as seções seguintes são checkpoints anteriores. A próxima etapa é continuar portando responsabilidades funcionais que faltam e validar uso integrado com assets reais. Blends/filtros restantes e outras integrações oficiais não são declarados concluídos. Contagem de testes e arquivos não é percentual global do porte.
+
 ## LÖVE — texels semitransparentes em Screen/Multiply
 
 Os shaders de Screen/Multiply agora arredondam o RGB premultiplicado do texel para bytes antes de aplicar tint/alpha. Isso reproduz o upload de textura RGBA8 do Pixi nos casos nearest cobertos. O demo ganhou A para alternar texels transparentes/semitransparentes; B e N escolhem Screen/Multiply. Ver [LoveTextureAlpha.md](docs/contracts/LoveTextureAlpha.md).

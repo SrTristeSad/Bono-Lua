@@ -1,5 +1,5 @@
 'use strict';
-module.exports=function(upstreamPath){
+module.exports=function(upstreamPath,publicAPI){
 'use strict';
 // Compare real Armature orchestration and queries with the pinned TypeScript.
 const fs=require('fs'),path=require('path'),cp=require('child_process'),vm=require('vm');
@@ -14,6 +14,7 @@ if(git('rev-parse','HEAD').trim()!==PIN)throw Error('Wrong upstream HEAD');
 const prefix='/pinned/';
 const files=git('ls-tree','-r','--name-only',PIN,'DragonBones/src').trim().split('\n').filter(p=>p.endsWith('.ts'));
 files.push('Pixi/4.x/src/dragonBones/pixi/PixiTextureAtlasData.ts','Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts');
+if(publicAPI)files.push('Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts','Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts');
 const texts=new Map(files.map(p=>[prefix+p,git('show',PIN+':'+p)]));
 const config=ts.parseConfigFileTextToJson('tsconfig.json',git('show',PIN+':DragonBones/tsconfig.json')).config;
 const converted=ts.convertCompilerOptionsFromJson(config.compilerOptions,prefix+'DragonBones');
@@ -33,6 +34,6 @@ const coreCode=['core/BaseObject','geom/Point','geom/Rectangle','geom/Matrix','g
 
 
 
-return coreCode+'\n'+['PixiTextureAtlasData','PixiSlot'].map(p=>emitted.get(prefix+'Pixi/4.x/src/dragonBones/pixi/'+p+'.js')).join('\n');
+return coreCode+'\n'+['PixiTextureAtlasData','PixiSlot'].concat(publicAPI?['PixiArmatureDisplay','PixiFactory']:[]).map(p=>emitted.get(prefix+'Pixi/4.x/src/dragonBones/pixi/'+p+'.js')).join('\n');
 };
 
