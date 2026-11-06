@@ -32,7 +32,7 @@ end
 function Display:destroy()
   if self.parent then self.parent:removeChild(self)end
   if self._gpuMesh then self._gpuMesh:release();self._gpuMesh=nil end
-  if self._multiplyCanvas then self._multiplyCanvas:release();self._multiplyCanvas=nil end
+  if self._blendCanvas then self._blendCanvas:release();self._blendCanvas=nil end
   if self._blendShaders then
     for _,shader in pairs(self._blendShaders)do shader:release()end
     self._blendShaders=nil
@@ -46,42 +46,55 @@ local blendEffects={
   extern vec2 destinationSize;
   vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
     vec4 s = Texel(image, uv);
-    s.rgb *= s.a;
+    s.rgb = floor(s.rgb * s.a * 255.0 + vec3(0.5)) / 255.0;
     s *= color;
     vec4 d = Texel(destination, pixel / destinationSize);
     return s * d + d * (1.0 - s.a);
   }]],
+  [4]=[[extern Image destination;
+  extern vec2 destinationSize;
+  vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
+    vec4 s = Texel(image, uv);
+    s.rgb = floor(s.rgb * s.a * 255.0 + vec3(0.5)) / 255.0;
+    s *= color;
+    vec4 d = Texel(destination, pixel / destinationSize);
+    return s + d * (vec4(1.0) - s);
+  }]],
   [3]=[[vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
     vec4 c = Texel(image, uv);
-    c.rgb *= c.a;
+    c.rgb = floor(c.rgb * c.a * 255.0 + vec3(0.5)) / 255.0;
     return c * color;
   }]],
 }
-local function blendShader(node)
+local function blendShader(node,key)
+  key=key or node.blendMode
   node._blendShaders=node._blendShaders or {}
-  local shader=node._blendShaders[node.blendMode]
+  local shader=node._blendShaders[key]
   if not shader then
-    shader=love.graphics.newShader(blendEffects[node.blendMode])
-    node._blendShaders[node.blendMode]=shader
+    shader=love.graphics.newShader(blendEffects[key])
+    node._blendShaders[key]=shader
   end
   return shader
 end
 -- Snapshot the destination before this sprite. Never sample the render target
 -- while it is bound for drawing. This preserves Pixi's two blend factors even
 -- when packed source RGB is slightly greater than its packed alpha.
-local function multiplyDestination(node,shader)
+local function supportsSnapshot(target)
+  return target and target.typeOf and target:typeOf('Canvas')
+    and target:getTextureType()=='2d'and target:getMSAA()==0
+    and target:getFormat()=='rgba8'and target:getDPIScale()==1
+end
+local function blendDestination(node,shader)
   local g=love.graphics
   local target=g.getCanvas()
-  assert(target and target.typeOf and target:typeOf('Canvas'),
-    'Multiply requires a single active Canvas (not the window or MRT)')
-  assert(target:getMSAA()==0 and target:getFormat()=='rgba8' and target:getDPIScale()==1,
+  assert(supportsSnapshot(target),
     'Multiply currently requires an rgba8 Canvas with MSAA=0 and DPI scale=1')
   local w,h=target:getDimensions()
-  local copy=node._multiplyCanvas
+  local copy=node._blendCanvas
   if copy and (copy:getWidth()~=w or copy:getHeight()~=h)then copy:release();copy=nil end
   if not copy then
     copy=g.newCanvas(w,h,{format='rgba8',msaa=0,dpiscale=1})
-    copy:setFilter('nearest','nearest');node._multiplyCanvas=copy
+    copy:setFilter('nearest','nearest');node._blendCanvas=copy
   end
   g.push('all');g.setCanvas(copy);g.origin();g.setScissor();g.setStencilTest()
   g.setShader();g.setColorMask(true,true,true,true);g.setDepthMode();g.setMeshCullMode('none')
@@ -117,9 +130,10 @@ local function drawNode(node,parentAlpha)
       g.setColor(math.floor(math.floor(tint/65536)%256*alpha+.5)/255,
         math.floor(math.floor(tint/256)%256*alpha+.5)/255,
         math.floor(tint%256*alpha+.5)/255,math.floor(alpha*255)/255)
-      local shader=blendShader(node)
-      if node.blendMode==2 then
-        multiplyDestination(node,shader);g.setBlendMode('replace','premultiplied')
+      local canvasScreen=node.blendMode==3 and supportsSnapshot(g.getCanvas())
+      local shader=blendShader(node,canvasScreen and 4 or node.blendMode)
+      if node.blendMode==2 or canvasScreen then
+        blendDestination(node,shader);g.setBlendMode('replace','premultiplied')
       else g.setBlendMode('screen','premultiplied')end
       g.setShader(shader)
     else error('LÖVE sprite backend supports Normal/Add/Multiply/Screen only')end

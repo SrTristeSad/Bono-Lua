@@ -1,5 +1,7 @@
 # Screen no backend LÖVE
 
+Atualização: texels semitransparentes em Screen/Multiply têm recorte específico em [LoveTextureAlpha.md](LoveTextureAlpha.md). Limites anteriores abaixo são históricos.
+
 Atualização: Multiply sobre Canvas foi acrescentado em [LoveMultiply.md](LoveMultiply.md). Os limites abaixo registram o checkpoint original de Screen.
 
 Referência: Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts no pin 64b6c69ae35777c2404be68c9192e2c56906079e. _updateBlendMode só escreve blendMode quando o display é Sprite. Esse ramo agora aceita Normal, Add e Screen. Mesh continua ignorando o blend solicitado, como no original. Multiply e outros modos continuam recusados explicitamente em sprites.
