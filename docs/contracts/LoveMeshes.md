@@ -2,6 +2,8 @@
 
 Referência: Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts no pin 64b6c69ae35777c2404be68c9192e2c56906079e. Lidos os ramos mesh de _updateFrame/_updateMesh e a criação com DRAW_MODES.TRIANGLES em PixiFactory. Algoritmos originais aplicados a buffers Float32/Uint16 do SharedBinaryBuffer; o renderer usa Mesh real do LÖVE, separado do runtime.
 
+Atualização: atlas rotacionados foram acrescentados em [LoveRotation.md](LoveRotation.md). Os limites abaixo registram o checkpoint original de meshes.
+
 ## Caminhos
 
 _updateFrame lê geometria/triângulos, corrige offset negativo com +65536, aplica armatureData.scale, calcula UVs do atlas e recria os buffers tipados. Conserva textureScale=1, dirty/indexDirty e identidade do display para skinning/Surface. Atlas rotacionado ainda é recusado pela classe de atlas; não está coberto por este recorte.

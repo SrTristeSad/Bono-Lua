@@ -1,5 +1,13 @@
 # Adaptações e divergências
 
+## LÖVE — atlas rotacionados
+
+Sprites e meshes aceitam regiões de atlas giradas em 90°, preservando as dimensões originais usadas pelo Pixi e os pivôs do runtime. Sprites usam um Mesh com UVs rotacionados; meshes conservam a fórmula original de PixiSlot. `love .` abre a demonstração; T alterna o atlas e M alterna sprites/meshes. Ver [LoveRotation.md](contracts/LoveRotation.md).
+
+Diferenciais de rotação: sprites 56 cenários/11.857 colunas e meshes 82/22.352, exatos em Lua 5.4/LuaJIT. CI configurada com 58 suítes por VM, 22 exemplos e dez cenas gráficas adicionais contra Pixi WebGL real: 819.200 canais com igualdade exigida, sem tolerância nova. Evidência executada em rotation-result.json no artefato gráfico; a configuração do teste não substitui seu resultado. As 16 cenas gráficas anteriores permanecem.
+
+Este é o estado atual; seções seguintes registram checkpoints anteriores. Blends avançados e validação de exports externos continuam pendentes. Backend e integrações oficiais não são declarados completos.
+
 ## LÖVE — meshes, skinning e deformação
 
 Portados os ramos mesh de PixiSlot para o backend LÖVE: buffers Float32/Uint16, UVs/triângulos, deformação comum, skinning ponderado e pai Surface. `love .` inicia meshes; M alterna com sprites. Ver [LoveMeshes.md](contracts/LoveMeshes.md).

@@ -14,6 +14,7 @@ end
 local Frame={};Frame.__index=Frame
 function Frame:destroy()
   if self.quad then self.quad:release();self.quad=nil end
+  if self.spriteMesh then self.spriteMesh:release();self.spriteMesh=nil end
   self.destroyed=true
 end
 local Atlas={};setmetatable(Atlas,{__index=Types.TextureAtlasData})
@@ -30,10 +31,9 @@ function Atlas.__newindex(self,key,value)
   for _,name in ipairs(Map.keys(self.textures))do
     local texture=self.textures[name]
     if value~=nil then
-      assert(not texture.rotated,'Rotated atlas frames are pending in the LÖVE sprite backend')
       local region=texture.region
       texture.renderTexture=setmetatable({image=value,x=region.x,y=region.y,
-        width=region.width,height=region.height,destroyed=false},Frame)
+        width=region.width,height=region.height,rotated=texture.rotated,destroyed=false},Frame)
     else texture.renderTexture=nil end
   end
 end
