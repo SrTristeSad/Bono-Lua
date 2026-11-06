@@ -33,5 +33,26 @@ const a=f.buildArmature('demo','sprites');a.animation.play('move',0);if(scene%5=
 if(scene%4===0){a.getSlot('red')._zIndex=3;a._zIndexDirty=true;}a.advanceTime(.25);
 const stage=new PIXI.Container();stage.position.set(64,32);const backdrop=new PIXI.Graphics();backdrop.beginFill(0x90b050,1);backdrop.drawRect(-64,-32,160,64);backdrop.endFill();stage.addChild(backdrop);stage.addChild(a.display);const renderer=new PIXI.WebGLRenderer(160,128,{transparent:false,backgroundColor:0x406080,antialias:false,preserveDrawingBuffer:true,resolution:1});renderer.render(stage);const gl=renderer.gl,bottom=new Uint8Array(160*128*4),rgba=new Uint8Array(bottom.length);gl.readPixels(0,0,160,128,gl.RGBA,gl.UNSIGNED_BYTE,bottom);for(let y=0;y<128;y++)rgba.set(bottom.subarray((127-y)*640,(128-y)*640),y*640);result.push({rgba:Array.from(rgba),png:renderer.view.toDataURL('image/png')});a.dispose();core.advanceTime(0);f.clear();core.advanceTime(0);renderer.destroy(true);}
 return result;},{sprites,meshes,atlas,input});
-let compared=0;const scenes=[];for(let i=0;i<frames.length;i++){const expected=Buffer.from(frames[i].rgba),actual=fs.readFileSync(path.join(output,'love-texture-alpha-'+i+'.rgba'));if(actual.length!==expected.length)throw Error('size');fs.writeFileSync(path.join(output,'pixi-texture-alpha-'+i+'.rgba'),expected);fs.writeFileSync(path.join(output,'pixi-texture-alpha-'+i+'.png'),Buffer.from(frames[i].png.split(',')[1],'base64'));for(let j=0;j<expected.length;j++){compared++;if(actual[j]!==expected[j])throw Error('Texture alpha pixel scene '+i+' byte '+j+' expected '+expected[j]+' actual '+actual[j]);}scenes.push({scene:i,changedChannels:0,maxError:0});}
-const result={reference:'Pinned PixiSlot Screen/Multiply + real premultiplied texel upload + real PixiJS 4.8.9 WebGLRenderer / Chromium',runtime:'Real LÖVE Screen/Multiply with straight-alpha Image upload / Mesa',frames:frames.length,comparedChannels:compared,maxError:0,scenes,result:'passed'};fs.writeFileSync(path.join(output,'texture-alpha-result.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1);});
+let compared=0,changedChannels=0,maxError=0;
+const scenes=[];
+for(let i=0;i<frames.length;i++){
+ const expected=Buffer.from(frames[i].rgba),actual=fs.readFileSync(path.join(output,'love-texture-alpha-'+i+'.rgba'));
+ if(actual.length!==expected.length)throw Error('size');
+ fs.writeFileSync(path.join(output,'pixi-texture-alpha-'+i+'.rgba'),expected);
+ fs.writeFileSync(path.join(output,'pixi-texture-alpha-'+i+'.png'),Buffer.from(frames[i].png.split(',')[1],'base64'));
+ let changed=0,error=0;
+ for(let j=0;j<expected.length;j++){
+  compared++;const difference=Math.abs(actual[j]-expected[j]);
+  if(difference)changed++;
+  error=Math.max(error,difference);
+ }
+ changedChannels+=changed;maxError=Math.max(maxError,error);
+ scenes.push({scene:i,changedChannels:changed,maxError:error});
+}
+const result={reference:'Pinned PixiSlot + real Pixi 4.8.9 premultiplied upload and WebGLRenderer / Chromium',
+ runtime:'Real LÖVE Screen/Multiply with RGBA8 destination snapshots / Mesa',frames:frames.length,
+ comparedChannels:compared,changedChannels,maxError,scenes,result:changedChannels?'failed':'passed'};
+fs.writeFileSync(path.join(output,'texture-alpha-result.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result));
+if(changedChannels)throw Error('Texture alpha differs in '+changedChannels+' channels; max error '+maxError);
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1);});

@@ -6,7 +6,7 @@ Os shaders de Screen/Multiply agora arredondam o RGB premultiplicado do texel pa
 
 A CI mantém 60 suítes e 22 exemplos por VM e acrescenta 32 capturas reais LÖVE vs Pixi WebGL: 2.621.440 canais exigidos idênticos, com alpha do texel e do slot, tint, rotação, flip, ordem e troca de Image. Resultado em texture-alpha-result.json; configuração não substitui execução aprovada. As 62 capturas anteriores mantêm seus critérios.
 
-Este é o estado atual; seções seguintes são checkpoints anteriores. O novo recorte cobre sprites Screen/Multiply com Image RGBA8 straight-alpha e nearest sobre fundo opaco. Não amplia a prova de Normal/Add, mesh semitransparente, filtragem linear/mipmap ou destinos transparentes. Outros blends e exports externos continuam pendentes.
+Este é o estado atual; seções seguintes são checkpoints anteriores. O novo recorte cobre sprites Screen/Multiply com Image RGBA8 straight-alpha e nearest sobre Canvas rgba8/MSAA0/DPI1 com fundo opaco. Screen nesse Canvas usa composição explícita para evitar arredondamento intermediário do blend fixo; há cópia integral por sprite. Não amplia a prova de Normal/Add, mesh semitransparente, filtragem linear/mipmap ou destinos transparentes. Outros blends e exports externos continuam pendentes.
 
 ## LÖVE — Multiply sobre Canvas
 

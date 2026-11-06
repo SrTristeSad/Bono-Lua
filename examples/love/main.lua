@@ -133,7 +133,7 @@ end
 function love.draw()
   love.graphics.clear(16/255,16/255,24/255,1)
   if not arm then return end
-  if showMultiply then
+  if showMultiply or(showScreen and showTextureAlpha)then
     local w,h=love.graphics.getDimensions()
     if multiplyCanvas and (multiplyCanvas:getWidth()~=w or multiplyCanvas:getHeight()~=h)then
       multiplyCanvas:release();multiplyCanvas=nil
