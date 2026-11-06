@@ -6,7 +6,7 @@ local Pool=require('dragonbones.core.BaseObject')
 local Atlas=require('dragonbones.love.TextureAtlasData').TextureAtlasData
 local Enums=require('dragonbones.core.Enums')
 local Mode=Enums.BlendMode
-local blendModes={[Mode.Normal]=0,[Mode.Add]=1,[Mode.Screen]=3}
+local blendModes={[Mode.Normal]=0,[Mode.Add]=1,[Mode.Multiply]=2,[Mode.Screen]=3}
 local Binary=Enums.BinaryOffset
 local Shared=require('dragonbones.parser.SharedBinaryBuffer')
 local number=require('dragonbones.parser.JSValue').number
@@ -44,7 +44,7 @@ function LoveSlot:_updateVisible()self._renderDisplay.visible=self._parent.visib
 function LoveSlot:_updateBlendMode()
   if self._renderDisplay.kind=='sprite'then
     local mode=blendModes[self._blendMode]
-    assert(mode~=nil,'LÖVE sprite backend supports Normal/Add/Screen only')
+    assert(mode~=nil,'LÖVE sprite backend supports Normal/Add/Multiply/Screen only')
     self._renderDisplay.blendMode=mode
   end
 end

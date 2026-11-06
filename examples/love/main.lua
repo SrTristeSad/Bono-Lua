@@ -80,6 +80,9 @@ local showRotation=false
 local Rotated=require('examples.love.rotated')
 local Blends=require('examples.love.blends')
 local showScreen=false
+local showMultiply=false
+local multiplyCanvas
+local Multiply=require('examples.love.multiply')
 local factory,arm,image,paused
 function love.load()
   love.graphics.setDefaultFilter('nearest','nearest')
@@ -95,6 +98,12 @@ function love.load()
     local ok,message=xpcall(function()meshPixels(meshOutput,image)end,debug.traceback)
     if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
     print('LÖVE rendered eight real mesh RGBA/PNG frames.');love.event.quit(0);return
+  end
+  local multiplyOutput=os.getenv('BONO_MULTIPLY_OUTPUT')
+  if multiplyOutput then
+    local ok,message=xpcall(function()Multiply.capture(multiplyOutput)end,debug.traceback)
+    if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
+    print('LÖVE rendered eighteen real Multiply RGBA/PNG frames.');love.event.quit(0);return
   end
   local blendOutput=os.getenv('BONO_BLEND_OUTPUT')
   if blendOutput then
@@ -116,25 +125,39 @@ end
 function love.draw()
   love.graphics.clear(16/255,16/255,24/255,1)
   if not arm then return end
-  arm.display:draw(180,100,showMeshes and 4 or 6)
+  if showMultiply then
+    local w,h=love.graphics.getDimensions()
+    if multiplyCanvas and (multiplyCanvas:getWidth()~=w or multiplyCanvas:getHeight()~=h)then
+      multiplyCanvas:release();multiplyCanvas=nil
+    end
+    multiplyCanvas=multiplyCanvas or love.graphics.newCanvas(w,h,{format='rgba8',msaa=0,dpiscale=1})
+    love.graphics.setCanvas(multiplyCanvas);love.graphics.clear(64/255,96/255,128/255,1)
+    arm.display:draw(180,100,showMeshes and 4 or 6)
+    love.graphics.setCanvas();love.graphics.setColor(1,1,1,1)
+    love.graphics.setBlendMode('alpha','premultiplied');love.graphics.draw(multiplyCanvas)
+    love.graphics.setBlendMode('alpha','alphamultiply')
+  else arm.display:draw(180,100,showMeshes and 4 or 6)end
   love.graphics.setColor(1,1,1,1)
   love.graphics.print('Bono-Lua / LÖVE: atlas + sprites / meshes + animação real',20,20)
-  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas | B: Screen | Esc: sair',20,42)
-  love.graphics.print(('t=%.2f s | atlas rotacionado: %s | Screen: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation),tostring(showScreen)),20,66)
+  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas | B: Screen | N: Multiply',20,42)
+  love.graphics.print(('t=%.2f s | atlas rotacionado: %s | Screen: %s | Multiply: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation),tostring(showScreen),tostring(showMultiply)),20,66)
 end
 function love.keypressed(key)
   if key=='escape'then love.event.quit()
   elseif key=='space'then paused=not paused
   elseif key=='r'then arm.animation:play('move',0)
   elseif key=='f'then arm.flipX=not arm.flipX
-  elseif key=='m'or key=='t'or key=='b'then
+  elseif key=='m'or key=='t'or key=='b'or key=='n'then
     close(factory,arm);image:release()
     if key=='m'then showMeshes=not showMeshes
-    elseif key=='t'then showRotation=not showRotation else showScreen=not showScreen end
-    if showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1)
+    elseif key=='t'then showRotation=not showRotation
+    elseif key=='n'then showMultiply=not showMultiply;showScreen=false;showMeshes=false
+    else showScreen=not showScreen;showMultiply=false end
+    if showMultiply then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1,10)
+    elseif showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1)
     elseif showRotation then factory,arm,image=Rotated.scene(showMeshes,1,false,false,false,false)
     else image=atlasImage();factory,arm=scene(image,1,1,showMeshes)end
     arm.clock=factory.clock
   end
 end
-function love.quit()if factory then close(factory,arm)end;if image then image:release()end end
+function love.quit()if multiplyCanvas then multiplyCanvas:release()end;if factory then close(factory,arm)end;if image then image:release()end end

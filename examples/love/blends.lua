@@ -3,11 +3,11 @@ local JSON=require('dragonbones.parser.JSON')
 local Factory=require('dragonbones.love.Factory')
 local Rotated=require('examples.love.rotated')
 local B={}
-function B.scene(mesh,rotated,alpha,tint)
+function B.scene(mesh,rotated,alpha,tint,mode)
   local raw=JSON.parse(love.filesystem.read(mesh and'examples/love/meshes_ske.json'or'examples/love/sprites_ske.json'))
   for i=1,raw.armature[1].slot.length do
     local slot=raw.armature[1].slot[i]
-    slot.blendMode=12
+    slot.blendMode=mode or 12
     slot.color={aM=alpha*100,rM=tint*100,gM=100,bM=100}
   end
   local atlas=JSON.parse(love.filesystem.read('examples/love/rotated_tex.json'))

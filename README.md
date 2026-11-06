@@ -1,5 +1,13 @@
 # Bono-Lua — porte integral do DragonBonesJS para Lua
 
+## LÖVE — Multiply sobre Canvas
+
+Multiply foi acrescentado aos sprites com composição explícita sobre uma cópia do Canvas de destino. O shader conserva os fatores originais DST_COLOR/ONE_MINUS_SRC_ALPHA e o empacotamento separado de RGB/alpha do Pixi. Exige Canvas rgba8, sem MSAA e DPI 1; a demonstração configura isso ao pressionar N. Ver [LoveMultiply.md](docs/contracts/LoveMultiply.md).
+
+Diferencial: 33 cenários/6.588 colunas exatas por VM Lua 5.4/LuaJIT, inclusive Multiply→Screen→Normal→Multiply. A CI acrescenta 18 capturas reais e exige 1.474.560 canais idênticos em multiply-result.json; mantém as 44 cenas anteriores e sobe para 60 suítes e 22 exemplos por VM. Resultados gráficos precisam de execução aprovada, não são inferidos da configuração.
+
+Este é o estado atual; seções seguintes são checkpoints anteriores. Multiply faz uma cópia integral do destino por sprite e ainda não cobre janela direta, MRT, MSAA, outros formatos/DPI, texels semitransparentes ou fundos transparentes. Outros blends e exports externos continuam pendentes.
+
 ## LÖVE — blend Screen
 
 Sprites aceitam Screen com RGB premultiplicado e alpha empacotado como no batcher Pixi 4. O shader pertence ao display, é criado sob demanda e liberado ao destruir o display; o estado gráfico do chamador é restaurado. B alterna Screen no demo, T alterna o atlas e M alterna sprites/meshes. O blend de mesh permanece como no PixiSlot original. Ver [LoveScreen.md](docs/contracts/LoveScreen.md).
