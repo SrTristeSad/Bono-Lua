@@ -1,0 +1,165 @@
+{
+  "version": "5.6",
+  "name": "sprites",
+  "frameRate": 24,
+  "armature": [
+    {
+      "name": "demo",
+      "bone": [
+        {
+          "name": "root",
+          "length": 20
+        },
+        {
+          "name": "child",
+          "parent": "root",
+          "transform": {
+            "x": 8
+          },
+          "length": 12
+        }
+      ],
+      "slot": [
+        {
+          "name": "red",
+          "parent": "root"
+        },
+        {
+          "name": "blue",
+          "parent": "child"
+        },
+        {
+          "name": "green",
+          "parent": "root"
+        }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "red",
+              "display": [
+                {
+                  "name": "red",
+                  "pivot": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "transform": {
+                    "x": 0,
+                    "y": 0
+                  }
+                },
+                {
+                  "name": "rectangle",
+                  "type": "boundingbox",
+                  "subType": "rectangle",
+                  "width": 20,
+                  "height": 10,
+                  "transform": {
+                    "x": 3,
+                    "y": 4
+                  }
+                }
+              ]
+            },
+            {
+              "name": "blue",
+              "display": [
+                {
+                  "name": "blue",
+                  "pivot": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "transform": {
+                    "x": 0,
+                    "y": 0
+                  }
+                },
+                {
+                  "name": "ellipse",
+                  "type": "boundingbox",
+                  "subType": "ellipse",
+                  "width": 12,
+                  "height": 8
+                }
+              ]
+            },
+            {
+              "name": "green",
+              "display": [
+                {
+                  "name": "green",
+                  "pivot": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "transform": {
+                    "x": 4,
+                    "y": 4
+                  }
+                },
+                {
+                  "name": "polygon",
+                  "type": "boundingbox",
+                  "subType": "polygon",
+                  "vertices": [
+                    -4,
+                    -3,
+                    5,
+                    -3,
+                    5,
+                    6,
+                    -4,
+                    6
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "animation": [
+        {
+          "name": "move",
+          "duration": 24,
+          "playTimes": 0,
+          "timeline": [
+            {
+              "type": 11,
+              "name": "root",
+              "frame": [
+                {
+                  "duration": 12,
+                  "x": 0,
+                  "y": 0,
+                  "tweenEasing": 0
+                },
+                {
+                  "duration": 12,
+                  "x": 16,
+                  "y": 0,
+                  "tweenEasing": 0
+                }
+              ]
+            }
+          ],
+          "frame": [
+            {
+              "duration": 12,
+              "event": "mark0",
+              "sound": "sound0"
+            },
+            {
+              "duration": 12,
+              "event": "mark1",
+              "sound": "sound1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

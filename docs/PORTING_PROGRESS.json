@@ -83,8 +83,8 @@
     "DragonBones/src/dragonBones/event/IEventDispatcher.ts": {
       "destination": "docs/contracts/IEventDispatcher.md",
       "kind": "contract",
-      "status": "Contrato documentado; dispatchDBEvent exercitado por probes, backend real pendente",
-      "tests": "events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica.",
+      "status": "Interface sem corpo executável; contrato implementado no proxy LÖVE e no gerenciador global de eventos.",
+      "tests": "events_differential compara chamadas/ordem/erros de despacho do núcleo; não valida os três métodos de listeners nem integração gráfica. PublicFactory.md acrescenta dispatcher real/contextos e eventos do runtime, comparados às classes originais.",
       "differences": "Interface e alias string apagados no TS; contrato Lua documentado sem classe/dispatcher fictício."
     },
     "DragonBones/src/dragonBones/model/AnimationConfig.ts": {
@@ -230,6 +230,24 @@
       "status": "Parcial: atlas/TextureData LÖVE com regiões normais/rotacionadas e recursos do host.",
       "tests": "Diferencial numérico de sprites nas duas VMs e job gráfico real de referência; ver LoveSprites.md e evidências de CI. Rotação comparada nos diferenciais de sprites/meshes e no job gráfico; ver LoveRotation.md.",
       "differences": "Image pertence ao chamador; Quad e Mesh de sprite do frame são liberados no pooling. Dimensões region/orig preservadas do Pixi original, sem troca automática por ser região rotacionada."
+    },
+    "Pixi/4.x/src/dragonBones/pixi/PixiFactory.ts": {
+      "destination": "dragonbones/love/Factory.lua",
+      "status": "Nove corpos originais representados: singleton, construtor/parser, runtime compartilhado, ticker, três hooks, montagem automática, textura avulsa e soundEventManager. Host LÖVE, não uma implementação do Pixi.",
+      "tests": "publicfactory_differential: 44 cenários/8.941 colunas, exatos nas duas VMs, incluindo getters readonly, clock automático, parser, busca/textura ausente, dispatch local/global, descarte e API do proxy. Regressões de sprites/meshes; smoke test LÖVE real. Ver PublicFactory.md.",
+      "differences": "Ticker Pixi substituído por Factory:update(dt) chamado pelo host; _clockHandler recebe elapsedMS explicitamente. Factory.new(core) anterior preservado; new(dataParser,core) permite injeção. Padrão compartilha core/clock como o original; caches de dados continuam por factory."
+    },
+    "Pixi/4.x/src/dragonBones/pixi/PixiArmatureDisplay.ts": {
+      "destination": "dragonbones/love/ArmatureDisplay.lua",
+      "status": "Onze corpos originais representados: proxy, getters, eventos, dispose/destroy e dbUpdate com bones e três bounding boxes. Integração usa Armature/Animation/clock/pool reais.",
+      "tests": "publicfactory_differential compara lifecycle, eventos/contextos, reentrância, adição/remoção durante dispatch, once/exceções, debug local/global, geometrias e transformação. 44 cenários exatos por VM. Smoke test de desenho no LÖVE real; rasterização vetorial entre hosts não comparada.",
+      "differences": "Sprite/Graphics por Display/Graphics LÖVE; JS this torna-se primeiro argumento Lua do callback. EventEmitter adapta a dependência do host; oracle executa o EventEmitter do bundle Pixi fixado. onEvent(kind,event) anterior preservado como extensão. Armature/animation readonly; diagnóstico conserva argumentos originais, inclusive ellipse e pivot."
+    },
+    "DragonBones/src/dragonBones/armature/IArmatureProxy.ts": {
+      "destination": "docs/contracts/IArmatureProxy.md",
+      "status": "Interface sem corpo executável; contrato implementado pelo proxy LÖVE real.",
+      "tests": "Lifecycle integrado em publicfactory_differential e smoke LÖVE real; contrato em IArmatureProxy.md.",
+      "differences": "Interface apagada em TS; contrato/metatable em Lua. Contexto de callback explícito."
     }
   }
 }

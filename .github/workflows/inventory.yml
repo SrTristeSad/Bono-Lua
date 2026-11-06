@@ -127,6 +127,8 @@ jobs:
           node tests/lovemeshes_differential.js ../DragonBonesJS ${{ matrix.vm }} rotated
           node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }} blends
           node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }} multiply
+          node tests/publicfactory_differential.js ../DragonBonesJS ${{ matrix.vm }}
+          ${{ matrix.vm }} examples/public_factory.lua
           ${{ matrix.vm }} examples/run.lua factory
           ${{ matrix.vm }} examples/run.lua armature
           ${{ matrix.vm }} examples/run.lua animation
@@ -188,6 +190,7 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: |
           mkdir -p artifacts/love
+          BONO_PUBLIC_API_SMOKE=1 BONO_PUBLIC_API_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
           BONO_RENDER_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
           NODE_PATH=../graphics-tools/node_modules node tests/love_pixels.js ../DragonBonesJS
           BONO_MESH_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
