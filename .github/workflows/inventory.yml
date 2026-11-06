@@ -126,6 +126,7 @@ jobs:
           node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }} rotated
           node tests/lovemeshes_differential.js ../DragonBonesJS ${{ matrix.vm }} rotated
           node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }} blends
+          node tests/lovesprites_differential.js ../DragonBonesJS ${{ matrix.vm }} multiply
           ${{ matrix.vm }} examples/run.lua factory
           ${{ matrix.vm }} examples/run.lua armature
           ${{ matrix.vm }} examples/run.lua animation
@@ -193,6 +194,8 @@ jobs:
           NODE_PATH=../graphics-tools/node_modules node tests/love_rotation_pixels.js ../DragonBonesJS
           BONO_BLEND_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
           NODE_PATH=../graphics-tools/node_modules node tests/love_blend_pixels.js ../DragonBonesJS
+          BONO_MULTIPLY_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
+          NODE_PATH=../graphics-tools/node_modules node tests/love_multiply_pixels.js ../DragonBonesJS
       - name: Preserve actual RGBA frames and PNG captures
         if: always()
         uses: actions/upload-artifact@v4

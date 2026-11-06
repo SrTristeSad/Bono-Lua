@@ -1,5 +1,7 @@
 # Screen no backend LÖVE
 
+Atualização: Multiply sobre Canvas foi acrescentado em [LoveMultiply.md](LoveMultiply.md). Os limites abaixo registram o checkpoint original de Screen.
+
 Referência: Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts no pin 64b6c69ae35777c2404be68c9192e2c56906079e. _updateBlendMode só escreve blendMode quando o display é Sprite. Esse ramo agora aceita Normal, Add e Screen. Mesh continua ignorando o blend solicitado, como no original. Multiply e outros modos continuam recusados explicitamente em sprites.
 
 O adaptador armazena o identificador de plataforma 3 para Screen, como PIXI.BLEND_MODES.SCREEN. O runtime não recebe algoritmos de renderização. A Image do chamador continua straight-alpha no LÖVE; um shader premultiplica o texel e aplica a cor premultiplicada. O shader é criado por display apenas quando usado, reutilizado e liberado por Display:destroy. O recurso não é associado ao frame do atlas nem destrói Images compartilhadas.

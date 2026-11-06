@@ -16,7 +16,7 @@ f:parseDragonBonesData(raw,'sprites',scale);local image={width=rotated and 64 or
 local out={};local function push(v)out[#out+1]=tostring(v)end
 local keys={'x','y','scaleX','scaleY','rotation','skewX','skewY','alpha','tint','visible','blendMode'}
 for step=0,3 do
-if op=='blendSwitch'then for i=1,a:getSlots().length do local slot=a:getSlots()[i];slot._blendMode=({12,1,0,12})[step+1];slot._blendModeDirty=true end end
+if op=='blendSwitch'or op=='multiplySwitch'then for i=1,a:getSlots().length do local slot=a:getSlots()[i];slot._blendMode=(op=='multiplySwitch'and{10,12,0,10}or{12,1,0,12})[step+1];slot._blendModeDirty=true end end
 if step==1 then if op=='hidden'then a:getSlot('red').visible=false elseif op=='replaceTexture'then a.replacedTexture={width=rotated and 64 or 48,height=rotated and 32 or 16}elseif op=='removeTexture'then atlas.renderTexture=nil elseif op=='missingFrame'then a:getSlot('red').displayIndex=-1 elseif op=='stop'then a.animation:stop()elseif op=='order'then a:getSlot('red')._zIndex=3;a._zIndexDirty=true end end
 a:advanceTime(step==0 and 0 or .25);push(#a.display.children);for _,d in ipairs(a.display.children)do for _,k in ipairs(keys)do push(scalar(d[k]))end;local t=d.texture;push(t and'texture'or'nil');if t then for _,k in ipairs({'x','y','width','height'})do push(scalar(t[k]))end;if rotated then push(t.rotated==true)end end end;push(scalar(s.currentTime))
 end
