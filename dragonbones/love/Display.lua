@@ -32,7 +32,29 @@ end
 function Display:destroy()
   if self.parent then self.parent:removeChild(self)end
   if self._gpuMesh then self._gpuMesh:release();self._gpuMesh=nil end
+  if self._blendShaders then
+    for _,shader in pairs(self._blendShaders)do shader:release()end
+    self._blendShaders=nil
+  end
   self.texture=nil;self.destroyed=true
+end
+-- Pixi's sprite batch packs premultiplied tint and alpha into four bytes.
+-- Images use straight alpha in LÖVE; the shader premultiplies texture RGB.
+local blendEffects={
+  [3]=[[vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
+    vec4 c = Texel(image, uv);
+    c.rgb *= c.a;
+    return c * color;
+  }]],
+}
+local function blendShader(node)
+  node._blendShaders=node._blendShaders or {}
+  local shader=node._blendShaders[node.blendMode]
+  if not shader then
+    shader=love.graphics.newShader(blendEffects[node.blendMode])
+    node._blendShaders[node.blendMode]=shader
+  end
+  return shader
 end
 local function drawNode(node,parentAlpha)
   if not node.visible then return end
@@ -54,9 +76,15 @@ local function drawNode(node,parentAlpha)
     end
     local tint=node.tint
     g.setColor(math.floor(tint/65536)%256/255,math.floor(tint/256)%256/255,tint%256/255,alpha)
+    local previousShader=g.getShader()
     if node.blendMode==0 then g.setBlendMode('alpha','alphamultiply')
     elseif node.blendMode==1 then g.setBlendMode('add','alphamultiply')
-    else error('LÖVE sprite backend currently supports Normal/Add blend only')end
+    elseif node.blendMode==3 then
+      g.setColor(math.floor(math.floor(tint/65536)%256*alpha+.5)/255,
+        math.floor(math.floor(tint/256)%256*alpha+.5)/255,
+        math.floor(tint%256*alpha+.5)/255,math.floor(alpha*255)/255)
+      g.setBlendMode('screen','premultiplied');g.setShader(blendShader(node))
+    else error('LÖVE sprite backend supports Normal/Add/Screen only')end
     if node.kind=='mesh'then
       g.setMeshCullMode('none')
       if node.vertices and node.indices.length>0 then
@@ -92,6 +120,7 @@ local function drawNode(node,parentAlpha)
       end
       g.setMeshCullMode('none');g.draw(texture.spriteMesh)
     else g.draw(texture.image,texture.quad)end
+    if node.blendMode==3 then g.setShader(previousShader)end
   end
   for _,child in ipairs(node.children)do drawNode(child,alpha)end
   g.pop()

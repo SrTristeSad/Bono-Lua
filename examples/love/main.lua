@@ -78,6 +78,8 @@ end
 local showMeshes=true
 local showRotation=false
 local Rotated=require('examples.love.rotated')
+local Blends=require('examples.love.blends')
+local showScreen=false
 local factory,arm,image,paused
 function love.load()
   love.graphics.setDefaultFilter('nearest','nearest')
@@ -93,6 +95,12 @@ function love.load()
     local ok,message=xpcall(function()meshPixels(meshOutput,image)end,debug.traceback)
     if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
     print('LÖVE rendered eight real mesh RGBA/PNG frames.');love.event.quit(0);return
+  end
+  local blendOutput=os.getenv('BONO_BLEND_OUTPUT')
+  if blendOutput then
+    local ok,message=xpcall(function()Blends.capture(blendOutput)end,debug.traceback)
+    if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
+    print('LÖVE rendered eighteen real Screen RGBA/PNG frames.');love.event.quit(0);return
   end
   local rotationOutput=os.getenv('BONO_ROTATION_OUTPUT')
   if rotationOutput then
@@ -111,18 +119,20 @@ function love.draw()
   arm.display:draw(180,100,showMeshes and 4 or 6)
   love.graphics.setColor(1,1,1,1)
   love.graphics.print('Bono-Lua / LÖVE: atlas + sprites / meshes + animação real',20,20)
-  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas 90° | Esc: sair',20,42)
-  love.graphics.print(('t=%.2f s | atlas rotacionado: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation)),20,66)
+  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas | B: Screen | Esc: sair',20,42)
+  love.graphics.print(('t=%.2f s | atlas rotacionado: %s | Screen: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation),tostring(showScreen)),20,66)
 end
 function love.keypressed(key)
   if key=='escape'then love.event.quit()
   elseif key=='space'then paused=not paused
   elseif key=='r'then arm.animation:play('move',0)
   elseif key=='f'then arm.flipX=not arm.flipX
-  elseif key=='m'or key=='t'then
+  elseif key=='m'or key=='t'or key=='b'then
     close(factory,arm);image:release()
-    if key=='m'then showMeshes=not showMeshes else showRotation=not showRotation end
-    if showRotation then factory,arm,image=Rotated.scene(showMeshes,1,false,false,false,false)
+    if key=='m'then showMeshes=not showMeshes
+    elseif key=='t'then showRotation=not showRotation else showScreen=not showScreen end
+    if showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1)
+    elseif showRotation then factory,arm,image=Rotated.scene(showMeshes,1,false,false,false,false)
     else image=atlasImage();factory,arm=scene(image,1,1,showMeshes)end
     arm.clock=factory.clock
   end
