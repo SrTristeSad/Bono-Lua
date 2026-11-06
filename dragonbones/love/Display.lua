@@ -48,7 +48,7 @@ local function drawNode(node,parentAlpha)
   if (node.kind=='sprite'or node.kind=='mesh')and node.texture then
     local texture=node.texture
     assert(not texture.destroyed,'Texture frame was disposed')
-    if node.kind=='sprite'and not texture.quad then
+    if node.kind=='sprite'and not texture.rotated and not texture.quad then
       texture.quad=g.newQuad(texture.x,texture.y,texture.width,texture.height,
         texture.image:getWidth(),texture.image:getHeight())
     end
@@ -76,6 +76,21 @@ local function drawNode(node,parentAlpha)
         node._gpuMesh:setTexture(texture.image)
         g.draw(node._gpuMesh)
       end
+    elseif texture.rotated then
+      if not texture.spriteMesh then
+        local image=texture.image
+        local x,y,w,h=texture.x,texture.y,texture.width,texture.height
+        local iw,ih=image:getWidth(),image:getHeight()
+        texture.spriteMesh=g.newMesh({
+          {0,0,(x+w)/iw,y/ih,1,1,1,1},
+          {w,0,(x+w)/iw,(y+h)/ih,1,1,1,1},
+          {w,h,x/iw,(y+h)/ih,1,1,1,1},
+          {0,h,x/iw,y/ih,1,1,1,1},
+        },'triangles','static')
+        texture.spriteMesh:setVertexMap(1,2,3,1,3,4)
+        texture.spriteMesh:setTexture(image)
+      end
+      g.setMeshCullMode('none');g.draw(texture.spriteMesh)
     else g.draw(texture.image,texture.quad)end
   end
   for _,child in ipairs(node.children)do drawNode(child,alpha)end

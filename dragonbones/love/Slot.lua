@@ -1,6 +1,6 @@
 -- Sprite/mesh paths adapted from pinned Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts.
 -- Copyright (c) DragonBones contributors. MIT: LICENSE-DRAGONBONES.
--- Atlas rotation and advanced blend modes remain separate backend slices.
+-- Advanced blend modes remain a separate backend slice.
 local Slot=require('dragonbones.armature.Slot')
 local Pool=require('dragonbones.core.BaseObject')
 local Atlas=require('dragonbones.love.TextureAtlasData').TextureAtlasData
@@ -95,8 +95,13 @@ function LoveSlot:_updateFrame()
         end
         for i=0,vertexCount*2-1,2 do
           local u,v=at(floats,uvOffset+i),at(floats,uvOffset+i+1)
-          display.uvs[i+1]=(region.x+u*region.width)/width
-          display.uvs[i+2]=(region.y+v*region.height)/height
+          if texture.rotated then
+            display.uvs[i+1]=(region.x+(1.0-v)*region.width)/width
+            display.uvs[i+2]=(region.y+u*region.height)/height
+          else
+            display.uvs[i+1]=(region.x+u*region.width)/width
+            display.uvs[i+2]=(region.y+v*region.height)/height
+          end
         end
         self._textureScale=1.0;display.texture=frame
         display.dirty=display.dirty+1;display.indexDirty=display.indexDirty+1
