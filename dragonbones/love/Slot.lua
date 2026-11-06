@@ -1,11 +1,12 @@
 -- Sprite/mesh paths adapted from pinned Pixi/4.x/src/dragonBones/pixi/PixiSlot.ts.
 -- Copyright (c) DragonBones contributors. MIT: LICENSE-DRAGONBONES.
--- Advanced blend modes remain a separate backend slice.
+-- Screen follows Pixi 4; remaining advanced modes are separate slices.
 local Slot=require('dragonbones.armature.Slot')
 local Pool=require('dragonbones.core.BaseObject')
 local Atlas=require('dragonbones.love.TextureAtlasData').TextureAtlasData
 local Enums=require('dragonbones.core.Enums')
 local Mode=Enums.BlendMode
+local blendModes={[Mode.Normal]=0,[Mode.Add]=1,[Mode.Screen]=3}
 local Binary=Enums.BinaryOffset
 local Shared=require('dragonbones.parser.SharedBinaryBuffer')
 local number=require('dragonbones.parser.JSValue').number
@@ -42,9 +43,9 @@ end
 function LoveSlot:_updateVisible()self._renderDisplay.visible=self._parent.visible and self._visible end
 function LoveSlot:_updateBlendMode()
   if self._renderDisplay.kind=='sprite'then
-    assert(self._blendMode==Mode.Normal or self._blendMode==Mode.Add,
-      'LÖVE sprite backend currently supports Normal/Add blend only')
-    self._renderDisplay.blendMode=self._blendMode==Mode.Add and 1 or 0
+    local mode=blendModes[self._blendMode]
+    assert(mode~=nil,'LÖVE sprite backend supports Normal/Add/Screen only')
+    self._renderDisplay.blendMode=mode
   end
 end
 function LoveSlot:_updateColor()

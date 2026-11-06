@@ -1,5 +1,13 @@
 # Bono-Lua — porte integral do DragonBonesJS para Lua
 
+## LÖVE — blend Screen
+
+Sprites aceitam Screen com RGB premultiplicado e alpha empacotado como no batcher Pixi 4. O shader pertence ao display, é criado sob demanda e liberado ao destruir o display; o estado gráfico do chamador é restaurado. B alterna Screen no demo, T alterna o atlas e M alterna sprites/meshes. O blend de mesh permanece como no PixiSlot original. Ver [LoveScreen.md](docs/contracts/LoveScreen.md).
+
+Diferencial: 33 cenários/6.588 colunas exatas em Lua 5.4/LuaJIT, incluindo troca Screen→Add→Normal→Screen. CI configurada com 59 suítes por VM e 22 exemplos; acrescenta 18 capturas reais com 1.474.560 canais exigidos exatos em blend-result.json. Mantém as 26 capturas anteriores e seus critérios. A execução gráfica é a evidência; configuração não implica aprovação.
+
+Este é o estado atual; seções seguintes registram checkpoints anteriores. Multiply e os demais blends avançados, transparência de texels/filtragem complexa e exports externos continuam pendentes. Backend e integrações oficiais não são declarados completos.
+
 ## LÖVE — atlas rotacionados
 
 Sprites e meshes aceitam regiões de atlas giradas em 90°, preservando as dimensões originais usadas pelo Pixi e os pivôs do runtime. Sprites usam um Mesh com UVs rotacionados; meshes conservam a fórmula original de PixiSlot. `love .` abre a demonstração; T alterna o atlas e M alterna sprites/meshes. Ver [LoveRotation.md](docs/contracts/LoveRotation.md).
