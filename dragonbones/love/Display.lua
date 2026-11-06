@@ -46,14 +46,14 @@ local blendEffects={
   extern vec2 destinationSize;
   vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
     vec4 s = Texel(image, uv);
-    s.rgb *= s.a;
+    s.rgb = floor(s.rgb * s.a * 255.0 + vec3(0.5)) / 255.0;
     s *= color;
     vec4 d = Texel(destination, pixel / destinationSize);
     return s * d + d * (1.0 - s.a);
   }]],
   [3]=[[vec4 effect(vec4 color, Image image, vec2 uv, vec2 pixel) {
     vec4 c = Texel(image, uv);
-    c.rgb *= c.a;
+    c.rgb = floor(c.rgb * c.a * 255.0 + vec3(0.5)) / 255.0;
     return c * color;
   }]],
 }

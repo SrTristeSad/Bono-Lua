@@ -3,7 +3,7 @@ local JSON=require('dragonbones.parser.JSON')
 local Factory=require('dragonbones.love.Factory')
 local Rotated=require('examples.love.rotated')
 local B={}
-function B.scene(mesh,rotated,alpha,tint,mode)
+function B.scene(mesh,rotated,alpha,tint,mode,imageMaker)
   local raw=JSON.parse(love.filesystem.read(mesh and'examples/love/meshes_ske.json'or'examples/love/sprites_ske.json'))
   for i=1,raw.armature[1].slot.length do
     local slot=raw.armature[1].slot[i]
@@ -14,7 +14,7 @@ function B.scene(mesh,rotated,alpha,tint,mode)
   if not rotated then
     for i=1,atlas.SubTexture.length do atlas.SubTexture[i].rotated=false end
   end
-  local image=Rotated.image(false)
+  local image=imageMaker and imageMaker(false)or Rotated.image(false)
   local factory=Factory.new()
   factory:parseDragonBonesData(raw,'sprites')
   factory:parseTextureAtlasData(atlas,image,'sprites')

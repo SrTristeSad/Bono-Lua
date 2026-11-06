@@ -1,5 +1,7 @@
 # Multiply sobre Canvas no LÖVE
 
+Atualização: texels semitransparentes em Screen/Multiply têm recorte específico em [LoveTextureAlpha.md](LoveTextureAlpha.md). Limites anteriores abaixo são históricos.
+
 Referência: PixiSlot.ts de Pixi/4.x no commit DragonBonesJS 64b6c69ae35777c2404be68c9192e2c56906079e. O ramo Sprite passa BlendMode.Multiply para PIXI.BLEND_MODES.MULTIPLY=2. O ramo mesh continua ignorando a solicitação, como no original. O runtime de animação não recebe lógica de composição.
 
 ## Composição

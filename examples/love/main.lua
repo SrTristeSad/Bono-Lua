@@ -83,6 +83,8 @@ local showScreen=false
 local showMultiply=false
 local multiplyCanvas
 local Multiply=require('examples.love.multiply')
+local TextureAlpha=require('examples.love.texture_alpha')
+local showTextureAlpha=false
 local factory,arm,image,paused
 function love.load()
   love.graphics.setDefaultFilter('nearest','nearest')
@@ -98,6 +100,12 @@ function love.load()
     local ok,message=xpcall(function()meshPixels(meshOutput,image)end,debug.traceback)
     if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
     print('LÖVE rendered eight real mesh RGBA/PNG frames.');love.event.quit(0);return
+  end
+  local textureOutput=os.getenv('BONO_TEXTURE_ALPHA_OUTPUT')
+  if textureOutput then
+    local ok,message=xpcall(function()TextureAlpha.capture(textureOutput)end,debug.traceback)
+    if not ok then io.stderr:write(message,'\n');love.event.quit(1);return end
+    print('LÖVE rendered 32 real texture-alpha RGBA/PNG frames.');love.event.quit(0);return
   end
   local multiplyOutput=os.getenv('BONO_MULTIPLY_OUTPUT')
   if multiplyOutput then
@@ -139,22 +147,25 @@ function love.draw()
   else arm.display:draw(180,100,showMeshes and 4 or 6)end
   love.graphics.setColor(1,1,1,1)
   love.graphics.print('Bono-Lua / LÖVE: atlas + sprites / meshes + animação real',20,20)
-  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas | B: Screen | N: Multiply',20,42)
-  love.graphics.print(('t=%.2f s | atlas rotacionado: %s | Screen: %s | Multiply: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation),tostring(showScreen),tostring(showMultiply)),20,66)
+  love.graphics.print('Espaço: pausa | R: reinicia | F: espelha | M: mesh | T: atlas',20,40)
+  love.graphics.print('B: Screen | N: Multiply | A: alpha da textura | Esc: sair',20,58)
+  love.graphics.print(('t=%.2f s | atlas rotacionado: %s | Screen: %s | Multiply: %s | texels alpha: %s'):format(arm.animation.lastAnimationState.currentTime,tostring(showRotation),tostring(showScreen),tostring(showMultiply),tostring(showTextureAlpha)),20,78)
 end
 function love.keypressed(key)
   if key=='escape'then love.event.quit()
   elseif key=='space'then paused=not paused
   elseif key=='r'then arm.animation:play('move',0)
   elseif key=='f'then arm.flipX=not arm.flipX
-  elseif key=='m'or key=='t'or key=='b'or key=='n'then
+  elseif key=='m'or key=='t'or key=='b'or key=='n'or key=='a'then
     close(factory,arm);image:release()
     if key=='m'then showMeshes=not showMeshes
     elseif key=='t'then showRotation=not showRotation
+    elseif key=='a'then showTextureAlpha=not showTextureAlpha;showMeshes=false
+      if not showScreen and not showMultiply then showScreen=true end
     elseif key=='n'then showMultiply=not showMultiply;showScreen=false;showMeshes=false
     else showScreen=not showScreen;showMultiply=false end
-    if showMultiply then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1,10)
-    elseif showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1)
+    if showMultiply then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1,10,showTextureAlpha and TextureAlpha.image or nil)
+    elseif showScreen then factory,arm,image=Blends.scene(showMeshes,showRotation,.5,1,12,showTextureAlpha and TextureAlpha.image or nil)
     elseif showRotation then factory,arm,image=Rotated.scene(showMeshes,1,false,false,false,false)
     else image=atlasImage();factory,arm=scene(image,1,1,showMeshes)end
     arm.clock=factory.clock

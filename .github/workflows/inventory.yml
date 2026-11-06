@@ -196,6 +196,8 @@ jobs:
           NODE_PATH=../graphics-tools/node_modules node tests/love_blend_pixels.js ../DragonBonesJS
           BONO_MULTIPLY_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
           NODE_PATH=../graphics-tools/node_modules node tests/love_multiply_pixels.js ../DragonBonesJS
+          BONO_TEXTURE_ALPHA_OUTPUT="$PWD/artifacts/love" xvfb-run -a love .
+          NODE_PATH=../graphics-tools/node_modules node tests/love_texture_alpha_pixels.js ../DragonBonesJS
       - name: Preserve actual RGBA frames and PNG captures
         if: always()
         uses: actions/upload-artifact@v4
